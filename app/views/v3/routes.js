@@ -1,4 +1,7 @@
+
+
 const router = require('express').Router()
+
 
 // Set version for all templates in this folder
 router.use((req, res, next) => {
@@ -6,6 +9,13 @@ router.use((req, res, next) => {
   next()
 })
 
-// Add any version-specific routes here
+// Define your v3 routes here (no nested require)
+router.get('/dashboard', (req, res) => {
+  res.render('v3/dashboard')
+})
+
+// Add other routes as needed...
+
+
 
 module.exports = router
