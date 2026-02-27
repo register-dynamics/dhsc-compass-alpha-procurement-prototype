@@ -1,0 +1,65 @@
+/* ── Viz bars ─────────────────────────────────────────── */
+    .app-bar-track {
+      background: #f0f4f5;
+      height: 20px;
+      margin-top: 2px;
+    }
+    .app-bar-fill {
+      background: #005eb8;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding-right: 6px;
+    }
+    .app-bar-fill span {
+      color: #fff;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    /* ── Stat panels ──────────────────────────────────────── */
+    .app-stat-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: #d8dde0;
+      border: 1px solid #d8dde0;
+      margin-bottom: 24px;
+    }
+    .app-stat {
+      background: #fff;
+      padding: 16px;
+      text-align: center;
+    }
+    .app-stat__value {
+      display: block;
+      font-size: 32px;
+      font-weight: 700;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .app-stat__label {
+      font-size: 14px;
+      color: #4c6272;
+    }
+
+    /* ── Legend row ───────────────────────────────────────── */
+    .app-legend {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+    .app-legend__item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+    }
+    .app-legend__swatch {
+      width: 12px;
+      height: 12px;
+      border-radius: 2px;
+      flex-shrink: 0;
+    }

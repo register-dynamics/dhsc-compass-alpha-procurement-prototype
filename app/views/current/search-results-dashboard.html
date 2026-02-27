@@ -1,0 +1,897 @@
+{% extends prototypeVersion + '/layouts/layout-signed-in.html' %}
+
+{% set pageName = "Search medical technologies - Compass" %}
+{% set serviceHeader = "Compass" %}
+
+{% block beforeContent %}
+{% from "breadcrumb/macro.njk" import breadcrumb %}
+
+{{ breadcrumb({
+items: [
+{
+href: "/",
+text: "Home"
+}
+],
+href: "#",
+text: "Search results"
+}) }}
+{% endblock %}
+
+{% block content %}
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-full">
+
+    <!-- Page heading -->
+    <div class="nhsuk-u-margin-bottom-6">
+      <strong class="nhsuk-hint nhsuk-u-margin-bottom-3">Category intelligence</span>
+        <h1 class="nhsuk-heading-l nhsuk-u-margin-bottom-2">Wound care and tissue management</h1>
+        <p class="nhsuk-body-l nhsuk-u-secondary-text-color nhsuk-u-margin-bottom-0">
+          <strong>47 products</strong> from <strong>23 suppliers</strong>
+
+
+        </p>
+    </div>
+
+
+
+    <!-- Example card group for key actions -->
+    <div class="nhsuk-grid-row nhsuk-card-group">
+      <div class="nhsuk-grid-column-one-third nhsuk-card-group__item">
+
+
+
+
+
+
+
+
+        <div class="nhsuk-card">
+
+
+          <div class="nhsuk-card__content">
+
+            <h3 class="nhsuk-card__heading nhsuk-heading-xs">
+
+              Products in use at your trust
+
+            </h3>
+
+
+
+            <p class="nhsuk-card__description app-card__data">12</p>
+
+
+
+
+          </div>
+        </div>
+
+
+      </div>
+      <div class="nhsuk-grid-column-one-third nhsuk-card-group__item">
+
+
+
+
+
+
+
+
+        <div class="nhsuk-card">
+
+
+          <div class="nhsuk-card__content">
+
+            <h3 class="nhsuk-card__heading nhsuk-heading-xs">
+
+              Similar trusts using these products
+
+            </h3>
+
+
+
+            <p class="nhsuk-card__description app-card__data">34</p>
+
+
+
+
+          </div>
+        </div>
+
+
+      </div>
+      <div class="nhsuk-grid-column-one-third nhsuk-card-group__item">
+
+
+
+
+
+
+
+
+        <div class="nhsuk-card">
+
+
+          <div class="nhsuk-card__content">
+
+            <h3 class="nhsuk-card__heading nhsuk-heading-xs">
+
+              New products added this month
+
+            </h3>
+
+
+
+            <p class="nhsuk-card__description app-card__data">4</p>
+
+
+
+
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+
+    <!-- Filter bar -->
+    <div class="filter-bar" role="group" aria-label="Filter by trust type">
+      <span class="filter-bar__label">Filter by trust type:</span>
+      <button class="filter-pill filter-pill--active" aria-pressed="true">All trusts</button>
+      <button class="filter-pill" aria-pressed="false">Large acute (similar to mine)</button>
+      <button class="filter-pill" aria-pressed="false">Teaching hospitals</button>
+      <button class="filter-pill" aria-pressed="false">Community trusts</button>
+      <button class="filter-pill" aria-pressed="false">Mental health trusts</button>
+      <span class="filter-bar__count">Showing data from <strong>89 trusts</strong></span>
+    </div>
+
+
+    <!-- ══════════════════════════════════════════════════════
+         SECTION 1 — Trusts like mine
+    ═══════════════════════════════════════════════════════ -->
+    <section class="compass-section" aria-labelledby="s1">
+      <h2 class="nhsuk-heading-m">
+        Products used by trusts like mine
+        <strong class="nhsuk-tag nhsuk-tag--blue">Peer intelligence</strong>
+      </h2>
+      <p>How many different products are used at trusts similar to yours, and which are most widely adopted.</p>
+
+      <div class="compass-grid-2">
+
+        <!-- Trust comparison -->
+        <div class="nhsuk-card">
+          <div class="nhsuk-card__content">
+            <p class="compass-card__label">
+              Products in use — similar trusts
+
+            </p>
+            <div class="trust-list">
+              <div class="trust-item">
+                <div class="trust-item__rank trust-item__rank--you" aria-label="Your trust"></div>
+                <div class="trust-item__name">Leeds Teaching Hospitals <span class="trust-item__type">· Large
+                    acute</span></div>
+                <div class="trust-item__bar" role="presentation">
+                  <div class="trust-item__bar-fill" style="width:50%;background:#003087;"></div>
+                </div>
+                <div class="trust-item__count">12</div>
+              </div>
+              <div class="trust-item">
+                <div class="trust-item__rank">1</div>
+                <div class="trust-item__name">Guy's &amp; St Thomas' <span class="trust-item__type">· Large acute</span>
+                </div>
+                <div class="trust-item__bar" role="presentation">
+                  <div class="trust-item__bar-fill" style="width:100%;background:#00a9ce;"></div>
+                </div>
+                <div class="trust-item__count">24</div>
+              </div>
+              <div class="trust-item">
+                <div class="trust-item__rank">2</div>
+                <div class="trust-item__name">Manchester University <span class="trust-item__type">· Large acute</span>
+                </div>
+                <div class="trust-item__bar" role="presentation">
+                  <div class="trust-item__bar-fill" style="width:88%;background:#00a9ce;"></div>
+                </div>
+                <div class="trust-item__count">21</div>
+              </div>
+              <div class="trust-item">
+                <div class="trust-item__rank">3</div>
+                <div class="trust-item__name">Newcastle Hospitals <span class="trust-item__type">· Teaching
+                    hospital</span></div>
+                <div class="trust-item__bar" role="presentation">
+                  <div class="trust-item__bar-fill" style="width:79%;background:#00a9ce;"></div>
+                </div>
+                <div class="trust-item__count">19</div>
+              </div>
+              <div class="trust-item">
+                <div class="trust-item__rank">4</div>
+                <div class="trust-item__name">Sheffield Teaching Hospitals <span class="trust-item__type">· Large
+                    acute</span></div>
+                <div class="trust-item__bar" role="presentation">
+                  <div class="trust-item__bar-fill" style="width:71%;background:#00a9ce;"></div>
+                </div>
+                <div class="trust-item__count">17</div>
+              </div>
+              <div class="trust-item">
+                <div class="trust-item__rank">5</div>
+                <div class="trust-item__name">Bristol University Hospitals <span class="trust-item__type">· Teaching
+                    hospital</span></div>
+                <div class="trust-item__bar" role="presentation">
+                  <div class="trust-item__bar-fill" style="width:67%;background:#d8dde0;"></div>
+                </div>
+                <div class="trust-item__count">16</div>
+              </div>
+            </div>
+            <p class="compass-footnote">Average across large acute trusts: <strong>16.3 products</strong></p>
+          </div>
+        </div>
+
+        <!-- Most used products -->
+        <div class="nhsuk-card">
+          <div class="nhsuk-card__content">
+            <p class="compass-card__label">Most used products — large acute trusts</p>
+            <div class="bar-chart" role="list">
+              <div class="bar-item" role="listitem">
+                <div class="bar-label">Mepitel One</div>
+                <div class="bar-track">
+                  <div class="bar-fill" style="width:85%;background:#003087;" aria-label="72 trusts">72 trusts</div>
+                </div>
+                <div class="bar-count">72</div>
+              </div>
+              <div class="bar-item" role="listitem">
+                <div class="bar-label">ALLEVYN Gentle</div>
+                <div class="bar-track">
+                  <div class="bar-fill" style="width:75%;background:#003087;" aria-label="64 trusts">64 trusts</div>
+                </div>
+                <div class="bar-count">64</div>
+              </div>
+              <div class="bar-item" role="listitem">
+                <div class="bar-label">Mepilex Border</div>
+                <div class="bar-track">
+                  <div class="bar-fill" style="width:68%;background:#003087;" aria-label="58 trusts">58 trusts</div>
+                </div>
+                <div class="bar-count">58</div>
+              </div>
+              <div class="bar-item" role="listitem">
+                <div class="bar-label">Aquacel Ag+</div>
+                <div class="bar-track">
+                  <div class="bar-fill" style="width:55%;background:#00a9ce;" aria-label="47 trusts">47 trusts</div>
+                </div>
+                <div class="bar-count">47</div>
+              </div>
+              <div class="bar-item" role="listitem">
+                <div class="bar-label">UrgoStart Plus</div>
+                <div class="bar-track">
+                  <div class="bar-fill" style="width:42%;background:#00a9ce;" aria-label="36 trusts">36 trusts</div>
+                </div>
+                <div class="bar-count">36</div>
+              </div>
+              <div class="bar-item" role="listitem">
+                <div class="bar-label">Biatain Silicone</div>
+                <div class="bar-track">
+                  <div class="bar-fill" style="width:35%;background:#aeb7bd;" aria-label="30 trusts">30 trusts</div>
+                </div>
+                <div class="bar-count">30</div>
+              </div>
+              <div class="bar-item" role="listitem">
+                <div class="bar-label">Cutimed Sorbact</div>
+                <div class="bar-track">
+                  <div class="bar-fill" style="width:28%;background:#aeb7bd;" aria-label="24 trusts">24 trusts</div>
+                </div>
+                <div class="bar-count">24</div>
+              </div>
+            </div>
+            <p class="compass-footnote">Based on self-reported procurement data from 89 participating trusts.</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- ══════════════════════════════════════════════════════
+         SECTION 2 — Fresh information
+    ═══════════════════════════════════════════════════════ -->
+    <section class="compass-section" aria-labelledby="s2">
+      <h2 class="compass-section__heading" id="s2">
+        Fresh information on the service
+        <strong class="nhsuk-tag nhsuk-tag--green">New</strong>
+      </h2>
+      <p>Products recently added, updated evaluations, and newly shared peer insights.</p>
+
+      <div class="compass-grid-2">
+
+        <!-- Activity feed -->
+        <div class="nhsuk-card">
+          <div class="nhsuk-card__content">
+            <p class="nhsuk-card__label"><span class="live-dot" aria-hidden="true"></span> Recently added products</p>
+            <div class="activity-feed">
+
+              <div class="activity-item">
+                <strong class="nhsuk-tag nhsuk-tag--green">New</strong>
+                <div>
+                  <p class="nhsuk-body-s nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-1"><a class="nhsuk-link"
+                      href="#">Collagen Pro Matrix (BioForm)</a></p>
+                  <p class="nhsuk-body-s nhsuk-u-secondary-text-color nhsuk-u-margin-bottom-0">Collagen dressings ·
+                    £18.40/unit · 3 trusts evaluating</p>
+                </div>
+                <span class="nhsuk-body-s nhsuk-u-margin-top-1">3 days ago</span>
+              </div>
+
+              <div class="activity-item">
+                <strong class="nhsuk-tag nhsuk-tag--green">New</strong>
+                <div>
+                  <p class="nhsuk-body-s nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-1"><a class="nhsuk-link"
+                      href="#">WoundSeal Antimicrobial Foam</a></p>
+                  <p class="nhsuk-body-s nhsuk-u-secondary-text-color nhsuk-u-margin-bottom-0">Foam dressings ·
+                    £4.20/unit · Added by supplier</p>
+                </div>
+                <span class="nhsuk-body-s nhsuk-u-margin-top-1">5 days ago</span>
+              </div>
+
+              <div class="activity-item">
+                <strong class="nhsuk-tag nhsuk-tag--yellow">Updated</strong>
+                <div>
+                  <p class="nhsuk-body-s nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-1"><a class="nhsuk-link"
+                      href="#">Aquacel Ag+ Extra</a></p>
+                  <p class="nhsuk-body-s nhsuk-u-secondary-text-color nhsuk-u-margin-bottom-0">Hydrofibre · Clinical
+                    data updated · 12 evaluations</p>
+                </div>
+                <span class="nhsuk-body-s nhsuk-u-margin-top-1">1 week ago</span>
+              </div>
+
+              <div class="activity-item">
+                <strong class="nhsuk-tag nhsuk-tag--blue">Evaluation</strong>
+                <div>
+                  <p class="nhsuk-body-s nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-1"><a class="nhsuk-link"
+                      href="#">Mepilex Border Post-Op</a></p>
+                  <p class="nhsuk-body-s nhsuk-u-secondary-text-color nhsuk-u-margin-bottom-0">New evaluation from
+                    Newcastle Hospitals</p>
+                </div>
+                <span class="nhsuk-body-s nhsuk-u-margin-top-1">1 week ago</span>
+              </div>
+
+              <div class="activity-item">
+                <strong class="nhsuk-tag nhsuk-tag--purple">Evaluation</strong>
+                <div>
+                  <p class="nhsuk-body-s nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-1"><a class="nhsuk-link"
+                      href="#">UrgoStart Plus Border</a></p>
+                  <p class="nhsuk-body-s nhsuk-u-secondary-text-color nhsuk-u-margin-bottom-0">Lessons learned shared by
+                    Sheffield Teaching Hospitals</p>
+                </div>
+                <p class="nhsuk-body-s nhsuk-u-margin-top-1">2 weeks ago</p>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- Activity stats -->
+        <div class="nhsuk-card">
+          <div class="nhsuk-card__content">
+            <p>Activity this month</p>
+            <div class="compass-grid-2 nhsuk-u-margin-top-2">
+              <div class="stat-tile stat-tile--green">
+                <p class="stat-tile__label">New products</p>
+                <p class="stat-tile__value">4</p>
+                <p class="nhsuk-body-s">Added to catalogue</p>
+              </div>
+              <div class="stat-tile stat-tile--aqua">
+                <p class="stat-tile__label">Updated records</p>
+                <p class="stat-tile__value">11</p>
+                <p class="nhsuk-body-s">By suppliers</p>
+              </div>
+              <div class="stat-tile stat-tile--purple">
+                <p class="stat-tile__label">New evaluations</p>
+                <p class="stat-tile__value">7</p>
+                <p class="nhsuk-body-s">From NHS trusts</p>
+              </div>
+              <div class="stat-tile stat-tile--yellow">
+                <p class="stat-tile__label">Peer contacts</p>
+                <p class="stat-tile__value">23</p>
+                <p class="nhsuk-body-s">Facilitated this month</p>
+              </div>
+            </div>
+            <div class="nhsuk-inset-text nhsuk-u-margin-top-4">
+              <span class="nhsuk-u-visually-hidden">Information: </span>
+              <p class="nhsuk-inset-text__content">
+                Subscribe to category alerts to get notified when new evaluations are published or when a trust like
+                yours adds a product.
+              </p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- ══════════════════════════════════════════════════════
+         SECTION 3 — Sub-category breakdown
+    ═══════════════════════════════════════════════════════ -->
+    <section class="compass-section" aria-labelledby="s3">
+      <h2 class="compass-section__heading" id="s3">
+        Understanding your options by sub-category
+
+      </h2>
+      <p class="compass-section__subtitle">How many products are available in each sub-category — a starting point for
+        understanding the landscape.</p>
+
+      <div class="nhsuk-card">
+        <div class="nhsuk-card__content">
+          <p class="compass-card__label">Products by sub-category</p>
+          <div class="bar-chart" role="list">
+            <div class="bar-item" role="listitem">
+              <div class="bar-label">Foam dressings</div>
+              <div class="bar-track">
+                <div class="bar-fill" style="width:85%;background:#003087;">12</div>
+              </div>
+              <div class="bar-count">12</div>
+            </div>
+            <div class="bar-item" role="listitem">
+              <div class="bar-label">Hydrocolloids</div>
+              <div class="bar-track">
+                <div class="bar-fill" style="width:65%;background:#003087;">9</div>
+              </div>
+              <div class="bar-count">9</div>
+            </div>
+            <div class="bar-item" role="listitem">
+              <div class="bar-label">Antimicrobial silver</div>
+              <div class="bar-track">
+                <div class="bar-fill" style="width:57%;background:#00a9ce;">8</div>
+              </div>
+              <div class="bar-count">8</div>
+            </div>
+            <div class="bar-item" role="listitem">
+              <div class="bar-label">Silicone contact</div>
+              <div class="bar-track">
+                <div class="bar-fill" style="width:50%;background:#00a9ce;">7</div>
+              </div>
+              <div class="bar-count">7</div>
+            </div>
+            <div class="bar-item" role="listitem">
+              <div class="bar-label">Hydrofibre</div>
+              <div class="bar-track">
+                <div class="bar-fill" style="width:36%;background:#aeb7bd;">5</div>
+              </div>
+              <div class="bar-count">5</div>
+            </div>
+            <div class="bar-item" role="listitem">
+              <div class="bar-label">Collagen matrix</div>
+              <div class="bar-track">
+                <div class="bar-fill" style="width:21%;background:#aeb7bd;">3</div>
+              </div>
+              <div class="bar-count">3</div>
+            </div>
+            <div class="bar-item" role="listitem">
+              <div class="bar-label">Negative pressure</div>
+              <div class="bar-track">
+                <div class="bar-fill" style="width:21%;background:#aeb7bd;">3</div>
+              </div>
+              <div class="bar-count">3</div>
+            </div>
+          </div>
+          <p class="compass-footnote">Total: 47 products across 7 sub-categories on the platform.</p>
+        </div>
+      </div>
+    </section>
+
+
+
+
+    <!-- ══════════════════════════════════════════════════════
+         SECTION 5 — Maturity & Innovation
+    ═══════════════════════════════════════════════════════ -->
+    <section class="compass-section" aria-labelledby="s5">
+      <h2 class="compass-section__heading" id="s5">
+        Product maturity &amp; innovation
+        <strong class="nhsuk-tag nhsuk-tag--blue">Market insight</strong>
+      </h2>
+      <p class="compass-section__subtitle">How long products in this category have been on the market — from proven
+        stalwarts to emerging innovations.</p>
+
+      <div class="compass-grid-2">
+
+        <div class="nhsuk-card">
+          <div class="nhsuk-card__content">
+            <p class="compass-card__label">Time on market — all products in category</p>
+            <div class="timeline-chart">
+              <div class="timeline-row">
+                <div class="timeline-lbl">🆕 &lt;1 year</div>
+                <div class="timeline-track">
+                  <div class="timeline-fill" style="width:15%;background:#00a9ce;"></div>
+                </div>
+                <div class="timeline-num">7</div>
+              </div>
+              <div class="timeline-row">
+                <div class="timeline-lbl">1–3 years</div>
+                <div class="timeline-track">
+                  <div class="timeline-fill" style="width:23%;background:#00a9ce;"></div>
+                </div>
+                <div class="timeline-num">11</div>
+              </div>
+              <div class="timeline-row">
+                <div class="timeline-lbl">3–5 years</div>
+                <div class="timeline-track">
+                  <div class="timeline-fill" style="width:30%;background:#1d70b8;"></div>
+                </div>
+                <div class="timeline-num">14</div>
+              </div>
+              <div class="timeline-row">
+                <div class="timeline-lbl">5–10 years</div>
+                <div class="timeline-track">
+                  <div class="timeline-fill" style="width:21%;background:#003087;"></div>
+                </div>
+                <div class="timeline-num">10</div>
+              </div>
+              <div class="timeline-row">
+                <div class="timeline-lbl">10+ years</div>
+                <div class="timeline-track">
+                  <div class="timeline-fill" style="width:11%;background:#002060;"></div>
+                </div>
+                <div class="timeline-num">5</div>
+              </div>
+            </div>
+            <div class="nhsuk-inset-text nhsuk-u-margin-top-4">
+              <span class="nhsuk-u-visually-hidden">Information: </span>
+              <p class="nhsuk-inset-text__content">Products on the market for <strong>3–5 years</strong> are the most
+                represented, suggesting a maturing category with continued new entrants.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="nhsuk-card">
+          <div class="nhsuk-card__content">
+            <p class="compass-card__label">Innovation vs maturity — trust adoption</p>
+            <div class="nhsuk-u-margin-top-3">
+              <div
+                class="nhsuk-u-display-flex nhsuk-u-justify-content-space-between nhsuk-body-s nhsuk-u-secondary-text-color nhsuk-u-margin-bottom-2">
+                <span>Emerging (&lt;2 years)</span>
+                <span>Proven (&gt;5 years)</span>
+              </div>
+              <div class="seg-bar" role="img"
+                aria-label="Segmented bar: 18% under 2 years, 25% 2-5 years, 30% 5-10 years, 27% over 10 years">
+                <div class="seg-bar__seg" style="flex:18;background:#00a9ce;">18%</div>
+                <div class="seg-bar__seg" style="flex:25;background:#1d70b8;">25%</div>
+                <div class="seg-bar__seg" style="flex:30;background:#003087;">30%</div>
+                <div class="seg-bar__seg" style="flex:27;background:#002060;">27%</div>
+              </div>
+              <div class="seg-legend">
+                <div class="seg-legend__item">
+                  <div class="seg-legend__dot" style="background:#00a9ce;"></div>&lt;2 yrs (18%)
+                </div>
+                <div class="seg-legend__item">
+                  <div class="seg-legend__dot" style="background:#1d70b8;"></div>2–5 yrs (25%)
+                </div>
+                <div class="seg-legend__item">
+                  <div class="seg-legend__dot" style="background:#003087;"></div>5–10 yrs (30%)
+                </div>
+                <div class="seg-legend__item">
+                  <div class="seg-legend__dot" style="background:#002060;"></div>10+ yrs (27%)
+                </div>
+              </div>
+            </div>
+
+            <p class="compass-card__label nhsuk-u-margin-top-6">Top innovative products (adopted last 12 months)</p>
+            <div class="innovation-row">
+
+              <span class="nhsuk-body-s" style="flex:1;"><strong>Collagen Pro Matrix</strong> — 3 trusts · 4 months
+                old</span>
+              <strong class="nhsuk-tag nhsuk-tag--green">New</strong>
+            </div>
+            <div class="innovation-row">
+
+              <span class="nhsuk-body-s" style="flex:1;"><strong>WoundSeal Antimicrobial</strong> — 1 trust · 8 months
+                old</span>
+              <strong class="nhsuk-tag nhsuk-tag--green">New</strong>
+            </div>
+            <div class="innovation-row">
+
+              <span class="nhsuk-body-s" style="flex:1;"><strong>UrgoStart Plus Border</strong> — 14 trusts · 2 years
+                old</span>
+              <strong class="nhsuk-tag nhsuk-tag--blue">Growing</strong>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- ══════════════════════════════════════════════════════
+         SECTION 6 — Costs
+    ═══════════════════════════════════════════════════════ -->
+    <section class="compass-section" aria-labelledby="s6">
+      <h2 class="compass-section__heading" id="s6">
+        Typical costs &amp; budget guidance
+        <strong class="nhsuk-tag nhsuk-tag--green">Procurement</strong>
+      </h2>
+      <p class="compass-section__subtitle">Understand the typical cost range for products in this category to support
+        budget planning.</p>
+
+      <div class="compass-grid-2">
+
+        <div class="nhsuk-card">
+          <div class="nhsuk-card__content">
+            <p class="compass-card__label">Cost per unit — by sub-category (median)</p>
+            <div class="nhsuk-u-margin-top-3">
+              <div class="price-tier">
+                <div class="price-tier__header"><span class="nhsuk-body-s nhsuk-u-font-weight-bold">Foam
+                    dressings</span><span class="nhsuk-body-s nhsuk-u-secondary-text-color">£2.80 – £9.40</span></div>
+                <div class="price-tier__bar" style="background:linear-gradient(to right,#dbeafe,#003087 50%,#1d3557);">
+                </div>
+                <p class="nhsuk-body-s nhsuk-u-secondary-text-color nhsuk-u-margin-top-1 nhsuk-u-margin-bottom-0">12
+                  products · median £4.90</p>
+              </div>
+              <div class="price-tier nhsuk-u-margin-top-3">
+                <div class="price-tier__header"><span
+                    class="nhsuk-body-s nhsuk-u-font-weight-bold">Hydrocolloids</span><span
+                    class="nhsuk-body-s nhsuk-u-secondary-text-color">£1.60 – £6.20</span></div>
+                <div class="price-tier__bar" style="background:linear-gradient(to right,#d4edda,#007f3b 60%,#003d1c);">
+                </div>
+                <p class="nhsuk-body-s nhsuk-u-secondary-text-color nhsuk-u-margin-top-1 nhsuk-u-margin-bottom-0">9
+                  products · median £3.10</p>
+              </div>
+              <div class="price-tier nhsuk-u-margin-top-3">
+                <div class="price-tier__header"><span class="nhsuk-body-s nhsuk-u-font-weight-bold">Antimicrobial
+                    silver</span><span class="nhsuk-body-s nhsuk-u-secondary-text-color">£4.50 – £18.00</span></div>
+                <div class="price-tier__bar" style="background:linear-gradient(to right,#ede9f4,#330072 55%,#1a003a);">
+                </div>
+                <p class="nhsuk-body-s nhsuk-u-secondary-text-color nhsuk-u-margin-top-1 nhsuk-u-margin-bottom-0">8
+                  products · median £9.20</p>
+              </div>
+              <div class="price-tier nhsuk-u-margin-top-3">
+                <div class="price-tier__header"><span class="nhsuk-body-s nhsuk-u-font-weight-bold">Collagen
+                    matrix</span><span class="nhsuk-body-s nhsuk-u-secondary-text-color">£14.00 – £42.00</span></div>
+                <div class="price-tier__bar" style="background:linear-gradient(to right,#fde8e8,#da291c 65%,#6b0000);">
+                </div>
+                <p class="nhsuk-body-s nhsuk-u-secondary-text-color nhsuk-u-margin-top-1 nhsuk-u-margin-bottom-0">3
+                  products · median £22.50</p>
+              </div>
+              <div class="price-tier nhsuk-u-margin-top-3">
+                <div class="price-tier__header"><span class="nhsuk-body-s nhsuk-u-font-weight-bold">Negative
+                    pressure</span><span class="nhsuk-body-s nhsuk-u-secondary-text-color">£35.00 – £120.00</span></div>
+                <div class="price-tier__bar" style="background:linear-gradient(to right,#fff3cd,#ffb81c 60%,#8a6d00);">
+                </div>
+                <p class="nhsuk-body-s nhsuk-u-secondary-text-color nhsuk-u-margin-top-1 nhsuk-u-margin-bottom-0">3
+                  products · median £62.00 / day of therapy</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="nhsuk-card">
+          <div class="nhsuk-card__content">
+            <p class="compass-card__label">Summary stats — all wound care products</p>
+            <div class="compass-grid-2 nhsuk-u-margin-top-2" style="gap:12px;">
+              <div class="stat-tile stat-tile--green">
+                <p class="stat-tile__label">Lowest cost</p>
+                <p class="stat-tile__value">£1.60</p>
+                <p class="stat-tile__sub">per unit (hydrocolloid)</p>
+              </div>
+              <div class="stat-tile stat-tile--red">
+                <p class="stat-tile__label">Highest cost</p>
+                <p class="stat-tile__value">£120</p>
+                <p class="stat-tile__sub">per day (NPWT)</p>
+              </div>
+              <div class="stat-tile">
+                <p class="stat-tile__label">Category median</p>
+                <p class="stat-tile__value">£6.80</p>
+                <p class="stat-tile__sub">per unit (all types)</p>
+              </div>
+              <div class="stat-tile stat-tile--aqua">
+                <p class="stat-tile__label">NHS SC listed</p>
+                <p class="stat-tile__value">32</p>
+                <p class="stat-tile__sub">of 47 products</p>
+              </div>
+            </div>
+            <div class="nhsuk-inset-text nhsuk-u-margin-top-4">
+              <span class="nhsuk-u-visually-hidden">Information: </span>
+              <p class="nhsuk-inset-text__content">
+                Products on the NHS Supply Chain framework typically offer <strong>8–15% savings</strong> versus direct
+                procurement. 32 of 47 products are available on framework.
+              </p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- ══════════════════════════════════════════════════════
+         SECTION 7 — ROI
+    ═══════════════════════════════════════════════════════ -->
+    <section class="compass-section" aria-labelledby="s7">
+      <h2 class="compass-section__heading" id="s7">
+        Business case &amp; ROI
+        <strong class="nhsuk-tag nhsuk-tag--purple">Value evidence</strong>
+      </h2>
+      <p class="compass-section__subtitle">Typical return on investment and value-for-money evidence shared by NHS
+        trusts to support business cases.</p>
+
+      <div class="nhsuk-card">
+        <div class="nhsuk-card__content">
+          <p class="compass-card__label">Reported ROI &amp; outcome data — peer evidence from NHS trusts</p>
+          <div style="overflow-x:auto;">
+            <table class="nhsuk-table">
+              <thead class="nhsuk-table__head">
+                <tr class="nhsuk-table__row">
+                  <th class="nhsuk-table__header" scope="col">Product</th>
+                  <th class="nhsuk-table__header" scope="col">Compared against</th>
+                  <th class="nhsuk-table__header" scope="col">Healing time</th>
+                  <th class="nhsuk-table__header" scope="col">Cost per healed wound</th>
+                  <th class="nhsuk-table__header" scope="col">Staff time saved</th>
+                  <th class="nhsuk-table__header" scope="col">Reported ROI</th>
+                  <th class="nhsuk-table__header" scope="col">Evidence</th>
+                </tr>
+              </thead>
+              <tbody class="nhsuk-table__body">
+                <tr class="nhsuk-table__row">
+                  <td class="nhsuk-table__cell"><strong>UrgoStart Plus</strong></td>
+                  <td class="nhsuk-table__cell">Standard foam dressing</td>
+                  <td class="nhsuk-table__cell">+40% faster</td>
+                  <td class="nhsuk-table__cell">£420 vs £680</td>
+                  <td class="nhsuk-table__cell">32 mins/wound</td>
+                  <td class="nhsuk-table__cell roi-positive">+3.2:1</td>
+                  <td class="nhsuk-table__cell"><strong class="nhsuk-tag nhsuk-tag--blue">RCT</strong></td>
+                </tr>
+                <tr class="nhsuk-table__row">
+                  <td class="nhsuk-table__cell"><strong>Aquacel Ag+ Extra</strong></td>
+                  <td class="nhsuk-table__cell">Iodine-based dressing</td>
+                  <td class="nhsuk-table__cell">+28% faster</td>
+                  <td class="nhsuk-table__cell">£560 vs £740</td>
+                  <td class="nhsuk-table__cell">18 mins/wound</td>
+                  <td class="nhsuk-table__cell roi-positive">+2.4:1</td>
+                  <td class="nhsuk-table__cell"><strong class="nhsuk-tag nhsuk-tag--blue">Trust eval</strong></td>
+                </tr>
+                <tr class="nhsuk-table__row">
+                  <td class="nhsuk-table__cell"><strong>Mepilex Border Post-Op</strong></td>
+                  <td class="nhsuk-table__cell">Standard surgical dressing</td>
+                  <td class="nhsuk-table__cell">-</td>
+                  <td class="nhsuk-table__cell">£180 vs £290</td>
+                  <td class="nhsuk-table__cell">12 mins/change</td>
+                  <td class="nhsuk-table__cell roi-positive">+1.8:1</td>
+                  <td class="nhsuk-table__cell"><strong class="nhsuk-tag nhsuk-tag--grey">Trust eval</strong></td>
+                </tr>
+                <tr class="nhsuk-table__row">
+                  <td class="nhsuk-table__cell"><strong>ALLEVYN Gentle Border</strong></td>
+                  <td class="nhsuk-table__cell">Hydrocolloid</td>
+                  <td class="nhsuk-table__cell">+15% faster</td>
+                  <td class="nhsuk-table__cell">£390 vs £470</td>
+                  <td class="nhsuk-table__cell">8 mins/wound</td>
+                  <td class="nhsuk-table__cell roi-positive">+1.5:1</td>
+                  <td class="nhsuk-table__cell"><strong class="nhsuk-tag nhsuk-tag--yellow">Observational</strong></td>
+                </tr>
+                <tr class="nhsuk-table__row">
+                  <td class="nhsuk-table__cell"><strong>Collagen Pro Matrix</strong></td>
+                  <td class="nhsuk-table__cell">Foam (complex wounds)</td>
+                  <td class="nhsuk-table__cell">+52% faster</td>
+                  <td class="nhsuk-table__cell">£890 vs £1,640</td>
+                  <td class="nhsuk-table__cell">45 mins/wound</td>
+                  <td class="nhsuk-table__cell roi-positive">+4.1:1</td>
+                  <td class="nhsuk-table__cell"><strong class="nhsuk-tag nhsuk-tag--purple">Pilot study</strong></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="compass-footnote">ROI figures are self-reported by NHS trusts and suppliers. Always review
+            methodology before use in a business case. <a class="nhsuk-link" href="#">Download full evidence summaries
+              →</a></p>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ══════════════════════════════════════════════════════
+         SECTION 8 — SME / supplier resilience
+    ═══════════════════════════════════════════════════════ -->
+    <section class="compass-section" aria-labelledby="s8">
+      <h2 class="compass-section__heading" id="s8">
+        Supplier resilience &amp; SME breakdown
+        <strong class="nhsuk-tag nhsuk-tag--grey">Supply chain</strong>
+      </h2>
+      <p class="compass-section__subtitle">Understand the supplier landscape — from large multinationals to small and
+        micro-enterprises.</p>
+
+      <div class="compass-grid-2">
+
+        <div class="nhsuk-card">
+          <div class="nhsuk-card__content">
+            <p class="compass-card__label">Suppliers by company size</p>
+            <div class="donut-wrap">
+              <div class="donut" role="img" aria-label="Donut chart: 38% large, 26% medium, 23% small, 13% micro">
+                <svg width="128" height="128" viewBox="0 0 128 128">
+                  <circle cx="64" cy="64" r="48" fill="none" stroke="#f0f4f5" stroke-width="20" />
+                  <circle cx="64" cy="64" r="48" fill="none" stroke="#003087" stroke-width="20"
+                    stroke-dasharray="114 187" stroke-dashoffset="0" />
+                  <circle cx="64" cy="64" r="48" fill="none" stroke="#1d70b8" stroke-width="20"
+                    stroke-dasharray="78 223" stroke-dashoffset="-114" />
+                  <circle cx="64" cy="64" r="48" fill="none" stroke="#00a9ce" stroke-width="20"
+                    stroke-dasharray="69 232" stroke-dashoffset="-192" />
+                  <circle cx="64" cy="64" r="48" fill="none" stroke="#78be20" stroke-width="20"
+                    stroke-dasharray="39 262" stroke-dashoffset="-261" />
+                </svg>
+                <div class="donut__center">
+                  <span class="d-num">23</span>
+                  <span class="d-lbl">suppliers</span>
+                </div>
+              </div>
+              <div class="donut-legend">
+                <div class="donut-legend__item">
+                  <div class="donut-legend__dot" style="background:#003087;"></div><span>Large enterprise</span><span
+                    class="donut-legend__val">9 (38%)</span>
+                </div>
+                <div class="donut-legend__item">
+                  <div class="donut-legend__dot" style="background:#1d70b8;"></div><span>Medium (50–249)</span><span
+                    class="donut-legend__val">6 (26%)</span>
+                </div>
+                <div class="donut-legend__item">
+                  <div class="donut-legend__dot" style="background:#00a9ce;"></div><span>Small (10–49)</span><span
+                    class="donut-legend__val">5 (23%)</span>
+                </div>
+                <div class="donut-legend__item">
+                  <div class="donut-legend__dot" style="background:#78be20;"></div><span>Micro (&lt;10)</span><span
+                    class="donut-legend__val">3 (13%)</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="nhsuk-card">
+          <div class="nhsuk-card__content">
+            <p class="compass-card__label">SME product spotlight</p>
+            <p class="nhsuk-body-s nhsuk-u-secondary-text-color nhsuk-u-margin-bottom-4">Products from small and micro
+              enterprises currently used in NHS trusts.</p>
+
+            <div class="sme-card">
+              <p class="nhsuk-body-m nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-1">BioForm Medical Ltd</p>
+              <p class="nhsuk-body-s nhsuk-u-secondary-text-color nhsuk-u-margin-bottom-2">Micro enterprise · &lt;10
+                staff · Founded 2020</p>
+              <strong class="nhsuk-tag nhsuk-tag--grey">Micro</strong>
+              <strong class="nhsuk-tag nhsuk-u-margin-left-2 nhsuk-tag--grey">2 products</strong>
+              <strong class="nhsuk-tag nhsuk-u-margin-left-2 nhsuk-tag--purple">3 trusts evaluating</strong>
+            </div>
+
+            <div class="sme-card sme-card--aqua">
+              <p class="nhsuk-body-m nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-1">WoundSeal Technologies</p>
+              <p class="nhsuk-body-s nhsuk-u-secondary-text-color nhsuk-u-margin-bottom-2">Small enterprise · 18 staff ·
+                Founded 2018</p>
+              <strong class="nhsuk-tag nhsuk-tag--aqua">Small</strong>
+              <strong class="nhsuk-tag nhsuk-u-margin-left-2 nhsuk-tag--blue">3 products</strong>
+              <strong class="nhsuk-tag nhsuk-u-margin-left-2 nhsuk-tag--purple">NHS SC listed</strong>
+            </div>
+
+            <div class="sme-card sme-card--aqua">
+              <p class="nhsuk-body-m nhsuk-u-font-weight-bold nhsuk-u-margin-bottom-1">Kelso Advanced Wound Care</p>
+              <p class="nhsuk-body-s nhsuk-u-secondary-text-color nhsuk-u-margin-bottom-2">Small enterprise · 34 staff ·
+                Founded 2015</p>
+              <strong class="nhsuk-tag nhsuk-tag--grey">Small</strong>
+              <strong class="nhsuk-tag nhsuk-tag--grey nhsuk-u-margin-left-2">4 products</strong>
+              <strong class="nhsuk-tag nhsuk-tag--purple nhsuk-u-margin-left-2">8 trusts using</strong>
+            </div>
+
+            <div class="nhsuk-inset-text nhsuk-u-margin-top-4">
+              <span class="nhsuk-u-visually-hidden">Information: </span>
+              <p class="nhsuk-inset-text__content">
+                <strong>Supply chain resilience:</strong> 62% of products in this category have multiple suppliers
+                offering equivalent or substitute products.
+              </p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+
+
+  </div><!-- /nhsuk-width-container -->
+</div>
+
+
+
+
+{% endblock %}

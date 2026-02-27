@@ -1,0 +1,116 @@
+
+
+.app-card {
+  &--blue {
+    border-color: nhsuk-tint(nhsuk-colour("blue"), 30%);
+    color: nhsuk-shade(nhsuk-colour("blue"), 30%);
+    background-color: nhsuk-tint(nhsuk-colour("blue"), 80%);
+
+    &.nhsuk-card--clickable:active {
+      border-color: nhsuk-shade(nhsuk-colour("blue"), 30%);
+    }
+  }
+
+  &--green {
+    border-color: nhsuk-tint(nhsuk-colour("green"), 40%);
+    color: nhsuk-shade(nhsuk-colour("green"), 40%);
+    background-color: nhsuk-tint(nhsuk-colour("green"), 80%);
+
+    &.nhsuk-card--clickable:active {
+      border-color: nhsuk-shade(nhsuk-colour("green"), 40%);
+    }
+  }
+
+  &--orange {
+    border-color: nhsuk-shade(nhsuk-colour("warm-yellow"), 10%);
+    color: nhsuk-shade(nhsuk-colour("warm-yellow"), 70%);
+    background-color: nhsuk-tint(nhsuk-colour("warm-yellow"), 70%);
+
+    &.nhsuk-card--clickable:active {
+      border-color: nhsuk-shade(nhsuk-colour("warm-yellow"), 30%);
+    }
+
+    blockquote {
+      border-color: nhsuk-colour("warm-yellow");
+    }
+  }
+
+  &--red {
+    border-color: nhsuk-tint(nhsuk-colour("red"), 50%);
+    color: nhsuk-shade(nhsuk-colour("red"), 50%);
+    background-color: nhsuk-tint(nhsuk-colour("red"), 80%);
+
+    &.nhsuk-card--clickable:active {
+      border-color: nhsuk-shade(nhsuk-colour("red"), 50%);
+    }
+  }
+
+  &--blue,
+  &--green,
+  &--orange,
+  &--red,
+  &--yellow {
+    .nhsuk-card__link,
+    .nhsuk-card__link:hover {
+      color: inherit;
+    }
+  }
+
+  &--offset {
+    background-color: rgba(nhsuk-colour("grey-5"), 0.5);
+  }
+}
+
+.app-card--compact {
+  @include nhsuk-responsive-margin(3, "bottom");
+
+  .nhsuk-card__heading {
+    @include nhsuk-responsive-margin(2, "bottom");
+  }
+
+  .nhsuk-card__content {
+    @include nhsuk-responsive-padding(4);
+  }
+}
+
+// Align counts across cards
+.nhsuk-card:has(> .nhsuk-card__content > .app-card__data) {
+  display: flex;
+
+  .nhsuk-card__heading {
+    line-height: 1.2;
+  }
+
+  .nhsuk-card__content {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+}
+
+.app-card__data {
+  @include nhsuk-font-size(48);
+  @include nhsuk-typography-weight-bold;
+}
+
+.nhsuk-card--feature > .nhsuk-card__content {
+  & > .app-card__heading {
+    &--green {
+      background-color: nhsuk-colour("green");
+    }
+
+    &--grey {
+      background-color: nhsuk-colour("grey-1");
+    }
+
+    &--orange {
+      color: nhsuk-shade(nhsuk-colour("warm-yellow"), 80%);
+      background-color: nhsuk-colour("warm-yellow");
+    }
+
+    &--red {
+      background-color: nhsuk-colour("red");
+    }
+  }
+}
