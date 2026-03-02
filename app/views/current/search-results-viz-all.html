@@ -63,8 +63,8 @@
               </span>
             </li>
 
-            <li class="nhsuk-contents-list__item" href="?cat=wound-care&sub=advanced-dressings">
-              <a class="nhsuk-contents-list__current">
+            <li class="nhsuk-contents-list__item">
+              <a class="nhsuk-contents-list__link" href="search-results-viz-sub-cat">
                 Advanced dressings
                 <span class="nhsuk-u-secondary-text-color nhsuk-u-font-size-14">(52)</span>
               </a>
@@ -213,15 +213,15 @@
 
               <p class="compass-card__label nhsuk-u-margin-top-6">Top innovative products (adopted last 12 months)</p>
               <div class="innovation-row">
-                <span class="nhsuk-body-s" style="flex:1;"><strong>Collagen Pro Matrix</strong> &mdash; 3 trusts &middot; 4 months old</span>
+                <span class="nhsuk-body-s" style="flex:1;"><strong><a href="">Collagen Pro Matrix</a></strong> &mdash; 3 trusts &middot; 4 months old</span>
                 <strong class="nhsuk-tag nhsuk-tag--green">New</strong>
               </div>
               <div class="innovation-row">
-                <span class="nhsuk-body-s" style="flex:1;"><strong>WoundSeal Antimicrobial</strong> &mdash; 1 trust &middot; 8 months old</span>
+                <span class="nhsuk-body-s" style="flex:1;"><strong><a href="">WoundSeal Antimicrobial</a></strong> &mdash; 1 trust &middot; 8 months old</span>
                 <strong class="nhsuk-tag nhsuk-tag--green">New</strong>
               </div>
               <div class="innovation-row">
-                <span class="nhsuk-body-s" style="flex:1;"><strong>Mepilex Border Flex</strong> &mdash; 11 trusts &middot; 2 years old</span>
+                <span class="nhsuk-body-s" style="flex:1;"><strong><a href="product-page-wound-care">HealVac NPWT System</a></strong> &mdash; 11 trusts &middot; 2 years old</span>
                 <strong class="nhsuk-tag nhsuk-tag--blue">Growing</strong>
               </div>
             </div>
@@ -279,7 +279,7 @@
           </fieldset>
         </div>
 
-        {# Supplier Type Filter #}
+        {# Supplier Size Filter #}
         <div class="nhsuk-form-group">
           <fieldset class="nhsuk-fieldset">
             <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--s">
@@ -301,6 +301,48 @@
                 <input class="nhsuk-checkboxes__input" id="supplier-sme" name="[supplier]" type="checkbox" value="sme">
                 <label class="nhsuk-label nhsuk-checkboxes__label" for="supplier-sme">
                   51-250 employees
+                </label>
+              </div>
+              
+            
+            </div>
+
+          </fieldset>
+        </div>
+
+         {# Supplier Maturity Filter #}
+        <div class="nhsuk-form-group">
+          <fieldset class="nhsuk-fieldset">
+            <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--s">
+              Supplier maturity
+            </legend>
+            
+            <div id="supplier-items" class="nhsuk-checkboxes nhsuk-checkboxes--small" data-module="nhsuk-checkboxes" data-nhsuk-checkboxes-init="">
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="supplier-sme" name="[supplier]" type="checkbox" value="sme">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="supplier-sme">
+                  1-2 years old
+                </label>
+              </div>
+              
+            
+            </div>
+             <div id="supplier-items" class="nhsuk-checkboxes nhsuk-checkboxes--small" data-module="nhsuk-checkboxes" data-nhsuk-checkboxes-init="">
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="supplier-sme" name="[supplier]" type="checkbox" value="sme">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="supplier-sme">
+                  3-5 years old
+                </label>
+              </div>
+              
+            
+            </div>
+
+             <div id="supplier-items" class="nhsuk-checkboxes nhsuk-checkboxes--small" data-module="nhsuk-checkboxes" data-nhsuk-checkboxes-init="">
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="supplier-sme" name="[supplier]" type="checkbox" value="sme">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="supplier-sme">
+                  5+ years old
                 </label>
               </div>
               
@@ -333,7 +375,7 @@
             <div class="nhsuk-card nhsuk-card--clickable">
               <div class="nhsuk-card__content">
                 <h4 class="nhsuk-card__heading nhsuk-heading-s">
-                  <a class="nhsuk-card__link" href="product-page?mepilex-border-flex">Mepilex Border Flex</a>
+                     <a class="nhsuk-card__link" href="product-page-wound-care?healvac-npwt-system">HealVac NPWT System</a>
                 </h4>
                 <p class="nhsuk-body-s nhsuk-u-secondary-text-color nhsuk-u-margin-bottom-2">
                   M&ouml;lnlycke Health Care &middot; Advanced dressings &rsaquo; Foam
@@ -368,7 +410,7 @@
             <div class="nhsuk-card nhsuk-card--clickable">
               <div class="nhsuk-card__content">
                 <h4 class="nhsuk-card__heading nhsuk-heading-s">
-                  <a class="nhsuk-card__link" href="product-page?allevyn-life">ALLEVYN Life</a>
+                  <a class="nhsuk-card__link" href="product-page-wound-care?allevyn-life">ALLEVYN Life</a>
                 </h4>
                 <p class="nhsuk-body-s nhsuk-u-secondary-text-color nhsuk-u-margin-bottom-2">
                   Smith+Nephew &middot; Advanced dressings &rsaquo; Foam
@@ -403,7 +445,7 @@
             <div class="nhsuk-card nhsuk-card--clickable">
               <div class="nhsuk-card__content">
                 <h4 class="nhsuk-card__heading nhsuk-heading-s">
-                  <a class="nhsuk-card__link" href="product-page?aquacel-ag">Aquacel Ag+ Extra</a>
+                  <a class="nhsuk-card__link" href="product-page-wound-care?aquacel-ag">Aquacel Ag+ Extra</a>
                 </h4>
                 <p class="nhsuk-body-s nhsuk-u-secondary-text-color nhsuk-u-margin-bottom-2">
                   ConvaTec &middot; Advanced dressings &rsaquo; Hydrofibre
@@ -435,7 +477,7 @@
             <div class="nhsuk-card nhsuk-card--clickable">
               <div class="nhsuk-card__content">
                 <h4 class="nhsuk-card__heading nhsuk-heading-s">
-                  <a class="nhsuk-card__link" href="product-page?collagen-pro-matrix">Collagen Pro Matrix</a>
+                  <a class="nhsuk-card__link" href="product-page-wound-care?collagen-pro-matrix">Collagen Pro Matrix</a>
                 </h4>
                 <p class="nhsuk-body-s nhsuk-u-secondary-text-color nhsuk-u-margin-bottom-2">
                   Advanced Wound Biotech &middot; Advanced dressings &rsaquo; Collagen / tissue regeneration
@@ -472,7 +514,7 @@
             <div class="nhsuk-card nhsuk-card--clickable">
               <div class="nhsuk-card__content">
                 <h4 class="nhsuk-card__heading nhsuk-heading-s">
-                  <a class="nhsuk-card__link" href="product-page?biatain-silicone">Biatain Silicone</a>
+                  <a class="nhsuk-card__link" href="product-page-wound-care?biatain-silicone">Biatain Silicone</a>
                 </h4>
                 <p class="nhsuk-body-s nhsuk-u-secondary-text-color nhsuk-u-margin-bottom-2">
                   Coloplast &middot; Advanced dressings &rsaquo; Foam
