@@ -13,7 +13,43 @@
 {% block content %}
 
 <!-- ============================================ -->
-<!-- MODE 1: KNOWN-ITEM SEEKING                   -->
+<!-- MODE 1: RE-FINDING                           -->
+<!-- ============================================ -->
+
+
+    <!-- When signed in, show recent activity cards -->
+  <h2 class="nhsuk-heading-l">Your activity</h2>
+    <div class="nhsuk-grid-row nhsuk-card-group">
+      <div class="nhsuk-grid-column-one-half nhsuk-card-group__item">
+        <div class="nhsuk-card">
+          <div class="nhsuk-card__content">
+            <h3 class="nhsuk-card__heading nhsuk-heading-s">Your recently viewed items</h3>
+            <ul class="nhsuk-list nhsuk-list--bullet">
+              <li><a href="#">Stryker Mako SmartRobotics</a> — viewed yesterday</li>
+              <li><a href="#">Smith+Nephew PICO 7</a> — viewed 3 days ago</li>
+              <li><a href="#">Medtronic MiniMed 780G</a> — viewed last week</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="nhsuk-grid-column-one-half nhsuk-card-group__item">
+        <div class="nhsuk-card">
+          <div class="nhsuk-card__content">
+            <h3 class="nhsuk-card__heading nhsuk-heading-s">Your saved items</h3>
+            <ul class="nhsuk-list nhsuk-list--bullet">
+              <li><a href="#">SmartPump 300 Infusion System</a></li>
+              <li><a href="#">Collagen Pro Matrix</a></li>
+            </ul>
+            <p class="nhsuk-body-s nhsuk-u-margin-top-3"><a href="#">View all saved items</a></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+<hr class="nhsuk-section-break nhsuk-section-break--l nhsuk-section-break--visible">
+
+<!-- ============================================ -->
+<!-- MODE 2: KNOWN-ITEM SEEKING                   -->
 <!-- Users who know exactly what they're after    -->
 <!-- ============================================ -->
 <div class="nhsuk-grid-row">
@@ -43,8 +79,9 @@
 
 <hr class="nhsuk-section-break nhsuk-section-break--l nhsuk-section-break--visible">
 
+
 <!-- ============================================ -->
-<!-- MODE 2: EXPLORATORY SEEKING                  -->
+<!-- MODE 3: EXPLORATORY SEEKING                  -->
 <!-- Users researching options, may not know      -->
 <!-- exactly what they need                       -->
 <!-- ============================================ -->
@@ -129,7 +166,7 @@
 <hr class="nhsuk-section-break nhsuk-section-break--l nhsuk-section-break--visible">
 
 <!-- ============================================ -->
-<!-- MODE 3: DON'T KNOW WHAT YOU NEED TO KNOW    -->
+<!-- MODE 4: DON'T KNOW WHAT YOU NEED TO KNOW    -->
 <!-- Users who may not know the right questions   -->
 <!-- or what evidence matters                     -->
 <!-- ============================================ -->
@@ -145,7 +182,7 @@
           <a class="nhsuk-card__link" href="#">Value-based procurement explained</a>
         </h3>
         <p class="nhsuk-card__description">
-          How to move beyond lowest-price decisions and evaluate products on outcomes, safety, integration and sustainability
+          Move beyond lowest-price decisions and evaluate products on outcomes, safety, integration and sustainability.
         </p>
       </div>
     </div>
@@ -167,7 +204,7 @@
           <a class="nhsuk-card__link" href="#">Questions to ask other trusts</a>
         </h3>
         <p class="nhsuk-card__description">
-          A checklist of questions that procurement leads and clinical engineers find most useful when speaking with peers about their experience
+          Find out what questions procurement leads and clinical engineers use when speaking with peers about their experience.
         </p>
       </div>
     </div>
@@ -186,39 +223,7 @@
     
 
 
-<!-- ============================================ -->
-<!-- MODE 4: RE-FINDING                           -->
-<!-- ============================================ -->
 
-
-    <!-- When signed in, show recent activity cards -->
-  
-    <div class="nhsuk-grid-row nhsuk-card-group">
-      <div class="nhsuk-grid-column-one-half nhsuk-card-group__item">
-        <div class="nhsuk-card">
-          <div class="nhsuk-card__content">
-            <h3 class="nhsuk-card__heading nhsuk-heading-s">Recently viewed</h3>
-            <ul class="nhsuk-list nhsuk-list--bullet">
-              <li><a href="#">Stryker Mako SmartRobotics</a> — viewed yesterday</li>
-              <li><a href="#">Smith+Nephew PICO 7</a> — viewed 3 days ago</li>
-              <li><a href="#">Medtronic MiniMed 780G</a> — viewed last week</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-      <div class="nhsuk-grid-column-one-half nhsuk-card-group__item">
-        <div class="nhsuk-card">
-          <div class="nhsuk-card__content">
-            <h3 class="nhsuk-card__heading nhsuk-heading-s">Saved comparisons</h3>
-            <ul class="nhsuk-list nhsuk-list--bullet">
-              <li><a href="#">Insulin pumps comparison (4 products)</a></li>
-              <li><a href="#">Hip systems shortlist</a></li>
-            </ul>
-            <p class="nhsuk-body-s nhsuk-u-margin-top-3"><a href="#">View all saved items</a></p>
-          </div>
-        </div>
-      </div>
-    </div>
   
 
   </div>
