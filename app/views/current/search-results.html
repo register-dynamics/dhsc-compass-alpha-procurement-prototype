@@ -53,7 +53,7 @@
 
 <div class="nhsuk-grid-row">
   
-  {# Filters Sidebar #}
+    {# Filters Sidebar #}
   <app-auto-submit class="app-grid-column-filters">
       
     <div class="nhsuk-card nhsuk-card--feature app-filters">
@@ -62,120 +62,14 @@
           Filter results
         </h3>
       
-        {# Product Category Filter #}
-        <div class="nhsuk-form-group">
-          <fieldset class="nhsuk-fieldset">
-            <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--s">
-              Product category
-            </legend>
-            
-            <div id="category-items" class="nhsuk-checkboxes nhsuk-checkboxes--small" data-module="nhsuk-checkboxes" data-nhsuk-checkboxes-init="">
-              <div class="nhsuk-checkboxes__item">
-                <input class="nhsuk-checkboxes__input" id="category-infusion" name="[category]" type="checkbox" value="infusion" checked="">
-                <label class="nhsuk-label nhsuk-checkboxes__label" for="category-infusion">
-                  Infusion devices
-                </label>
-              </div>
-              
-              <div class="nhsuk-checkboxes__item">
-                <input class="nhsuk-checkboxes__input" id="category-surgical" name="[category]" type="checkbox" value="surgical">
-                <label class="nhsuk-label nhsuk-checkboxes__label" for="category-surgical">
-                  Surgical instruments
-                </label>
-              </div>
-              
-              <div class="nhsuk-checkboxes__item">
-                <input class="nhsuk-checkboxes__input" id="category-monitoring" name="[category]" type="checkbox" value="monitoring">
-                <label class="nhsuk-label nhsuk-checkboxes__label" for="category-monitoring">
-                  Patient monitoring
-                </label>
-              </div>
-              
-              <div class="nhsuk-checkboxes__item">
-                <input class="nhsuk-checkboxes__input" id="category-diagnostic" name="[category]" type="checkbox" value="diagnostic">
-                <label class="nhsuk-label nhsuk-checkboxes__label" for="category-diagnostic">
-                  Diagnostic equipment
-                </label>
-              </div>
-              
-              <div class="nhsuk-checkboxes__item">
-                <input class="nhsuk-checkboxes__input" id="category-cardiology" name="[category]" type="checkbox" value="cardiology">
-                <label class="nhsuk-label nhsuk-checkboxes__label" for="category-cardiology">
-                  Cardiology devices
-                </label>
-              </div>
-              
-              <div class="nhsuk-checkboxes__item">
-                <input class="nhsuk-checkboxes__input" id="category-respiratory" name="[category]" type="checkbox" value="respiratory">
-                <label class="nhsuk-label nhsuk-checkboxes__label" for="category-respiratory">
-                  Respiratory equipment
-                </label>
-              </div>
-              
-              <div class="nhsuk-checkboxes__item">
-                <input class="nhsuk-checkboxes__input" id="category-imaging" name="[category]" type="checkbox" value="imaging">
-                <label class="nhsuk-label nhsuk-checkboxes__label" for="category-imaging">
-                  Imaging systems
-                </label>
-              </div>
-              
-              <div class="nhsuk-checkboxes__item">
-                <input class="nhsuk-checkboxes__input" id="category-laboratory" name="[category]" type="checkbox" value="laboratory">
-                <label class="nhsuk-label nhsuk-checkboxes__label" for="category-laboratory">
-                  Laboratory equipment
-                </label>
-              </div>
-            </div>
-          </fieldset>
-        </div>
+      
 
-        {# NEW: Trust Similarity Filter #}
-        <div class="nhsuk-form-group">
-          <fieldset class="nhsuk-fieldset">
-            <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--s">
-              Evaluated by trusts like mine
-            </legend>
-            <div class="nhsuk-hint" id="trust-hint">
-              Show products evaluated by trusts similar in size, type, or region
-            </div>
-            
-            <div id="trust-items" class="nhsuk-checkboxes nhsuk-checkboxes--small" data-module="nhsuk-checkboxes" data-nhsuk-checkboxes-init="">
-              <div class="nhsuk-checkboxes__item">
-                <input class="nhsuk-checkboxes__input" id="trust-similar" name="[trust]" type="checkbox" value="similar">
-                <label class="nhsuk-label nhsuk-checkboxes__label" for="trust-similar">
-                  Similar size to my trust
-                </label>
-              </div>
-              
-              <div class="nhsuk-checkboxes__item">
-                <input class="nhsuk-checkboxes__input" id="trust-teaching" name="[trust]" type="checkbox" value="teaching">
-                <label class="nhsuk-label nhsuk-checkboxes__label" for="trust-teaching">
-                  Teaching hospitals
-                </label>
-              </div>
-              
-              <div class="nhsuk-checkboxes__item">
-                <input class="nhsuk-checkboxes__input" id="trust-region" name="[trust]" type="checkbox" value="region">
-                <label class="nhsuk-label nhsuk-checkboxes__label" for="trust-region">
-                  In my region
-                </label>
-              </div>
-
-              <div class="nhsuk-checkboxes__item">
-                <input class="nhsuk-checkboxes__input" id="trust-specialist" name="[trust]" type="checkbox" value="specialist">
-                <label class="nhsuk-label nhsuk-checkboxes__label" for="trust-specialist">
-                  Specialist trusts
-                </label>
-              </div>
-            </div>
-          </fieldset>
-        </div>
 
         {# Clinical Trial Status Filter #}
         <div class="nhsuk-form-group">
           <fieldset class="nhsuk-fieldset">
             <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--s">
-              Clinical trial status
+              Procured in other trusts
             </legend>
             
             <div id="trial-items" class="nhsuk-radios nhsuk-radios--small" data-module="nhsuk-radios" data-nhsuk-radios-init="">
@@ -186,45 +80,82 @@
                 </label>
               </div>
               
-              <div class="nhsuk-radios__item">
-                <input class="nhsuk-radios__input" id="trial-yes" name="[trial]" type="radio" value="yes">
-                <label class="nhsuk-label nhsuk-radios__label" for="trial-yes">
-                  Clinical trial available
-                </label>
-              </div>
               
-              <div class="nhsuk-radios__item">
-                <input class="nhsuk-radios__input" id="trial-no" name="[trial]" type="radio" value="no">
-                <label class="nhsuk-label nhsuk-radios__label" for="trial-no">
-                  No clinical trial
-                </label>
-              </div>
+            
             </div>
           </fieldset>
         </div>
 
-        {# Supplier Type Filter #}
+        {# Supplier Size Filter #}
         <div class="nhsuk-form-group">
           <fieldset class="nhsuk-fieldset">
             <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--s">
-              Supplier type
+              Supplier size
             </legend>
             
             <div id="supplier-items" class="nhsuk-checkboxes nhsuk-checkboxes--small" data-module="nhsuk-checkboxes" data-nhsuk-checkboxes-init="">
               <div class="nhsuk-checkboxes__item">
                 <input class="nhsuk-checkboxes__input" id="supplier-sme" name="[supplier]" type="checkbox" value="sme">
                 <label class="nhsuk-label nhsuk-checkboxes__label" for="supplier-sme">
-                  SME
+                  1-50 employees
                 </label>
               </div>
               
+            
+            </div>
+             <div id="supplier-items" class="nhsuk-checkboxes nhsuk-checkboxes--small" data-module="nhsuk-checkboxes" data-nhsuk-checkboxes-init="">
               <div class="nhsuk-checkboxes__item">
-                <input class="nhsuk-checkboxes__input" id="supplier-uk" name="[supplier]" type="checkbox" value="uk-made">
-                <label class="nhsuk-label nhsuk-checkboxes__label" for="supplier-uk">
-                  UK manufactured
+                <input class="nhsuk-checkboxes__input" id="supplier-sme" name="[supplier]" type="checkbox" value="sme">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="supplier-sme">
+                  51-250 employees
                 </label>
               </div>
+              
+            
             </div>
+
+          </fieldset>
+        </div>
+
+         {# Supplier Maturity Filter #}
+        <div class="nhsuk-form-group">
+          <fieldset class="nhsuk-fieldset">
+            <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--s">
+              Supplier maturity
+            </legend>
+            
+            <div id="supplier-items" class="nhsuk-checkboxes nhsuk-checkboxes--small" data-module="nhsuk-checkboxes" data-nhsuk-checkboxes-init="">
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="supplier-sme" name="[supplier]" type="checkbox" value="sme">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="supplier-sme">
+                  1-2 years old
+                </label>
+              </div>
+              
+            
+            </div>
+             <div id="supplier-items" class="nhsuk-checkboxes nhsuk-checkboxes--small" data-module="nhsuk-checkboxes" data-nhsuk-checkboxes-init="">
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="supplier-sme" name="[supplier]" type="checkbox" value="sme">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="supplier-sme">
+                  3-5 years old
+                </label>
+              </div>
+              
+            
+            </div>
+
+             <div id="supplier-items" class="nhsuk-checkboxes nhsuk-checkboxes--small" data-module="nhsuk-checkboxes" data-nhsuk-checkboxes-init="">
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="supplier-sme" name="[supplier]" type="checkbox" value="sme">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="supplier-sme">
+                  5+ years old
+                </label>
+              </div>
+              
+            
+            </div>
+
           </fieldset>
         </div>
         
