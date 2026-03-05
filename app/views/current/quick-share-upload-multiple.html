@@ -33,11 +33,11 @@
         <fieldset class="nhsuk-fieldset">
           <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--l">
             <h1 class="nhsuk-fieldset__heading">
-              Upload your document
+              Upload your documents
             </h1>
           </legend>
 
-          <p>Then, give us a few details to help other trusts find it.</p>
+          <p>Then, give us a few details to help other trusts find them.</p>
           
           <div class="nhsuk-hint">
             Formats accepted: PDF, Word, Excel
@@ -45,7 +45,7 @@
 
           <div class="nhsuk-form-group">
             <label class="nhsuk-label" for="file-upload">
-              Choose files to upload
+              Choose file to upload
             </label>
             <div class="nhsuk-hint" id="file-upload-hint">
               Maximum 10MB per file
@@ -63,7 +63,7 @@
       <!-- Alternative: Link to resource -->
       <div class="nhsuk-u-margin-top-4 nhsuk-u-margin-bottom-4">
         <p class="nhsuk-body-s nhsuk-u-secondary-text-color" style="text-align: center;">
-          <strong>OR, alternatively</strong>
+          <strong>OR</strong>
         </p>
       </div>
 
@@ -90,7 +90,7 @@
         <fieldset class="nhsuk-fieldset">
           <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--m">
             <h2 class="nhsuk-fieldset__heading">
-              How many products are evaluated in this document?
+              How many products are evaluated in this upload?
             </h2>
           </legend>
           <div class="nhsuk-hint">
@@ -144,7 +144,7 @@
     <h3 class="nhsuk-heading-s nhsuk-u-margin-bottom-3">Department 1</h3>
 
     {{ input({
-      label: { text: "Your trust", classes: "nhsuk-label--s" },
+      label: { text: "Trust name", classes: "nhsuk-label--s" },
       id: "trust-name-1",
       name: "trust-name[1]",
       value: "Mid England NHS Foundation Trust",
@@ -183,10 +183,10 @@
     }) }}
 
     {{ input({
-      label: { text: "Lead clinician or contact person (optional)", classes: "nhsuk-label--s" },
+      label: { text: "Evaluation lead (optional)", classes: "nhsuk-label--s" },
       id: "lead-clinician-1",
       name: "lead-clinician[1]",
-      hint: { text: "Name of the clinician who led or supervised this evaluation" }
+      hint: { text: "Name of the person who led or supervised this evaluation" }
     }) }}
 
   </div>
@@ -201,7 +201,7 @@
     </div>
 
     {{ input({
-      label: { text: "Your trust", classes: "nhsuk-label--s" },
+      label: { text: "Trust name", classes: "nhsuk-label--s" },
       id: "trust-name-2",
       name: "trust-name[2]",
       value: "Mid England NHS Foundation Trust",
@@ -240,10 +240,10 @@
     }) }}
 
     {{ input({
-      label: { text: "Lead clinician or contact person (optional)", classes: "nhsuk-label--s" },
+      label: { text: "Evaluation lead (optional)", classes: "nhsuk-label--s" },
       id: "lead-clinician-2",
       name: "lead-clinician[2]",
-      hint: { text: "Name of the clinician who led or supervised this evaluation" }
+      hint: { text: "Name of the person who led or supervised this evaluation" }
     }) }}
 
   </div>
@@ -371,7 +371,7 @@
                         </div>
                         <div class="nhsuk-radios__item">
                           <input class="nhsuk-radios__input" id="not-procured-reason-1b" name="not-procured-reason-1" type="radio" value="under-review">
-                          <label class="nhsuk-label nhsuk-radios__label" for="not-procured-reason-1b">Still under review – decision not made yet</label>
+                          <label class="nhsuk-label nhsuk-radios__label" for="not-procured-reason-1b">We're still reviewing it and haven't decided</label>
                         </div>
                         <div class="nhsuk-radios__item">
                           <input class="nhsuk-radios__input" id="not-procured-reason-1c" name="not-procured-reason-1" type="radio" value="stopped-using">
@@ -379,11 +379,11 @@
                         </div>
                         <div class="nhsuk-radios__item">
                           <input class="nhsuk-radios__input" id="not-procured-reason-1d" name="not-procured-reason-1" type="radio" value="budget">
-                          <label class="nhsuk-label nhsuk-radios__label" for="not-procured-reason-1d">Budget or funding constraints</label>
+                          <label class="nhsuk-label nhsuk-radios__label" for="not-procured-reason-1d">We have budget or funding constraints</label>
                         </div>
                         <div class="nhsuk-radios__item">
                           <input class="nhsuk-radios__input" id="not-procured-reason-1e" name="not-procured-reason-1" type="radio" value="other">
-                          <label class="nhsuk-label nhsuk-radios__label" for="not-procured-reason-1e">Other reason</label>
+                          <label class="nhsuk-label nhsuk-radios__label" for="not-procured-reason-1e">Another reason</label>
                         </div>
                       </div>
                     </fieldset>
@@ -402,7 +402,7 @@
               classes: "nhsuk-label--s"
             },
             hint: {
-              text: "A one-sentence summary of your key finding for this product"
+              text: "A one-sentence summary of your key findings for this product"
             },
             rows: "2"
           }) }}
@@ -520,28 +520,27 @@
                   <div class="nhsuk-form-group nhsuk-u-margin-bottom-2">
                     <fieldset class="nhsuk-fieldset">
                       <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--s">Why was this product not procured?</legend>
-                      <div class="nhsuk-radios nhsuk-radios--small">
+                       <div class="nhsuk-radios nhsuk-radios--small">
                         <div class="nhsuk-radios__item">
-                          <input class="nhsuk-radios__input" id="not-procured-reason-2a" name="not-procured-reason-2" type="radio" value="decided-against">
-                          <label class="nhsuk-label nhsuk-radios__label" for="not-procured-reason-2a">We decided against it after evaluation</label>
+                          <input class="nhsuk-radios__input" id="not-procured-reason-1a" name="not-procured-reason-1" type="radio" value="decided-against">
+                          <label class="nhsuk-label nhsuk-radios__label" for="not-procured-reason-1a">We decided against it after evaluation</label>
                         </div>
                         <div class="nhsuk-radios__item">
-                          <input class="nhsuk-radios__input" id="not-procured-reason-2b" name="not-procured-reason-2" type="radio" value="under-review">
-                          <label class="nhsuk-label nhsuk-radios__label" for="not-procured-reason-2b">Still under review – decision not made yet</label>
+                          <input class="nhsuk-radios__input" id="not-procured-reason-1b" name="not-procured-reason-1" type="radio" value="under-review">
+                          <label class="nhsuk-label nhsuk-radios__label" for="not-procured-reason-1b">We're still reviewing it and haven't decided</label>
                         </div>
                         <div class="nhsuk-radios__item">
-                          <input class="nhsuk-radios__input" id="not-procured-reason-2c" name="not-procured-reason-2" type="radio" value="stopped-using">
-                          <label class="nhsuk-label nhsuk-radios__label" for="not-procured-reason-2c">We stopped using it after a trial or pilot</label>
+                          <input class="nhsuk-radios__input" id="not-procured-reason-1c" name="not-procured-reason-1" type="radio" value="stopped-using">
+                          <label class="nhsuk-label nhsuk-radios__label" for="not-procured-reason-1c">We stopped using it after a trial or pilot</label>
                         </div>
                         <div class="nhsuk-radios__item">
-                          <input class="nhsuk-radios__input" id="not-procured-reason-2d" name="not-procured-reason-2" type="radio" value="budget">
-                          <label class="nhsuk-label nhsuk-radios__label" for="not-procured-reason-2d">Budget or funding constraints</label>
+                          <input class="nhsuk-radios__input" id="not-procured-reason-1d" name="not-procured-reason-1" type="radio" value="budget">
+                          <label class="nhsuk-label nhsuk-radios__label" for="not-procured-reason-1d">We have budget or funding constraints</label>
                         </div>
                         <div class="nhsuk-radios__item">
-                          <input class="nhsuk-radios__input" id="not-procured-reason-2e" name="not-procured-reason-2" type="radio" value="other">
-                          <label class="nhsuk-label nhsuk-radios__label" for="not-procured-reason-2e">Other reason</label>
+                          <input class="nhsuk-radios__input" id="not-procured-reason-1e" name="not-procured-reason-1" type="radio" value="other">
+                          <label class="nhsuk-label nhsuk-radios__label" for="not-procured-reason-1e">Another reason</label>
                         </div>
-                      </div>
                     </fieldset>
                   </div>
                 </div>
@@ -557,7 +556,7 @@
               classes: "nhsuk-label--s"
             },
             hint: {
-              text: "A one-sentence summary of your key finding for this product"
+              text: "A one-sentence summary of your key findings for this product"
             },
             rows: "2"
           }) }}
@@ -675,28 +674,27 @@
                   <div class="nhsuk-form-group nhsuk-u-margin-bottom-2">
                     <fieldset class="nhsuk-fieldset">
                       <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--s">Why was this product not procured?</legend>
-                      <div class="nhsuk-radios nhsuk-radios--small">
+                        <div class="nhsuk-radios nhsuk-radios--small">
                         <div class="nhsuk-radios__item">
-                          <input class="nhsuk-radios__input" id="not-procured-reason-3a" name="not-procured-reason-3" type="radio" value="decided-against">
-                          <label class="nhsuk-label nhsuk-radios__label" for="not-procured-reason-3a">We decided against it after evaluation</label>
+                          <input class="nhsuk-radios__input" id="not-procured-reason-1a" name="not-procured-reason-1" type="radio" value="decided-against">
+                          <label class="nhsuk-label nhsuk-radios__label" for="not-procured-reason-1a">We decided against it after evaluation</label>
                         </div>
                         <div class="nhsuk-radios__item">
-                          <input class="nhsuk-radios__input" id="not-procured-reason-3b" name="not-procured-reason-3" type="radio" value="under-review">
-                          <label class="nhsuk-label nhsuk-radios__label" for="not-procured-reason-3b">Still under review – decision not made yet</label>
+                          <input class="nhsuk-radios__input" id="not-procured-reason-1b" name="not-procured-reason-1" type="radio" value="under-review">
+                          <label class="nhsuk-label nhsuk-radios__label" for="not-procured-reason-1b">We're still reviewing it and haven't decided</label>
                         </div>
                         <div class="nhsuk-radios__item">
-                          <input class="nhsuk-radios__input" id="not-procured-reason-3c" name="not-procured-reason-3" type="radio" value="stopped-using">
-                          <label class="nhsuk-label nhsuk-radios__label" for="not-procured-reason-3c">We stopped using it after a trial or pilot</label>
+                          <input class="nhsuk-radios__input" id="not-procured-reason-1c" name="not-procured-reason-1" type="radio" value="stopped-using">
+                          <label class="nhsuk-label nhsuk-radios__label" for="not-procured-reason-1c">We stopped using it after a trial or pilot</label>
                         </div>
                         <div class="nhsuk-radios__item">
-                          <input class="nhsuk-radios__input" id="not-procured-reason-3d" name="not-procured-reason-3" type="radio" value="budget">
-                          <label class="nhsuk-label nhsuk-radios__label" for="not-procured-reason-3d">Budget or funding constraints</label>
+                          <input class="nhsuk-radios__input" id="not-procured-reason-1d" name="not-procured-reason-1" type="radio" value="budget">
+                          <label class="nhsuk-label nhsuk-radios__label" for="not-procured-reason-1d">We have budget or funding constraints</label>
                         </div>
                         <div class="nhsuk-radios__item">
-                          <input class="nhsuk-radios__input" id="not-procured-reason-3e" name="not-procured-reason-3" type="radio" value="other">
-                          <label class="nhsuk-label nhsuk-radios__label" for="not-procured-reason-3e">Other reason</label>
+                          <input class="nhsuk-radios__input" id="not-procured-reason-1e" name="not-procured-reason-1" type="radio" value="other">
+                          <label class="nhsuk-label nhsuk-radios__label" for="not-procured-reason-1e">Another reason</label>
                         </div>
-                      </div>
                     </fieldset>
                   </div>
                 </div>
@@ -712,7 +710,7 @@
               classes: "nhsuk-label--s"
             },
             hint: {
-              text: "A one-sentence summary of your key finding for this product"
+              text: "A one-sentence summary of your key findings for this product"
             },
             rows: "2"
           }) }}
