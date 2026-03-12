@@ -13,11 +13,11 @@
 {% block content %}
 
 <!-- ============================================ -->
-<!-- COMMON SEARCHES + YOUR ACTIVITY (side by side) -->
+<!-- COMMON SEARCHES + YOUR ACTIVITY  -->
 <!-- ============================================ -->
 <div class="nhsuk-grid-row">
 
-  <!-- Common searches: left half -->
+  <!-- Common searches -->
   <div class="nhsuk-grid-column-one-half">
     <h2 class="nhsuk-heading-l">Common searches</h2>
     <p class="nhsuk-body">Recently searched across NHS trusts similar to yours</p>
@@ -30,27 +30,33 @@
     </ul>
   </div>
 
-  <!-- Your activity: right half -->
+  <!-- Your activity -->
   <div class="nhsuk-grid-column-one-half">
     <h2 class="nhsuk-heading-l">Your activity</h2>
-    <div class="nhsuk-card">
-      <div class="nhsuk-card__content">
-        <h3 class="nhsuk-card__heading nhsuk-heading-s">Your recently viewed items</h3>
-        <ul class="nhsuk-list nhsuk-list--bullet">
-          <li><a href="#">Stryker Mako SmartRobotics</a> — viewed yesterday</li>
-          <li><a href="#">Smith+Nephew PICO 7</a> — viewed 3 days ago</li>
-          <li><a href="#">Medtronic MiniMed 780G</a> — viewed last week</li>
-        </ul>
+    <div class="nhsuk-card-group">
+      <div class="nhsuk-card-group__item">
+        <div class="nhsuk-card">
+          <div class="nhsuk-card__content">
+            <h3 class="nhsuk-card__heading nhsuk-heading-s">Your recently viewed items</h3>
+            <ul class="nhsuk-list nhsuk-list--bullet">
+              <li><a href="#">Stryker Mako SmartRobotics</a> — viewed yesterday</li>
+              <li><a href="#">Smith+Nephew PICO 7</a> — viewed 3 days ago</li>
+              <li><a href="#">Medtronic MiniMed 780G</a> — viewed last week</li>
+            </ul>
+          </div>
+        </div>
       </div>
-    </div>
-    <div class="nhsuk-card">
-      <div class="nhsuk-card__content">
-        <h3 class="nhsuk-card__heading nhsuk-heading-s">Your saved items</h3>
-        <ul class="nhsuk-list nhsuk-list--bullet">
-          <li><a href="#">SmartPump 300 Infusion System</a></li>
-          <li><a href="#">Collagen Pro Matrix</a></li>
-        </ul>
-        <p class="nhsuk-body-s nhsuk-u-margin-top-3"><a href="#">View all saved items</a></p>
+      <div class="nhsuk-card-group__item">
+        <div class="nhsuk-card">
+          <div class="nhsuk-card__content">
+            <h3 class="nhsuk-card__heading nhsuk-heading-s">Your saved items</h3>
+            <ul class="nhsuk-list nhsuk-list--bullet">
+              <li><a href="#">SmartPump 300 Infusion System</a></li>
+              <li><a href="#">Collagen Pro Matrix</a></li>
+            </ul>
+            <p class="nhsuk-body-s nhsuk-u-margin-top-3"><a href="#">View all saved items</a></p>
+          </div>
+        </div>
       </div>
     </div>
   </div>
