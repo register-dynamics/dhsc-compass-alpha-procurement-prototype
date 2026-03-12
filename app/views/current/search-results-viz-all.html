@@ -134,52 +134,58 @@
               <h3 class="nhsuk-heading-s nhsuk-u-margin-bottom-1">Supplier market share</h3>
               <p class="nhsuk-body-s nhsuk-u-secondary-text-color nhsuk-u-margin-bottom-4">Advanced dressings only &middot; 52 products</p>
 
-              <div class="app-pie-wrap" style="display:flex;flex-direction:row;align-items:center;gap:20px;">
-                <svg class="app-pie-svg" width="140" height="140" viewBox="0 0 140 140" aria-hidden="true" style="flex-shrink:0;">
-                  <path d="M70 70 L70 10 A60 60 0 0 1 118 103 Z" fill="#005eb8"/>
-                  <path d="M70 70 L118 103 A60 60 0 0 1 42 127 Z" fill="#007f3b"/>
-                  <path d="M70 70 L42 127 A60 60 0 0 1 14 56 Z" fill="#ffb81c"/>
-                  <path d="M70 70 L14 56 A60 60 0 0 1 70 10 Z" fill="#aeb7bd"/>
-                  <circle cx="70" cy="70" r="32" fill="#fff"/>
-                  <text x="70" y="66" text-anchor="middle" font-size="18" font-weight="700" fill="#212b32">52</text>
-                  <text x="70" y="80" text-anchor="middle" font-size="10" fill="#000000">products</text>
-                </svg>
+            <!-- REPLACE the entire app-pie-wrap div in search-results-viz-all.html with this -->
 
-                <div class="app-supplier-legend" style="flex:1;min-width:0;">
-                  <div class="app-supplier-legend__item">
-                    <div class="app-supplier-legend__swatch" style="background:#005eb8;"></div>
-                    <div class="app-supplier-legend__body">
-                      <p class="nhsuk-body-s nhsuk-u-margin-bottom-0"><strong>Smith+Nephew</strong></p>
-                      <p class="nhsuk-body-s nhsuk-u-secondary-text-color nhsuk-u-margin-bottom-1">38% &middot; 20 products</p>
-                      <div class="app-supplier-bar-track"><div class="app-supplier-bar-fill" style="width:100%;background:#005eb8;"></div></div>
-                    </div>
-                  </div>
-                  <div class="app-supplier-legend__item">
-                    <div class="app-supplier-legend__swatch" style="background:#007f3b;"></div>
-                    <div class="app-supplier-legend__body">
-                      <p class="nhsuk-body-s nhsuk-u-margin-bottom-0"><strong>M&ouml;lnlycke Health Care</strong></p>
-                      <p class="nhsuk-body-s nhsuk-u-secondary-text-color nhsuk-u-margin-bottom-1">29% &middot; 15 products</p>
-                      <div class="app-supplier-bar-track"><div class="app-supplier-bar-fill" style="width:76%;background:#007f3b;"></div></div>
-                    </div>
-                  </div>
-                  <div class="app-supplier-legend__item">
-                    <div class="app-supplier-legend__swatch" style="background:#ffb81c;"></div>
-                    <div class="app-supplier-legend__body">
-                      <p class="nhsuk-body-s nhsuk-u-margin-bottom-0"><strong>ConvaTec</strong></p>
-                      <p class="nhsuk-body-s nhsuk-u-secondary-text-color nhsuk-u-margin-bottom-1">21% &middot; 11 products</p>
-                      <div class="app-supplier-bar-track"><div class="app-supplier-bar-fill" style="width:55%;background:#ffb81c;"></div></div>
-                    </div>
-                  </div>
-                  <div class="app-supplier-legend__item">
-                    <div class="app-supplier-legend__swatch" style="background:#aeb7bd;"></div>
-                    <div class="app-supplier-legend__body">
-                      <p class="nhsuk-body-s nhsuk-u-margin-bottom-0"><strong>Others</strong></p>
-                      <p class="nhsuk-body-s nhsuk-u-secondary-text-color nhsuk-u-margin-bottom-1">12% &middot; 6 products</p>
-                      <div class="app-supplier-bar-track"><div class="app-supplier-bar-fill" style="width:32%;background:#aeb7bd;"></div></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+<div class="app-pie-wrap" style="display:flex;flex-direction:row;align-items:center;gap:12px;">
+
+  <!-- Chart: exactly 50% of the card width -->
+  <svg class="app-pie-svg" viewBox="0 0 140 140" aria-hidden="true" style="flex:0 0 50%;max-width:50%;height:auto;">
+    <path d="M70 70 L70 10 A60 60 0 0 1 118 103 Z" fill="#005eb8"/>
+    <path d="M70 70 L118 103 A60 60 0 0 1 42 127 Z" fill="#007f3b"/>
+    <path d="M70 70 L42 127 A60 60 0 0 1 14 56 Z" fill="#ffb81c"/>
+    <path d="M70 70 L14 56 A60 60 0 0 1 70 10 Z" fill="#aeb7bd"/>
+    <circle cx="70" cy="70" r="32" fill="#fff"/>
+    <text x="70" y="66" text-anchor="middle" font-size="18" font-weight="700" fill="#212b32">52</text>
+    <text x="70" y="80" text-anchor="middle" font-size="10" fill="#000000">products</text>
+  </svg>
+
+  <!-- Legend: remaining 50% -->
+  <div class="app-supplier-legend" style="flex:0 0 50%;min-width:0;">
+    <div class="app-supplier-legend__item">
+      <div class="app-supplier-legend__swatch" style="background:#005eb8;"></div>
+      <div class="app-supplier-legend__body">
+        <p class="nhsuk-body-s nhsuk-u-margin-bottom-0"><strong>Smith and Nephew</strong></p>
+        <p class="nhsuk-body-s nhsuk-u-secondary-text-color nhsuk-u-margin-bottom-1">38% &middot; 20 products</p>
+        <div class="app-supplier-bar-track"><div class="app-supplier-bar-fill" style="width:100%;background:#005eb8;"></div></div>
+      </div>
+    </div>
+    <div class="app-supplier-legend__item">
+      <div class="app-supplier-legend__swatch" style="background:#007f3b;"></div>
+      <div class="app-supplier-legend__body">
+        <p class="nhsuk-body-s nhsuk-u-margin-bottom-0"><strong>M&ouml;lnlycke Health Care</strong></p>
+        <p class="nhsuk-body-s nhsuk-u-secondary-text-color nhsuk-u-margin-bottom-1">29% &middot; 15 products</p>
+        <div class="app-supplier-bar-track"><div class="app-supplier-bar-fill" style="width:76%;background:#007f3b;"></div></div>
+      </div>
+    </div>
+    <div class="app-supplier-legend__item">
+      <div class="app-supplier-legend__swatch" style="background:#ffb81c;"></div>
+      <div class="app-supplier-legend__body">
+        <p class="nhsuk-body-s nhsuk-u-margin-bottom-0"><strong>ConvaTec</strong></p>
+        <p class="nhsuk-body-s nhsuk-u-secondary-text-color nhsuk-u-margin-bottom-1">21% &middot; 11 products</p>
+        <div class="app-supplier-bar-track"><div class="app-supplier-bar-fill" style="width:55%;background:#ffb81c;"></div></div>
+      </div>
+    </div>
+    <div class="app-supplier-legend__item">
+      <div class="app-supplier-legend__swatch" style="background:#aeb7bd;"></div>
+      <div class="app-supplier-legend__body">
+        <p class="nhsuk-body-s nhsuk-u-margin-bottom-0"><strong>Others</strong></p>
+        <p class="nhsuk-body-s nhsuk-u-secondary-text-color nhsuk-u-margin-bottom-1">12% &middot; 6 products</p>
+        <div class="app-supplier-bar-track"><div class="app-supplier-bar-fill" style="width:32%;background:#aeb7bd;"></div></div>
+      </div>
+    </div>
+  </div>
+
+</div>
 
             </div>
           </div>
