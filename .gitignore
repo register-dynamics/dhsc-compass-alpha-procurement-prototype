@@ -68,3 +68,6 @@ coverage
 
 # ESlint cache
 .cache
+
+# Sensitive data
+*.db
