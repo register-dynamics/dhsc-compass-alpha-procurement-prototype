@@ -98,4 +98,27 @@ router.get(/search-/, (req, res, next) => {
   next()
 })
 
+const individualQuery = db.prepare("select MAKE, MODEL, MODEL_ID, MANUFACTURER, CATEGORY, COUNTRY from search where MAKE_ID = ? and MODEL_ID = ? and DEVICE_ID = ?")
+router.get(/product-page/, (req, res, next) => {
+  const result = individualQuery.get(parseInt(req.query.make), parseInt(req.query.model), parseInt(req.query.device))
+  const random = randomEvidence(result.MODEL_ID)
+
+  res.locals.searchTerm = req.query.q
+  res.locals.product = {
+    make: result.MAKE,
+    model: result.MODEL,
+    model_id: result.MODEL_ID,
+    manufacturer: result.MANUFACTURER,
+    category: result.CATEGORY,
+    country: result.COUNTRY,
+    trusts: random.trusts,
+    documents: random.documents,
+    document_types: Array.from(new Set(random.documents)).toSorted(),
+    procured: random.procured,
+    under_review: random.underReview,
+    excluded: random.excluded
+  }
+  next()
+})
+
 module.exports = router

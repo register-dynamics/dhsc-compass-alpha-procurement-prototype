@@ -14,12 +14,12 @@
       text: "Home"
     },
     {
-      href: "search",
+      href: "search-results?q=" + (searchTerm or ""),
       text: "Search"
     }
   ],
   href: "#",
-  text: "SmartPump 300 Infusion System"
+  text: product.make + " – " + product.model
 }) }}
 {% endblock %}
 
@@ -27,18 +27,18 @@
 
 <div class="nhsuk-grid-row">
   <div class="nhsuk-grid-column-two-thirds">
-    
+
     {# Product Header #}
     <h1 class="nhsuk-heading-xl nhsuk-u-margin-bottom-3">
-      SmartPump 300 Infusion System
+      {{ product.make }} – {{ product.model }}
     </h1>
-    
+
     <p class="nhsuk-body-l nhsuk-u-secondary-text-color">
-      MedTech Innovations Ltd
+      {{ product.manufacturer }}
     </p>
 
     <div class="nhsuk-card nhsuk-u-margin-bottom-6">
-    <img src="/images/smartpump-300.png" 
+    <img src="/images/smartpump-300.png"
          alt="SmartPump 300 Infusion System"
          class="product-image" />
   </div>
@@ -50,12 +50,12 @@
     {
       href: "#supplier",
       text: "Supplier information"
-      
+
     },
     {
       href: "#tech-spec",
       text: "Technical specifications"
-      
+
     },
     {
       href: "#costs",
@@ -70,8 +70,8 @@
       href: "#contact",
       text: "Contact us"
     }
-       
-    
+
+
 
   ]
 }) }}
@@ -82,18 +82,18 @@
         <h3 class="nhsuk-card__heading nhsuk-heading-s">
           Supplier information
         </h3>
-        
+
         <dl class="nhsuk-summary-list nhsuk-summary-list--no-border">
           <div class="nhsuk-summary-list__row">
             <dt class="nhsuk-summary-list__key">
               Company
             </dt>
             <dd class="nhsuk-summary-list__value">
-              MedTech Innovations Ltd
+              {{ product.manufacturer }}
             </dd>
           </div>
 
-        
+
 
           <div class="nhsuk-summary-list__row">
             <dt class="nhsuk-summary-list__key">
@@ -115,7 +115,7 @@
           </div>
         </dl>
 
-      
+
       </div>
     </div>
 
@@ -123,14 +123,21 @@
     <div class="nhsuk-card nhsuk-card--feature nhsuk-u-margin-bottom-6">
       <div class="nhsuk-card__content">
         <h2 class="nhsuk-card__heading nhsuk-heading-m">
-         <strong>12 NHS trusts</strong> have experience with this product
+         <strong>{{ product.trusts.size if product.trusts.size > 0 else "No" }} NHS trust{{ "s" if product.trusts.size !== 1 }}</strong> have experience with this product
         </h2>
         <p class="nhsuk-body">
-          <strong class="nhsuk-tag nhsuk-tag--green">Procured: 9 trusts</strong>
-          <strong class="nhsuk-tag nhsuk-tag--blue">Under review: 2 trusts</strong>
-          <strong class="nhsuk-tag nhsuk-tag--yellow">Not procured: 1 trust</strong>
+          {% if product.procured.size > 0 %}
+            <strong class="nhsuk-tag nhsuk-tag--green">Procured: {{ product.procured.size }} trust{{ "s" if product.procured.size !== 1 }}</strong>
+          {% endif %}
+          {% if product.under_review.size > 0 %}
+            <strong class="nhsuk-tag nhsuk-tag--blue">Under review: {{ product.under_review.size }} trust{{ "s" if product.under_review.size !== 1 }}</strong>
+          {% endif %}
+          {% if product.excluded.size > 0 %}
+            <strong class="nhsuk-tag nhsuk-tag--yellow">Not procured: {{ product.excluded.size }} trust{{ "s" if product.excluded.size !== 1 }}</strong>
+          {% endif %}
         </p>
-        
+
+        {% if product.trusts.size > 0 %}
         <details class="nhsuk-details nhsuk-u-margin-top-3">
           <summary class="nhsuk-details__summary">
             <span class="nhsuk-details__summary-text">
@@ -138,32 +145,36 @@
             </span>
           </summary>
           <div class="nhsuk-details__text">
-            <h3 class="nhsuk-heading-s">Procured (9 trusts)</h3>
+            {% if product.procured.size > 0 %}
+            <h3 class="nhsuk-heading-s">Procured ({{ product.procured.size }} trust{{ "s" if product.procured.size !== 1 }})</h3>
             <ul class="nhsuk-list">
-              <li>Leeds Teaching Hospitals NHS Trust</li>
-              <li>University Hospitals Birmingham NHS Foundation Trust</li>
-              <li>Guy's and St Thomas' NHS Foundation Trust</li>
-              <li>Royal Free London NHS Foundation Trust</li>
-              <li>Manchester University NHS Foundation Trust</li>
-              <li>Cambridge University Hospitals NHS Foundation Trust</li>
-              <li>Oxford University Hospitals NHS Foundation Trust</li>
-              <li>Imperial College Healthcare NHS Trust</li>
-              <li>University College London Hospitals NHS Foundation Trust</li>
+              {% for trust in product.procured %}
+              <li>{{ trust }}</li>
+              {% endfor %}
             </ul>
-            
-            <h3 class="nhsuk-heading-s">Under review (2 trusts)</h3>
+            {% endif %}
+
+            {% if product.under_review.size > 0 %}
+            <h3 class="nhsuk-heading-s">Under review ({{ product.under_review.size }} trust{{ "s" if product.under_review.size !== 1 }})</h3>
             <ul class="nhsuk-list">
-              <li>Sheffield Teaching Hospitals NHS Foundation Trust</li>
-              <li>Newcastle upon Tyne Hospitals NHS Foundation Trust</li>
+              {% for trust in product.under_review %}
+              <li>{{ trust }}</li>
+              {% endfor %}
             </ul>
-            
-            <h3 class="nhsuk-heading-s">Not procured (1 trust)</h3>
+            {% endif %}
+
+            {% if product.excluded.size > 0 %}
+            <h3 class="nhsuk-heading-s">Not procured ({{ product.excluded.size }} trust{{ "s" if product.excluded.size !== 1 }})</h3>
             <ul class="nhsuk-list">
-              <li>Nottingham University Hospitals NHS Trust</li>
+              {% for trust in product.excluded %}
+              <li>{{ trust }}</li>
+              {% endfor %}
             </ul>
+            {% endif %}
           </div>
         </details>
-        
+        {% endif %}
+
         <p class="nhsuk-body nhsuk-u-margin-top-3">
           <strong>3 trusts</strong> have shared contact details for peer discussions
         </p>
@@ -171,10 +182,10 @@
     </div>
 
     {# Product Description TBC #}
-    
+
 
     {# Key Features TBC #}
-    
+
 
     {# NEW: Supplier Performance Section #}
     <div class="nhsuk-u-margin-bottom-6">
@@ -182,9 +193,9 @@
       <p class="nhsuk-body">
         Based on feedback from trusts that have procured this product:
       </p>
-      
+
       <dl class="nhsuk-summary-list">
-        
+
 
         <div class="nhsuk-summary-list__row">
           <dt class="nhsuk-summary-list__key">
@@ -213,7 +224,7 @@
           </dd>
         </div>
 
-      
+
       </dl>
     </div>
 
@@ -226,7 +237,7 @@
     </span>
   </summary>
   <div class="nhsuk-details__text">
-  
+
     <dl class="nhsuk-summary-list">
           <div class="nhsuk-summary-list__row">
             <dt class="nhsuk-summary-list__key">
@@ -300,15 +311,15 @@
             </dd>
           </div>
         </dl>
-    
+
 
   </div>
 </details>
-    
+
 
     {# Clinical Outcomes - Collapsed by default #}
 
-    <!-- Leaving out for MVP 
+    <!-- Leaving out for MVP
 
     <details class="nhsuk-details nhsuk-expander">
   <summary class="nhsuk-details__summary">
@@ -338,7 +349,7 @@
             </dd>
           </div>
 
-          <div class="nhsuk-summary-list__row"> 
+          <div class="nhsuk-summary-list__row">
             <dt class="nhsuk-summary-list__key">
               Clinical time savings
             </dt>
@@ -378,13 +389,13 @@
           <strong>Published:</strong> British Medical Journal, March 2024<br>
           <strong>DOI:</strong> 10.1136/bmj.2024.0123456
         </p>
-    
+
 
   </div>
 </details>
 
 -->
-    
+
 
     {# Cost Analysis - Collapsed by default #}
 
@@ -404,8 +415,10 @@
               £8,500 - £12,000 (depending on configuration and volume)
             </dd>
           </div></dl>
-<p class="nhsuk-body">
-        Based on 3 business cases from trusts that have procured this product:
+        {% set business_cases = product.documents | select("equalto", "Business cases") | length %}
+        {% if business_cases > 0 %}
+      <p class="nhsuk-body">
+        Based on {{ business_cases }} business cases from trusts that have procured this product:
       </p>
       <dl class="nhsuk-summary-list">
           <div class="nhsuk-summary-list__row">
@@ -453,26 +466,26 @@
             </dd>
           </div>
         </dl>
-   
-    
+        {% endif %}
+
 
   </div>
 </details>
 
 
-  
+
 
   </div>
 
   {# Sidebar #}
   <div class="nhsuk-grid-column-one-third">
-    
- 
+
+
 
     {# Quick Links #}
-    
 
-  
+
+
 
   </div>
 </div>
@@ -489,18 +502,18 @@
 
 <div class="nhsuk-grid-row">
   <div class="nhsuk-grid-column-two-thirds">
-    
+
     {# Trust Evaluation 1 - Barts Health NHS Trust (Business case) #}
     <div class="nhsuk-card">
       <div class="nhsuk-card__content">
         <div class="nhsuk-u-margin-bottom-3">
           <strong class="nhsuk-tag nhsuk-tag--green">Procured</strong>
         </div>
-        
+
         <h3 class="nhsuk-card__heading nhsuk-heading-m">
           Barts Health NHS Trust
         </h3>
-        
+
         <dl class="nhsuk-summary-list nhsuk-summary-list--no-border">
           <div class="nhsuk-summary-list__row">
             <dt class="nhsuk-summary-list__key">
@@ -510,7 +523,7 @@
               Business case
             </dd>
           </div>
-          
+
           <div class="nhsuk-summary-list__row">
             <dt class="nhsuk-summary-list__key">
               Document period
@@ -519,7 +532,7 @@
               January 2023
             </dd>
           </div>
-          
+
           <div class="nhsuk-summary-list__row">
             <dt class="nhsuk-summary-list__key">
               Ward/Department
@@ -537,17 +550,17 @@
         {# Contact information integrated at bottom #}
         <div class="nhsuk-u-margin-top-6 nhsuk-u-padding-top-4" style="border-top: 1px solid #d8dde0;">
           <h4 class="nhsuk-heading-s">Contact for peer discussion</h4>
-          
+
           <p class="nhsuk-body">
             <strong>Dr Tess Sawyer</strong><br>
             Consultant, Nephrology
           </p>
-          
+
           <p class="nhsuk-body">
             <a href="mailto:tess.sawyer@nhs.net">tess.sawyer@nhs.net</a><br>
             0112 244 2795
           </p>
-          
+
           <p class="nhsuk-body nhsuk-u-secondary-text-color">
             Tess is happy to discuss implementation, staff training and clinical outcomes.
           </p>
@@ -559,13 +572,13 @@
     <div class="nhsuk-card">
       <div class="nhsuk-card__content">
         <div class="nhsuk-u-margin-bottom-3">
-          
+
         </div>
-        
+
         <h3 class="nhsuk-card__heading nhsuk-heading-m">
           National Joint Registry (NJR)
         </h3>
-        
+
         <dl class="nhsuk-summary-list nhsuk-summary-list--no-border">
           <div class="nhsuk-summary-list__row">
             <dt class="nhsuk-summary-list__key">
@@ -575,7 +588,7 @@
               Outcome registry report
             </dd>
           </div>
-          
+
           <div class="nhsuk-summary-list__row">
             <dt class="nhsuk-summary-list__key">
               Document date
@@ -584,7 +597,7 @@
               March 2013 - September 2025
             </dd>
           </div>
-          
+
           <div class="nhsuk-summary-list__row">
             <dt class="nhsuk-summary-list__key">
               Scale
@@ -611,13 +624,13 @@
       <div class="nhsuk-card__content">
         <div class="nhsuk-u-margin-bottom-3">
           <strong class="nhsuk-tag nhsuk-tag--green">Procured</strong>
-        
+
         </div>
-        
+
         <h3 class="nhsuk-card__heading nhsuk-heading-m">
           Portsmouth Hospitals University NHS Trust
         </h3>
-        
+
         <dl class="nhsuk-summary-list nhsuk-summary-list--no-border">
           <div class="nhsuk-summary-list__row">
             <dt class="nhsuk-summary-list__key">
@@ -627,7 +640,7 @@
               Clinical trial funded by supplier
             </dd>
           </div>
-          
+
           <div class="nhsuk-summary-list__row">
             <dt class="nhsuk-summary-list__key">
               Document period
@@ -636,7 +649,7 @@
               2019-2021
             </dd>
           </div>
-          
+
           <div class="nhsuk-summary-list__row">
             <dt class="nhsuk-summary-list__key">
               Ward/Department
@@ -645,7 +658,7 @@
               Gastroenterology Unit, Queen Alexandra Hospital
             </dd>
           </div>
-          
+
           <div class="nhsuk-summary-list__row">
             <dt class="nhsuk-summary-list__key">
               Scale
@@ -663,17 +676,17 @@
         {# Contact information integrated at bottom #}
         <div class="nhsuk-u-margin-top-6 nhsuk-u-padding-top-4" style="border-top: 1px solid #d8dde0;">
           <h4 class="nhsuk-heading-s">Contact for peer discussion</h4>
-          
+
           <p class="nhsuk-body">
             <strong>Dr Said Mohseyni</strong><br>
             Consultant, Gastroenterology
           </p>
-          
+
           <p class="nhsuk-body">
             <a href="mailto:said.mohseyni@nhs.net">said.mohseyni@nhs.net</a><br>
             020 7122 7188
           </p>
-          
+
           <p class="nhsuk-body nhsuk-u-secondary-text-color">
             Said is happy to discuss clinical outcomes and effectiveness, and staff training.
           </p>
@@ -686,13 +699,13 @@
       <div class="nhsuk-card__content">
         <div class="nhsuk-u-margin-bottom-3">
           <strong class="nhsuk-tag nhsuk-tag--green">Procured</strong>
-         
+
         </div>
-        
+
         <h3 class="nhsuk-card__heading nhsuk-heading-m">
           Guy's and St Thomas' NHS Foundation Trust
         </h3>
-        
+
         <dl class="nhsuk-summary-list nhsuk-summary-list--no-border">
           <div class="nhsuk-summary-list__row">
             <dt class="nhsuk-summary-list__key">
@@ -702,7 +715,7 @@
               Clinical trial uploaded by supplier
             </dd>
           </div>
-          
+
           <div class="nhsuk-summary-list__row">
             <dt class="nhsuk-summary-list__key">
               Document period
@@ -711,7 +724,7 @@
               February 2023 - May 2024
             </dd>
           </div>
-          
+
           <div class="nhsuk-summary-list__row">
             <dt class="nhsuk-summary-list__key">
               Ward/Department
@@ -720,7 +733,7 @@
               Urology department, Guy's Hospital
             </dd>
           </div>
-          
+
           <div class="nhsuk-summary-list__row">
             <dt class="nhsuk-summary-list__key">
               Scale
@@ -738,17 +751,17 @@
         {# Contact information integrated at bottom #}
         <div class="nhsuk-u-margin-top-6 nhsuk-u-padding-top-4" style="border-top: 1px solid #d8dde0;">
           <h4 class="nhsuk-heading-s">Contact for peer discussion</h4>
-          
+
           <p class="nhsuk-body">
             <strong>Dr Kerris Webb</strong><br>
             Clinical Lead, Urology
           </p>
-          
+
           <p class="nhsuk-body">
             <a href="mailto:kerris.webb@nhs.net">kerris.webb@nhs.net</a><br>
             020 6222 2222
           </p>
-          
+
           <p class="nhsuk-body nhsuk-u-secondary-text-color">
             Kerris is happy to discuss staff training and supplier experience.
           </p>
@@ -762,7 +775,7 @@
       <div class="nhsuk-card__content">
         <div class="nhsuk-u-margin-bottom-3">
           <strong class="nhsuk-tag nhsuk-tag--green">Procured</strong>
-         
+
         </div>
 
         <h3 class="nhsuk-card__heading nhsuk-heading-m">
@@ -828,13 +841,13 @@
       <div class="nhsuk-card__content">
         <div class="nhsuk-u-margin-bottom-3">
           <strong class="nhsuk-tag nhsuk-tag--yellow">Not procured</strong>
-          
+
         </div>
-        
+
         <h3 class="nhsuk-card__heading nhsuk-heading-m">
           Northumbria Healthcare NHS Foundation Trust
         </h3>
-        
+
         <dl class="nhsuk-summary-list nhsuk-summary-list--no-border">
           <div class="nhsuk-summary-list__row">
             <dt class="nhsuk-summary-list__key">
@@ -844,7 +857,7 @@
               Clinical trial
             </dd>
           </div>
-          
+
           <div class="nhsuk-summary-list__row">
             <dt class="nhsuk-summary-list__key">
               Document period
@@ -853,7 +866,7 @@
               January 2024 - June 2024
             </dd>
           </div>
-          
+
           <div class="nhsuk-summary-list__row">
             <dt class="nhsuk-summary-list__key">
               Ward/department
@@ -871,16 +884,16 @@
         {# Contact information integrated at bottom #}
         <div class="nhsuk-u-margin-top-6 nhsuk-u-padding-top-4" style="border-top: 1px solid #d8dde0;">
           <h4 class="nhsuk-heading-s">Contact for peer discussion</h4>
-          
+
           <p class="nhsuk-body">
             <strong>Dr Sam Cordel</strong><br>
             Clinical Lead
           </p>
-          
+
           <p class="nhsuk-body">
             <a href="mailto:sam.cordel@nhs.net">sam.cordel@nhs.net</a>
           </p>
-          
+
           <p class="nhsuk-body nhsuk-u-secondary-text-color">
             Sam is happy to discuss evaluation methodology and the procurement process.
           </p>
@@ -889,7 +902,7 @@
         {# Supplier response section #}
         <div class="nhsuk-u-margin-top-6 nhsuk-u-padding-top-4" style="border-top: 1px solid #d8dde0;">
           <h4 class="nhsuk-heading-s">Supplier response</h4>
-          
+
           <p class="nhsuk-body">
             We do not agree with the methodology used in this evaluation. Key aspects including baseline selection, data capture timing, and outcome definitions differ from how the device is validated in clinical and operational practice, which can materially affect results. Interested parties seeking an accurate, reproducible assessment should contact us for our independent validation protocol, raw performance data, and guidance on conducting a proper evaluation in an NHS setting. Email: <a href="mailto:john.boyd@medtechinnovations.co.uk">john.boyd@medtechinnovations.co.uk</a> or phone: 01214452399.
           </p>
@@ -912,7 +925,7 @@
     <li>disagree with something on this page</li>
     <li>have a query about something on this page</li>
     <li>would like to amend something on this page</li>
-    
+
   </ul>
   <p>Contact the team on 0330 2234 776 or email: <a href="">enquiries@dhsc.gov.uk</a></p>
 {% endset %}
