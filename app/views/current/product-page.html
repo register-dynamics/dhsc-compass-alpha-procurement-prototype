@@ -568,7 +568,7 @@
       </div>
     </div>
 
-    {# Trust Evaluation 2 - National Joint Registry (Outcome registry report) #}
+    {# Trust Evaluation 2 - ODEP #}
     <div class="nhsuk-card">
       <div class="nhsuk-card__content">
         <div class="nhsuk-u-margin-bottom-3">
@@ -576,7 +576,7 @@
         </div>
 
         <h3 class="nhsuk-card__heading nhsuk-heading-m">
-          National Joint Registry (NJR)
+          {{ assessment.name }}
         </h3>
 
         <dl class="nhsuk-summary-list nhsuk-summary-list--no-border">
@@ -585,7 +585,7 @@
               Document type
             </dt>
             <dd class="nhsuk-summary-list__value">
-              Outcome registry report
+              {{ assessment.document_type }}
             </dd>
           </div>
 
@@ -594,23 +594,32 @@
               Document date
             </dt>
             <dd class="nhsuk-summary-list__value">
-              March 2013 - September 2025
+              {{ assessment.start_date }} – {{ assessment.end_date }}
             </dd>
           </div>
 
           <div class="nhsuk-summary-list__row">
             <dt class="nhsuk-summary-list__key">
-              Scale
+              Organisation type
             </dt>
             <dd class="nhsuk-summary-list__value">
-              900 procedures
-            </dd>
+              {{ assessment.organisation_type }}
+            </dd> 
+          </div>
+
+          <div class="nhsuk-summary-list__row">
+            <dt class="nhsuk-summary-list__key">
+              Organisation category
+            </dt>
+            <dd class="nhsuk-summary-list__value">
+              {{ assessment.organisation_category }}
+            </dd> 
           </div>
         </dl>
 
         <h4 class="nhsuk-heading-s nhsuk-u-margin-top-4">Report summary</h4>
         <p class="nhsuk-body">
-          The report includes usage and outcomes data for primary hip implants associated with Stryker's ETS Stem across the specified date range.
+          {{ assessment.summary }}
         </p>
 
         <p class="nhsuk-body nhsuk-u-margin-top-3">

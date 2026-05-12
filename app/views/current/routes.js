@@ -1,7 +1,7 @@
 const allTrusts = require('./trusts')
 
 const Database = require('better-sqlite3')
-const db = new Database('test_db_pre_beta.db', { readonly: true })
+const db = new Database('G:/Compass/test_db_pre_beta.db', { readonly: true }) //Replace database path with correct local directory
 
 const router = require('express').Router()
 
@@ -117,6 +117,24 @@ router.get(/product-page/, (req, res, next) => {
     procured: random.procured,
     under_review: random.underReview,
     excluded: random.excluded
+  }
+  next()
+})
+
+const individualAssessment = db.prepare("select make_id, assessment_date, expiry_date, summary, organisation_name, type_of_doc_desc, org_category_desc, org_type_desc from make_documents where make_id = ?")
+router.get(/product-page/, (req, res, next) => {
+  const result = individualAssessment.get(parseInt(req.query.make))
+  const random = randomEvidence(result.make_id)
+
+  res.locals.searchTerm = req.query.q
+  res.locals.assessment = {
+    name: result.organisation_name,
+    document_type: result.type_of_doc_desc,
+    start_date: result.assessment_date,
+    end_date: result.expiry_date,
+    summary: result.summary,
+    organisation_type: result.org_type_desc,
+    organisation_category: result.org_category_desc
   }
   next()
 })
