@@ -59,7 +59,7 @@ function randomEvidence(model_id) {
 
 const pageSize = 25
 const countQuery = db.prepare(`select COUNT(*) AS count FROM search WHERE search MATCH ?`)
-const searchQuery = db.prepare(`select MAKE_ID, MODEL_ID, DEVICE_ID, MAKE, MODEL, MANUFACTURER, CATEGORY, COUNTRY from search where search match @term limit @limit offset @offset`)
+const searchQuery = db.prepare(`select MAKE_ID, MODEL_ID, DEVICE_ID, MAKE, MODEL, MANUFACTURER, TYPE, COUNTRY from search where search match @term limit @limit offset @offset`)
 router.get(/search-/, (req, res, next) => {
   const term = req.query.q?.toString()
   const page = parseInt(req.query.page || "1") - 1
@@ -85,7 +85,7 @@ router.get(/search-/, (req, res, next) => {
       model_id: result.MODEL_ID,
       device_id: result.DEVICE_ID,
       manufacturer: result.MANUFACTURER,
-      category: result.CATEGORY,
+      category: result.TYPE,
       country: result.COUNTRY,
       trusts: random.trusts.size,
       documents: random.documents.length,
@@ -98,7 +98,7 @@ router.get(/search-/, (req, res, next) => {
   next()
 })
 
-const individualQuery = db.prepare("select MAKE, MODEL, MODEL_ID, MANUFACTURER, CATEGORY, COUNTRY from search where MAKE_ID = ? and MODEL_ID = ? and DEVICE_ID = ?")
+const individualQuery = db.prepare("select MAKE, MODEL, MODEL_ID, MANUFACTURER, TYPE, COUNTRY from search where MAKE_ID = ? and MODEL_ID = ? and DEVICE_ID = ?")
 router.get(/product-page/, (req, res, next) => {
   const result = individualQuery.get(parseInt(req.query.make), parseInt(req.query.model), parseInt(req.query.device))
   const random = randomEvidence(result.MODEL_ID)
@@ -109,7 +109,7 @@ router.get(/product-page/, (req, res, next) => {
     model: result.MODEL,
     model_id: result.MODEL_ID,
     manufacturer: result.MANUFACTURER,
-    category: result.CATEGORY,
+    category: result.TYPE,
     country: result.COUNTRY,
     trusts: random.trusts,
     documents: random.documents,
@@ -121,20 +121,27 @@ router.get(/product-page/, (req, res, next) => {
   next()
 })
 
-const individualAssessment = db.prepare("select make_id, assessment_date, expiry_date, summary, organisation_name, type_of_doc_desc, org_category_desc, org_type_desc from make_documents where make_id = ?")
+const individualAssessment = db.prepare("select make_id, rating, rating_type, assessment_date, expiry_date, summary, organisation_name, type_of_doc_desc, org_category_desc, org_type_desc, url from make_documents where make_id = ?")
 router.get(/product-page/, (req, res, next) => {
-  const result = individualAssessment.get(parseInt(req.query.make))
-  const random = randomEvidence(result.make_id)
+  const results = individualAssessment.all(parseInt(req.query.make))
+  console.log(results)
+  if (results) {
+    console.log("There is an assessment")
+    res.locals.assessments = results.map(function (result) {
+    return {
+      name: result.organisation_name,
+      document_type: result.type_of_doc_desc,
+      rating: result.rating,
+      rating_type: result.rating_type,
+      start_date: result.assessment_date,
+      end_date: result.expiry_date,
+      organisation_type: result.org_type_desc,
+      organisation_category: result.org_category_desc,
+      url: result.url
+    }
+  })
 
-  res.locals.searchTerm = req.query.q
-  res.locals.assessment = {
-    name: result.organisation_name,
-    document_type: result.type_of_doc_desc,
-    start_date: result.assessment_date,
-    end_date: result.expiry_date,
-    summary: result.summary,
-    organisation_type: result.org_type_desc,
-    organisation_category: result.org_category_desc
+  console.log(res.locals.assessments)
   }
   next()
 })

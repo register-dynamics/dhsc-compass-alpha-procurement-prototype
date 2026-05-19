@@ -569,6 +569,7 @@
     </div>
 
     {# Trust Evaluation 2 - ODEP #}
+    {% for assessment in assessments %}
     <div class="nhsuk-card">
       <div class="nhsuk-card__content">
         <div class="nhsuk-u-margin-bottom-3">
@@ -591,10 +592,28 @@
 
           <div class="nhsuk-summary-list__row">
             <dt class="nhsuk-summary-list__key">
-              Document date
+              ODEP rating
             </dt>
             <dd class="nhsuk-summary-list__value">
-              {{ assessment.start_date }} – {{ assessment.end_date }}
+              {{ assessment.rating }}
+            </dd>
+          </div>
+
+          <div class="nhsuk-summary-list__row">
+            <dt class="nhsuk-summary-list__key">
+              Assessment date
+            </dt>
+            <dd class="nhsuk-summary-list__value">
+              {{ assessment.start_date }}
+            </dd>
+          </div>
+
+          <div class="nhsuk-summary-list__row">
+            <dt class="nhsuk-summary-list__key">
+              Renewal date
+            </dt>
+            <dd class="nhsuk-summary-list__value">
+              {{ assessment.end_date }}
             </dd>
           </div>
 
@@ -615,18 +634,23 @@
               {{ assessment.organisation_category }}
             </dd> 
           </div>
-        </dl>
 
-        <h4 class="nhsuk-heading-s nhsuk-u-margin-top-4">Report summary</h4>
-        <p class="nhsuk-body">
-          {{ assessment.summary }}
-        </p>
+          <div class="nhsuk-summary-list__row">
+            <dt class="nhsuk-summary-list__key">
+              URL
+            </dt>
+            <dd class="nhsuk-summary-list__value">
+              <a href= {{ assessment.url }}> {{ assessment.url }} </a>
+            </dd> 
+          </div>
+        </dl>
 
         <p class="nhsuk-body nhsuk-u-margin-top-3">
           <a href="#">View outcome registry report</a>
         </p>
       </div>
     </div>
+    {% endfor %}
 
     {# Trust Evaluation 3 - Portsmouth Hospitals (Clinical trial funded by supplier) #}
     <div class="nhsuk-card">
