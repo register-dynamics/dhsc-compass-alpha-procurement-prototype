@@ -121,13 +121,12 @@ router.get(/product-page/, (req, res, next) => {
   next()
 })
 
-const individualAssessment = db.prepare("select make_id, rating, rating_type, assessment_date, expiry_date, summary, organisation_name, type_of_doc_desc, org_category_desc, org_type_desc, url from make_documents where make_id = ?")
+const individualODEP = db.prepare("select make_id, rating, rating_type, assessment_date, expiry_date, summary, organisation_name, type_of_doc_desc, org_category_desc, org_type_desc, url from make_documents where make_id = ? and organisation_name = ?")
 router.get(/product-page/, (req, res, next) => {
-  const results = individualAssessment.all(parseInt(req.query.make))
-  console.log(results)
+  const results = individualODEP.all(parseInt(req.query.make), "ODEP")
   if (results) {
-    console.log("There is an assessment")
-    res.locals.assessments = results.map(function (result) {
+    console.log("There is an ODEP assessment")
+    res.locals.ODEPs = results.map(function (result) {
     return {
       name: result.organisation_name,
       document_type: result.type_of_doc_desc,
@@ -140,9 +139,31 @@ router.get(/product-page/, (req, res, next) => {
       url: result.url
     }
   })
-
-  console.log(res.locals.assessments)
   }
+  next()
+})
+
+const individualNJR = db.prepare("select make_id, rating, rating_type, assessment_date, expiry_date, summary, organisation_name, type_of_doc_desc, org_category_desc, org_type_desc, url from make_documents where make_id = ? and organisation_name = ?")
+router.get(/product-page/, (req, res, next) => {
+  const results = individualNJR.all(parseInt(req.query.make), "NJR")
+  if (results) {
+    console.log("There is an NJR report")
+    res.locals.NJRs = results.map(function (result) {
+    return {
+      name: result.organisation_name,
+      document_type: result.type_of_doc_desc,
+      rating: result.rating,
+      rating_type: result.rating_type,
+      start_date: result.assessment_date,
+      end_date: result.expiry_date,
+      organisation_type: result.org_type_desc,
+      organisation_category: result.org_category_desc,
+      summary: "This a placeholder summary for NJR reports",
+      url: result.url
+    }
+  })
+  }
+  console.log(res.locals.NJRs)
   next()
 })
 

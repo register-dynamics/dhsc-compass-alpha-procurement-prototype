@@ -568,8 +568,8 @@
       </div>
     </div>
 
-    {# Trust Evaluation 2 - ODEP #}
-    {% for assessment in assessments %}
+    {# Third party Evaluation 1 - ODEP #}
+    {% for assessment in ODEPs %}
     <div class="nhsuk-card">
       <div class="nhsuk-card__content">
         <div class="nhsuk-u-margin-bottom-3">
@@ -645,8 +645,79 @@
           </div>
         </dl>
 
+        
+      </div>
+    </div>
+    {% endfor %}
+
+    {# Third party Evaluation 2 - NJR #}
+    {% for assessment in NJRs %}
+    <div class="nhsuk-card">
+      <div class="nhsuk-card__content">
+        <div class="nhsuk-u-margin-bottom-3">
+
+        </div>
+
+        <h3 class="nhsuk-card__heading nhsuk-heading-m">
+          {{ assessment.name }}
+        </h3>
+
+        <dl class="nhsuk-summary-list nhsuk-summary-list--no-border">
+          <div class="nhsuk-summary-list__row">
+            <dt class="nhsuk-summary-list__key">
+              Document type
+            </dt>
+            <dd class="nhsuk-summary-list__value">
+              {{ assessment.document_type }}
+            </dd>
+          </div>
+
+
+          <div class="nhsuk-summary-list__row">
+            <dt class="nhsuk-summary-list__key">
+              Assessment date
+            </dt>
+            <dd class="nhsuk-summary-list__value">
+              {{ assessment.start_date }}
+            </dd>
+          </div>
+
+          <div class="nhsuk-summary-list__row">
+            <dt class="nhsuk-summary-list__key">
+              Renewal date
+            </dt>
+            <dd class="nhsuk-summary-list__value">
+              {{ assessment.end_date }}
+            </dd>
+          </div>
+
+          <div class="nhsuk-summary-list__row">
+            <dt class="nhsuk-summary-list__key">
+              Organisation type
+            </dt>
+            <dd class="nhsuk-summary-list__value">
+              {{ assessment.organisation_type }}
+            </dd> 
+          </div>
+
+          <div class="nhsuk-summary-list__row">
+            <dt class="nhsuk-summary-list__key">
+              Organisation category
+            </dt>
+            <dd class="nhsuk-summary-list__value">
+              {{ assessment.organisation_category }}
+            </dd> 
+          </div>
+
+          <h4 class="nhsuk-heading-s nhsuk-u-margin-top-4">Report summary</h4>
+          <p class="nhsuk-body">
+            {{ assessment.summary }}
+          </p>
+
+        </dl>
+
         <p class="nhsuk-body nhsuk-u-margin-top-3">
-          <a href="#">View outcome registry report</a>
+          <a href="#">View NJR report</a>
         </p>
       </div>
     </div>
