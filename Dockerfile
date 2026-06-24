@@ -21,11 +21,8 @@ RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y build-essential node-gyp pkg-config python-is-python3
 
 # Install node modules
-COPY package-lock.json package.json ./
-RUN npm ci --include=dev
-
-# Copy application code
 COPY . .
+RUN npm ci --include=dev
 
 # Build application
 RUN npm run build
