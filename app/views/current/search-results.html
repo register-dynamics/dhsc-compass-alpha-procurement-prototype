@@ -23,11 +23,11 @@
   <div class="nhsuk-grid-column-full">
 
     <h1 class="nhsuk-heading-l">Search results</h1>
-      <form method="get" novalidate="">
 
     {# Search bar #}
   <div class="app-filters nhsuk-u-margin-top-5 nhsuk-u-margin-bottom-5">
       <div class="app-filters-container">
+        <form method="get" novalidate="">
           <div class="nhsuk-form-group nhsuk-u-margin-bottom-0">
             <label class="nhsuk-label" for="q">
               Search again by product, category or supplier
@@ -43,7 +43,7 @@
 
 
           </div>
-      </div>
+        </form>
       </div>
 
   </div>
@@ -56,6 +56,8 @@
 
     <div class="nhsuk-card nhsuk-card--feature app-filters">
       <div class="nhsuk-card__content nhsuk-card__content--feature">
+        <form method="get">
+        <input type="hidden" name="q" value="{{ searchTerm }}" style="display: none;">
         <h3 class="nhsuk-card__heading nhsuk-card__heading--feature">
           Filter results
         </h3>
@@ -182,9 +184,9 @@
             Update results
           </button>
         </div>
+        </form>
       </div>
     </div>
-
   </div>
 
   {# Results Column #}
@@ -315,7 +317,6 @@
       {% endif %}
     </nav>
 
-  </form>
   </div>
 
 </div>

@@ -65,7 +65,8 @@ const categoryQuery = db.prepare(`select GMDN_NAME AS name, COUNT(*) AS count fr
 router.get(/search-/, (req, res, next) => {
   const term = req.query.q?.toString()
   const page = parseInt(req.query.page || "1") - 1
-  const queryCategories = req.query.category || []
+  const queryCategories = [(req.query.category || [])].flat().filter(c => c !== "_unchecked")
+  console.log(queryCategories)
   const queryParams = {term: term, limit: pageSize, offset: pageSize * page, categories: JSON.stringify(queryCategories)}
 
   const query = queryCategories.length > 0 ? searchWithCategoriesQuery : searchQuery
