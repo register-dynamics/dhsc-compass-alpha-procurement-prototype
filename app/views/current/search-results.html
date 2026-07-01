@@ -4,6 +4,7 @@
 
 {% block beforeContent %}
 {% from "breadcrumb/macro.njk" import breadcrumb %}
+{% from "checkboxes/macro.njk" import checkboxes %}
 
 {{ breadcrumb({
   items: [
@@ -62,30 +63,6 @@
           Filter results
         </h3>
 
-
-
-
-        {# Clinical Trial Status Filter #}
-        <div class="nhsuk-form-group">
-          <fieldset class="nhsuk-fieldset">
-            <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--s">
-              Procured in other trusts
-            </legend>
-
-            <div id="trial-items" class="nhsuk-radios nhsuk-radios--small" data-module="nhsuk-radios" data-nhsuk-radios-init="">
-              <div class="nhsuk-radios__item">
-                <input class="nhsuk-radios__input" id="trial-any" name="[trial]" type="radio" value="any" checked="">
-                <label class="nhsuk-label nhsuk-radios__label" for="trial-any">
-                  Any
-                </label>
-              </div>
-
-
-
-            </div>
-          </fieldset>
-        </div>
-
         {# Category Filter #}
         <div class="nhsuk-form-group">
           <fieldset class="nhsuk-fieldset">
@@ -106,35 +83,66 @@
           </fieldset>
         </div>
 
-        {# Supplier Size Filter #}
+        {# NEW: Trust Similarity Filter #}
         <div class="nhsuk-form-group">
           <fieldset class="nhsuk-fieldset">
             <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--s">
-              Supplier size
+              Evidence from trusts like mine
             </legend>
+            <div class="nhsuk-hint" id="trust-hint">
+              Show products evaluated by trusts similar in size, type, or region
+            </div>
 
-            <div id="supplier-items" class="nhsuk-checkboxes nhsuk-checkboxes--small" data-module="nhsuk-checkboxes" data-nhsuk-checkboxes-init="">
+            <div id="trust-items" class="nhsuk-checkboxes nhsuk-checkboxes--small" data-module="nhsuk-checkboxes" data-nhsuk-checkboxes-init="">
               <div class="nhsuk-checkboxes__item">
-                <input class="nhsuk-checkboxes__input" id="supplier-sme" name="[supplier]" type="checkbox" value="sme">
-                <label class="nhsuk-label nhsuk-checkboxes__label" for="supplier-sme">
-                  1-50 employees
+                <input class="nhsuk-checkboxes__input" id="trust-similar" name="[trust]" type="checkbox" value="similar">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="trust-similar">
+                  Similar size to my trust
                 </label>
               </div>
 
-
-            </div>
-             <div id="supplier-items" class="nhsuk-checkboxes nhsuk-checkboxes--small" data-module="nhsuk-checkboxes" data-nhsuk-checkboxes-init="">
               <div class="nhsuk-checkboxes__item">
-                <input class="nhsuk-checkboxes__input" id="supplier-sme" name="[supplier]" type="checkbox" value="sme">
-                <label class="nhsuk-label nhsuk-checkboxes__label" for="supplier-sme">
-                  51-250 employees
+                <input class="nhsuk-checkboxes__input" id="trust-teaching" name="[trust]" type="checkbox" value="teaching">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="trust-teaching">
+                  Teaching hospitals
                 </label>
               </div>
 
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="trust-region" name="[trust]" type="checkbox" value="region">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="trust-region">
+                  In my region
+                </label>
+              </div>
 
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="trust-specialist" name="[trust]" type="checkbox" value="specialist">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="trust-specialist">
+                  Specialist trusts
+                </label>
+              </div>
             </div>
-
           </fieldset>
+        </div>
+
+        {# Supplier Size Filter #}
+        <div class="nhsuk-form-group">
+        {{ checkboxes({
+          name: "size",
+          fieldset: {
+            legend: {
+              text: "Supplier size",
+              classes: "nhsuk-fieldset__legend--s"
+            }
+          },
+          items: [
+            { value: "micro", text: "Micro (1-10 employees)"},
+            { value: "small", text: "Small (11-50 employees)"},
+            { value: "medium", text: "Medium (51-250 employees)"},
+            { value: "large", text: "Large (251+ employees)"}
+          ],
+          classes: "nhsuk-checkboxes--small"
+        })}}
         </div>
 
          {# Supplier Maturity Filter #}
