@@ -59,7 +59,7 @@ function randomEvidence(model_id) {
 
 const pageSize = 25
 const countQuery = db.prepare(`select COUNT(*) AS count FROM search WHERE search MATCH ?`)
-const searchQuery = db.prepare(`select MAKE_ID, MODEL_ID, DEVICE_ID, MAKE, MODEL, MANUFACTURER, TYPE, COUNTRY from search where search match @term limit @limit offset @offset`)
+const searchQuery = db.prepare(`select MAKE_ID, MODEL_ID, DEVICE_ID, MAKE, MODEL, MANUFACTURER, GMDN_NAME, TYPE, COUNTRY from search where search match @term limit @limit offset @offset`)
 router.get(/search-/, (req, res, next) => {
   const term = req.query.q?.toString()
   const page = parseInt(req.query.page || "1") - 1
@@ -85,7 +85,8 @@ router.get(/search-/, (req, res, next) => {
       model_id: result.MODEL_ID,
       device_id: result.DEVICE_ID,
       manufacturer: result.MANUFACTURER,
-      category: result.TYPE,
+      category: result.GMDN_NAME,
+      type: result.TYPE,
       country: result.COUNTRY,
       trusts: random.trusts.size,
       documents: random.documents.length,
@@ -98,7 +99,7 @@ router.get(/search-/, (req, res, next) => {
   next()
 })
 
-const individualQuery = db.prepare("select MAKE, MODEL, MODEL_ID, MANUFACTURER, TYPE, COUNTRY from search where MAKE_ID = ? and MODEL_ID = ? and DEVICE_ID = ?")
+const individualQuery = db.prepare("select MAKE, MODEL, MODEL_ID, MANUFACTURER, GMDN_NAME TYPE, COUNTRY from search where MAKE_ID = ? and MODEL_ID = ? and DEVICE_ID = ?")
 router.get(/product-page/, (req, res, next) => {
   const result = individualQuery.get(parseInt(req.query.make), parseInt(req.query.model), parseInt(req.query.device))
   const random = randomEvidence(result.MODEL_ID)
@@ -109,7 +110,8 @@ router.get(/product-page/, (req, res, next) => {
     model: result.MODEL,
     model_id: result.MODEL_ID,
     manufacturer: result.MANUFACTURER,
-    category: result.TYPE,
+    category: result.GMDN_NAME,
+    type: result.TYPE,
     country: result.COUNTRY,
     trusts: random.trusts,
     documents: random.documents,
