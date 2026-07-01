@@ -60,14 +60,21 @@ function randomEvidence(model_id) {
 const pageSize = 25
 const countQuery = db.prepare(`select COUNT(*) AS count FROM search WHERE search MATCH ?`)
 const searchQuery = db.prepare(`select MAKE_ID, MODEL_ID, DEVICE_ID, MAKE, MODEL, MANUFACTURER, GMDN_NAME, TYPE, COUNTRY from search where search match @term limit @limit offset @offset`)
+const searchWithCategoriesQuery = db.prepare(`select MAKE_ID, MODEL_ID, DEVICE_ID, MAKE, MODEL, MANUFACTURER, GMDN_NAME, TYPE, COUNTRY from search where search match @term and GMDN_NAME in (select value from json_each(@categories)) limit @limit offset @offset`)
+const categoryQuery = db.prepare(`select GMDN_NAME AS name, COUNT(*) AS count from search where search match ? group by GMDN_NAME order by count DESC`)
 router.get(/search-/, (req, res, next) => {
   const term = req.query.q?.toString()
   const page = parseInt(req.query.page || "1") - 1
-  const queryParams = {term: term, limit: pageSize, offset: pageSize * page}
+  const queryCategories = req.query.category || []
+  const queryParams = {term: term, limit: pageSize, offset: pageSize * page, categories: JSON.stringify(queryCategories)}
 
+  const query = queryCategories.length > 0 ? searchWithCategoriesQuery : searchQuery
   const count = countQuery.raw(true).get(queryParams.term)
-  const results = searchQuery.all(queryParams)
+  const results = query.all(queryParams)
   console.log(`Found ${count} results (retrieved ${results.length}) for term ${term}`)
+
+  const categories = categoryQuery.all(queryParams.term)
+  categories.forEach(c => c.selected = queryCategories.includes(c.name))
 
   res.locals.searchTerm = term
 
@@ -75,6 +82,7 @@ router.get(/search-/, (req, res, next) => {
   res.locals.searchPage = page + 1
   res.locals.searchMaxPages = Math.trunc(count / pageSize) + Math.min(count % pageSize, 1)
   res.locals.searchResultsCount = count
+  res.locals.searchResultCategories = categories
   res.locals.searchResults = results.map(function (result) {
     const random = randomEvidence(result.MODEL_ID)
 
