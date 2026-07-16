@@ -5,7 +5,7 @@
 EXTRA_ARGS=""
 PORT=3000
 
-if [ $1 == "-p" ]
+if [ x$1 == "x-p" ]
 then
     PORT="$2"
     EXTRA_ARGS="-p 127.0.0.1:$PORT:3000"

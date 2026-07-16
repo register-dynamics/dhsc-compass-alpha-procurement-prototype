@@ -4,5 +4,8 @@ EXPOSE 3000/tcp
 WORKDIR /compass
 CMD ["npm", "run", "watch"]
 
-# Install the app; this will be mounted over when run in dev mode, though, so until we're actually building for prod let's skip that bit
-# ADD . /compass
+# Install the app; this will be mounted over when run in dev mode, but we'll need a copy of it in here to run `npm ci` and `npm run build` against. We can be cleverer about what files we keep if the images get annoyingly big.
+ADD . /compass
+
+RUN npm ci --include=dev
+RUN npm run build
