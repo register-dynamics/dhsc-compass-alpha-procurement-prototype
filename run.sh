@@ -16,4 +16,4 @@ fi
 echo "RUNNING THE SITE ON http://localhost:$PORT/"
 echo "Press Ctrl+C to stop it"
 
-docker run -it --rm --name dhsc-compass -v "$PWD":/compass $EXTRA_ARGS dhsc-compass
+docker run -it --rm --name dhsc-compass -v "$PWD"/app:/compass/app $EXTRA_ARGS dhsc-compass
