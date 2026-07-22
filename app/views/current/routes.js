@@ -1,7 +1,7 @@
 const allTrusts = require('./trusts')
 
 const Database = require('better-sqlite3')
-const db = new Database('G:/Compass/test_db_pre_beta.db', { readonly: true }) //Replace database path with correct local directory
+const db = new Database('test_db_pre_beta.db', { readonly: true }) //Replace database path with correct local directory
 
 const router = require('express').Router()
 
@@ -47,6 +47,7 @@ function randomEvidence(model_id) {
   while (documents.length < numDocuments) {
     documents.push(documentTypes[(clamp_percent(rand(), 0, documentTypes.length - 1))])
   }
+
 
   return {
     trusts: new Set(procured).union(underReview).union(excluded),
@@ -109,9 +110,17 @@ router.get(/search-/, (req, res, next) => {
 })
 
 const individualQuery = db.prepare("select MAKE, MODEL, MODEL_ID, MANUFACTURER, GMDN_NAME TYPE, COUNTRY from search where MAKE_ID = ? and MODEL_ID = ? and DEVICE_ID = ?")
+
+const individualDocumentQuery = db.prepare("SELECT organisation_name, type_of_doc_desc, rating, assessment_date, org_category_desc, org_type_desc, url FROM make_documents WHERE make_id = ?")
+
 router.get(/product-page/, (req, res, next) => {
+
+  console.log("GET product-page for make_id", req.query.make)
+
   const result = individualQuery.get(parseInt(req.query.make), parseInt(req.query.model), parseInt(req.query.device))
   const random = randomEvidence(result.MODEL_ID)
+
+  const documents = individualDocumentQuery.all(parseInt(req.query.make))
 
   res.locals.searchTerm = req.query.q
   res.locals.product = {
@@ -123,7 +132,7 @@ router.get(/product-page/, (req, res, next) => {
     type: result.TYPE,
     country: result.COUNTRY,
     trusts: random.trusts,
-    documents: random.documents,
+    documents: documents,
     document_types: Array.from(new Set(random.documents)).toSorted(),
     procured: random.procured,
     under_review: random.underReview,
@@ -134,6 +143,7 @@ router.get(/product-page/, (req, res, next) => {
 
 const individualODEP = db.prepare("select make_id, rating, rating_type, assessment_date, expiry_date, summary, organisation_name, type_of_doc_desc, org_category_desc, org_type_desc, url from make_documents where make_id = ? and organisation_name = ?")
 router.get(/product-page/, (req, res, next) => {
+
   const results = individualODEP.all(parseInt(req.query.make), "ODEP")
   if (results) {
     console.log("There is an ODEP assessment")
