@@ -1,0 +1,95 @@
+{% extends prototypeVersion + '/layouts/layout-signed-in.html' %}
+
+{% set pageName = "Share with the network" %}
+
+
+{% block beforeContent %}
+  {{ breadcrumb({
+    items: [
+      {
+        text: "Back to dashboard",
+        href: "/"
+      }
+    ],
+    attributes: {
+      "aria-label": "Breadcrumb"
+    }
+  }) }}
+{% endblock %}
+
+{% block content %}
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-full">
+
+    <h1 class="nhsuk-heading-l">What do you want to share today?</h1>
+    <p>Choose a document type to share. Your experience will help other trusts make better procurement decisions.</p>
+  </div>
+  </div>
+
+  <div class="nhsuk-grid-row">
+  
+  <div class="nhsuk-grid-column-one-half">
+
+    <div class="nhsuk-card nhsuk-card--clickable nhsuk-u-margin-bottom-4">
+      <div class="nhsuk-card__content">
+        <h2 class="nhsuk-card__heading nhsuk-heading-m">
+          <a class="nhsuk-card__link" href="quick-share-upload-multiple">Product evaluation</a>
+        </h2>
+        <p class="nhsuk-card__description">A report or document from when your trust trialled, assessed or reviewed a product</p>
+      
+      </div>
+    </div>
+
+    </div>
+
+  <div class="nhsuk-grid-column-one-half">
+
+    <div class="nhsuk-card nhsuk-card--clickable nhsuk-u-margin-bottom-6">
+      <div class="nhsuk-card__content">
+        <h2 class="nhsuk-card__heading nhsuk-heading-m">
+          <a class="nhsuk-card__link" href="upload-business-case">Business case</a>
+        </h2>
+        <p class="nhsuk-card__description">A document making the strategic, clinical or financial case for procuring a product</p>
+      </div>
+    </div>
+
+   
+
+  </div>
+
+</div>
+
+  <div class="nhsuk-grid-row">
+  
+  <div class="nhsuk-grid-column-one-half">
+
+    <div class="nhsuk-card nhsuk-card--clickable nhsuk-u-margin-bottom-4">
+      <div class="nhsuk-card__content">
+        <h2 class="nhsuk-card__heading nhsuk-heading-m">
+          <a class="nhsuk-card__link" href="upload-evaluation-criteria">Evaluation criteria</a>
+        </h2>
+        <p class="nhsuk-card__description">A set of standards or measures used to assess a product</p>
+      
+      </div>
+    </div>
+
+    </div>
+
+  <div class="nhsuk-grid-column-one-half">
+
+    <div class="nhsuk-card nhsuk-card--clickable nhsuk-u-margin-bottom-6">
+      <div class="nhsuk-card__content">
+        <h2 class="nhsuk-card__heading nhsuk-heading-m">
+          <a class="nhsuk-card__link" href="upload-case-study">Case study</a>
+        </h2>
+        <p class="nhsuk-card__description">A detailed account of how a product was implemented and its outcomes</p>
+      </div>
+    </div>
+
+   
+
+  </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,53 @@
+<!-- Use this page as the index for your project -->
+<!-- ADDING CUSTOM CSS - Add your custom CSS or Sass in /app/assets/sass/main.scss -->
+<!-- Extends the layout from /app/views/layout.html -->
+{% extends 'layout.html' %}
+<!--
+  In /app/views/layout.html you can:
+    - change the header and footer
+    - add custom CSS and JavaScript
+-->
+{% set pageName = "Upload a document" %}
+
+{% block beforeContent %}
+{% endblock %}
+
+{% block content %}
+
+
+
+
+<!-- NHS 10 Year Plan Context -->
+
+    <h1 class="nhsuk-heading-xl">Upload your document</h1>
+
+    
+    <form action="/components/multi-file-upload/examples/default" method="post" enctype="multipart/form-data">
+      <div class="nhsuk§-multi-file-upload" data-module="nhs-multi-file-upload">
+        <div class="nhsuk-multi-file__uploaded-files ">
+          <h2 class="nhsuk-heading-m">Files added</h2>
+          <div class="nhsuk-summary-list nhs-multi-file-upload__list">
+          </div>
+        </div>
+        <div class="nhsuk-multi-file-upload__upload">
+          <div class="nhsuk-form-group">
+            <label class="nhsuk-label nhsuk-label--m" for="documents">
+              Upload a file
+            </label>
+            <input class="nhsuk-file-upload nhs-multi-file-upload__input" id="documents" name="documents" type="file" multiple="">
+          </div>
+          <button type="submit" class="nhsuk-button nhsuk-button--secondary nhs-multi-file-upload__button" data-module="nhsuk-button">
+            Upload file
+          </button>
+        </div>
+      </div>
+      <button type="submit" class="nhsuk-button" data-module="nhsuk-button">
+        Continue
+      </button>
+    </form>
+  </div>
+</div>
+
+
+
+{% endblock %}

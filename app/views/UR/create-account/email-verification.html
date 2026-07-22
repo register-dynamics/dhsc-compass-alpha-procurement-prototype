@@ -1,0 +1,29 @@
+
+    {% extends prototypeVersion + '/layouts/emails.html' %}
+
+
+{% set subject = "Welcome to Compass – Please verify your email" %}
+{% set from = "Compass <noreply@compass.nhs.uk>" %}
+{% set to = data['email'] or "sarah.thompson@nhs.net" %}
+
+{% block content %}
+
+<p class="nhsuk-body">Dear {{ data['first-name'] or 'Sarah' }},</p>
+
+
+  <h2 class="nhsuk-heading-s">Please verify your email address</h2>
+  <p class="nhsuk-body-s">To complete your registration and access Compass, please verify your email address by clicking the link below:</p>
+  <p class="nhsuk-u-margin-bottom-2 nhsuk-body-s">
+    <a href="../sign-in-verify">Verify email address</a>
+  </p>
+  <p class="nhsuk-body-s nhsuk-u-secondary-text-color nhsuk-u-margin-bottom-0">This link will expire in <strong>24 hours</strong>.</p>
+
+<p class="nhsuk-body-s nhsuk-u-secondary-text-color">If the link doesn't work, copy and paste this link into your browser:</p>
+
+
+{% endblock %}
+
+
+
+
+
