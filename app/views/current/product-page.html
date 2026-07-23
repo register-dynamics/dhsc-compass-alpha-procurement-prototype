@@ -2,7 +2,7 @@
 
 
 
-{% set pageName = "SmartPump 300 Infusion System" %}
+{% set pageName = product.make + " – " + product.model %}
 
 {% block beforeContent %}
 {% from "breadcrumb/macro.njk" import breadcrumb %}
@@ -508,9 +508,17 @@
       <div class="nhsuk-card">
         <div class="nhsuk-card__content">
           {# TODO: Procurement status #}
-          {# <div class="nhsuk-u-margin-bottom-3">
-            <strong class="nhsuk-tag nhsuk-tag--green">Procured</strong>
-          </div> #}
+          {# Randomised for now as sample data not available #}
+          {% set procurementStatuses = {
+            'nhsuk-tag--yellow': 'Not procured',
+            'nhsuk-tag--green': 'Procured'
+          } %}
+          {% set statusKeys = procurementStatuses | dictsort %}
+          {% set randomStatus = statusKeys[range(0, statusKeys|length)|random] %}
+          
+          <div class="nhsuk-u-margin-bottom-3">
+            <strong class="nhsuk-tag {{randomStatus[0]}}">{{randomStatus[1]}}</strong>
+          </div>
 
           <h3 class="nhsuk-card__heading nhsuk-heading-m">
             {{document.organisation_name}}
@@ -523,6 +531,24 @@
               </dt>
               <dd class="nhsuk-summary-list__value">
                 {{document.type_of_doc_desc}}
+              </dd>
+            </div>
+
+            <div class="nhsuk-summary-list__row">
+              <dt class="nhsuk-summary-list__key">
+                Assessment date
+              </dt>
+              <dd class="nhsuk-summary-list__value">
+                {{document.assessment_date}}
+              </dd>
+            </div>
+
+            <div class="nhsuk-summary-list__row">
+              <dt class="nhsuk-summary-list__key">
+                Rating
+              </dt>
+              <dd class="nhsuk-summary-list__value">
+                {{document.rating}}
               </dd>
             </div>
 
@@ -552,7 +578,8 @@
           </p>
 
           {# TODO: Contact information integrated at bottom #}
-          {# <div class="nhsuk-u-margin-top-6 nhsuk-u-padding-top-4" style="border-top: 1px solid #d8dde0;">
+          {# Still hardcoded for now as no sample data #}
+          <div class="nhsuk-u-margin-top-6 nhsuk-u-padding-top-4" style="border-top: 1px solid #d8dde0;">
             <h4 class="nhsuk-heading-s">Contact for peer discussion</h4>
 
             <p class="nhsuk-body">
@@ -568,7 +595,7 @@
             <p class="nhsuk-body nhsuk-u-secondary-text-color">
               Tess is happy to discuss implementation, staff training and clinical outcomes.
             </p>
-          </div> #}
+          </div>
         </div>
       </div>
     {% endfor %}
