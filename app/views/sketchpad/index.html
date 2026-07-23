@@ -1,0 +1,40 @@
+{% extends 'layout.html' %}
+
+{% from "back-link/macro.njk" import backLink %}
+
+{% set pageName = "Sketchpad" %}
+
+{% block beforeContent %}
+  {{ backLink({
+    href: "/",
+    text: "Back"
+  }) }}
+{% endblock %}
+
+{% block content %}
+  <div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+
+      <h1 class="nhsuk-heading-l">{{ pageName }}</h1>
+
+      <p>A space to try out components, layouts and content before they go into a journey.</p>
+
+      <ul class="nhsuk-list nhsuk-list--border">
+        <li><a href="/sketchpad/incentives-sketches">Incentives sketches</a></li>
+        <li><a href="/sketchpad/incentives-emails">Incentives emails</a> — all 4 on one page</li>
+      </ul>
+
+      <h2 class="nhsuk-heading-m">Emails one per page</h2>
+
+      <p>Start at email 1 to step through all 4 in order.</p>
+
+      <ul class="nhsuk-list nhsuk-list--border">
+        <li><a href="/sketchpad/email-1-missing-experience">1. Products missing experience</a></li>
+        <li><a href="/sketchpad/email-2-contact-permission">2. Permission to be contacted</a></li>
+        <li><a href="/sketchpad/email-3-monthly-report">3. Monthly report</a></li>
+        <li><a href="/sketchpad/email-4-how-you-compare">4. How you compare</a></li>
+      </ul>
+
+    </div>
+  </div>
+{% endblock %}

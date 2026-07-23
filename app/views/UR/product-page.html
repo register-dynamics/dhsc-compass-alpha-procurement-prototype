@@ -500,7 +500,34 @@
         <h3 class="nhsuk-card__heading nhsuk-heading-m">
           Barts Health NHS Trust
         </h3>
-        
+
+        {# "Useful" endorsement count and action.
+           The NHS Design System has no like/favourite component, so this uses a
+           secondary button with the ARIA toggle button pattern (aria-pressed).
+           Tick icon is decorative (aria-hidden); the count and the button label
+           carry the meaning for assistive technology. #}
+        <div class="nhsuk-u-margin-bottom-4">
+
+          <p class="nhsuk-body nhsuk-u-margin-bottom-2">
+            <svg class="nhsuk-icon nhsuk-icon__tick" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" focusable="false" aria-hidden="true" style="vertical-align: middle;">
+              <path d="M11.4 18.8a2 2 0 0 1-2.7.1h-.1L4 14.1a1.5 1.5 0 0 1 2.1-2L10 16l8.1-8.1a1.5 1.5 0 1 1 2.2 2l-8.9 9Z"></path>
+            </svg>
+            <strong>25 people</strong> found this useful
+          </p>
+
+          {{ button({
+            element: "button",
+            type: "button",
+            text: "Mark as useful",
+            classes: "nhsuk-button--secondary nhsuk-u-margin-bottom-0",
+            attributes: {
+              "id": "mark-useful",
+              "aria-pressed": "false"
+            }
+          }) }}
+
+        </div>
+
         <dl class="nhsuk-summary-list nhsuk-summary-list--no-border">
           <div class="nhsuk-summary-list__row">
             <dt class="nhsuk-summary-list__key">
@@ -542,7 +569,11 @@
             <strong>Dr Tess Sawyer</strong><br>
             Consultant, Nephrology
           </p>
-          
+
+          {{ insetText({
+            text: "Top contributor on Compass"
+          }) }}
+
           <p class="nhsuk-body">
             <a href="mailto:tess.sawyer@nhs.net">tess.sawyer@nhs.net</a><br>
             0112 244 2795
@@ -938,4 +969,30 @@
   </div>
 </div>
 
+{% endblock %}
+
+{% block pageScripts %}
+<script>
+  // Prototype only: toggles the "useful" state so the card can be used as a
+  // visual prompt in user testing. The count is deliberately not updated.
+  document.addEventListener('DOMContentLoaded', function () {
+    var markUseful = document.querySelector('#mark-useful')
+
+    if (!markUseful) {
+      return
+    }
+
+    var tick =
+      '<svg class="nhsuk-icon nhsuk-icon__tick" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" focusable="false" aria-hidden="true" style="vertical-align: middle;">' +
+      '<path d="M11.4 18.8a2 2 0 0 1-2.7.1h-.1L4 14.1a1.5 1.5 0 0 1 2.1-2L10 16l8.1-8.1a1.5 1.5 0 1 1 2.2 2l-8.9 9Z"></path>' +
+      '</svg> '
+
+    markUseful.addEventListener('click', function () {
+      var isPressed = markUseful.getAttribute('aria-pressed') === 'true'
+
+      markUseful.setAttribute('aria-pressed', isPressed ? 'false' : 'true')
+      markUseful.innerHTML = isPressed ? 'Mark as useful' : tick + 'Marked as useful'
+    })
+  })
+</script>
 {% endblock %}
