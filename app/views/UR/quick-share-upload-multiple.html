@@ -1,0 +1,1034 @@
+{% extends prototypeVersion + '/layouts/layout-signed-in.html' %}
+
+{% set pageName = "Upload your documents" %}
+
+{% block beforeContent %}
+  {{ breadcrumb({
+    items: [
+      {
+        text: "Home",
+        href: "/"
+      },
+      {
+        text: "Share evaluation",
+        href: "/",
+        ariaCurrent: "page"
+      }
+    ],
+    attributes: {
+      "aria-label": "Breadcrumb"
+    }
+  }) }}
+{% endblock %}
+
+{% block content %}
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+
+    <form action="review-evaluation" method="post" enctype="multipart/form-data">
+
+      <!-- Document Upload Section -->
+      <div class="nhsuk-form-group">
+        <fieldset class="nhsuk-fieldset">
+          <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--l">
+            <h1 class="nhsuk-fieldset__heading">
+              Upload your documents
+            </h1>
+          </legend>
+
+          <p>Then, give us a few details to help other trusts find them.</p>
+          
+          <div class="nhsuk-hint">
+            Formats accepted: PDF, Word, Excel
+          </div>
+
+          <div class="nhsuk-form-group">
+            <label class="nhsuk-label" for="file-upload">
+              Choose file to upload
+            </label>
+            <div class="nhsuk-hint" id="file-upload-hint">
+              Maximum 10MB per file
+            </div>
+            <input class="nhsuk-input" id="file-upload" name="file-upload" type="file" multiple accept=".pdf,.doc,.docx,.xls,.xlsx" aria-describedby="file-upload-hint">
+          </div>
+
+        
+
+        </fieldset>
+      </div>
+
+     
+
+      <!-- Alternative: Link to resource -->
+      <div class="nhsuk-u-margin-top-4 nhsuk-u-margin-bottom-4">
+        <p class="nhsuk-body-s nhsuk-u-secondary-text-color" style="text-align: center;">
+          <strong>OR</strong>
+        </p>
+      </div>
+
+      {{ input({
+        label: {
+          text: "Link to your document",
+          classes: "nhsuk-label--s"
+        },
+        id: "document-link",
+        name: "document-link",
+        type: "url",
+        hint: {
+          text: "If you can't upload the document, provide a link to it"
+        },
+        attributes: {
+          placeholder: "https://"
+        }
+      }) }}
+
+      <hr class="nhsuk-section-break nhsuk-section-break--l nhsuk-section-break--visible">
+
+      <!-- Multiple evaluations question -->
+      <div class="nhsuk-form-group">
+        <fieldset class="nhsuk-fieldset">
+          <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--m">
+            <h2 class="nhsuk-fieldset__heading">
+              How many products are evaluated in this upload?
+            </h2>
+          </legend>
+          <div class="nhsuk-hint">
+            Some evaluation reports cover multiple products. We'll ask you for details about each one.
+          </div>
+
+          {{ radios({
+            idPrefix: "evaluation-count",
+            name: "evaluation-count",
+            items: [
+              {
+                value: "1",
+                text: "1 product"
+              },
+              {
+                value: "2",
+                text: "2 products"
+              },
+              {
+                value: "3",
+                text: "3 products",
+                checked: true
+              },
+              {
+                value: "more",
+                text: "More than 3",
+                conditional: {
+                  html: '<div class="nhsuk-form-group">
+                    <label class="nhsuk-label" for="evaluation-count-other">
+                      How many products?
+                    </label>
+                    <input class="nhsuk-input nhsuk-input--width-3" id="evaluation-count-other" name="evaluation-count-other" type="number" min="4" max="10">
+                  </div>'
+                }
+              }
+            ]
+          }) }}
+        </fieldset>
+      </div>
+
+      <hr class="nhsuk-section-break nhsuk-section-break--l nhsuk-section-break--visible">
+
+      <!-- Shared information section -->
+
+      <h2 class="nhsuk-heading-m">About the trust</h2>
+<p class="nhsuk-body-s nhsuk-u-secondary-text-color">This information applies to all evaluations in your document.</p>
+
+<!-- Trust card 1 -->
+<div class="nhsuk-card nhsuk-u-margin-bottom-4" id="trust-card-1">
+  <div class="nhsuk-card__content">
+    <h3 class="nhsuk-heading-s nhsuk-u-margin-bottom-3">Department 1</h3>
+
+    {{ input({
+      label: { text: "Trust name", classes: "nhsuk-label--s" },
+      id: "trust-name-1",
+      name: "trust-name[1]",
+      value: "Mid England NHS Foundation Trust",
+      attributes: { readonly: "readonly" }
+    }) }}
+
+    {{ select({
+      id: "trust-department-1",
+      name: "trust-department[1]",
+      label: { text: "Department", classes: "nhsuk-label--s" },
+      hint: { text: "Select the department that conducted this evaluation" },
+      items: [
+        { value: "", text: "Select a department", selected: true },
+        { value: "anaesthetics", text: "Anaesthetics" },
+        { value: "cardiology", text: "Cardiology" },
+        { value: "clinical-engineering", text: "Clinical Engineering" },
+        { value: "critical-care", text: "Critical Care / ICU" },
+        { value: "diagnostics", text: "Diagnostics and Imaging" },
+        { value: "emergency", text: "Emergency Medicine" },
+        { value: "general-surgery", text: "General Surgery" },
+        { value: "haematology", text: "Haematology" },
+        { value: "infection-control", text: "Infection Control" },
+        { value: "maternity", text: "Maternity and Obstetrics" },
+        { value: "medical-devices", text: "Medical Devices" },
+        { value: "oncology", text: "Oncology" },
+        { value: "paediatrics", text: "Paediatrics" },
+        { value: "pathology", text: "Pathology" },
+        { value: "pharmacy", text: "Pharmacy" },
+        { value: "procurement", text: "Procurement" },
+        { value: "radiology", text: "Radiology" },
+        { value: "renal", text: "Renal Medicine" },
+        { value: "respiratory", text: "Respiratory Medicine" },
+        { value: "theatre", text: "Theatre and Perioperative" },
+        { value: "other", text: "Other" }
+      ]
+    }) }}
+
+    {{ input({
+      label: { text: "Evaluation lead (optional)", classes: "nhsuk-label--s" },
+      id: "lead-clinician-1",
+      name: "lead-clinician[1]",
+      hint: { text: "Name of the person who led or supervised this evaluation" }
+    }) }}
+
+  </div>
+</div>
+
+<!-- Trust card 2 (hidden by default) -->
+<div class="nhsuk-card nhsuk-u-margin-bottom-4" id="trust-card-2" style="display: none;">
+  <div class="nhsuk-card__content">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+      <h3 class="nhsuk-heading-s nhsuk-u-margin-bottom-0">Department 2</h3>
+      <a href="#" class="nhsuk-link nhsuk-link--no-visited-state" id="remove-trust-2">Remove</a>
+    </div>
+
+    {{ input({
+      label: { text: "Trust name", classes: "nhsuk-label--s" },
+      id: "trust-name-2",
+      name: "trust-name[2]",
+      value: "Mid England NHS Foundation Trust",
+      attributes: { readonly: "readonly" }
+    }) }}
+
+    {{ select({
+      id: "trust-department-2",
+      name: "trust-department[2]",
+      label: { text: "Department", classes: "nhsuk-label--s" },
+      hint: { text: "Select the department that conducted this evaluation" },
+      items: [
+        { value: "", text: "Select a department", selected: true },
+        { value: "anaesthetics", text: "Anaesthetics" },
+        { value: "cardiology", text: "Cardiology" },
+        { value: "clinical-engineering", text: "Clinical Engineering" },
+        { value: "critical-care", text: "Critical Care / ICU" },
+        { value: "diagnostics", text: "Diagnostics and Imaging" },
+        { value: "emergency", text: "Emergency Medicine" },
+        { value: "general-surgery", text: "General Surgery" },
+        { value: "haematology", text: "Haematology" },
+        { value: "infection-control", text: "Infection Control" },
+        { value: "maternity", text: "Maternity and Obstetrics" },
+        { value: "medical-devices", text: "Medical Devices" },
+        { value: "oncology", text: "Oncology" },
+        { value: "paediatrics", text: "Paediatrics" },
+        { value: "pathology", text: "Pathology" },
+        { value: "pharmacy", text: "Pharmacy" },
+        { value: "procurement", text: "Procurement" },
+        { value: "radiology", text: "Radiology" },
+        { value: "renal", text: "Renal Medicine" },
+        { value: "respiratory", text: "Respiratory Medicine" },
+        { value: "theatre", text: "Theatre and Perioperative" },
+        { value: "other", text: "Other" }
+      ]
+    }) }}
+
+    {{ input({
+      label: { text: "Evaluation lead (optional)", classes: "nhsuk-label--s" },
+      id: "lead-clinician-2",
+      name: "lead-clinician[2]",
+      hint: { text: "Name of the person who led or supervised this evaluation" }
+    }) }}
+
+  </div>
+</div>
+
+<p class="nhsuk-u-margin-bottom-6">
+  <a href="#" class="nhsuk-link nhsuk-link--no-visited-state" id="add-another-trust">+ Add another department</a>
+</p>
+
+
+
+      
+
+      <hr class="nhsuk-section-break nhsuk-section-break--l nhsuk-section-break--visible">
+
+      <!-- Evaluation 1 -->
+      <div class="nhsuk-card nhsuk-u-margin-bottom-4">
+        <div class="nhsuk-card__content">
+          <div class="nhsuk-u-margin-bottom-3" style="display: flex; justify-content: space-between; align-items: center;">
+            <h3 class="nhsuk-heading-m nhsuk-u-margin-bottom-0">
+              <span class="nhsuk-tag nhsuk-tag--blue nhsuk-u-margin-right-2">1 of 3</span>
+              Product evaluation
+            </h3>
+          </div>
+
+          {% include "includes/products.html" %}
+
+          <!-- Date range: month/year only -->
+          <div class="nhsuk-form-group">
+            <fieldset class="nhsuk-fieldset">
+              <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--s">
+                Evaluation period
+              </legend>
+              <div class="nhsuk-hint">Approximate dates are fine. Enter a date range if the evaluation ran over several months.</div>
+
+              <div style="display: flex; gap: 24px; flex-wrap: wrap; align-items: flex-end;">
+                <div>
+                  <p class="nhsuk-body-s nhsuk-u-margin-bottom-1"><strong>Start</strong></p>
+                  <div style="display: flex; gap: 12px;">
+                    <div class="nhsuk-form-group nhsuk-u-margin-bottom-0">
+                      <label class="nhsuk-label nhsuk-body-s" for="eval-start-month-1">Month</label>
+                      <select class="nhsuk-select nhsuk-input--width-10" id="eval-start-month-1" name="eval-start-month-1">
+                        <option value="">Month</option>
+                        <option value="01">January</option>
+                        <option value="02">February</option>
+                        <option value="03">March</option>
+                        <option value="04">April</option>
+                        <option value="05">May</option>
+                        <option value="06">June</option>
+                        <option value="07">July</option>
+                        <option value="08">August</option>
+                        <option value="09">September</option>
+                        <option value="10">October</option>
+                        <option value="11">November</option>
+                        <option value="12">December</option>
+                      </select>
+                    </div>
+                    <div class="nhsuk-form-group nhsuk-u-margin-bottom-0">
+                      <label class="nhsuk-label nhsuk-body-s" for="eval-start-year-1">Year</label>
+                      <input class="nhsuk-input nhsuk-input--width-4" id="eval-start-year-1" name="eval-start-year-1" type="number" min="2000" max="2030" placeholder="YYYY">
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <p class="nhsuk-body-s nhsuk-u-margin-bottom-1"><strong>End</strong> <span class="nhsuk-u-secondary-text-color">(optional)</span></p>
+                  <div style="display: flex; gap: 12px;">
+                    <div class="nhsuk-form-group nhsuk-u-margin-bottom-0">
+                      <label class="nhsuk-label nhsuk-body-s" for="eval-end-month-1">Month</label>
+                      <select class="nhsuk-select nhsuk-input--width-10" id="eval-end-month-1" name="eval-end-month-1">
+                        <option value="">Month</option>
+                        <option value="01">January</option>
+                        <option value="02">February</option>
+                        <option value="03">March</option>
+                        <option value="04">April</option>
+                        <option value="05">May</option>
+                        <option value="06">June</option>
+                        <option value="07">July</option>
+                        <option value="08">August</option>
+                        <option value="09">September</option>
+                        <option value="10">October</option>
+                        <option value="11">November</option>
+                        <option value="12">December</option>
+                      </select>
+                    </div>
+                    <div class="nhsuk-form-group nhsuk-u-margin-bottom-0">
+                      <label class="nhsuk-label nhsuk-body-s" for="eval-end-year-1">Year</label>
+                      <input class="nhsuk-input nhsuk-input--width-4" id="eval-end-year-1" name="eval-end-year-1" type="number" min="2000" max="2030" placeholder="YYYY">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </fieldset>
+          </div>
+
+          <!-- Procurement outcome -->
+          <div class="nhsuk-form-group">
+            <fieldset class="nhsuk-fieldset">
+              <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--s">
+                What was the outcome of this evaluation?
+              </legend>
+              <div class="nhsuk-radios">
+
+                <div class="nhsuk-radios__item">
+                  <input class="nhsuk-radios__input" id="recommendation-1-procured" name="recommendation-1" type="radio" value="procured">
+                  <label class="nhsuk-label nhsuk-radios__label" for="recommendation-1-procured">
+                    We procured this product
+                  </label>
+                </div>
+
+                <div class="nhsuk-radios__item">
+                  <input class="nhsuk-radios__input" id="recommendation-1-not-procured" name="recommendation-1" type="radio" value="not-procured">
+                  <label class="nhsuk-label nhsuk-radios__label" for="recommendation-1-not-procured">
+                    We did not procure this product
+                  </label>
+                </div>
+                <div class="nhsuk-radios__conditional nhsuk-radios__conditional--hidden" id="conditional-recommendation-1-not-procured">
+                  <div class="nhsuk-form-group nhsuk-u-margin-bottom-2">
+                    <fieldset class="nhsuk-fieldset">
+                      <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--s">Why was this product not procured?</legend>
+                      <div class="nhsuk-radios nhsuk-radios--small">
+                        <div class="nhsuk-radios__item">
+                          <input class="nhsuk-radios__input" id="not-procured-reason-1a" name="not-procured-reason-1" type="radio" value="decided-against">
+                          <label class="nhsuk-label nhsuk-radios__label" for="not-procured-reason-1a">We decided against it after evaluation</label>
+                        </div>
+                        <div class="nhsuk-radios__item">
+                          <input class="nhsuk-radios__input" id="not-procured-reason-1b" name="not-procured-reason-1" type="radio" value="under-review">
+                          <label class="nhsuk-label nhsuk-radios__label" for="not-procured-reason-1b">We're still reviewing it and haven't decided</label>
+                        </div>
+                        <div class="nhsuk-radios__item">
+                          <input class="nhsuk-radios__input" id="not-procured-reason-1c" name="not-procured-reason-1" type="radio" value="stopped-using">
+                          <label class="nhsuk-label nhsuk-radios__label" for="not-procured-reason-1c">We stopped using it after a trial or pilot</label>
+                        </div>
+                        <div class="nhsuk-radios__item">
+                          <input class="nhsuk-radios__input" id="not-procured-reason-1d" name="not-procured-reason-1" type="radio" value="budget">
+                          <label class="nhsuk-label nhsuk-radios__label" for="not-procured-reason-1d">We have budget or funding constraints</label>
+                        </div>
+                        <div class="nhsuk-radios__item">
+                          <input class="nhsuk-radios__input" id="not-procured-reason-1e" name="not-procured-reason-1" type="radio" value="other">
+                          <label class="nhsuk-label nhsuk-radios__label" for="not-procured-reason-1e">Another reason</label>
+                        </div>
+                      </div>
+                    </fieldset>
+                  </div>
+                </div>
+
+              </div>
+            </fieldset>
+          </div>
+
+          {{ textarea({
+            name: "summary-1",
+            id: "summary-1",
+            label: {
+              text: "Brief summary (optional)",
+              classes: "nhsuk-label--s"
+            },
+            hint: {
+              text: "A one-sentence summary of your key findings for this product"
+            },
+            rows: "2"
+          }) }}
+
+          {{ input({
+            label: {
+              text: "Page or section reference (optional)",
+              classes: "nhsuk-label--s"
+            },
+            id: "page-ref-1",
+            name: "page-ref-1",
+            classes: "nhsuk-input--width-10",
+            hint: {
+              text: "Help others find this evaluation in the document. For example, 'Pages 1-12' or 'Section 2'."
+            }
+          }) }}
+
+        </div>
+      </div>
+
+      <!-- Evaluation 2 -->
+      <div class="nhsuk-card nhsuk-u-margin-bottom-4">
+        <div class="nhsuk-card__content">
+          <div class="nhsuk-u-margin-bottom-3" style="display: flex; justify-content: space-between; align-items: center;">
+            <h3 class="nhsuk-heading-m nhsuk-u-margin-bottom-0">
+              <span class="nhsuk-tag nhsuk-tag--blue nhsuk-u-margin-right-2">2 of 3</span>
+              Product evaluation
+            </h3>
+          </div>
+
+          {{ select({
+            id: "product-picker-2",
+            name: "product-picker-2",
+            label: {
+              text: "Product evaluated",
+              classes: "nhsuk-label--s"
+            },
+            items: [
+              { value: "", text: "Select a product" },
+              { value: "smartpump-infusion-device-pro", text: "SmartPump Infusion Device Pro" },
+              { value: "medflow-infusion-system", text: "MedFlow Infusion System 3000", selected: true },
+              { value: "vitalguard-patient-monitor", text: "VitalGuard Patient Monitor X1" },
+              { value: "scanmaster-ultrasound", text: "ScanMaster Portable Ultrasound" },
+              { value: "other", text: "Other - I'll enter the name" }
+            ]
+          }) }}
+
+          <!-- Date range: month/year only -->
+          <div class="nhsuk-form-group">
+            <fieldset class="nhsuk-fieldset">
+              <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--s">
+                Evaluation period
+              </legend>
+              <div class="nhsuk-hint">Approximate dates are fine. Enter a date range if the evaluation ran over several months.</div>
+
+              <div style="display: flex; gap: 24px; flex-wrap: wrap; align-items: flex-end;">
+                <div>
+                  <p class="nhsuk-body-s nhsuk-u-margin-bottom-1"><strong>Start</strong></p>
+                  <div style="display: flex; gap: 12px;">
+                    <div class="nhsuk-form-group nhsuk-u-margin-bottom-0">
+                      <label class="nhsuk-label nhsuk-body-s" for="eval-start-month-2">Month</label>
+                      <select class="nhsuk-select nhsuk-input--width-10" id="eval-start-month-2" name="eval-start-month-2">
+                        <option value="">Month</option>
+                        <option value="01">January</option><option value="02">February</option><option value="03">March</option>
+                        <option value="04">April</option><option value="05">May</option><option value="06">June</option>
+                        <option value="07">July</option><option value="08">August</option><option value="09">September</option>
+                        <option value="10">October</option><option value="11">November</option><option value="12">December</option>
+                      </select>
+                    </div>
+                    <div class="nhsuk-form-group nhsuk-u-margin-bottom-0">
+                      <label class="nhsuk-label nhsuk-body-s" for="eval-start-year-2">Year</label>
+                      <input class="nhsuk-input nhsuk-input--width-4" id="eval-start-year-2" name="eval-start-year-2" type="number" min="2000" max="2030" placeholder="YYYY">
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <p class="nhsuk-body-s nhsuk-u-margin-bottom-1"><strong>End</strong> <span class="nhsuk-u-secondary-text-color">(optional)</span></p>
+                  <div style="display: flex; gap: 12px;">
+                    <div class="nhsuk-form-group nhsuk-u-margin-bottom-0">
+                      <label class="nhsuk-label nhsuk-body-s" for="eval-end-month-2">Month</label>
+                      <select class="nhsuk-select nhsuk-input--width-10" id="eval-end-month-2" name="eval-end-month-2">
+                        <option value="">Month</option>
+                        <option value="01">January</option><option value="02">February</option><option value="03">March</option>
+                        <option value="04">April</option><option value="05">May</option><option value="06">June</option>
+                        <option value="07">July</option><option value="08">August</option><option value="09">September</option>
+                        <option value="10">October</option><option value="11">November</option><option value="12">December</option>
+                      </select>
+                    </div>
+                    <div class="nhsuk-form-group nhsuk-u-margin-bottom-0">
+                      <label class="nhsuk-label nhsuk-body-s" for="eval-end-year-2">Year</label>
+                      <input class="nhsuk-input nhsuk-input--width-4" id="eval-end-year-2" name="eval-end-year-2" type="number" min="2000" max="2030" placeholder="YYYY">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </fieldset>
+          </div>
+
+          <!-- Procurement outcome -->
+          <div class="nhsuk-form-group">
+            <fieldset class="nhsuk-fieldset">
+              <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--s">
+                What was the outcome of this evaluation?
+              </legend>
+              <div class="nhsuk-radios">
+                <div class="nhsuk-radios__item">
+                  <input class="nhsuk-radios__input" id="recommendation-2-procured" name="recommendation-2" type="radio" value="procured">
+                  <label class="nhsuk-label nhsuk-radios__label" for="recommendation-2-procured">We procured this product</label>
+                </div>
+                <div class="nhsuk-radios__item">
+                  <input class="nhsuk-radios__input" id="recommendation-2-not-procured" name="recommendation-2" type="radio" value="not-procured">
+                  <label class="nhsuk-label nhsuk-radios__label" for="recommendation-2-not-procured">We did not procure this product</label>
+                </div>
+                <div class="nhsuk-radios__conditional nhsuk-radios__conditional--hidden" id="conditional-recommendation-2-not-procured">
+                  <div class="nhsuk-form-group nhsuk-u-margin-bottom-2">
+                    <fieldset class="nhsuk-fieldset">
+                      <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--s">Why was this product not procured?</legend>
+                       <div class="nhsuk-radios nhsuk-radios--small">
+                        <div class="nhsuk-radios__item">
+                          <input class="nhsuk-radios__input" id="not-procured-reason-1a" name="not-procured-reason-1" type="radio" value="decided-against">
+                          <label class="nhsuk-label nhsuk-radios__label" for="not-procured-reason-1a">We decided against it after evaluation</label>
+                        </div>
+                        <div class="nhsuk-radios__item">
+                          <input class="nhsuk-radios__input" id="not-procured-reason-1b" name="not-procured-reason-1" type="radio" value="under-review">
+                          <label class="nhsuk-label nhsuk-radios__label" for="not-procured-reason-1b">We're still reviewing it and haven't decided</label>
+                        </div>
+                        <div class="nhsuk-radios__item">
+                          <input class="nhsuk-radios__input" id="not-procured-reason-1c" name="not-procured-reason-1" type="radio" value="stopped-using">
+                          <label class="nhsuk-label nhsuk-radios__label" for="not-procured-reason-1c">We stopped using it after a trial or pilot</label>
+                        </div>
+                        <div class="nhsuk-radios__item">
+                          <input class="nhsuk-radios__input" id="not-procured-reason-1d" name="not-procured-reason-1" type="radio" value="budget">
+                          <label class="nhsuk-label nhsuk-radios__label" for="not-procured-reason-1d">We have budget or funding constraints</label>
+                        </div>
+                        <div class="nhsuk-radios__item">
+                          <input class="nhsuk-radios__input" id="not-procured-reason-1e" name="not-procured-reason-1" type="radio" value="other">
+                          <label class="nhsuk-label nhsuk-radios__label" for="not-procured-reason-1e">Another reason</label>
+                        </div>
+                    </fieldset>
+                  </div>
+                </div>
+              </div>
+            </fieldset>
+          </div>
+
+          {{ textarea({
+            name: "summary-2",
+            id: "summary-2",
+            label: {
+              text: "Brief summary (optional)",
+              classes: "nhsuk-label--s"
+            },
+            hint: {
+              text: "A one-sentence summary of your key findings for this product"
+            },
+            rows: "2"
+          }) }}
+
+          {{ input({
+            label: {
+              text: "Page or section reference (optional)",
+              classes: "nhsuk-label--s"
+            },
+            id: "page-ref-2",
+            name: "page-ref-2",
+            classes: "nhsuk-input--width-10",
+            hint: {
+              text: "Help others find this evaluation in the document. For example, 'Pages 13-24' or 'Section 3'."
+            }
+          }) }}
+
+        </div>
+      </div>
+
+      <!-- Evaluation 3 -->
+      <div class="nhsuk-card nhsuk-u-margin-bottom-4">
+        <div class="nhsuk-card__content">
+          <div class="nhsuk-u-margin-bottom-3" style="display: flex; justify-content: space-between; align-items: center;">
+            <h3 class="nhsuk-heading-m nhsuk-u-margin-bottom-0">
+              <span class="nhsuk-tag nhsuk-tag--blue nhsuk-u-margin-right-2">3 of 3</span>
+              Product evaluation
+            </h3>
+          </div>
+
+          {{ select({
+            id: "product-picker-3",
+            name: "product-picker-3",
+            label: {
+              text: "Product evaluated",
+              classes: "nhsuk-label--s"
+            },
+            items: [
+              { value: "", text: "Select a product" },
+              { value: "smartpump-infusion-device-pro", text: "SmartPump Infusion Device Pro" },
+              { value: "medflow-infusion-system", text: "MedFlow Infusion System 3000" },
+              { value: "vitalguard-patient-monitor", text: "VitalGuard Patient Monitor X1", selected: true },
+              { value: "scanmaster-ultrasound", text: "ScanMaster Portable Ultrasound" },
+              { value: "other", text: "Other - I'll enter the name" }
+            ]
+          }) }}
+
+          <!-- Date range: month/year only -->
+          <div class="nhsuk-form-group">
+            <fieldset class="nhsuk-fieldset">
+              <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--s">
+                Evaluation period
+              </legend>
+              <div class="nhsuk-hint">Approximate dates are fine. Enter a date range if the evaluation ran over several months.</div>
+
+              <div style="display: flex; gap: 24px; flex-wrap: wrap; align-items: flex-end;">
+                <div>
+                  <p class="nhsuk-body-s nhsuk-u-margin-bottom-1"><strong>Start</strong></p>
+                  <div style="display: flex; gap: 12px;">
+                    <div class="nhsuk-form-group nhsuk-u-margin-bottom-0">
+                      <label class="nhsuk-label nhsuk-body-s" for="eval-start-month-3">Month</label>
+                      <select class="nhsuk-select nhsuk-input--width-10" id="eval-start-month-3" name="eval-start-month-3">
+                        <option value="">Month</option>
+                        <option value="01">January</option><option value="02">February</option><option value="03">March</option>
+                        <option value="04">April</option><option value="05">May</option><option value="06">June</option>
+                        <option value="07">July</option><option value="08">August</option><option value="09">September</option>
+                        <option value="10">October</option><option value="11">November</option><option value="12">December</option>
+                      </select>
+                    </div>
+                    <div class="nhsuk-form-group nhsuk-u-margin-bottom-0">
+                      <label class="nhsuk-label nhsuk-body-s" for="eval-start-year-3">Year</label>
+                      <input class="nhsuk-input nhsuk-input--width-4" id="eval-start-year-3" name="eval-start-year-3" type="number" min="2000" max="2030" placeholder="YYYY">
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <p class="nhsuk-body-s nhsuk-u-margin-bottom-1"><strong>End</strong> <span class="nhsuk-u-secondary-text-color">(optional)</span></p>
+                  <div style="display: flex; gap: 12px;">
+                    <div class="nhsuk-form-group nhsuk-u-margin-bottom-0">
+                      <label class="nhsuk-label nhsuk-body-s" for="eval-end-month-3">Month</label>
+                      <select class="nhsuk-select nhsuk-input--width-10" id="eval-end-month-3" name="eval-end-month-3">
+                        <option value="">Month</option>
+                        <option value="01">January</option><option value="02">February</option><option value="03">March</option>
+                        <option value="04">April</option><option value="05">May</option><option value="06">June</option>
+                        <option value="07">July</option><option value="08">August</option><option value="09">September</option>
+                        <option value="10">October</option><option value="11">November</option><option value="12">December</option>
+                      </select>
+                    </div>
+                    <div class="nhsuk-form-group nhsuk-u-margin-bottom-0">
+                      <label class="nhsuk-label nhsuk-body-s" for="eval-end-year-3">Year</label>
+                      <input class="nhsuk-input nhsuk-input--width-4" id="eval-end-year-3" name="eval-end-year-3" type="number" min="2000" max="2030" placeholder="YYYY">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </fieldset>
+          </div>
+
+          <!-- Procurement outcome -->
+          <div class="nhsuk-form-group">
+            <fieldset class="nhsuk-fieldset">
+              <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--s">
+                What was the outcome of this evaluation?
+              </legend>
+              <div class="nhsuk-radios">
+                <div class="nhsuk-radios__item">
+                  <input class="nhsuk-radios__input" id="recommendation-3-procured" name="recommendation-3" type="radio" value="procured">
+                  <label class="nhsuk-label nhsuk-radios__label" for="recommendation-3-procured">We procured this product</label>
+                </div>
+                <div class="nhsuk-radios__item">
+                  <input class="nhsuk-radios__input" id="recommendation-3-not-procured" name="recommendation-3" type="radio" value="not-procured">
+                  <label class="nhsuk-label nhsuk-radios__label" for="recommendation-3-not-procured">We did not procure this product</label>
+                </div>
+                <div class="nhsuk-radios__conditional nhsuk-radios__conditional--hidden" id="conditional-recommendation-3-not-procured">
+                  <div class="nhsuk-form-group nhsuk-u-margin-bottom-2">
+                    <fieldset class="nhsuk-fieldset">
+                      <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--s">Why was this product not procured?</legend>
+                        <div class="nhsuk-radios nhsuk-radios--small">
+                        <div class="nhsuk-radios__item">
+                          <input class="nhsuk-radios__input" id="not-procured-reason-1a" name="not-procured-reason-1" type="radio" value="decided-against">
+                          <label class="nhsuk-label nhsuk-radios__label" for="not-procured-reason-1a">We decided against it after evaluation</label>
+                        </div>
+                        <div class="nhsuk-radios__item">
+                          <input class="nhsuk-radios__input" id="not-procured-reason-1b" name="not-procured-reason-1" type="radio" value="under-review">
+                          <label class="nhsuk-label nhsuk-radios__label" for="not-procured-reason-1b">We're still reviewing it and haven't decided</label>
+                        </div>
+                        <div class="nhsuk-radios__item">
+                          <input class="nhsuk-radios__input" id="not-procured-reason-1c" name="not-procured-reason-1" type="radio" value="stopped-using">
+                          <label class="nhsuk-label nhsuk-radios__label" for="not-procured-reason-1c">We stopped using it after a trial or pilot</label>
+                        </div>
+                        <div class="nhsuk-radios__item">
+                          <input class="nhsuk-radios__input" id="not-procured-reason-1d" name="not-procured-reason-1" type="radio" value="budget">
+                          <label class="nhsuk-label nhsuk-radios__label" for="not-procured-reason-1d">We have budget or funding constraints</label>
+                        </div>
+                        <div class="nhsuk-radios__item">
+                          <input class="nhsuk-radios__input" id="not-procured-reason-1e" name="not-procured-reason-1" type="radio" value="other">
+                          <label class="nhsuk-label nhsuk-radios__label" for="not-procured-reason-1e">Another reason</label>
+                        </div>
+                    </fieldset>
+                  </div>
+                </div>
+              </div>
+            </fieldset>
+          </div>
+
+          {{ textarea({
+            name: "summary-3",
+            id: "summary-3",
+            label: {
+              text: "Brief summary (optional)",
+              classes: "nhsuk-label--s"
+            },
+            hint: {
+              text: "A one-sentence summary of your key findings for this product"
+            },
+            rows: "2"
+          }) }}
+
+          {{ input({
+            label: {
+              text: "Page or section reference (optional)",
+              classes: "nhsuk-label--s"
+            },
+            id: "page-ref-3",
+            name: "page-ref-3",
+            classes: "nhsuk-input--width-10",
+            hint: {
+              text: "Help others find this evaluation in the document. For example, 'Pages 25-36' or 'Section 4'."
+            }
+          }) }}
+
+        </div>
+      </div>
+
+      <hr class="nhsuk-section-break nhsuk-section-break--l nhsuk-section-break--visible">
+
+      <!-- Contact section — multiple contacts -->
+      <h2 class="nhsuk-heading-m">Contacts for queries</h2>
+      <p class="nhsuk-body-s nhsuk-u-secondary-text-color">Other trusts may want to ask about your evaluations. Add one or more contacts — for example, both a clinical and a procurement lead.</p>
+
+      <!-- Contact 1 -->
+      <div class="nhsuk-card nhsuk-u-margin-bottom-4" id="contact-card-1">
+        <div class="nhsuk-card__content">
+          <h3 class="nhsuk-heading-s nhsuk-u-margin-bottom-3">Contact 1</h3>
+
+          {{ input({
+            label: {
+              text: "Contact name",
+              classes: "nhsuk-label--s"
+            },
+            id: "contact-name-1",
+            name: "contact-name-1",
+            hint: {
+              text: "The person other trusts should contact with questions"
+            }
+          }) }}
+
+          {{ select({
+            id: "contact-role-1",
+            name: "contact-role-1",
+            label: {
+              text: "Role",
+              classes: "nhsuk-label--s"
+            },
+            hint: {
+              text: "This helps other trusts direct their question to the right person"
+            },
+            items: [
+              { value: "", text: "Select a role", selected: true },
+              { value: "clinical-lead", text: "Clinical lead" },
+              { value: "procurement-lead", text: "Procurement lead" },
+              { value: "procurement-manager", text: "Procurement manager" },
+              { value: "nurse-specialist", text: "Nurse specialist" },
+              { value: "clinical-engineer", text: "Clinical engineer" },
+              { value: "finance-lead", text: "Finance lead" },
+              { value: "digital-informatics", text: "Digital / informatics lead" },
+              { value: "other", text: "Other" }
+            ]
+          }) }}
+
+          {{ input({
+            label: {
+              text: "Email address",
+              classes: "nhsuk-label--s"
+            },
+            id: "contact-email-1",
+            name: "contact-email-1",
+            type: "email"
+          }) }}
+
+          {{ input({
+            label: {
+              text: "UK phone number (optional)",
+              classes: "nhsuk-label--s"
+            },
+            id: "contact-phone-1",
+            name: "contact-phone-1",
+            type: "tel",
+            classes: "nhsuk-input--width-20",
+            hint: {
+              text: "For example, 07700 900000 or 0113 496 0000"
+            },
+            attributes: {
+              autocomplete: "tel"
+            }
+          }) }}
+
+          {{ checkboxes({
+            idPrefix: "contact-topics-1",
+            name: "contact-topics-1",
+            fieldset: {
+              legend: {
+                text: "What are you willing to discuss?",
+                classes: "nhsuk-fieldset__legend--s"
+              }
+            },
+            hint: {
+              text: "Select all topics you're happy to be contacted about"
+            },
+            items: [
+              {
+                value: "clinical-outcomes",
+                text: "Clinical outcomes and effectiveness",
+                hint: { text: "Patient outcomes, safety data, clinical performance" }
+              },
+              {
+                value: "evaluation-methodology",
+                text: "Evaluation methodology",
+                hint: { text: "How you conducted the evaluation, criteria used, lessons learned" }
+              },
+              {
+                value: "implementation",
+                text: "Implementation and training",
+                hint: { text: "Rollout experience, staff training, change management" }
+              },
+              {
+                value: "integration",
+                text: "System integration",
+                hint: { text: "IT integration, interoperability, data migration" }
+              },
+              {
+                value: "procurement-process",
+                text: "Procurement process",
+                hint: { text: "Tender approach, contract terms, supplier engagement" }
+              },
+              {
+                value: "costs",
+                text: "Costs and value",
+                hint: { text: "Pricing, total cost of ownership, return on investment" }
+              },
+              {
+                value: "supplier-experience",
+                text: "Supplier experience",
+                hint: { text: "Working relationship, support quality, responsiveness" }
+              }
+            ]
+          }) }}
+
+        </div>
+      </div>
+
+      <!-- Contact 2 (hidden by default) -->
+      <div class="nhsuk-card nhsuk-u-margin-bottom-4" id="contact-card-2" style="display: none;">
+        <div class="nhsuk-card__content">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <h3 class="nhsuk-heading-s nhsuk-u-margin-bottom-0">Contact 2</h3>
+            <a href="#" class="nhsuk-link nhsuk-link--no-visited-state" id="remove-contact-2">Remove</a>
+          </div>
+
+          {{ input({
+            label: { text: "Contact name", classes: "nhsuk-label--s" },
+            id: "contact-name-2",
+            name: "contact-name-2"
+          }) }}
+
+          {{ select({
+            id: "contact-role-2",
+            name: "contact-role-2",
+            label: { text: "Role", classes: "nhsuk-label--s" },
+            items: [
+              { value: "", text: "Select a role", selected: true },
+              { value: "clinical-lead", text: "Clinical lead" },
+              { value: "procurement-lead", text: "Procurement lead" },
+              { value: "procurement-manager", text: "Procurement manager" },
+              { value: "nurse-specialist", text: "Nurse specialist" },
+              { value: "clinical-engineer", text: "Clinical engineer" },
+              { value: "finance-lead", text: "Finance lead" },
+              { value: "digital-informatics", text: "Digital / informatics lead" },
+              { value: "other", text: "Other" }
+            ]
+          }) }}
+
+          {{ input({
+            label: { text: "Email address", classes: "nhsuk-label--s" },
+            id: "contact-email-2",
+            name: "contact-email-2",
+            type: "email"
+          }) }}
+
+          {{ input({
+            label: { text: "UK phone number (optional)", classes: "nhsuk-label--s" },
+            id: "contact-phone-2",
+            name: "contact-phone-2",
+            type: "tel",
+            classes: "nhsuk-input--width-20",
+            hint: { text: "For example, 07700 900000 or 0113 496 0000" }
+          }) }}
+
+          {{ checkboxes({
+            idPrefix: "contact-topics-2",
+            name: "contact-topics-2",
+            fieldset: {
+              legend: { text: "What are you willing to discuss?", classes: "nhsuk-fieldset__legend--s" }
+            },
+            items: [
+              { value: "clinical-outcomes", text: "Clinical outcomes and effectiveness" },
+              { value: "evaluation-methodology", text: "Evaluation methodology" },
+              { value: "implementation", text: "Implementation and training" },
+              { value: "integration", text: "System integration" },
+              { value: "procurement-process", text: "Procurement process" },
+              { value: "costs", text: "Costs and value" },
+              { value: "supplier-experience", text: "Supplier experience" }
+            ]
+          }) }}
+
+        </div>
+      </div>
+
+      <p class="nhsuk-u-margin-bottom-6">
+        <a href="#" class="nhsuk-link nhsuk-link--no-visited-state" id="add-another-contact">+ Add another contact</a>
+      </p>
+
+      <!-- Who can see this — updated with supplier visibility -->
+      <div class="nhsuk-warning-callout nhsuk-u-margin-top-2">
+        <h3 class="nhsuk-warning-callout__label">
+          <span role="text">
+            <span class="nhsuk-u-visually-hidden">Important: </span>
+            Who can see this?
+          </span>
+        </h3>
+        <p>Your evaluations will be visible to:</p>
+        <ul class="nhsuk-list nhsuk-list--bullet">
+          <li><strong>All NHS trusts</strong> using this service</li>
+          <li><strong>The supplier</strong> of each product you have evaluated</li>
+        </ul>
+        <p>Suppliers can see that your trust has submitted an evaluation, including the procurement outcome and your summary. They cannot see your contact details unless you choose to share them with suppliers on the next screen.</p>
+        <p class="nhsuk-body-s">All 3 product evaluations will be linked to the same uploaded document.</p>
+      </div>
+
+      <div class="nhsuk-form-group nhsuk-u-margin-top-6">
+        <button class="nhsuk-button" data-module="nhsuk-button" type="submit">
+          Continue
+        </button>
+        <p>
+          <a href="/share-evaluation-choice" class="nhsuk-link nhsuk-link--no-visited-state">Cancel</a>
+        </p>
+      </div>
+
+    </form>
+
+  </div>
+
+  <!-- Summary sidebar -->
+  <div class="nhsuk-grid-column-one-third">
+    
+  </div>
+
+</div>
+
+<script>
+// Conditional reveal for "not procured" reason
+document.querySelectorAll('input[type="radio"][value="not-procured"]').forEach(function(radio) {
+  radio.addEventListener('change', function() {
+    var conditionalId = 'conditional-' + this.name + '-not-procured';
+    var conditionalEl = document.getElementById(conditionalId);
+    if (conditionalEl) {
+      conditionalEl.classList.remove('nhsuk-radios__conditional--hidden');
+    }
+  });
+});
+document.querySelectorAll('input[type="radio"][value="procured"]').forEach(function(radio) {
+  radio.addEventListener('change', function() {
+    var conditionalId = 'conditional-' + this.name + '-not-procured';
+    var conditionalEl = document.getElementById(conditionalId);
+    if (conditionalEl) {
+      conditionalEl.classList.add('nhsuk-radios__conditional--hidden');
+    }
+  });
+});
+
+// Add another contact
+document.getElementById('add-another-contact').addEventListener('click', function(e) {
+  e.preventDefault();
+  document.getElementById('contact-card-2').style.display = 'block';
+  this.style.display = 'none';
+});
+
+document.getElementById('remove-contact-2').addEventListener('click', function(e) {
+  e.preventDefault();
+  document.getElementById('contact-card-2').style.display = 'none';
+  document.getElementById('add-another-contact').style.display = 'inline';
+});
+
+// Add another trust
+
+document.getElementById('add-another-trust').addEventListener('click', function(e) {
+  e.preventDefault();
+  document.getElementById('trust-card-2').style.display = 'block';
+  this.style.display = 'none';
+});
+
+document.getElementById('remove-trust-2').addEventListener('click', function(e) {
+  e.preventDefault();
+  document.getElementById('trust-card-2').style.display = 'none';
+  document.getElementById('add-another-trust').style.display = 'inline';
+});
+
+
+
+// File upload preview
+document.getElementById('file-upload').addEventListener('change', function(e) {
+  // File handling would go here
+});
+</script>
+
+{% endblock %}
+
+{% block pageScripts %}
+<script src="https://cdn.jsdelivr.net/npm/accessible-autocomplete@2.0.4/dist/accessible-autocomplete.min.js"></script>
+<script type="text/javascript">
+  accessibleAutocomplete.enhanceSelectElement({
+    defaultValue: '',
+    selectElement: document.querySelector('#product-picker')
+  })
+</script>
+{% endblock %}

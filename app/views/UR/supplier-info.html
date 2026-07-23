@@ -1,0 +1,187 @@
+<!-- Use this page as the index for your project -->
+<!-- ADDING CUSTOM CSS - Add your custom CSS or Sass in /app/assets/sass/main.scss -->
+<!-- Extends the layout from /app/views/layout.html -->
+{% extends 'layout.html' %}
+<!--
+  In /app/views/layout.html you can:
+    - change the header and footer
+    - add custom CSS and JavaScript
+-->
+{% set pageName = "Supplier information" %}
+
+
+{% block beforeContent %}
+{% endblock %}
+
+{% block content %}
+
+
+
+  <div class="nhsuk-grid-row nhsuk-u-margin-top-7">
+  <div class="nhsuk-grid-column-two-thirds">
+    
+  {% from 'fieldset/macro.njk' import fieldset %}
+{% from "input/macro.njk" import input %}
+
+{% call fieldset({
+  legend: {
+    text: "Evaluation details",
+    classes: "nhsuk-fieldset__legend--l",
+    isPageHeading: true
+  }
+}) %}
+
+
+{% from 'select/macro.njk' import select %}
+
+{{ select({
+  id: "select-1",
+  name: "select-1",
+  label: {
+    text: "NHS trust / organisation"
+  },
+  items: [
+    {
+      value: 1,
+      text: "NHS.UK frontend option 1"
+    },
+    {
+      value: 2,
+      text: "NHS.UK frontend option 2",
+      selected: true
+    },
+    {
+      value: 3,
+      text: "NHS.UK frontend option 3",
+      disabled: true
+    }
+  ]
+}) }}
+
+{% from 'select/macro.njk' import select %}
+
+{{ select({
+  id: "select-1",
+  name: "select-1",
+  label: {
+    text: "Evaluation type"
+  },
+  items: [
+    {
+      value: 1,
+      text: "NHS.UK frontend option 1"
+    },
+    {
+      value: 2,
+      text: "NHS.UK frontend option 2",
+      selected: true
+    },
+    {
+      value: 3,
+      text: "NHS.UK frontend option 3",
+      disabled: true
+    }
+  ]
+}) }}
+
+{% from 'select/macro.njk' import select %}
+
+{{ select({
+  id: "select-1",
+  name: "select-1",
+  label: {
+    text: "Product category"
+  },
+  items: [
+    {
+      value: 1,
+      text: "NHS.UK frontend option 1"
+    },
+    {
+      value: 2,
+      text: "NHS.UK frontend option 2",
+      selected: true
+    },
+    {
+      value: 3,
+      text: "NHS.UK frontend option 3",
+      disabled: true
+    }
+  ]
+}) }}
+
+      {{ input({
+    label: {
+      text: "Product name"
+    },
+    classes: "nhsuk-input--width-10",
+    id: "address-postcode",
+    name: "address-postcode"
+  }) }}
+
+        {{ input({
+    label: {
+      text: "Evaluation date"
+    },
+    classes: "nhsuk-input--width-10",
+    id: "address-postcode",
+    name: "address-postcode"
+  }) }}
+
+        {{ input({
+    label: {
+      text: "Department"
+    },
+    classes: "nhsuk-input--width-10",
+    id: "address-postcode",
+    name: "address-postcode",
+    hint: {
+      text: "E.g. Cardiology, Procurement"
+    }
+
+  }) }}
+
+        {{ input({
+    label: {
+      text: "Lead clinician / evaluator"
+    },
+    classes: "nhsuk-input--width-10",
+    id: "address-postcode",
+    name: "address-postcode"
+  }) }}
+
+{% from 'textarea/macro.njk' import textarea %}
+
+{{ textarea({
+  name: "example",
+  id: "example",
+  label: {
+    text: "Additional comments",
+    classes: "nhsuk-label--m"
+  },
+  hint: {
+    text: "For example, currently being trialled in Manchester"
+  }
+}) }}
+
+{% endcall %}
+
+
+{% from 'button/macro.njk' import button %}
+
+{{ button({
+  text: "Continue",
+  type: "submit",
+  href: "upload-document"
+}) }}
+
+
+  </div>
+</div>
+
+
+
+
+
+
+{% endblock %}

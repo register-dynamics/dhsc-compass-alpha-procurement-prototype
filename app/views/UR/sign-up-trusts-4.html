@@ -1,0 +1,27 @@
+{% extends prototypeVersion + '/layouts/layout-signed-out.html' %}
+{% set pageName = "Check your email - Compass" %}
+
+
+
+{% block content %}
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+    
+  
+    
+
+      <h1 class="nhsuk-heading-l">Check your email</h1>
+      
+      <p class="nhsuk-body-l">We've sent a verification link to {{to}}</p>
+      <p class="nhsuk-body">{{ data['email'] or 'name@nhs.net' }}</p>
+      <p class="nhsuk-body">Verify your account and complete sign up to access the service.</p>
+
+   
+        <p class="nhsuk-body">Didn't receive the email? <a href="">Resend the email</a></p>
+     
+    
+    
+
+  </div>
+</div>
+{% endblock %}

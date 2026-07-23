@@ -1,0 +1,200 @@
+
+
+{% extends prototypeVersion + '/layouts/layout-signed-in.html' %}
+
+{% set pageName = "Dashboard" %}
+
+<!--
+  In /app/views/layout.html you can:
+    - change the header and footer
+    - add custom CSS and JavaScript
+-->
+
+
+{% block beforeContent %}
+{% endblock %}
+
+{% block content %}
+
+
+
+
+<!-- NHS 10 Year Plan Context -->
+<div class="nhsuk-grid-row nhsuk-u-margin-top-7">
+  <div class="nhsuk-grid-column-two-thirds">
+
+    <span class="nhsuk-hint">Kelvin Simpson</span>
+    
+  <h1 class='nhsuk-heading-l'>Welcome back</h1>
+      
+  <p class="nhsuk-body nhsuk-body-l"> How will you shape procurement in your trust today? </p>
+
+
+  </div>
+</div>
+
+<!-- NHS 10 Year Plan Context -->
+<div class="nhsuk-grid-row nhsuk-u-margin-top-7">
+  <div class="nhsuk-grid-column-full">
+    
+
+    <div class="nhsuk-grid-row">
+  
+  <div class="nhsuk-grid-column-one-half">
+
+<div class="nhsuk-card nhsuk-card--clickable">
+  <div class="nhsuk-card__content">
+    <h3 class="nhsuk-card__heading"><a href="search">Search and compare medical technologies</a></h3>
+    <p>Look up a specific product or browse categories to find evidence and peer contact information.</p>
+  </div>
+</div>
+
+  </div>
+
+  <div class="nhsuk-grid-column-one-half">
+    
+
+
+
+
+<div class="nhsuk-card nhsuk-card--clickable">
+  <div class="nhsuk-card__content">
+    <h3 class="nhsuk-card__heading"><a href="evaluation-choice">Share your experience with medical technologies</a></h3>
+  <p>Upload your own product trials, case studies, evaluation criteria or business cases.</p>
+  </div>
+</div>
+
+  </div>
+
+</div>
+
+    </div>
+    </div>
+
+<!-- Contributions and leaderboard -->
+<!-- Row 1: section headings -->
+<div class="nhsuk-grid-row nhsuk-u-margin-top-7">
+  <div class="nhsuk-grid-column-one-half">
+    <h2 class="nhsuk-heading-l">Your contributions</h2>
+    <h3 class="nhsuk-heading-m">Your recent uploads</h3>
+  </div>
+  <div class="nhsuk-grid-column-one-half">
+    <h2 class="nhsuk-heading-l">Trust leaderboard</h2>
+    <h3 class="nhsuk-heading-m">Documents uploaded this month</h3>
+  </div>
+</div>
+
+<!-- Row 2: tables -->
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-one-half">
+
+    {{ table({
+      responsive: true,
+      firstCellIsHeader: true,
+      head: [
+        {
+          text: "Document",
+          classes: "nhsuk-u-width-one-half"
+        },
+        {
+          text: "Views",
+          format: "numeric",
+          classes: "nhsuk-u-width-one-quarter"
+        },
+        {
+          text: "Found useful",
+          format: "numeric",
+          classes: "nhsuk-u-width-one-quarter"
+        }
+      ],
+      rows: [
+        [
+          { header: "Document", html: '<a href="#">Dialysis unit business case</a>' },
+          { header: "Views", text: "47", format: "numeric" },
+          { header: "Found useful", text: "2", format: "numeric" }
+        ],
+        [
+          { header: "Document", html: '<a href="#">Clinical outcomes report</a>' },
+          { header: "Views", text: "200", format: "numeric" },
+          { header: "Found useful", text: "5", format: "numeric" }
+        ],
+        [
+          { header: "Document", html: '<a href="#">Staff training guide</a>' },
+          { header: "Views", text: "12", format: "numeric" },
+          { header: "Found useful", text: "11", format: "numeric" }
+        ]
+      ]
+    }) }}
+
+    <p>
+      <a href="/your-contributions">View all your contributed documents</a>
+    </p>
+
+  </div>
+
+  <div class="nhsuk-grid-column-one-half">
+
+    {{ table({
+      responsive: true,
+      firstCellIsHeader: true,
+      head: [
+        {
+          text: "Trust",
+          classes: "nhsuk-u-width-three-quarters"
+        },
+        {
+          text: "Documents",
+          format: "numeric",
+          classes: "nhsuk-u-width-one-quarter"
+        }
+      ],
+      rows: [
+        [
+          { header: "Trust", text: "Guy's and St Thomas' NHS Foundation Trust" },
+          { header: "Documents", text: "48", format: "numeric" }
+        ],
+        [
+          { header: "Trust", text: "Manchester University NHS Foundation Trust" },
+          { header: "Documents", text: "41", format: "numeric" }
+        ],
+        [
+          { header: "Trust", text: "Leeds Teaching Hospitals NHS Trust" },
+          { header: "Documents", text: "37", format: "numeric" }
+        ],
+        [
+          { header: "Trust", text: "University Hospitals Birmingham NHS Foundation Trust" },
+          { header: "Documents", text: "29", format: "numeric" }
+        ],
+        [
+          { header: "Trust", text: "Barts Health NHS Trust" },
+          { header: "Documents", text: "22", format: "numeric" }
+        ]
+      ]
+    }) }}
+
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+{% endblock %}
+
+{% block pageScripts %}
+<script src="https://cdn.jsdelivr.net/npm/accessible-autocomplete@2.0.4/dist/accessible-autocomplete.min.js"></script>
+<script type="text/javascript">
+  accessibleAutocomplete.enhanceSelectElement({
+    defaultValue: '',
+    selectElement: document.querySelector('#product-picker')
+  })
+</script>
+
+
+{% endblock %}

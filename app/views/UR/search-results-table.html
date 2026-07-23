@@ -1,0 +1,451 @@
+{% extends prototypeVersion + '/layouts/layout-signed-in.html' %}
+
+{% set pageName = "Search medical technologies" %}
+
+
+{% block beforeContent %}
+{% from "breadcrumb/macro.njk" import breadcrumb %}
+
+{{ breadcrumb({
+  items: [
+    {
+      href: "/",
+      text: "Home"
+    }
+  ],
+  href: "#",
+  text: "Search results"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-full">
+
+    <h1 class="nhsuk-heading-l">Search results</h1>
+    
+    {# Search bar #}
+    <div class="app-filters nhsuk-u-margin-top-5 nhsuk-u-margin-bottom-5">
+      <div class="app-filters-container">
+        <form action="" method="get" novalidate="">
+          <div class="nhsuk-form-group nhsuk-u-margin-bottom-0">
+            <label class="nhsuk-label" for="q">
+              Search again by product name, category, or supplier
+            </label>
+            <input class="nhsuk-input nhsuk-input--width-20" id="q" name="q" type="search" value="">
+            <button class="nhsuk-button nhsuk-button--secondary nhsuk-u-margin-left-2 app-button--small nhsuk-u-margin-bottom-0" data-module="nhsuk-button" type="submit">
+              Search
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="nhsuk-grid-row">
+  
+  {# Filters Sidebar #}
+  <app-auto-submit class="app-grid-column-filters">
+      
+    <div class="nhsuk-card nhsuk-card--feature app-filters">
+      <div class="nhsuk-card__content nhsuk-card__content--feature">
+        <h3 class="nhsuk-card__heading nhsuk-card__heading--feature">
+          Filter results
+        </h3>
+      
+        {# Product Category Filter #}
+        <div class="nhsuk-form-group">
+          <fieldset class="nhsuk-fieldset">
+            <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--s">
+              Product category
+            </legend>
+            
+            <div id="category-items" class="nhsuk-checkboxes nhsuk-checkboxes--small" data-module="nhsuk-checkboxes">
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="category-infusion" name="[category]" type="checkbox" value="infusion" checked="">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="category-infusion">
+                  Infusion devices
+                </label>
+              </div>
+              
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="category-surgical" name="[category]" type="checkbox" value="surgical">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="category-surgical">
+                  Surgical instruments
+                </label>
+              </div>
+              
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="category-monitoring" name="[category]" type="checkbox" value="monitoring">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="category-monitoring">
+                  Patient monitoring
+                </label>
+              </div>
+              
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="category-diagnostic" name="[category]" type="checkbox" value="diagnostic">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="category-diagnostic">
+                  Diagnostic equipment
+                </label>
+              </div>
+              
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="category-cardiology" name="[category]" type="checkbox" value="cardiology">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="category-cardiology">
+                  Cardiology devices
+                </label>
+              </div>
+              
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="category-respiratory" name="[category]" type="checkbox" value="respiratory">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="category-respiratory">
+                  Respiratory equipment
+                </label>
+              </div>
+              
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="category-imaging" name="[category]" type="checkbox" value="imaging">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="category-imaging">
+                  Imaging systems
+                </label>
+              </div>
+              
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="category-laboratory" name="[category]" type="checkbox" value="laboratory">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="category-laboratory">
+                  Laboratory equipment
+                </label>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+
+        {# Trust Similarity Filter #}
+        <div class="nhsuk-form-group">
+          <fieldset class="nhsuk-fieldset">
+            <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--s">
+              Evaluated by trusts like mine
+            </legend>
+            <div class="nhsuk-hint" id="trust-hint">
+              Show products evaluated by trusts similar in size, type, or region
+            </div>
+            
+            <div id="trust-items" class="nhsuk-checkboxes nhsuk-checkboxes--small" data-module="nhsuk-checkboxes">
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="trust-similar" name="[trust]" type="checkbox" value="similar">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="trust-similar">
+                  Similar size/type to my trust
+                </label>
+              </div>
+              
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="trust-teaching" name="[trust]" type="checkbox" value="teaching">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="trust-teaching">
+                  Teaching hospitals
+                </label>
+              </div>
+              
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="trust-region" name="[trust]" type="checkbox" value="region">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="trust-region">
+                  In my region
+                </label>
+              </div>
+
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="trust-specialist" name="[trust]" type="checkbox" value="specialist">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="trust-specialist">
+                  Specialist trusts
+                </label>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+
+        {# Available Data Types Filter #}
+        <div class="nhsuk-form-group">
+          <fieldset class="nhsuk-fieldset">
+            <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--s">
+              Available data
+            </legend>
+            
+            <div id="data-items" class="nhsuk-checkboxes nhsuk-checkboxes--small" data-module="nhsuk-checkboxes">
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="data-clinical" name="[data]" type="checkbox" value="clinical-outcomes">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="data-clinical">
+                  Clinical outcomes
+                </label>
+              </div>
+              
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="data-safety" name="[data]" type="checkbox" value="safety">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="data-safety">
+                  Patient safety data
+                </label>
+              </div>
+              
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="data-cost" name="[data]" type="checkbox" value="cost-analysis">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="data-cost">
+                  Cost analysis
+                </label>
+              </div>
+              
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="data-trust" name="[data]" type="checkbox" value="trust-evaluations">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="data-trust">
+                  Trust evaluations
+                </label>
+              </div>
+              
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="data-sustainability" name="[data]" type="checkbox" value="sustainability">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="data-sustainability">
+                  Sustainability data
+                </label>
+              </div>
+              
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="data-integration" name="[data]" type="checkbox" value="system-integration">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="data-integration">
+                  System integration
+                </label>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+
+        {# Clinical Trial Status Filter #}
+        <div class="nhsuk-form-group">
+          <fieldset class="nhsuk-fieldset">
+            <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--s">
+              Clinical trial status
+            </legend>
+            
+            <div id="trial-items" class="nhsuk-radios nhsuk-radios--small" data-module="nhsuk-radios">
+              <div class="nhsuk-radios__item">
+                <input class="nhsuk-radios__input" id="trial-any" name="[trial]" type="radio" value="any" checked="">
+                <label class="nhsuk-label nhsuk-radios__label" for="trial-any">
+                  Any
+                </label>
+              </div>
+              
+              <div class="nhsuk-radios__item">
+                <input class="nhsuk-radios__input" id="trial-yes" name="[trial]" type="radio" value="yes">
+                <label class="nhsuk-label nhsuk-radios__label" for="trial-yes">
+                  Clinical trial available
+                </label>
+              </div>
+              
+              <div class="nhsuk-radios__item">
+                <input class="nhsuk-radios__input" id="trial-no" name="[trial]" type="radio" value="no">
+                <label class="nhsuk-label nhsuk-radios__label" for="trial-no">
+                  No clinical trial
+                </label>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+
+        {# Supplier Type Filter #}
+        <div class="nhsuk-form-group">
+          <fieldset class="nhsuk-fieldset">
+            <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--s">
+              Supplier type
+            </legend>
+            
+            <div id="supplier-items" class="nhsuk-checkboxes nhsuk-checkboxes--small" data-module="nhsuk-checkboxes">
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="supplier-sme" name="[supplier]" type="checkbox" value="sme">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="supplier-sme">
+                  SME
+                </label>
+              </div>
+              
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="supplier-uk" name="[supplier]" type="checkbox" value="uk-made">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="supplier-uk">
+                  UK manufactured
+                </label>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+        
+        <div class="nhsuk-button-group">
+          <button class="nhsuk-button nhsuk-button--secondary app-button--small" data-module="nhsuk-button" formaction="" formmethod="post" role="search" type="submit" hidden="">
+            Update results
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </app-auto-submit>
+
+  {# Results Column #}
+  <div class="app-grid-column-results">
+    
+    <h3 class="nhsuk-heading-m nhsuk-u-margin-bottom-2">Medical technologies</h3>
+    <p class="nhsuk-caption-m nhsuk-u-margin-bottom-4">
+      Showing <b>1</b> to <b>10</b> of <b>143</b> products
+    </p>
+
+    {# Results Table #}
+    <div class="nhsuk-table__panel-with-heading-tab">
+      <table class="nhsuk-table nhsuk-table--small">
+        <thead class="nhsuk-table__head">
+          <tr class="nhsuk-table__row">
+            <th class="nhsuk-table__header" scope="col">Product</th>
+            <th class="nhsuk-table__header" scope="col">Supplier</th>
+            <th class="nhsuk-table__header" scope="col">Trusts</th>
+            <th class="nhsuk-table__header" scope="col">Evaluations</th>
+            <th class="nhsuk-table__header" scope="col">Outcomes</th>
+            <th class="nhsuk-table__header" scope="col">Data</th>
+            <th class="nhsuk-table__header" scope="col">Type</th>
+          </tr>
+        </thead>
+        <tbody class="nhsuk-table__body">
+          
+          <tr class="nhsuk-table__row">
+            <td class="nhsuk-table__cell"><a href="product-page?smartpump-300" class="nhsuk-link">SmartPump 300 Infusion System</a></td>
+            <td class="nhsuk-table__cell nhsuk-body-s">MedTech Innovations Ltd</td>
+            <td class="nhsuk-table__cell nhsuk-body-s">8</td>
+            <td class="nhsuk-table__cell nhsuk-body-s">12 <span class="nhsuk-u-secondary-text-color">(trials, pilots)</span></td>
+            <td class="nhsuk-table__cell"><strong class="nhsuk-tag nhsuk-tag--green">6 procured</strong> <strong class="nhsuk-tag nhsuk-tag--grey">2 reviewing</strong></td>
+            <td class="nhsuk-table__cell"><strong class="nhsuk-tag nhsuk-tag--blue">Clinical</strong> <strong class="nhsuk-tag nhsuk-tag--blue">Safety</strong> <strong class="nhsuk-tag nhsuk-tag--blue">Cost</strong> <strong class="nhsuk-tag nhsuk-tag--green">Sustainability</strong></td>
+            <td class="nhsuk-table__cell"><strong class="nhsuk-tag nhsuk-tag--white">UK</strong> <strong class="nhsuk-tag nhsuk-tag--white">SME</strong></td>
+          </tr>
+
+          <tr class="nhsuk-table__row">
+            <td class="nhsuk-table__cell"><a href="product-page?safeflow-iv" class="nhsuk-link">SafeFlow IV Administration Set</a></td>
+            <td class="nhsuk-table__cell nhsuk-body-s">Global Medical Supplies plc</td>
+            <td class="nhsuk-table__cell nhsuk-body-s">5</td>
+            <td class="nhsuk-table__cell nhsuk-body-s">8 <span class="nhsuk-u-secondary-text-color">(trials, studies)</span></td>
+            <td class="nhsuk-table__cell"><strong class="nhsuk-tag nhsuk-tag--green">4 procured</strong> <strong class="nhsuk-tag nhsuk-tag--yellow">1 excluded</strong></td>
+            <td class="nhsuk-table__cell"><strong class="nhsuk-tag nhsuk-tag--blue">Clinical</strong> <strong class="nhsuk-tag nhsuk-tag--blue">Safety</strong> <strong class="nhsuk-tag nhsuk-tag--blue">Cost</strong></td>
+            <td class="nhsuk-table__cell nhsuk-body-s">—</td>
+          </tr>
+
+          <tr class="nhsuk-table__row">
+            <td class="nhsuk-table__cell"><a href="product-page?portapump-mini" class="nhsuk-link">PortaPump Mini Ambulatory Pump</a></td>
+            <td class="nhsuk-table__cell nhsuk-body-s">CareTech Solutions</td>
+            <td class="nhsuk-table__cell nhsuk-body-s">3</td>
+            <td class="nhsuk-table__cell nhsuk-body-s">5 <span class="nhsuk-u-secondary-text-color">(pilots, reports)</span></td>
+            <td class="nhsuk-table__cell"><strong class="nhsuk-tag nhsuk-tag--green">2 procured</strong> <strong class="nhsuk-tag nhsuk-tag--grey">1 reviewing</strong></td>
+            <td class="nhsuk-table__cell"><strong class="nhsuk-tag nhsuk-tag--blue">Safety</strong> <strong class="nhsuk-tag nhsuk-tag--blue">Cost</strong></td>
+            <td class="nhsuk-table__cell"><strong class="nhsuk-tag nhsuk-tag--white">SME</strong></td>
+          </tr>
+
+          <tr class="nhsuk-table__row">
+            <td class="nhsuk-table__cell"><a href="product-page?precisedose-pca" class="nhsuk-link">PreciseDose PCA System</a></td>
+            <td class="nhsuk-table__cell nhsuk-body-s">Pain Management Technologies</td>
+            <td class="nhsuk-table__cell nhsuk-body-s"><strong>123</strong></td>
+            <td class="nhsuk-table__cell nhsuk-body-s">15 <span class="nhsuk-u-secondary-text-color">(trials, cases)</span></td>
+            <td class="nhsuk-table__cell"><strong class="nhsuk-tag nhsuk-tag--green">10 procured</strong> <strong class="nhsuk-tag nhsuk-tag--grey">2 reviewing</strong></td>
+            <td class="nhsuk-table__cell"><strong class="nhsuk-tag nhsuk-tag--blue">Clinical</strong> <strong class="nhsuk-tag nhsuk-tag--blue">Safety</strong> <strong class="nhsuk-tag nhsuk-tag--blue">Integration</strong></td>
+            <td class="nhsuk-table__cell"><strong class="nhsuk-tag nhsuk-tag--white">UK</strong></td>
+          </tr>
+
+          <tr class="nhsuk-table__row">
+            <td class="nhsuk-table__cell"><a href="product-page?multiflow-hub" class="nhsuk-link">MultiFlow Central Infusion Hub</a></td>
+            <td class="nhsuk-table__cell nhsuk-body-s">MedTech Innovations Ltd</td>
+            <td class="nhsuk-table__cell nhsuk-body-s">7</td>
+            <td class="nhsuk-table__cell nhsuk-body-s">9 <span class="nhsuk-u-secondary-text-color">(assessments)</span></td>
+            <td class="nhsuk-table__cell"><strong class="nhsuk-tag nhsuk-tag--green">5 procured</strong> <strong class="nhsuk-tag nhsuk-tag--grey">2 reviewing</strong></td>
+            <td class="nhsuk-table__cell"><strong class="nhsuk-tag nhsuk-tag--blue">Clinical</strong> <strong class="nhsuk-tag nhsuk-tag--blue">Safety</strong> <strong class="nhsuk-tag nhsuk-tag--blue">Integration</strong> <strong class="nhsuk-tag nhsuk-tag--green">Sustainability</strong></td>
+            <td class="nhsuk-table__cell"><strong class="nhsuk-tag nhsuk-tag--white">UK</strong> <strong class="nhsuk-tag nhsuk-tag--white">SME</strong></td>
+          </tr>
+
+          <tr class="nhsuk-table__row">
+            <td class="nhsuk-table__cell"><a href="product-page?neonatal-ivac" class="nhsuk-link">Neonatal IV Access Kit</a></td>
+            <td class="nhsuk-table__cell nhsuk-body-s">Pediatric Care Systems</td>
+            <td class="nhsuk-table__cell nhsuk-body-s">4</td>
+            <td class="nhsuk-table__cell nhsuk-body-s">6 <span class="nhsuk-u-secondary-text-color">(pilots, safety)</span></td>
+            <td class="nhsuk-table__cell"><strong class="nhsuk-tag nhsuk-tag--green">3 procured</strong> <strong class="nhsuk-tag nhsuk-tag--grey">1 reviewing</strong></td>
+            <td class="nhsuk-table__cell"><strong class="nhsuk-tag nhsuk-tag--blue">Safety</strong> <strong class="nhsuk-tag nhsuk-tag--blue">Cost</strong></td>
+            <td class="nhsuk-table__cell nhsuk-body-s">—</td>
+          </tr>
+
+          <tr class="nhsuk-table__row">
+            <td class="nhsuk-table__cell"><a href="product-page?elastomeric-pump" class="nhsuk-link">ElastoFlow Disposable Infusion Pump</a></td>
+            <td class="nhsuk-table__cell nhsuk-body-s">Disposable Medical Ltd</td>
+            <td class="nhsuk-table__cell nhsuk-body-s">9</td>
+            <td class="nhsuk-table__cell nhsuk-body-s">7 <span class="nhsuk-u-secondary-text-color">(trials)</span></td>
+            <td class="nhsuk-table__cell"><strong class="nhsuk-tag nhsuk-tag--green">8 procured</strong> <strong class="nhsuk-tag nhsuk-tag--grey">1 reviewing</strong></td>
+            <td class="nhsuk-table__cell"><strong class="nhsuk-tag nhsuk-tag--blue">Clinical</strong> <strong class="nhsuk-tag nhsuk-tag--blue">Cost</strong> <strong class="nhsuk-tag nhsuk-tag--green">Sustainability</strong></td>
+            <td class="nhsuk-table__cell"><strong class="nhsuk-tag nhsuk-tag--white">SME</strong></td>
+          </tr>
+
+          <tr class="nhsuk-table__row">
+            <td class="nhsuk-table__cell"><a href="product-page?volumetric-plus" class="nhsuk-link">VoluMetric Plus Infusion Controller</a></td>
+            <td class="nhsuk-table__cell nhsuk-body-s">Global Medical Supplies plc</td>
+            <td class="nhsuk-table__cell nhsuk-body-s">11</td>
+            <td class="nhsuk-table__cell nhsuk-body-s">14 <span class="nhsuk-u-secondary-text-color">(assessments)</span></td>
+            <td class="nhsuk-table__cell"><strong class="nhsuk-tag nhsuk-tag--green">9 procured</strong> <strong class="nhsuk-tag nhsuk-tag--grey">2 reviewing</strong></td>
+            <td class="nhsuk-table__cell"><strong class="nhsuk-tag nhsuk-tag--blue">Clinical</strong> <strong class="nhsuk-tag nhsuk-tag--blue">Safety</strong> <strong class="nhsuk-tag nhsuk-tag--blue">Integration</strong></td>
+            <td class="nhsuk-table__cell nhsuk-body-s">—</td>
+          </tr>
+
+          <tr class="nhsuk-table__row">
+            <td class="nhsuk-table__cell"><a href="product-page?smartsyringe-driver" class="nhsuk-link">SmartSyringe Driver Pro</a></td>
+            <td class="nhsuk-table__cell nhsuk-body-s">CareTech Solutions</td>
+            <td class="nhsuk-table__cell nhsuk-body-s">6</td>
+            <td class="nhsuk-table__cell nhsuk-body-s">7 <span class="nhsuk-u-secondary-text-color">(assessments, pilots)</span></td>
+            <td class="nhsuk-table__cell"><strong class="nhsuk-tag nhsuk-tag--green">4 procured</strong> <strong class="nhsuk-tag nhsuk-tag--grey">2 reviewing</strong></td>
+            <td class="nhsuk-table__cell"><strong class="nhsuk-tag nhsuk-tag--blue">Safety</strong> <strong class="nhsuk-tag nhsuk-tag--blue">Integration</strong></td>
+            <td class="nhsuk-table__cell"><strong class="nhsuk-tag nhsuk-tag--white">UK</strong> <strong class="nhsuk-tag nhsuk-tag--white">SME</strong></td>
+          </tr>
+
+          <tr class="nhsuk-table__row">
+            <td class="nhsuk-table__cell"><a href="product-page?gravity-iv-set" class="nhsuk-link">Gravity IV Administration Set Ultra</a></td>
+            <td class="nhsuk-table__cell nhsuk-body-s">MedSupply Direct</td>
+            <td class="nhsuk-table__cell nhsuk-body-s">2</td>
+            <td class="nhsuk-table__cell nhsuk-body-s">3 <span class="nhsuk-u-secondary-text-color">(reports)</span></td>
+            <td class="nhsuk-table__cell"><strong class="nhsuk-tag nhsuk-tag--green">2 procured</strong></td>
+            <td class="nhsuk-table__cell"><strong class="nhsuk-tag nhsuk-tag--blue">Cost</strong></td>
+            <td class="nhsuk-table__cell nhsuk-body-s">—</td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+
+    {# Pagination #}
+    <nav class="nhsuk-pagination nhsuk-pagination--numbered" role="navigation" aria-label="Pagination">
+      <ul class="nhsuk-pagination__list">
+        <li class="nhsuk-pagination__item nhsuk-pagination__item--current">
+          <a class="nhsuk-pagination__link" href="?page=1" aria-label="Page 1" aria-current="page">1</a>
+        </li>
+        <li class="nhsuk-pagination__item">
+          <a class="nhsuk-pagination__link" href="?page=2" aria-label="Page 2">2</a>
+        </li>
+        <li class="nhsuk-pagination__item">
+          <a class="nhsuk-pagination__link" href="?page=3" aria-label="Page 3">3</a>
+        </li>
+        <li class="nhsuk-pagination__item">
+          <a class="nhsuk-pagination__link" href="?page=4" aria-label="Page 4">4</a>
+        </li>
+        <li class="nhsuk-pagination__item">
+          <a class="nhsuk-pagination__link" href="?page=5" aria-label="Page 5">5</a>
+        </li>
+        <li class="nhsuk-pagination__item">
+          <a class="nhsuk-pagination__link" href="?page=6" aria-label="Page 6">6</a>
+        </li>
+      </ul>
+
+      <a href="?page=2" class="nhsuk-pagination__next" rel="next">
+        <span class="nhsuk-pagination__title">Next<span class="nhsuk-u-visually-hidden"> page</span></span>
+        <svg class="nhsuk-icon nhsuk-icon--arrow-right" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+          <path d="m14.7 6.3 5 5c.2.2.3.4.3.7 0 .3-.1.5-.3.7l-5 5a1 1 0 0 1-1.4-1.4l3.3-3.3H5a1 1 0 0 1 0-2h11.6l-3.3-3.3a1 1 0 1 1 1.4-1.4Z"></path>
+        </svg>
+      </a>
+    </nav>
+
+  </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,652 @@
+{% extends 'layout-signed-out.html' %}
+
+{% set pageName = "Evaluation Report: SmartPump 300 - Compass" %}
+
+
+{% block beforeContent %}
+{% from "breadcrumb/macro.njk" import breadcrumb %}
+
+{{ breadcrumb({
+  items: [
+    {
+      href: "/",
+      text: "Home"
+    },
+    {
+      href: "/search",
+      text: "Search results"
+    },
+    {
+      href: "/product-detail-infusion-pump",
+      text: "SmartPump 300 Infusion System"
+    }
+  ],
+  href: "#",
+  text: "Leeds Teaching Hospitals evaluation"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+    
+    {# Report Header #}
+    <div class="nhsuk-u-margin-bottom-5">
+      <span class="nhsuk-caption-xl">Product Evaluation Report</span>
+      <h1 class="nhsuk-heading-xl nhsuk-u-margin-bottom-3">
+        SmartPump 300 Infusion System
+      </h1>
+      
+      <p class="nhsuk-body-l nhsuk-u-secondary-text-color">
+        Leeds Teaching Hospitals NHS Trust
+      </p>
+
+      <div class="nhsuk-u-margin-top-3">
+        <strong class="nhsuk-tag nhsuk-tag--green">Procured</strong>
+        <strong class="nhsuk-tag nhsuk-tag--blue">Clinical trial</strong>
+        <strong class="nhsuk-tag nhsuk-tag--grey">Teaching hospital</strong>
+      </div>
+    </div>
+
+    {# Report Summary Card #}
+    <div class="nhsuk-card nhsuk-card--feature nhsuk-u-margin-bottom-6">
+      <div class="nhsuk-card__content">
+        <h2 class="nhsuk-card__heading nhsuk-heading-m">
+          Evaluation summary
+        </h2>
+        
+        <dl class="nhsuk-summary-list">
+          <div class="nhsuk-summary-list__row">
+            <dt class="nhsuk-summary-list__key">
+              Trust
+            </dt>
+            <dd class="nhsuk-summary-list__value">
+              Leeds Teaching Hospitals NHS Trust
+            </dd>
+          </div>
+
+          <div class="nhsuk-summary-list__row">
+            <dt class="nhsuk-summary-list__key">
+              Hospital site
+            </dt>
+            <dd class="nhsuk-summary-list__value">
+              St James's University Hospital
+            </dd>
+          </div>
+
+          <div class="nhsuk-summary-list__row">
+            <dt class="nhsuk-summary-list__key">
+              Department
+            </dt>
+            <dd class="nhsuk-summary-list__value">
+              Critical Care Unit
+            </dd>
+          </div>
+
+          <div class="nhsuk-summary-list__row">
+            <dt class="nhsuk-summary-list__key">
+              Evaluation type
+            </dt>
+            <dd class="nhsuk-summary-list__value">
+              6-month clinical trial with control group
+            </dd>
+          </div>
+
+          <div class="nhsuk-summary-list__row">
+            <dt class="nhsuk-summary-list__key">
+              Evaluation period
+            </dt>
+            <dd class="nhsuk-summary-list__value">
+              January 2023 - June 2023
+            </dd>
+          </div>
+
+          <div class="nhsuk-summary-list__row">
+            <dt class="nhsuk-summary-list__key">
+              Scale of deployment
+            </dt>
+            <dd class="nhsuk-summary-list__value">
+              24 SmartPump 300 devices
+            </dd>
+          </div>
+
+          <div class="nhsuk-summary-list__row">
+            <dt class="nhsuk-summary-list__key">
+              Overall rating
+            </dt>
+            <dd class="nhsuk-summary-list__value">
+              <strong>4.5/5</strong>
+            </dd>
+          </div>
+
+          <div class="nhsuk-summary-list__row">
+            <dt class="nhsuk-summary-list__key">
+              Recommendation
+            </dt>
+            <dd class="nhsuk-summary-list__value">
+              <strong class="nhsuk-tag nhsuk-tag--green">Would recommend</strong>
+            </dd>
+          </div>
+
+          <div class="nhsuk-summary-list__row">
+            <dt class="nhsuk-summary-list__key">
+              Procurement decision
+            </dt>
+            <dd class="nhsuk-summary-list__value">
+              <strong class="nhsuk-tag nhsuk-tag--green">Procured</strong> - Trust-wide rollout approved August 2023
+            </dd>
+          </div>
+
+          <div class="nhsuk-summary-list__row">
+            <dt class="nhsuk-summary-list__key">
+              Report date
+            </dt>
+            <dd class="nhsuk-summary-list__value">
+              July 2023
+            </dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+{# Main Report Content #}
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+
+    {# Executive Summary #}
+    <h2 class="nhsuk-heading-l">Executive summary</h2>
+    <p class="nhsuk-body">
+      Leeds Teaching Hospitals NHS Trust conducted a 6-month clinical trial evaluating the SmartPump 300 Infusion System in the Critical Care Unit at St James's University Hospital. The trial compared the SmartPump 300 against our existing infusion pump system with a focus on medication administration safety, staff satisfaction, and operational efficiency.
+    </p>
+    <p class="nhsuk-body">
+      The evaluation demonstrated a 45% reduction in medication administration errors and high levels of staff satisfaction. Integration with our Epic electronic health record system was seamless. Based on these positive outcomes, the Trust approved procurement and trust-wide rollout in August 2023.
+    </p>
+
+    <div class="nhsuk-inset-text">
+      <span class="nhsuk-u-visually-hidden">Information: </span>
+      <p><strong>Key outcome:</strong> 45% reduction in medication administration errors compared to previous system</p>
+    </div>
+
+    {# Evaluation Approach #}
+    <h2 class="nhsuk-heading-l nhsuk-u-margin-top-8">Evaluation approach</h2>
+    
+    <h3 class="nhsuk-heading-m">Methodology</h3>
+    <p class="nhsuk-body">
+      We conducted a prospective, controlled clinical trial over 6 months. Twenty-four SmartPump 300 devices were deployed in the Critical Care Unit alongside our existing infusion pump fleet, allowing for direct comparison of outcomes.
+    </p>
+
+    <h3 class="nhsuk-heading-m">Evaluation criteria</h3>
+    <ul class="nhsuk-list nhsuk-list--bullet">
+      <li><strong>Clinical safety:</strong> Medication administration error rates, adverse drug events, alarm management</li>
+      <li><strong>Staff experience:</strong> User satisfaction, training time requirements, workflow integration</li>
+      <li><strong>Technical performance:</strong> Device reliability, battery life, connectivity</li>
+      <li><strong>System integration:</strong> EHR interoperability, drug library management, audit trail functionality</li>
+      <li><strong>Business case:</strong> Total cost of ownership, error reduction value, efficiency gains</li>
+    </ul>
+
+    <h3 class="nhsuk-heading-m">Data collection</h3>
+    <p class="nhsuk-body">
+      We collected quantitative data on error rates, device uptime, and training hours. Qualitative feedback was gathered through nursing staff surveys (n=58), focus groups (n=3), and pharmacy team interviews (n=4). Clinical outcomes were tracked through our incident reporting system and EHR analytics.
+    </p>
+
+    {# Key Findings #}
+    <h2 class="nhsuk-heading-l nhsuk-u-margin-top-8">Key findings</h2>
+
+    <h3 class="nhsuk-heading-m">Clinical safety and outcomes</h3>
+    
+    <div class="nhsuk-card">
+      <div class="nhsuk-card__content">
+        <h4 class="nhsuk-heading-s">Medication administration errors</h4>
+        <p class="nhsuk-body">
+          <strong>45% reduction</strong> in medication administration errors compared to previous system during the trial period.
+        </p>
+        <ul class="nhsuk-list nhsuk-list--bullet">
+          <li>Previous system: 22 errors per 10,000 infusions</li>
+          <li>SmartPump 300: 12 errors per 10,000 infusions</li>
+          <li>Most common errors prevented: incorrect rate programming, wrong concentration</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="nhsuk-card">
+      <div class="nhsuk-card__content">
+        <h4 class="nhsuk-heading-s">Nursing staff confidence</h4>
+        <p class="nhsuk-body">
+          Staff reported significantly improved confidence in medication administration safety.
+        </p>
+        <ul class="nhsuk-list nhsuk-list--bullet">
+          <li>87% of nursing staff rated the drug library alerts as "very helpful" or "extremely helpful"</li>
+          <li>92% felt more confident administering high-risk medications</li>
+          <li>Staff particularly valued the clear visual interface and soft limit warnings</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3 class="nhsuk-heading-m">System integration</h3>
+    
+    <div class="nhsuk-card">
+      <div class="nhsuk-card__content">
+        <h4 class="nhsuk-heading-s">Epic EHR integration</h4>
+        <p class="nhsuk-body">
+          <strong>Seamless integration</strong> with our Epic Hyperspace system using HL7 FHIR standards.
+        </p>
+        <ul class="nhsuk-list nhsuk-list--bullet">
+          <li>Automatic population of infusion orders from Epic</li>
+          <li>Real-time infusion data flowing back to patient chart</li>
+          <li>No manual transcription required</li>
+          <li>Pharmacy team reported improved oversight and audit capabilities</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3 class="nhsuk-heading-m">Staff training and adoption</h3>
+    
+    <div class="nhsuk-card">
+      <div class="nhsuk-card__content">
+        <h4 class="nhsuk-heading-s">Training efficiency</h4>
+        <p class="nhsuk-body">
+          Training time was <strong>significantly shorter than anticipated</strong>.
+        </p>
+        <ul class="nhsuk-list nhsuk-list--bullet">
+          <li>Budgeted: 4 hours per staff member</li>
+          <li>Actual average: 2 hours per staff member</li>
+          <li>50% reduction in training time saved approximately £8,400 in staff costs</li>
+          <li>Staff found the touchscreen interface intuitive and similar to consumer devices</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3 class="nhsuk-heading-m">Technical performance</h3>
+    
+    <p class="nhsuk-body">
+      <strong>Device uptime:</strong> 99.7% (exceeding manufacturer specification of 99.5%)<br>
+      <strong>Wi-Fi connectivity:</strong> Stable throughout trial period after initial network configuration<br>
+      <strong>Battery performance:</strong> Average 6.5 hours (manufacturer spec: 7 hours)
+    </p>
+
+    {# Challenges and Concerns #}
+    <h2 class="nhsuk-heading-l nhsuk-u-margin-top-8">Challenges and concerns</h2>
+
+    <div class="nhsuk-warning-callout">
+      <h3 class="nhsuk-warning-callout__label">
+        <span role="text">
+          <span class="nhsuk-u-visually-hidden">Important: </span>
+          Challenges identified during evaluation
+        </span>
+      </h3>
+      
+      <h4 class="nhsuk-heading-s">Alert fatigue (initial)</h4>
+      <p class="nhsuk-body">
+        During the first 2 weeks of deployment, nursing staff reported alert fatigue due to frequent soft limit warnings. This was resolved by:
+      </p>
+      <ul class="nhsuk-list nhsuk-list--bullet">
+        <li>Refining drug library soft limits in collaboration with pharmacy</li>
+        <li>Providing additional training on alert interpretation</li>
+        <li>Customizing alerting thresholds for ICU patient population</li>
+      </ul>
+      <p class="nhsuk-body">
+        <strong>Outcome:</strong> Alert acceptance rate improved from 68% to 94% after adjustments.
+      </p>
+
+      <h4 class="nhsuk-heading-s nhsuk-u-margin-top-4">Battery life</h4>
+      <p class="nhsuk-body">
+        Battery life was slightly shorter than manufacturer specification in high-use scenarios (average 6.5 hours vs specified 7 hours).
+      </p>
+      <ul class="nhsuk-list nhsuk-list--bullet">
+        <li>Particularly noticeable during busy shifts with continuous use</li>
+        <li>Required more frequent charging than anticipated</li>
+        <li>Supplier acknowledged the issue and provided additional battery packs</li>
+      </ul>
+      <p class="nhsuk-body">
+        <strong>Mitigation:</strong> Increased charging station availability and implemented battery rotation protocol.
+      </p>
+    </div>
+
+    {# Business Case #}
+    <h2 class="nhsuk-heading-l nhsuk-u-margin-top-8">Business case</h2>
+
+    <h3 class="nhsuk-heading-m">Cost analysis</h3>
+    
+    <dl class="nhsuk-summary-list">
+      <div class="nhsuk-summary-list__row">
+        <dt class="nhsuk-summary-list__key">
+          Acquisition cost per device
+        </dt>
+        <dd class="nhsuk-summary-list__value">
+          £9,200 (bulk purchase of 120 units)
+        </dd>
+      </div>
+
+      <div class="nhsuk-summary-list__row">
+        <dt class="nhsuk-summary-list__key">
+          Annual maintenance per device
+        </dt>
+        <dd class="nhsuk-summary-list__value">
+          £850
+        </dd>
+      </div>
+
+      <div class="nhsuk-summary-list__row">
+        <dt class="nhsuk-summary-list__key">
+          Training costs (one-off)
+        </dt>
+        <dd class="nhsuk-summary-list__value">
+          £34,500 (including backfill)
+        </dd>
+      </div>
+
+      <div class="nhsuk-summary-list__row">
+        <dt class="nhsuk-summary-list__key">
+          Implementation costs
+        </dt>
+        <dd class="nhsuk-summary-list__value">
+          £28,000 (IT integration, project management, additional charging stations)
+        </dd>
+      </div>
+
+      <div class="nhsuk-summary-list__row">
+        <dt class="nhsuk-summary-list__key">
+          Total 5-year cost
+        </dt>
+        <dd class="nhsuk-summary-list__value">
+          <strong>£1,677,500</strong>
+        </dd>
+      </div>
+    </dl>
+
+    <h3 class="nhsuk-heading-m">Value and benefits</h3>
+    
+    <p class="nhsuk-body">
+      Our business case demonstrated significant value through:
+    </p>
+
+    <ul class="nhsuk-list nhsuk-list--bullet">
+      <li><strong>Error reduction:</strong> Estimated £180,000 annual savings from avoided adverse drug events and associated care costs</li>
+      <li><strong>Efficiency gains:</strong> 15 minutes saved per patient per day = approximately £95,000 annual staff time savings</li>
+      <li><strong>Reduced documentation burden:</strong> Automatic EHR documentation saves approximately 8 minutes per infusion</li>
+      <li><strong>Audit and compliance:</strong> Comprehensive audit trail reduces investigation time for incidents</li>
+    </ul>
+
+    <div class="nhsuk-inset-text">
+      <span class="nhsuk-u-visually-hidden">Information: </span>
+      <p><strong>Return on investment:</strong> Estimated 24-month payback period based on error reduction and efficiency gains</p>
+    </div>
+
+    {# Decision Factors #}
+    <h2 class="nhsuk-heading-l nhsuk-u-margin-top-8">Decision factors</h2>
+
+    <p class="nhsuk-body">
+      Our procurement decision was based on four key factors:
+    </p>
+
+    <h3 class="nhsuk-heading-m">1. Clinical safety</h3>
+    <p class="nhsuk-body">
+      The 45% reduction in medication errors was the most significant factor. Patient safety improvements aligned with our Quality Improvement Programme objectives and CQC action plan requirements.
+    </p>
+
+    <h3 class="nhsuk-heading-m">2. EHR integration capability</h3>
+    <p class="nhsuk-body">
+      Seamless Epic integration was essential. Previous systems required manual data entry and transcription, creating additional error risks and staff burden. The SmartPump 300's HL7 FHIR compatibility met our interoperability requirements.
+    </p>
+
+    <h3 class="nhsuk-heading-m">3. Staff training requirements</h3>
+    <p class="nhsuk-body">
+      The intuitive interface and shorter-than-expected training time reduced implementation barriers. High staff satisfaction scores indicated strong user acceptance, which was critical for trust-wide adoption.
+    </p>
+
+    <h3 class="nhsuk-heading-m">4. Total cost of ownership</h3>
+    <p class="nhsuk-body">
+      While acquisition costs were higher than some alternatives, the business case demonstrated strong value through error reduction and efficiency gains. No proprietary consumables requirement kept ongoing costs manageable.
+    </p>
+
+    {# Implementation Lessons #}
+    <h2 class="nhsuk-heading-l nhsuk-u-margin-top-8">Implementation lessons learned</h2>
+
+    <div class="nhsuk-do-dont-list">
+      <h3 class="nhsuk-do-dont-list__label">What worked well</h3>
+      <ul class="nhsuk-list nhsuk-list--tick">
+        <li>
+          <svg class="nhsuk-icon nhsuk-icon--tick" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" focusable="false" aria-hidden="true">
+        <path d="M11.4 18.8a2 2 0 0 1-2.7.1h-.1L4 14.1a1.5 1.5 0 0 1 2.1-2L10 16l8.1-8.1a1.5 1.5 0 1 1 2.2 2l-8.9 9Z" />
+      </svg>
+          <strong>Early pharmacy engagement</strong> – involving pharmacy in drug library configuration from day one prevented many potential alert fatigue issues
+        </li>
+        <li>
+        <svg class="nhsuk-icon nhsuk-icon--tick" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" focusable="false" aria-hidden="true">
+        <path d="M11.4 18.8a2 2 0 0 1-2.7.1h-.1L4 14.1a1.5 1.5 0 0 1 2.1-2L10 16l8.1-8.1a1.5 1.5 0 1 1 2.2 2l-8.9 9Z" />
+      </svg>
+          <strong>Phased training approach</strong> – training "super users" first who then supported colleagues reduced training team burden
+        </li>
+        <li>
+          <svg class="nhsuk-icon nhsuk-icon--tick" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" focusable="false" aria-hidden="true">
+        <path d="M11.4 18.8a2 2 0 0 1-2.7.1h-.1L4 14.1a1.5 1.5 0 0 1 2.1-2L10 16l8.1-8.1a1.5 1.5 0 1 1 2.2 2l-8.9 9Z" />
+      </svg>
+          <strong>Supplier support during go-live</strong> – having supplier engineers on-site for the first week resolved teething issues quickly
+        </li>
+        <li>
+          <svg class="nhsuk-icon nhsuk-icon--tick" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" focusable="false" aria-hidden="true">
+        <path d="M11.4 18.8a2 2 0 0 1-2.7.1h-.1L4 14.1a1.5 1.5 0 0 1 2.1-2L10 16l8.1-8.1a1.5 1.5 0 1 1 2.2 2l-8.9 9Z" />
+      </svg>
+          <strong>Weekly review meetings</strong> – first 6 weeks of weekly MDT meetings allowed rapid problem-solving and adjustment
+        </li>
+      </ul>
+    </div>
+
+    <div class="nhsuk-do-dont-list">
+      <h3 class="nhsuk-do-dont-list__label">What we'd do differently</h3>
+      <ul class="nhsuk-list nhsuk-list--cross">
+        <li>
+          <svg class="nhsuk-icon nhsuk-icon__cross" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M17 18.5c-.4 0-.8-.1-1.1-.4l-10-10c-.6-.6-.6-1.6 0-2.1.6-.6 1.5-.6 2.1 0l10 10c.6.6.6 1.5 0 2.1-.3.3-.6.4-1 .4z"></path>
+            <path d="M7 18.5c-.4 0-.8-.1-1.1-.4-.6-.6-.6-1.5 0-2.1l10-10c.6-.6 1.5-.6 2.1 0 .6.6.6 1.5 0 2.1l-10 10c-.3.3-.6.4-1 .4z"></path>
+          </svg>
+          <strong>More charging stations upfront</strong> – we underestimated charging needs and had to order additional stations mid-trial
+        </li>
+        <li>
+          <svg class="nhsuk-icon nhsuk-icon__cross" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M17 18.5c-.4 0-.8-.1-1.1-.4l-10-10c-.6-.6-.6-1.6 0-2.1.6-.6 1.5-.6 2.1 0l10 10c.6.6.6 1.5 0 2.1-.3.3-.6.4-1 .4z"></path>
+            <path d="M7 18.5c-.4 0-.8-.1-1.1-.4-.6-.6-.6-1.5 0-2.1l10-10c.6-.6 1.5-.6 2.1 0 .6.6.6 1.5 0 2.1l-10 10c-.3.3-.6.4-1 .4z"></path>
+          </svg>
+          <strong>Earlier Wi-Fi testing</strong> – network connectivity issues in week 1 could have been identified during pre-deployment testing
+        </li>
+        <li>
+          <svg class="nhsuk-icon nhsuk-icon__cross" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M17 18.5c-.4 0-.8-.1-1.1-.4l-10-10c-.6-.6-.6-1.6 0-2.1.6-.6 1.5-.6 2.1 0l10 10c.6.6.6 1.5 0 2.1-.3.3-.6.4-1 .4z"></path>
+            <path d="M7 18.5c-.4 0-.8-.1-1.1-.4-.6-.6-.6-1.5 0-2.1l10-10c.6-.6 1.5-.6 2.1 0 .6.6.6 1.5 0 2.1l-10 10c-.3.3-.6.4-1 .4z"></path>
+          </svg>
+          <strong>Longer pilot period consideration</strong> – some staff felt 6 months was tight for capturing seasonal variation and edge cases
+        </li>
+      </ul>
+    </div>
+
+    {# Recommendations #}
+    <h2 class="nhsuk-heading-l nhsuk-u-margin-top-8">Recommendations for other trusts</h2>
+
+    <p class="nhsuk-body">
+      Based on our experience, we would recommend the SmartPump 300 to other trusts, particularly those:
+    </p>
+
+    <ul class="nhsuk-list nhsuk-list--bullet">
+      <li>Using Epic or other HL7 FHIR-compliant EHR systems</li>
+      <li>Looking to reduce medication administration errors</li>
+      <li>Seeking to improve infusion pump fleet standardization</li>
+      <li>Requiring strong audit trail and compliance capabilities</li>
+    </ul>
+
+    <p class="nhsuk-body">
+      <strong>Important considerations for evaluation:</strong>
+    </p>
+
+    <ul class="nhsuk-list nhsuk-list--bullet">
+      <li>Plan for 2-3 weeks of drug library optimization with your pharmacy team</li>
+      <li>Ensure adequate Wi-Fi coverage and bandwidth in deployment areas</li>
+      <li>Budget for additional charging infrastructure beyond manufacturer recommendations</li>
+      <li>Allow sufficient time for staff training, even though it's quicker than traditional pumps</li>
+      <li>Establish clear escalation paths for technical issues during go-live</li>
+    </ul>
+
+    {# Conclusion #}
+    <h2 class="nhsuk-heading-l nhsuk-u-margin-top-8">Conclusion</h2>
+
+    <p class="nhsuk-body">
+      The SmartPump 300 Infusion System met or exceeded expectations across all evaluation criteria. The 45% reduction in medication administration errors, combined with high staff satisfaction and seamless EHR integration, provided clear evidence of clinical value.
+    </p>
+
+    <p class="nhsuk-body">
+      While we encountered minor challenges with alert optimization and battery management, these were successfully resolved through collaboration with the supplier and our clinical teams. The business case demonstrated strong return on investment through error reduction and efficiency gains.
+    </p>
+
+    <p class="nhsuk-body">
+      Based on the trial outcomes, Leeds Teaching Hospitals NHS Trust approved procurement and began trust-wide rollout in August 2023. We are now deploying SmartPump 300 devices across all inpatient wards and theatres, with full implementation expected by March 2024.
+    </p>
+
+    <div class="nhsuk-inset-text nhsuk-u-margin-top-5">
+      <span class="nhsuk-u-visually-hidden">Information: </span>
+      <p><strong>Overall rating: 4.5/5</strong></p>
+      <p><strong>Recommendation: Would recommend to other trusts</strong></p>
+    </div>
+
+    {# Report Information #}
+    <div class="nhsuk-u-margin-top-8 nhsuk-u-padding-top-6" style="border-top: 1px solid #d8dde0;">
+      <h2 class="nhsuk-heading-m">Report information</h2>
+      
+      <dl class="nhsuk-summary-list">
+        <div class="nhsuk-summary-list__row">
+          <dt class="nhsuk-summary-list__key">
+            Report authors
+          </dt>
+          <dd class="nhsuk-summary-list__value">
+            Sarah Mitchell (Lead Nurse)<br>
+            Dr Aisha Patel (Clinical Director)<br>
+            David Chen (Pharmacy Lead)
+          </dd>
+        </div>
+
+        <div class="nhsuk-summary-list__row">
+          <dt class="nhsuk-summary-list__key">
+            Report date
+          </dt>
+          <dd class="nhsuk-summary-list__value">
+            July 2023
+          </dd>
+        </div>
+
+        <div class="nhsuk-summary-list__row">
+          <dt class="nhsuk-summary-list__key">
+            Report version
+          </dt>
+          <dd class="nhsuk-summary-list__value">
+            1.0 (Final)
+          </dd>
+        </div>
+
+        <div class="nhsuk-summary-list__row">
+          <dt class="nhsuk-summary-list__key">
+            Approved by
+          </dt>
+          <dd class="nhsuk-summary-list__value">
+            Trust Medical Devices Committee
+          </dd>
+        </div>
+      </dl>
+    </div>
+
+    {# Related Resources #}
+    <div class="nhsuk-u-margin-top-6">
+      <h3 class="nhsuk-heading-s">Related resources</h3>
+      
+      <ul class="nhsuk-list">
+        <li>
+          <a href="#">Download full report (PDF)</a>
+        </li>
+        <li>
+          <a href="#">Business case summary</a>
+        </li>
+        <li>
+          <a href="#">Training materials used</a>
+        </li>
+        <li>
+          <a href="#">Drug library configuration guide</a>
+        </li>
+        <li>
+          <a href="/product-detail-infusion-pump">Back to product page</a>
+        </li>
+      </ul>
+    </div>
+
+    {# Contact Information - Integrated at bottom #}
+    <div class="nhsuk-u-margin-top-8 nhsuk-u-padding-top-6" style="border-top: 1px solid #d8dde0;">
+      <h2 class="nhsuk-heading-m">Contact for peer discussion</h2>
+
+
+      <dl class="nhsuk-summary-list">
+  <div class="nhsuk-summary-list__row">
+    <dt class="nhsuk-summary-list__key">
+      Contact
+    </dt>
+    <dd class="nhsuk-summary-list__value">
+        <p class="nhsuk-body">
+        <strong>Sarah Mitchell</strong><br>
+        Lead Nurse, Critical Care<br>
+        St James's University Hospital
+      </p>
+    </dd>
+    <dd class="nhsuk-summary-list__actions">
+    
+    </dd>
+  </div>
+  <div class="nhsuk-summary-list__row">
+    <dt class="nhsuk-summary-list__key">
+      Phone number
+    </dt>
+    <dd class="nhsuk-summary-list__value">
+       <a href="mailto:sarah.mitchell@nhs.net">sarah.mitchell@nhs.net</a><br>
+        0113 243 2799
+    </dd>
+    <dd class="nhsuk-summary-list__actions">
+      
+    </dd>
+  </div>
+  <div class="nhsuk-summary-list__row">
+    <dt class="nhsuk-summary-list__key">
+      Email address
+    </dt>
+    <dd class="nhsuk-summary-list__value">
+      
+    </dd>
+    <dd class="nhsuk-summary-list__actions">
+    
+    </dd>
+  </div>
+  
+</dl>
+      
+    <h2 class="nhsuk-heading-s">Happy to discuss</h2>
+      <ul class="nhsuk-list nhsuk-list--bullet">
+        <li>Implementation approach</li>
+        <li>Staff training and change management</li>
+        <li>Clinical outcomes and safety improvements</li>
+        <li>EHR integration experience</li>
+        <li>Business case development</li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+{# Back Navigation #}
+<div class="nhsuk-grid-row nhsuk-u-margin-top-8">
+  <div class="nhsuk-grid-column-two-thirds">
+    <p class="nhsuk-body">
+      <a href="/product-detail-infusion-pump" class="nhsuk-link nhsuk-link--no-visited-state">
+        Back to SmartPump 300 product page
+      </a>
+    </p>
+  </div>
+</div>
+
+{% endblock %}

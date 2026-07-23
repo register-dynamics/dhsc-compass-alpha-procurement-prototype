@@ -1,0 +1,555 @@
+<!-- Product Detail Page for CardioLife AED-3100 -->
+{% extends 'layout.html' %}
+
+{% set pageName = "CardioLife AED-3100 - Compass" %}
+
+{% block beforeContent %}
+  {{ breadcrumb({
+    items: [
+      {
+        href: "/",
+        text: "Home"
+      },
+      {
+        href: "/search",
+        text: "Search"
+      }
+    ],
+    href: "/product/cardiolife-aed-3100",
+    text: "CardioLife AED-3100"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+<!-- Product Header -->
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+    
+    <h1 class="nhsuk-heading-xl nhsuk-u-margin-bottom-3">
+      CardioLife AED-3100
+    </h1>
+
+    <p class="nhsuk-body-l nhsuk-u-secondary-text-color nhsuk-u-margin-bottom-4">
+      Cardiac Solutions Ltd
+    </p>
+
+    <p class="nhsuk-u-margin-bottom-4">
+      <strong class="nhsuk-tag nhsuk-tag--green">MHRA Registered</strong>
+      <strong class="nhsuk-tag nhsuk-tag--grey">UK Made</strong>
+    </p>
+
+    <p class="nhsuk-body-l">
+      Advanced automated external defibrillator with integrated CPR guidance, designed for use in both professional healthcare and community settings.
+    </p>
+
+  </div>
+
+  <div class="nhsuk-grid-column-one-third">
+    
+    {{ card({
+      "feature": true,
+      "heading": "Quick actions",
+      "headingLevel": 2,
+      "descriptionHtml": "
+        <p><a href='#compare' class='nhsuk-button nhsuk-button--secondary nhsuk-u-margin-bottom-2'>Add to comparison</a></p>
+        <p><a href='#pim' class='nhsuk-button nhsuk-button--secondary nhsuk-u-margin-bottom-2'>View in PIM</a></p>
+        <p><a href='#contact'>Contact supplier</a></p>
+      "
+    }) }}
+
+  </div>
+</div>
+
+<!-- Evidence Summary -->
+<div class="nhsuk-grid-row nhsuk-u-margin-top-5">
+  <div class="nhsuk-grid-column-full">
+    
+    <h2 class="nhsuk-heading-l">Evidence summary</h2>
+
+  </div>
+</div>
+
+<div class="nhsuk-grid-row nhsuk-card-group">
+  
+  <div class="nhsuk-grid-column-one-quarter nhsuk-card-group__item">
+    {{ card({
+      "heading": "NICE Medtech",
+      "headingLevel": 3,
+      "descriptionHtml": "
+        <p class='nhsuk-u-margin-bottom-2'>
+          <strong class='nhsuk-tag nhsuk-tag--green'>Recommended</strong>
+        </p>
+        <p class='nhsuk-body-s'>MTG42 - March 2023</p>
+      "
+    }) }}
+  </div>
+
+  <div class="nhsuk-grid-column-one-quarter nhsuk-card-group__item">
+    {{ card({
+      "heading": "ODEP",
+      "headingLevel": 3,
+      "descriptionHtml": "
+        <p class='nhsuk-body-s nhsuk-u-margin-bottom-1'><strong>Accreditation</strong></p>
+        <p class='nhsuk-body-l nhsuk-u-margin-bottom-0'>Level 3A</p>
+      "
+    }) }}
+  </div>
+
+  <div class="nhsuk-grid-column-one-quarter nhsuk-card-group__item">
+    {{ card({
+      "heading": "DTAC Passport",
+      "headingLevel": 3,
+      "descriptionHtml": "
+        <p class='nhsuk-u-margin-bottom-2'>
+          <strong class='nhsuk-tag nhsuk-tag--green'>Approved</strong>
+        </p>
+        <p class='nhsuk-body-s'>Valid until 2025-12-31</p>
+      "
+    }) }}
+  </div>
+
+  <div class="nhsuk-grid-column-one-quarter nhsuk-card-group__item">
+    {{ card({
+      "heading": "NHS Trusts",
+      "headingLevel": 3,
+      "descriptionHtml": "
+        <p class='nhsuk-body-l nhsuk-u-margin-bottom-1'><strong>24</strong></p>
+        <p class='nhsuk-body-s'>Active evaluations</p>
+      "
+    }) }}
+  </div>
+
+</div>
+
+<!-- Tabs for Different Sections -->
+<div class="nhsuk-grid-row nhsuk-u-margin-top-7">
+  <div class="nhsuk-grid-column-full">
+
+    <h2 class="nhsuk-heading-l">Detailed information</h2>
+
+    <!-- NICE Guidance Section -->
+    <div class="nhsuk-u-margin-top-5">
+      <h3 class="nhsuk-heading-m">
+        
+        NICE Medtech Guidance
+      </h3>
+
+      <p><strong class="nhsuk-tag nhsuk-tag--green">Recommended</strong></p>
+      
+      <dl class="nhsuk-summary-list nhsuk-u-margin-top-4">
+        <div class="nhsuk-summary-list__row">
+          <dt class="nhsuk-summary-list__key">
+            Guidance reference
+          </dt>
+          <dd class="nhsuk-summary-list__value">
+            MTG42
+          </dd>
+        </div>
+        <div class="nhsuk-summary-list__row">
+          <dt class="nhsuk-summary-list__key">
+            Publication date
+          </dt>
+          <dd class="nhsuk-summary-list__value">
+            March 2023
+          </dd>
+        </div>
+        <div class="nhsuk-summary-list__row">
+          <dt class="nhsuk-summary-list__key">
+            Recommendation
+          </dt>
+          <dd class="nhsuk-summary-list__value">
+            The case for adopting CardioLife AED-3100 for automated external defibrillation is supported by the evidence. The device shows improved outcomes in both community and healthcare settings.
+          </dd>
+        </div>
+        <div class="nhsuk-summary-list__row">
+          <dt class="nhsuk-summary-list__key">
+            Key benefits
+          </dt>
+          <dd class="nhsuk-summary-list__value">
+            <ul class="nhsuk-list nhsuk-list--bullet">
+              <li>Improved survival rates compared to standard AEDs</li>
+              <li>Integrated CPR guidance reduces time to effective treatment</li>
+              <li>User-friendly interface suitable for lay responders</li>
+              <li>Cost-effective over device lifetime</li>
+            </ul>
+          </dd>
+        </div>
+      </dl>
+
+      <p class="nhsuk-u-margin-top-4">
+        <a href="https://www.nice.org.uk/guidance/mtg42" class="nhsuk-button nhsuk-button--secondary">View full NICE guidance</a>
+      </p>
+    </div>
+
+    <!-- ODEP Accreditation Section -->
+    <div class="nhsuk-u-margin-top-7">
+      <h3 class="nhsuk-heading-m">
+      
+        ODEP Accreditation
+      </h3>
+
+      <dl class="nhsuk-summary-list">
+        <div class="nhsuk-summary-list__row">
+          <dt class="nhsuk-summary-list__key">
+            Accreditation level
+          </dt>
+          <dd class="nhsuk-summary-list__value">
+            Level 3A
+          </dd>
+        </div>
+        <div class="nhsuk-summary-list__row">
+          <dt class="nhsuk-summary-list__key">
+            Assessment date
+          </dt>
+          <dd class="nhsuk-summary-list__value">
+            January 2024
+          </dd>
+        </div>
+        <div class="nhsuk-summary-list__row">
+          <dt class="nhsuk-summary-list__key">
+            Rating explanation
+          </dt>
+          <dd class="nhsuk-summary-list__value">
+            Level 3A indicates this device meets the highest standards for clinical evidence and post-market surveillance data, with extensive evidence of clinical efficacy and safety.
+          </dd>
+        </div>
+      </dl>
+    </div>
+
+    <!-- DTAC Passport Section -->
+    <div class="nhsuk-u-margin-top-7">
+      <h3 class="nhsuk-heading-m">
+      
+        DTAC Passport
+      </h3>
+
+      <p><strong class="nhsuk-tag nhsuk-tag--green">Approved</strong></p>
+
+      <dl class="nhsuk-summary-list nhsuk-u-margin-top-4">
+        <div class="nhsuk-summary-list__row">
+          <dt class="nhsuk-summary-list__key">
+            Passport number
+          </dt>
+          <dd class="nhsuk-summary-list__value">
+            DTAC-2024-0156
+          </dd>
+        </div>
+        <div class="nhsuk-summary-list__row">
+          <dt class="nhsuk-summary-list__key">
+            Approval date
+          </dt>
+          <dd class="nhsuk-summary-list__value">
+            January 2024
+          </dd>
+        </div>
+        <div class="nhsuk-summary-list__row">
+          <dt class="nhsuk-summary-list__key">
+            Valid until
+          </dt>
+          <dd class="nhsuk-summary-list__value">
+            31 December 2025
+          </dd>
+        </div>
+        <div class="nhsuk-summary-list__row">
+          <dt class="nhsuk-summary-list__key">
+            Status
+          </dt>
+          <dd class="nhsuk-summary-list__value">
+            All technical and safety assessments completed and approved. Device meets NHS standards for procurement.
+          </dd>
+        </div>
+      </dl>
+    </div>
+
+  </div>
+</div>
+
+<!-- Technical Specifications -->
+<div class="nhsuk-grid-row nhsuk-u-margin-top-7">
+  <div class="nhsuk-grid-column-full">
+    
+    <h2 class="nhsuk-heading-l">Technical specifications</h2>
+
+    <dl class="nhsuk-summary-list">
+      <div class="nhsuk-summary-list__row">
+        <dt class="nhsuk-summary-list__key">
+          Device classification
+        </dt>
+        <dd class="nhsuk-summary-list__value">
+          Class IIb Medical Device
+        </dd>
+      </div>
+      <div class="nhsuk-summary-list__row">
+        <dt class="nhsuk-summary-list__key">
+          Energy output
+        </dt>
+        <dd class="nhsuk-summary-list__value">
+          150-360 Joules (biphasic)
+        </dd>
+      </div>
+      <div class="nhsuk-summary-list__row">
+        <dt class="nhsuk-summary-list__key">
+          Battery life
+        </dt>
+        <dd class="nhsuk-summary-list__value">
+          5 years standby / 200 shocks
+        </dd>
+      </div>
+      <div class="nhsuk-summary-list__row">
+        <dt class="nhsuk-summary-list__key">
+          Weight
+        </dt>
+        <dd class="nhsuk-summary-list__value">
+          2.4 kg (including battery and pads)
+        </dd>
+      </div>
+      <div class="nhsuk-summary-list__row">
+        <dt class="nhsuk-summary-list__key">
+          Dimensions
+        </dt>
+        <dd class="nhsuk-summary-list__value">
+          28 cm × 24 cm × 8 cm
+        </dd>
+      </div>
+      <div class="nhsuk-summary-list__row">
+        <dt class="nhsuk-summary-list__key">
+          IP rating
+        </dt>
+        <dd class="nhsuk-summary-list__value">
+          IP55 (dust and water resistant)
+        </dd>
+      </div>
+      <div class="nhsuk-summary-list__row">
+        <dt class="nhsuk-summary-list__key">
+          Operating temperature
+        </dt>
+        <dd class="nhsuk-summary-list__value">
+          0°C to 50°C
+        </dd>
+      </div>
+      <div class="nhsuk-summary-list__row">
+        <dt class="nhsuk-summary-list__key">
+          Certifications
+        </dt>
+        <dd class="nhsuk-summary-list__value">
+          CE marked, UKCA marked, ISO 13485, IEC 60601-1
+        </dd>
+      </div>
+      <div class="nhsuk-summary-list__row">
+        <dt class="nhsuk-summary-list__key">
+          Key features
+        </dt>
+        <dd class="nhsuk-summary-list__value">
+          <ul class="nhsuk-list nhsuk-list--bullet">
+            <li>Real-time CPR feedback with metronome</li>
+            <li>Bilingual voice prompts (English and Welsh)</li>
+            <li>Automatic shock delivery option</li>
+            <li>Adult and paediatric modes</li>
+            <li>Event data recording and WiFi connectivity</li>
+            <li>8-year warranty</li>
+          </ul>
+        </dd>
+      </div>
+    </dl>
+
+  </div>
+</div>
+
+<!-- NHS Trust Evaluations -->
+<div class="nhsuk-grid-row nhsuk-u-margin-top-7">
+  <div class="nhsuk-grid-column-full">
+    
+    <h2 class="nhsuk-heading-l">NHS Trust evaluations</h2>
+
+    <p class="nhsuk-body-l">24 NHS organisations have submitted evaluations of this device.</p>
+
+    {{ details({
+      "text": "View evaluation summary",
+      "HTML": "
+        <h3 class='nhsuk-heading-s'>Overall satisfaction</h3>
+        <p><strong>4.6 / 5.0</strong> (based on 24 evaluations)</p>
+        
+        <h3 class='nhsuk-heading-s nhsuk-u-margin-top-4'>Key themes from evaluations</h3>
+        <ul class='nhsuk-list nhsuk-list--bullet'>
+          <li><strong>Ease of use:</strong> Consistently rated highly by clinical and non-clinical users</li>
+          <li><strong>Reliability:</strong> Very low failure rate reported across trusts</li>
+          <li><strong>Training:</strong> Minimal training required, intuitive interface</li>
+          <li><strong>Maintenance:</strong> Low maintenance requirements, good battery life</li>
+          <li><strong>Integration:</strong> Easy to integrate into existing emergency response protocols</li>
+        </ul>
+
+        <h3 class='nhsuk-heading-s nhsuk-u-margin-top-4'>Recent evaluations</h3>
+        
+        <div class='nhsuk-inset-text'>
+          <p><strong>Leeds Teaching Hospitals NHS Trust</strong> - October 2024</p>
+          <p>\"Excellent device for both A&E and community response teams. The CPR guidance feature has improved our response times and outcomes. Highly recommend.\"</p>
+          <p class='nhsuk-body-s'>Rating: 5/5</p>
+        </div>
+
+        <div class='nhsuk-inset-text'>
+          <p><strong>Manchester University NHS Foundation Trust</strong> - September 2024</p>
+          <p>\"Deployed across 15 sites. Staff found it very easy to use with minimal training. The WiFi connectivity for data upload is a huge benefit for audit purposes.\"</p>
+          <p class='nhsuk-body-s'>Rating: 4.5/5</p>
+        </div>
+
+        <div class='nhsuk-inset-text'>
+          <p><strong>Bradford Teaching Hospitals NHS Foundation Trust</strong> - August 2024</p>
+          <p>\"Replaced older AED models with CardioLife. Significant improvement in user confidence. Battery life exceeds specifications in our experience.\"</p>
+          <p class='nhsuk-body-s'>Rating: 4.8/5</p>
+        </div>
+      "
+    }) }}
+
+  </div>
+</div>
+
+<!-- Supplier Information -->
+<div class="nhsuk-grid-row nhsuk-u-margin-top-7">
+  <div class="nhsuk-grid-column-full">
+    
+    <h2 class="nhsuk-heading-l">Supplier information</h2>
+
+  </div>
+</div>
+
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+    
+    <dl class="nhsuk-summary-list">
+      <div class="nhsuk-summary-list__row">
+        <dt class="nhsuk-summary-list__key">
+          Manufacturer
+        </dt>
+        <dd class="nhsuk-summary-list__value">
+          Cardiac Solutions Ltd
+        </dd>
+      </div>
+      <div class="nhsuk-summary-list__row">
+        <dt class="nhsuk-summary-list__key">
+          Country of manufacture
+        </dt>
+        <dd class="nhsuk-summary-list__value">
+          United Kingdom
+        </dd>
+      </div>
+      <div class="nhsuk-summary-list__row">
+        <dt class="nhsuk-summary-list__key">
+          Company registration
+        </dt>
+        <dd class="nhsuk-summary-list__value">
+          Companies House No. 08765432
+        </dd>
+      </div>
+      <div class="nhsuk-summary-list__row">
+        <dt class="nhsuk-summary-list__key">
+          NHS framework
+        </dt>
+        <dd class="nhsuk-summary-list__value">
+          NHS Supply Chain - Acute Care Equipment Framework
+        </dd>
+      </div>
+      <div class="nhsuk-summary-list__row">
+        <dt class="nhsuk-summary-list__key">
+          Support
+        </dt>
+        <dd class="nhsuk-summary-list__value">
+          24/7 technical support, UK-based service centres
+        </dd>
+      </div>
+      <div class="nhsuk-summary-list__row">
+        <dt class="nhsuk-summary-list__key">
+          Contact
+        </dt>
+        <dd class="nhsuk-summary-list__value">
+          <a href="mailto:nhs@cardiacsolutions.co.uk">nhs@cardiacsolutions.co.uk</a><br>
+          0800 123 4567
+        </dd>
+      </div>
+    </dl>
+
+  </div>
+
+  <div class="nhsuk-grid-column-one-third">
+    
+    {{ card({
+      "heading": "NHS Supply Chain",
+      "headingLevel": 3,
+      "descriptionHtml": "
+        <p class='nhsuk-body-s'>This product is available through NHS Supply Chain.</p>
+        <p class='nhsuk-body-s'><strong>Product code:</strong> AED-CL-3100</p>
+        <p><a href='#'>View in NHS Supply Chain catalogue</a></p>
+      "
+    }) }}
+
+  </div>
+</div>
+
+<!-- Related Products -->
+<div class="nhsuk-grid-row nhsuk-u-margin-top-7">
+  <div class="nhsuk-grid-column-full">
+    
+    <h2 class="nhsuk-heading-l">Related products</h2>
+
+  </div>
+</div>
+
+<div class="nhsuk-grid-row nhsuk-card-group">
+  
+  <div class="nhsuk-grid-column-one-third nhsuk-card-group__item">
+    {{ card({
+      "clickable": true,
+      "href": "/product/heartguard-pro-2000",
+      "heading": "HeartGuard Pro 2000",
+      "headingLevel": 3,
+      "descriptionHtml": "
+        <p class='nhsuk-body-s'><strong>MedTech Innovations</strong></p>
+        <p><strong class='nhsuk-tag nhsuk-tag--orange'>Under Review</strong> NICE</p>
+      "
+    }) }}
+  </div>
+
+  <div class="nhsuk-grid-column-one-third nhsuk-card-group__item">
+    {{ card({
+      "clickable": true,
+      "href": "/product/lifesaver-elite-x5",
+      "heading": "LifeSaver Elite X5",
+      "headingLevel": 3,
+      "descriptionHtml": "
+        <p class='nhsuk-body-s'><strong>Advanced Medical Systems</strong></p>
+        <p><strong class='nhsuk-tag nhsuk-tag--blue'>Recommended with Conditions</strong> NICE</p>
+      "
+    }) }}
+  </div>
+
+  <div class="nhsuk-grid-column-one-third nhsuk-card-group__item">
+    {{ card({
+      "clickable": true,
+      "href": "/search?category=aed",
+      "heading": "View all AED devices",
+      "headingLevel": 3,
+      "descriptionHtml": "<p>Browse our complete range of automated external defibrillators.</p>"
+    }) }}
+  </div>
+
+</div>
+
+<!-- Actions -->
+<div class="nhsuk-grid-row nhsuk-u-margin-top-7 nhsuk-u-margin-bottom-7">
+  <div class="nhsuk-grid-column-two-thirds">
+    
+    <h2 class="nhsuk-heading-m">Next steps</h2>
+
+    <p>
+      <a href="#compare" class="nhsuk-button">Add to comparison</a>
+      <a href="/search" class="nhsuk-button nhsuk-button--secondary">Back to search</a>
+    </p>
+
+    <p class="nhsuk-u-margin-top-4">
+      <a href="#feedback">Report an issue with this product information</a>
+    </p>
+
+  </div>
+</div>
+
+{% endblock %}

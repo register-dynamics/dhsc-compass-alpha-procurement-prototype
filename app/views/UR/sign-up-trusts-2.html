@@ -1,0 +1,71 @@
+{% extends prototypeVersion + '/layouts/layout-signed-out.html' %}
+{% set pageName = "Confirm your trust" %}
+
+
+{% block content %}
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+    
+    <h1 class="nhsuk-heading-l">Confirm your trust</h1>
+    
+
+    {% from "summary-list/macro.njk" import summaryList %}
+    {{ summaryList({
+      classes: "nhsuk-u-margin-bottom-6",
+      rows: [
+        {
+          key: {
+            text: "Trust name"
+          },
+          value: {
+            text: data['trust-picker'] or "Leeds Teaching Hospitals NHS Trust"
+          }
+        },
+        {
+          key: {
+            text: "ODS code"
+          },
+          value: {
+            text: data['ods-code'] or "RWE"
+          }
+        },
+        {
+          key: {
+            text: "Type"
+          },
+          value: {
+            text: "NHS Trust"
+          }
+        },
+        {
+          key: {
+            text: "Location"
+          },
+          value: {
+            text: "Leeds, West Yorkshire"
+          }
+        }
+      ]
+    }) }}
+
+    <form action="sign-up-trusts-3" method="post">
+      
+      {% from "button/macro.njk" import button %}
+      <div class="nhsuk-button-group">
+        {{ button({
+          text: "Yes, continue",
+          classes: "nhsuk-button--primary"
+        }) }}
+        
+        {{ button({
+          text: "Back",
+          classes: "nhsuk-button--secondary",
+          href: "sign-up-ods-code"
+        }) }}
+      </div>
+
+    </form>
+
+  </div>
+</div>
+{% endblock %}

@@ -116,6 +116,7 @@ router.use('/v1', require('./views/v1/routes'))
 router.use('/v2', require('./views/v2/routes'))
 // v3 routes
 router.use('/v3', require('./views/v3/routes'))
+router.use('/UR', require('./views/UR/routes'))
 
 
 

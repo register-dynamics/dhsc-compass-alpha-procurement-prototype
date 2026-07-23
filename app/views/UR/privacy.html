@@ -1,0 +1,100 @@
+{% extends 'layout-signed-out.html' %}
+
+{% set pageName = "Privacy" %}
+{% set serviceHeader = "" %}
+
+{% block beforeContent %}
+{% from "breadcrumb/macro.njk" import breadcrumb %}
+
+{{ breadcrumb({
+  items: [
+    {
+      href: "/",
+      text: "Home"
+    }
+  ],
+  href: "#",
+  text: "Privacy"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+
+
+
+<!-- NHS 10 Year Plan Context -->
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+    
+  <h1 class='nhsuk-heading-l'>Privacy statement</h1>
+    <fieldset class="nhsuk-fieldset nhsuk-u-margin-top-6">
+        <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--l">
+          <h2 class="nhsuk-fieldset__heading">
+            Data sharing preferences
+          </h2>
+        </legend>
+
+        <div class="nhsuk-hint">
+          Control how your trust's information appears on Compass
+        </div>
+
+        {# Make Contact Details Public #}
+        <div class="nhsuk-form-group">
+          <fieldset class="nhsuk-fieldset">
+            <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--s">
+              Contact details visibility
+            </legend>
+            <div class="nhsuk-hint">
+              When you submit evaluations, would you like your contact details to be visible to other NHS trusts?
+            </div>
+
+            <div class="nhsuk-radios">
+              <div class="nhsuk-radios__item">
+                <input class="nhsuk-radios__input" id="contact-public" name="contact-visibility" type="radio" value="public" checked>
+                <label class="nhsuk-label nhsuk-radios__label" for="contact-public">
+                  <strong>Yes</strong> - Make my contact details visible (recommended)
+                </label>
+                <div class="nhsuk-hint nhsuk-radios__hint" id="contact-public-hint">
+                  Other trusts can contact you to discuss your evaluations. Helps build NHS community knowledge.
+                </div>
+              </div>
+
+              <div class="nhsuk-radios__item">
+                <input class="nhsuk-radios__input" id="contact-private" name="contact-visibility" type="radio" value="private">
+                <label class="nhsuk-label nhsuk-radios__label" for="contact-private">
+                  <strong>No</strong> - Keep my contact details private
+                </label>
+                <div class="nhsuk-hint nhsuk-radios__hint" id="contact-private-hint">
+                  Your evaluations will still be visible, but without your contact information.
+                </div>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+
+        {# Share Evaluation Documents #}
+      
+      </fieldset>
+
+    
+
+
+      
+
+
+
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+{% endblock %}
