@@ -111,7 +111,7 @@ router.get(/search-/, (req, res, next) => {
 
 const individualQuery = db.prepare("select MAKE, MODEL, MODEL_ID, MANUFACTURER, GMDN_NAME TYPE, COUNTRY from search where MAKE_ID = ? and MODEL_ID = ? and DEVICE_ID = ?")
 
-const individualDocumentQuery = db.prepare("SELECT organisation_name, type_of_doc_desc, rating, assessment_date, org_category_desc, org_type_desc, url_directory FROM make_documents WHERE make_id = ?")
+const documentsQuery = db.prepare("SELECT organisation_name, type_of_doc_desc, rating, procured, scale, ward_department, assessment_date, expiry_date, org_category_desc, org_type_desc, url_directory FROM make_documents WHERE make_id = ?")
 
 router.get(/product-page/, (req, res, next) => {
 
@@ -120,7 +120,7 @@ router.get(/product-page/, (req, res, next) => {
   const result = individualQuery.get(parseInt(req.query.make), parseInt(req.query.model), parseInt(req.query.device))
   const random = randomEvidence(result.MODEL_ID)
 
-  const documents = individualDocumentQuery.all(parseInt(req.query.make))
+  const documents = documentsQuery.all(parseInt(req.query.make))
 
   res.locals.searchTerm = req.query.q
   res.locals.product = {

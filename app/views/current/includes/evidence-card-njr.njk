@@ -1,0 +1,68 @@
+{% macro evidenceCardNjr(document) %}
+  <div class="nhsuk-card">
+    <div class="nhsuk-card__content">
+      <h3 class="nhsuk-card__heading nhsuk-heading-m">
+        {{ document.organisation_name }}
+      </h3>
+
+      <dl class="nhsuk-summary-list nhsuk-summary-list--no-border">
+        <div class="nhsuk-summary-list__row">
+          <dt class="nhsuk-summary-list__key">
+            Document type
+          </dt>
+          <dd class="nhsuk-summary-list__value">
+            {{ document.type_of_doc_desc }}
+          </dd>
+        </div>
+
+        <div class="nhsuk-summary-list__row">
+          <dt class="nhsuk-summary-list__key">
+            Assessment date
+          </dt>
+          <dd class="nhsuk-summary-list__value">
+            {{ document.assessment_date }}
+          </dd>
+        </div>
+
+        <div class="nhsuk-summary-list__row">
+          <dt class="nhsuk-summary-list__key">
+            Renewal date
+          </dt>
+          <dd class="nhsuk-summary-list__value">
+            {{ document.expiry_date }}
+          </dd>
+        </div>
+
+        <div class="nhsuk-summary-list__row">
+          <dt class="nhsuk-summary-list__key">
+            Organisation type
+          </dt>
+          <dd class="nhsuk-summary-list__value">
+            {{ document.org_type_desc }}
+          </dd>
+        </div>
+
+        <div class="nhsuk-summary-list__row">
+          <dt class="nhsuk-summary-list__key">
+            Organisation category
+          </dt>
+          <dd class="nhsuk-summary-list__value">
+            {{ document.org_category_desc }}
+          </dd>
+        </div>
+      </dl>
+
+        <h4 class="nhsuk-heading-s nhsuk-u-margin-top-4">Report summary</h4>
+        <p class="nhsuk-body nhsuk-u-margin-top-3">
+          {% set documentUrl = document.url_directory %}
+
+          {% if "http" not in documentUrl %}
+            {% set documentUrl = "/pdf/" + documentUrl %}
+          {% endif %}
+          
+          <a href="{{ documentUrl }}">View {{ document.type_of_doc_desc }}</a>
+        </p>
+
+    </div>
+  </div>
+{% endmacro %}
