@@ -26,8 +26,8 @@ The running container is given live access to the checked-out copy of the source
 
 For further information on GitHub Desktop (and how to use it to submit your changes back to the repository) can be found:
 
- * [Getting Started with GitHub Desktop](https://docs.github.com/en/desktop/overview/getting-started-with-github-desktop)
- * [Choose whichever YouTube tutorial matches your style](https://www.youtube.com/results?search_query=github+desktop+tutorial)
+- [Getting Started with GitHub Desktop](https://docs.github.com/en/desktop/overview/getting-started-with-github-desktop)
+- [Choose whichever YouTube tutorial matches your style](https://www.youtube.com/results?search_query=github+desktop+tutorial)
 
 Please ensure to create a new branch for any work you do and push that to the repository - don't commit straight to the `main` branch, please!
 
