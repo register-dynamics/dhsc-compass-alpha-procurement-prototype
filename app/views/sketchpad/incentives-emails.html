@@ -1,0 +1,172 @@
+{% extends 'layout.html' %}
+
+{% from "back-link/macro.njk" import backLink %}
+{% from "sketchpad/_email-header.html" import emailHeader %}
+
+{% set pageName = "Incentives emails" %}
+
+{% set serviceName = "Search and evaluate medical technologies" %}
+
+{% block beforeContent %}
+  {{ backLink({
+    href: "/sketchpad",
+    text: "Back to sketchpad"
+  }) }}
+{% endblock %}
+
+{% block content %}
+  <div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+
+      <h1 class="nhsuk-heading-l">{{ pageName }}</h1>
+
+      <p>Sketches of email notifications that encourage people to share their experience of medical technologies.</p>
+
+    </div>
+  </div>
+
+  <div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-full">
+
+      {# ----------------------------------------------------------------
+         Email 1 — products missing experience
+         ---------------------------------------------------------------- #}
+      <h2 class="nhsuk-heading-m nhsuk-u-margin-top-6">1. Products missing experience</h2>
+
+      {{ emailHeader(serviceName) }}
+
+      <div class="app-email__container">
+        <div class="app-email__message">
+
+          <p>Dear _,</p>
+
+          <p>5 products procured by your trust are missing experience on Search and evaluate medical technologies.</p>
+
+          <p>It takes just 3 minutes to share your experience and help your NHS colleagues decide if these products are right for their trust.</p>
+
+          {{ button({
+            text: "Share your experience",
+            href: "#"
+          }) }}
+
+        </div>
+      </div>
+
+      {# ----------------------------------------------------------------
+         Email 2 — permission to be contacted
+         ---------------------------------------------------------------- #}
+      <h2 class="nhsuk-heading-m nhsuk-u-margin-top-8">2. Permission to be contacted</h2>
+
+      {{ emailHeader(serviceName) }}
+
+      <div class="app-email__container">
+        <div class="app-email__message">
+
+          <p>Dear _,</p>
+
+          <p>Your trust has procured a product that's new to market, iVWatch.</p>
+
+          <p>Can NHS colleagues contact you to learn about your experience with this product?</p>
+
+          <div class="nhsuk-button-group">
+            {{ button({
+              text: "Yes, they can contact me",
+              href: "#"
+            }) }}
+
+            {{ button({
+              text: "No, they cannot contact me",
+              href: "#",
+              classes: "nhsuk-button--secondary"
+            }) }}
+          </div>
+
+          <p>Sharing your insights helps promote innovation in the NHS.</p>
+
+        </div>
+      </div>
+
+      {# ----------------------------------------------------------------
+         Email 3 — monthly report
+         ---------------------------------------------------------------- #}
+      <h2 class="nhsuk-heading-m nhsuk-u-margin-top-8">3. Monthly report</h2>
+
+      {{ emailHeader(serviceName) }}
+
+      <div class="app-email__container">
+        <div class="app-email__message">
+
+          <h3 class="nhsuk-heading-s">Your monthly Search and evaluate medical technologies report</h3>
+
+          <h4 class="nhsuk-heading-xs">Contributions this month</h4>
+
+          <ul class="nhsuk-list nhsuk-list--bullet">
+            <li>You've accessed 31 product pages</li>
+            <li>Your trust has uploaded 15 documents</li>
+            <li>You've uploaded 3 documents</li>
+            <li>48 people have viewed your contributions</li>
+            <li>12 people have marked your contributions as useful</li>
+          </ul>
+
+          <p>You help people across the NHS make better procurement choices when you upload documents to the service. If you've reviewed a medical technology lately, <a href="#">share your experience</a>.</p>
+
+          {{ button({
+            text: "Share experience",
+            href: "#"
+          }) }}
+
+          <h4 class="nhsuk-heading-xs">Across the service</h4>
+
+          <p>NHS colleagues have uploaded 111 documents from across the service this month, including for:</p>
+
+          <ul class="nhsuk-list nhsuk-list--bullet">
+            <li>SmartPump 300 Infusion System</li>
+            <li>Collagen Pro Matrix</li>
+            <li>Medtronic MiniMed 780G</li>
+          </ul>
+
+          <h4 class="nhsuk-heading-xs">Top contributors</h4>
+
+          <p>Barts Health NHS Trust has shared the most experience this month, uploading 29 documents.</p>
+
+          <p>Dr Said Mohseyni has shared the most useful experience, with 10 contributions highlighted by peers.</p>
+
+          <p>Thank you for being a part of Search and evaluate medical technologies. Together, we're making it easier to choose the best medical technology.</p>
+
+          {{ button({
+            text: "Go to the service",
+            href: "#"
+          }) }}
+
+        </div>
+      </div>
+
+      {# ----------------------------------------------------------------
+         Email 4 — how you compare
+         ---------------------------------------------------------------- #}
+      <h2 class="nhsuk-heading-m nhsuk-u-margin-top-8">4. How you compare</h2>
+
+      {{ emailHeader(serviceName) }}
+
+      <div class="app-email__container">
+        <div class="app-email__message">
+
+          <p>Dear [Name],</p>
+
+          <p>Users upload an average 5 documents per month on [Service Name]. This month, you uploaded X documents, which puts you in the top 10%.</p>
+
+          <p>Keep up the great work! Your contributions help the NHS buy the best med tech.</p>
+
+          <p><a href="#">Share more experience</a> to continue helping the NHS choose the best medical technology.</p>
+
+          {{ button({
+            text: "Share experience",
+            href: "#"
+          }) }}
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+{% endblock %}

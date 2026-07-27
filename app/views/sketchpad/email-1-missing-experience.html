@@ -1,0 +1,48 @@
+{% extends 'layout.html' %}
+
+{% from "back-link/macro.njk" import backLink %}
+{% from "sketchpad/_email-header.html" import emailHeader %}
+
+{% set pageName = "Email 1: products missing experience" %}
+
+{% block beforeContent %}
+  {{ backLink({
+    href: "/sketchpad",
+    text: "Back to sketchpad"
+  }) }}
+{% endblock %}
+
+{% block content %}
+  <div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-full">
+
+      {{ emailHeader("Search and evaluate medical technologies") }}
+
+      <div class="app-email__container">
+        <div class="app-email__message">
+
+          <h1 class="nhsuk-u-visually-hidden">{{ pageName }}</h1>
+
+          <p>Dear _,</p>
+
+          <p>5 products procured by your trust are missing experience on Search and evaluate medical technologies.</p>
+
+          <p>It takes just 3 minutes to share your experience and help your NHS colleagues decide if these products are right for their trust.</p>
+
+          {{ button({
+            text: "Share your experience",
+            href: "#"
+          }) }}
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="nhsuk-grid-row nhsuk-u-margin-top-6">
+    <div class="nhsuk-grid-column-two-thirds">
+      <p><a href="/sketchpad/email-2-contact-permission">Next</a></p>
+    </div>
+  </div>
+{% endblock %}

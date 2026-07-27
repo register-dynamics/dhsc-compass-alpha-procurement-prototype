@@ -1,0 +1,465 @@
+{% extends 'layout.html' %}
+
+{% from "back-link/macro.njk" import backLink %}
+{% from "tables/macro.njk" import table %}
+
+{% set pageName = "Incentives sketches" %}
+
+{% block beforeContent %}
+  {{ backLink({
+    href: "/sketchpad",
+    text: "Back to sketchpad"
+  }) }}
+{% endblock %}
+
+{% block content %}
+  <div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+
+      <h1 class="nhsuk-heading-l">{{ pageName }}</h1>
+
+      <p>A space to try out components and layouts.</p>
+
+      {{ table({
+        caption: "Latest contributions",
+        captionSize: "m",
+        responsive: true,
+        firstCellIsHeader: true,
+        head: [
+          {
+            text: "Contributor name",
+            classes: "nhsuk-u-width-one-quarter"
+          },
+          {
+            text: "Contribution",
+            classes: "nhsuk-u-width-one-half"
+          },
+          {
+            text: "Time",
+            classes: "nhsuk-u-width-one-quarter"
+          }
+        ],
+        rows: [
+          [
+            {
+              header: "Contributor name",
+              text: "Marshall Allen"
+            },
+            {
+              header: "Contribution",
+              text: "uploaded evidence for productName"
+            },
+            {
+              header: "Time",
+              text: "today"
+            }
+          ],
+          [
+            {
+              header: "Contributor name",
+              text: "Sunanda Sharma"
+            },
+            {
+              header: "Contribution",
+              text: "added contact details to productName evaluation"
+            },
+            {
+              header: "Time",
+              text: "today"
+            }
+          ],
+          [
+            {
+              header: "Contributor name",
+              text: "Knoell Scott"
+            },
+            {
+              header: "Contribution",
+              text: "uploaded 5 documents"
+            },
+            {
+              header: "Time",
+              text: "yesterday"
+            }
+          ],
+          [
+            {
+              header: "Contributor name",
+              text: "Vincent Chancey"
+            },
+            {
+              header: "Contribution",
+              text: "commented on productName"
+            },
+            {
+              header: "Time",
+              text: "2 days ago"
+            }
+          ],
+          [
+            {
+              header: "Contributor name",
+              text: "Abida Parveen"
+            },
+            {
+              header: "Contribution",
+              text: "uploaded a business case for productName"
+            },
+            {
+              header: "Time",
+              text: "2 days ago"
+            }
+          ],
+          [
+            {
+              header: "Contributor name",
+              text: "Davel Patel"
+            },
+            {
+              header: "Contribution",
+              text: "uploaded evidence for productName"
+            },
+            {
+              header: "Time",
+              text: "3 days ago"
+            }
+          ]
+        ]
+      }) }}
+
+    </div>
+  </div>
+
+  <div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+
+      {% call card({}) %}
+
+        {{ tag({
+          text: "Procured",
+          classes: "nhsuk-tag--green"
+        }) }}
+
+        <h2>Barts Health NHS Trust</h2>
+
+        {{ summaryList({
+          rows: [
+            {
+              key: { text: "Document type" },
+              value: { text: "Business case" }
+            },
+            {
+              key: { text: "Document period" },
+              value: { text: "January 2023" }
+            },
+            {
+              key: { text: "Ward/Department" },
+              value: { text: "Dialysis Unit, St Bartholomew's Hospital" }
+            }
+          ]
+        }) }}
+
+        <p><a href="#">View full business case</a></p>
+
+        <hr class="nhsuk-section-break nhsuk-section-break--visible nhsuk-section-break--l">
+
+        <h3>Contact for peer discussion</h3>
+
+        <p>
+          <strong>Dr Tess Sawyer</strong><br>
+          Consultant, Nephrology
+        </p>
+
+        {{ insetText({
+          text: "Top contributor on Compass"
+        }) }}
+
+        <p>
+          <a href="mailto:tess.sawyer@nhs.net">tess.sawyer@nhs.net</a><br>
+          Phone: 0112 244 2795
+        </p>
+
+        <p>Tess is happy to discuss implementation, staff training and clinical outcomes.</p>
+
+      {% endcall %}
+
+    </div>
+  </div>
+
+  <div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+
+      {% call card({}) %}
+
+        {{ tag({
+          text: "Procured",
+          classes: "nhsuk-tag--green"
+        }) }}
+
+        <h2>Barts Health NHS Trust</h2>
+
+        {{ summaryList({
+          rows: [
+            {
+              key: { text: "Document type" },
+              value: { text: "Business case" }
+            },
+            {
+              key: { text: "Document period" },
+              value: { text: "January 2023" }
+            },
+            {
+              key: { text: "Ward/Department" },
+              value: { text: "Dialysis Unit, St Bartholomew's Hospital" }
+            }
+          ]
+        }) }}
+
+        <p><a href="#">View full business case</a></p>
+
+        <hr class="nhsuk-section-break nhsuk-section-break--visible nhsuk-section-break--l">
+
+        <h3>Contact for peer discussion</h3>
+
+        <p>
+          <strong>Dr Tess Sawyer</strong><br>
+          Consultant, Nephrology
+        </p>
+
+        {{ insetText({
+          text: "Top contributor on Compass"
+        }) }}
+
+        <p>
+          <a href="mailto:tess.sawyer@nhs.net">tess.sawyer@nhs.net</a><br>
+          Phone: 0112 244 2795
+        </p>
+
+        <p>Tess is happy to discuss implementation, staff training and clinical outcomes.</p>
+
+      {% endcall %}
+
+    </div>
+  </div>
+
+  <div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+
+      {% call card({ heading: "General activity this month", headingLevel: 3 }) %}
+        {{ summaryList({
+          rows: [
+            { key: { text: "Documents shared this month" }, value: { text: "20" } },
+            { key: { text: "Product searches" }, value: { text: "2,000" } },
+            { key: { text: "Contact details added this month" }, value: { text: "15" } }
+          ]
+        }) }}
+      {% endcall %}
+
+    </div>
+  </div>
+
+  <div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+
+      <h2 class="nhsuk-heading-l">Your contributions</h2>
+
+      <h3 class="nhsuk-heading-m">Your recent uploads</h3>
+
+      {{ table({
+        responsive: true,
+        firstCellIsHeader: true,
+        head: [
+          {
+            text: "Document",
+            classes: "nhsuk-u-width-one-half"
+          },
+          {
+            text: "Views",
+            format: "numeric",
+            classes: "nhsuk-u-width-one-quarter"
+          },
+          {
+            text: "Found useful",
+            format: "numeric",
+            classes: "nhsuk-u-width-one-quarter"
+          }
+        ],
+        rows: [
+          [
+            {
+              header: "Document",
+              html: '<a href="#">Dialysis unit business case</a>'
+            },
+            {
+              header: "Views",
+              text: "47",
+              format: "numeric"
+            },
+            {
+              header: "Found useful",
+              text: "2",
+              format: "numeric"
+            }
+          ],
+          [
+            {
+              header: "Document",
+              html: '<a href="#">Clinical outcomes report</a>'
+            },
+            {
+              header: "Views",
+              text: "200",
+              format: "numeric"
+            },
+            {
+              header: "Found useful",
+              text: "5",
+              format: "numeric"
+            }
+          ],
+          [
+            {
+              header: "Document",
+              html: '<a href="#">Staff training guide</a>'
+            },
+            {
+              header: "Views",
+              text: "12",
+              format: "numeric"
+            },
+            {
+              header: "Found useful",
+              text: "11",
+              format: "numeric"
+            }
+          ]
+        ]
+      }) }}
+
+      <p>
+        <a href="/your-contributions">View all your contributed documents</a>
+      </p>
+
+    </div>
+  </div>
+
+  {# Experimental: contribution card with a "useful" endorsement status,
+     based on the trust evaluation card on the product page. #}
+  <div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+
+      <h2 class="nhsuk-heading-l">Contribution card with useful status</h2>
+
+      {# The notification a contributor receives when their document is marked useful.
+         Interprets the envelope in the sketch. #}
+      {{ notificationBanner({
+        titleText: "Update",
+        html: '<h3 class="nhsuk-notification-banner__heading">3 people found your business case useful</h3><p class="nhsuk-body">Your evidence is helping other trusts make procurement decisions.</p>'
+      }) }}
+
+      {% call card({}) %}
+
+        {{ tag({
+          text: "Procured",
+          classes: "nhsuk-tag--green"
+        }) }}
+
+        <h2>Barts Health NHS Trust</h2>
+
+        {# "Useful" endorsement count and action.
+           The NHS Design System has no like/favourite component, so this uses a
+           secondary button with the ARIA toggle button pattern (aria-pressed).
+           Tick icon is decorative (aria-hidden); the count and the button label
+           carry the meaning for assistive technology. #}
+        <div class="nhsuk-u-margin-bottom-4">
+
+          <p class="nhsuk-body nhsuk-u-margin-bottom-2">
+            <svg class="nhsuk-icon nhsuk-icon__tick" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" focusable="false" aria-hidden="true" style="vertical-align: middle;">
+              <path d="M11.4 18.8a2 2 0 0 1-2.7.1h-.1L4 14.1a1.5 1.5 0 0 1 2.1-2L10 16l8.1-8.1a1.5 1.5 0 1 1 2.2 2l-8.9 9Z"></path>
+            </svg>
+            <strong>25 people</strong> found this useful
+          </p>
+
+          {{ button({
+            element: "button",
+            type: "button",
+            text: "Mark as useful",
+            classes: "nhsuk-button--secondary nhsuk-u-margin-bottom-0",
+            attributes: {
+              "id": "mark-useful",
+              "aria-pressed": "false"
+            }
+          }) }}
+
+        </div>
+
+        {{ summaryList({
+          rows: [
+            {
+              key: { text: "Document type" },
+              value: { text: "Business case" }
+            },
+            {
+              key: { text: "Document period" },
+              value: { text: "January 2023" }
+            },
+            {
+              key: { text: "Ward/Department" },
+              value: { text: "Dialysis Unit, St Bartholomew's Hospital" }
+            }
+          ]
+        }) }}
+
+        <p><a href="#">View full business case</a></p>
+
+        <hr class="nhsuk-section-break nhsuk-section-break--visible nhsuk-section-break--l">
+
+        <h3>Contact for peer discussion</h3>
+
+        <p>
+          <strong>Dr Tess Sawyer</strong><br>
+          Consultant, Nephrology
+        </p>
+
+        {{ insetText({
+          text: "Top contributor on Compass"
+        }) }}
+
+        <p>
+          <a href="mailto:tess.sawyer@nhs.net">tess.sawyer@nhs.net</a><br>
+          Phone: 0112 244 2795
+        </p>
+
+        <p>Tess is happy to discuss implementation, staff training and clinical outcomes.</p>
+
+      {% endcall %}
+
+    </div>
+  </div>
+{% endblock %}
+
+{% block pageScripts %}
+<script>
+  // Prototype only: toggles the "useful" state so the card can be used as a
+  // visual prompt in user testing. The count is deliberately not updated.
+  document.addEventListener('DOMContentLoaded', function () {
+    var markUseful = document.querySelector('#mark-useful')
+
+    if (!markUseful) {
+      return
+    }
+
+    var tick =
+      '<svg class="nhsuk-icon nhsuk-icon__tick" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" focusable="false" aria-hidden="true" style="vertical-align: middle;">' +
+      '<path d="M11.4 18.8a2 2 0 0 1-2.7.1h-.1L4 14.1a1.5 1.5 0 0 1 2.1-2L10 16l8.1-8.1a1.5 1.5 0 1 1 2.2 2l-8.9 9Z"></path>' +
+      '</svg> '
+
+    markUseful.addEventListener('click', function () {
+      var isPressed = markUseful.getAttribute('aria-pressed') === 'true'
+
+      markUseful.setAttribute('aria-pressed', isPressed ? 'false' : 'true')
+      markUseful.innerHTML = isPressed ? 'Mark as useful' : tick + 'Marked as useful'
+    })
+  })
+</script>
+{% endblock %}
