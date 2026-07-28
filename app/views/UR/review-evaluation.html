@@ -1,0 +1,264 @@
+{% extends prototypeVersion + '/layouts/layout-signed-in.html' %}
+
+{% set pageName = "Check your answers" %}
+
+{% block beforeContent %}
+  {{ breadcrumb({
+    items: [
+      { text: "Home", href: "/" },
+      { text: "Share evaluation", href: "/share-evaluation-choice" },
+      { text: "Upload", href: "upload-evaluation" }
+    ],
+    attributes: { "aria-label": "Breadcrumb" }
+  }) }}
+{% endblock %}
+
+{% block content %}
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+
+    <h1 class="nhsuk-heading-l">Check your answers</h1>
+    <p>This is what other NHS trusts and the related product supplier will see. Review before submitting.</p>
+
+    <!-- Document -->
+    <h2 class="nhsuk-heading-m">Document</h2>
+    {{ summaryList({
+      rows: [
+        {
+          key: { text: "Uploaded file" },
+          value: { text: "infusion-pump-evaluation-2024.pdf" },
+          actions: { items: [{ href: "upload-evaluation", text: "Change", visuallyHiddenText: "uploaded file" }] }
+        }
+      ]
+    }) }}
+
+    <hr class="nhsuk-section-break nhsuk-section-break--m nhsuk-section-break--visible">
+
+    <!-- About the trust -->
+    <h2 class="nhsuk-heading-m">About the trust</h2>
+    {{ summaryList({
+      rows: [
+        {
+          key: { text: "Trust" },
+          value: { text: "Mid England NHS Foundation Trust" },
+          actions: { items: [{ href: "upload-evaluation", text: "Change", visuallyHiddenText: "trust" }] }
+        },
+        {
+          key: { text: "Department" },
+          value: { text: "Critical Care / ICU" },
+          actions: { items: [{ href: "upload-evaluation", text: "Change", visuallyHiddenText: "department" }] }
+        },
+        {
+          key: { text: "Evaluation lead" },
+          value: { text: "Dr Sarah Patel" },
+          actions: { items: [{ href: "upload-evaluation", text: "Change", visuallyHiddenText: "lead clinician" }] }
+        }
+      ]
+    }) }}
+
+    <hr class="nhsuk-section-break nhsuk-section-break--m nhsuk-section-break--visible">
+
+    <!-- Product evaluations -->
+    <h2 class="nhsuk-heading-m">Product evaluations</h2>
+    <p class="nhsuk-body-s nhsuk-u-secondary-text-color">3 products in this document</p>
+
+    <h3 class="nhsuk-heading-s">Product 1</h3>
+    {{ summaryList({
+      rows: [
+        {
+          key: { text: "Product" },
+          value: { text: "SmartPump Infusion Device Pro" },
+          actions: { items: [{ href: "upload-evaluation", text: "Change", visuallyHiddenText: "product 1" }] }
+        },
+        {
+          key: { text: "Evaluation period" },
+          value: { text: "March 2024 to June 2024" },
+          actions: { items: [{ href: "upload-evaluation", text: "Change", visuallyHiddenText: "evaluation period for product 1" }] }
+        },
+        {
+          key: { text: "Outcome" },
+          value: { html: '<strong class="nhsuk-tag nhsuk-tag--green">Procured</strong>' },
+          actions: { items: [{ href: "upload-evaluation", text: "Change", visuallyHiddenText: "outcome for product 1" }] }
+        },
+        {
+          key: { text: "Summary" },
+          value: { text: "Strong clinical performance and good staff feedback across ICU and HDU settings." },
+          actions: { items: [{ href: "upload-evaluation", text: "Change", visuallyHiddenText: "summary for product 1" }] }
+        },
+        {
+          key: { text: "Page reference" },
+          value: { text: "Pages 1–12" },
+          actions: { items: [{ href: "upload-evaluation", text: "Change", visuallyHiddenText: "page reference for product 1" }] }
+        }
+      ]
+    }) }}
+
+    <h3 class="nhsuk-heading-s">Product 2</h3>
+    {{ summaryList({
+      rows: [
+        {
+          key: { text: "Product" },
+          value: { text: "MedFlow Infusion System 3000" },
+          actions: { items: [{ href: "upload-evaluation", text: "Change", visuallyHiddenText: "product 2" }] }
+        },
+        {
+          key: { text: "Evaluation period" },
+          value: { text: "March 2024 to June 2024" },
+          actions: { items: [{ href: "upload-evaluation", text: "Change", visuallyHiddenText: "evaluation period for product 2" }] }
+        },
+        {
+          key: { text: "Outcome" },
+          value: { html: '<strong class="nhsuk-tag nhsuk-tag--grey">Not procured</strong>' },
+          actions: { items: [{ href: "upload-evaluation", text: "Change", visuallyHiddenText: "outcome for product 2" }] }
+        },
+        {
+          key: { text: "Summary" },
+          value: { text: "Alarm fatigue issues raised by nursing staff during trial period." },
+          actions: { items: [{ href: "upload-evaluation", text: "Change", visuallyHiddenText: "summary for product 2" }] }
+        },
+        {
+          key: { text: "Page reference" },
+          value: { text: "Pages 13–24" },
+          actions: { items: [{ href: "upload-evaluation", text: "Change", visuallyHiddenText: "page reference for product 2" }] }
+        }
+      ]
+    }) }}
+
+    <h3 class="nhsuk-heading-s">Product 3</h3>
+    {{ summaryList({
+      rows: [
+        {
+          key: { text: "Product" },
+          value: { text: "VitalGuard Patient Monitor X1" },
+          actions: { items: [{ href: "upload-evaluation", text: "Change", visuallyHiddenText: "product 3" }] }
+        },
+        {
+          key: { text: "Evaluation period" },
+          value: { text: "March 2024 to June 2024" },
+          actions: { items: [{ href: "upload-evaluation", text: "Change", visuallyHiddenText: "evaluation period for product 3" }] }
+        },
+        {
+          key: { text: "Outcome" },
+          value: { html: '<strong class="nhsuk-tag nhsuk-tag--grey">Not procured</strong>' },
+          actions: { items: [{ href: "upload-evaluation", text: "Change", visuallyHiddenText: "outcome for product 3" }] }
+        },
+        {
+          key: { text: "Summary" },
+          value: { text: "Integration with existing EPR system not feasible within current infrastructure." },
+          actions: { items: [{ href: "upload-evaluation", text: "Change", visuallyHiddenText: "summary for product 3" }] }
+        },
+        {
+          key: { text: "Page reference" },
+          value: { text: "Pages 25–36" },
+          actions: { items: [{ href: "upload-evaluation", text: "Change", visuallyHiddenText: "page reference for product 3" }] }
+        }
+      ]
+    }) }}
+
+    <hr class="nhsuk-section-break nhsuk-section-break--m nhsuk-section-break--visible">
+
+    <!-- Contacts -->
+    <h2 class="nhsuk-heading-m">Contacts for queries</h2>
+
+    <h3 class="nhsuk-heading-s">Contact 1</h3>
+    {{ summaryList({
+      rows: [
+        {
+          key: { text: "Name" },
+          value: { text: "Dr Sarah Patel" },
+          actions: { items: [{ href: "upload-evaluation", text: "Change", visuallyHiddenText: "contact 1 name" }] }
+        },
+        {
+          key: { text: "Role" },
+          value: { text: "Clinical lead" },
+          actions: { items: [{ href: "upload-evaluation", text: "Change", visuallyHiddenText: "contact 1 role" }] }
+        },
+        {
+          key: { text: "Email" },
+          value: { text: "s.patel@midengland.nhs.uk" },
+          actions: { items: [{ href: "upload-evaluation", text: "Change", visuallyHiddenText: "contact 1 email" }] }
+        },
+        {
+          key: { text: "Willing to discuss" },
+          value: { html: "Clinical outcomes and effectiveness<br>Evaluation methodology<br>Implementation and training" },
+          actions: { items: [{ href: "upload-evaluation", text: "Change", visuallyHiddenText: "contact 1 topics" }] }
+        }
+      ]
+    }) }}
+
+    <h3 class="nhsuk-heading-s">Contact 2</h3>
+    {{ summaryList({
+      rows: [
+        {
+          key: { text: "Name" },
+          value: { text: "James Okafor" },
+          actions: { items: [{ href: "upload-evaluation", text: "Change", visuallyHiddenText: "contact 2 name" }] }
+        },
+        {
+          key: { text: "Role" },
+          value: { text: "Procurement lead" },
+          actions: { items: [{ href: "upload-evaluation", text: "Change", visuallyHiddenText: "contact 2 role" }] }
+        },
+        {
+          key: { text: "Email" },
+          value: { text: "j.okafor@midengland.nhs.uk" },
+          actions: { items: [{ href: "upload-evaluation", text: "Change", visuallyHiddenText: "contact 2 email" }] }
+        },
+        {
+          key: { text: "Willing to discuss" },
+          value: { html: "Procurement process<br>Costs and value<br>Supplier experience" },
+          actions: { items: [{ href: "upload-evaluation", text: "Change", visuallyHiddenText: "contact 2 topics" }] }
+        }
+      ]
+    }) }}
+
+    <hr class="nhsuk-section-break nhsuk-section-break--m nhsuk-section-break--visible">
+
+    <!-- Visibility -->
+    <h2 class="nhsuk-heading-m">Visibility</h2>
+    {{ summaryList({
+      rows: [
+        {
+          key: { text: "Visible to" },
+          value: { html: "All NHS trusts<br><span class='nhsuk-body-s nhsuk-u-secondary-text-color'>Suppliers can see evaluation outcomes but not your contact details</span>" },
+          actions: { items: [{ href: "upload-evaluation", text: "Change", visuallyHiddenText: "visibility settings" }] }
+        }
+      ]
+    }) }}
+
+    <hr class="nhsuk-section-break nhsuk-section-break--l nhsuk-section-break--visible">
+
+    <!-- Declaration -->
+    <div class="nhsuk-warning-callout nhsuk-u-margin-top-6">
+      <h3 class="nhsuk-warning-callout__label">
+        <span role="text">
+          <span class="nhsuk-u-visually-hidden">Important: </span>
+          Declaration
+        </span>
+      </h3>
+      <p>I confirm that:</p>
+      <ul class="nhsuk-list nhsuk-list--bullet">
+        <li>I'm providing up-to-date and accurate information.</li>
+        <li>I'm authorised to upload these documents on behalf of my organisation.</li>
+        <li>I'm not sharing anything that is confidential, commercially sensitive or will infringe on intellectual property rights.</li>
+      </ul>
+      <p>I understand that:</p>
+      <ul class="nhsuk-list nhsuk-list--bullet">
+        <li>I'm not offering any warranty or commitments around what I'm sharing.</li>
+        <li>I'm not responsible for the decisions made using my information.</li>
+        <li>I can remove information later if I change my mind.</li>
+      </ul>
+    </div>
+
+    <form action="evaluation-shared" method="post">
+      <input type="hidden" name="submitted" value="true">
+      {{ button({
+        text: "Submit 3 evaluations"
+      }) }}
+    </form>
+
+    <p><a href="upload-evaluation" class="nhsuk-link nhsuk-link--no-visited-state">Back and make changes</a></p>
+
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,28 @@
+
+{% extends prototypeVersion + '/layouts/emails.html' %}
+{% set subject = "Welcome to Compass – Please verify your email" %}
+{% set from = "Compass <noreply@compass.nhs.uk>" %}
+{% set to = data['email'] or "sarah.thompson@nhs.net" %}
+
+{% block content %}
+
+<p class="nhsuk-body-s">Dear {{ data['first-name'] or 'Sarah' }},</p>
+
+<p class="nhsuk-body-s">Welcome to <strong>Compass</strong> - the NHS service for sharing medical technology evaluations across trusts.</p>
+
+<p class="nhsuk-body-s">Your account has been created for <strong>{{ to }}</strong>.</p>
+
+
+<p><a href="">Verify my email</a></p>
+
+<hr class="nhsuk-section-break nhsuk-section-break--visible nhsuk-u-margin-top-4 nhsuk-u-margin-bottom-4">
+
+<p class="nhsuk-body-s nhsuk-u-secondary-text-color"><strong>Didn't request this account?</strong></p>
+<p class="nhsuk-body-s nhsuk-u-secondary-text-color">If you didn't request a Compass account, please ignore this email. No account will be created unless you verify your email address.</p>
+
+{% endblock %}
+
+
+
+
+

@@ -1,0 +1,78 @@
+{% extends prototypeVersion + '/layouts/layout-signed-out.html' %}
+
+{% set pageName = "Register your NHS trust" %}
+
+
+
+
+{% block beforeContent %}
+{% from "breadcrumb/macro.njk" import breadcrumb %}
+
+{{ breadcrumb({
+  items: [
+    {
+      href: "/",
+      text: "Home"
+    }
+  ],
+  href: "#",
+  text: "Register your trust"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+    
+    <h1 class="nhsuk-heading-l">
+      Register your NHS trust
+    </h1>
+
+    <p class="nhsuk-body-l">
+      Join now to share your trust's product evaluations with other NHS organisations.
+    </p>
+    {# Registration Form #}
+    <form action="sign-up-trusts-2" method="post">
+      
+  
+
+        
+
+        {# ODS picker #}
+
+
+  {# Set the variables before including #}
+  {% set trustID = "trust-picker" %}
+  {% set trustName = "selected-trust" %}
+  {% set trustLabelText = "Which NHS trust are you from?" %}
+  
+  {# Now include the picker #}
+  {% include "includes/trusts.html" %}
+
+        
+        
+
+
+      <button class="nhsuk-button nhsuk-button--primary" type="submit">
+        Continue
+      </button>
+    </form>
+
+  </div>
+
+
+</div>
+
+{% endblock %}
+{% block pageScripts %}
+<script src="https://cdn.jsdelivr.net/npm/accessible-autocomplete@2.0.4/dist/accessible-autocomplete.min.js"></script>
+<script type="text/javascript">
+  accessibleAutocomplete.enhanceSelectElement({
+    defaultValue: '',
+    selectElement: document.querySelector('#trust-picker')
+  })
+</script>
+
+
+{% endblock %}

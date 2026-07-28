@@ -1,0 +1,43 @@
+{% extends prototypeVersion + '/layouts/layout-signed-out.html' %}
+
+
+{% set pageName = "Accessibility statement" %}
+{% set serviceHeader = "" %}
+
+{% block beforeContent %}
+{% from "breadcrumb/macro.njk" import breadcrumb %}
+
+{{ breadcrumb({
+  items: [
+    {
+      href: "/",
+      text: "Home"
+    }
+  ],
+  href: "#",
+  text: "Accessibility statement"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+
+
+
+<!-- NHS 10 Year Plan Context -->
+<div class="nhsuk-grid-row nhsuk-u-margin-top-7">
+  <div class="nhsuk-grid-column-full">
+    
+  <h1 class='nhsuk-heading-m'>Accessibility statement</h1>
+      
+      </ul>
+
+
+  </div>
+</div>
+
+
+
+
+
+{% endblock %}

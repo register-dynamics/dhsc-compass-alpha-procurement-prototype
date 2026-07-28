@@ -1,0 +1,473 @@
+{% extends prototypeVersion + '/layouts/layout-search.html' %}
+
+{% set pageName = "Wound care" %}
+{% set serviceHeader = "NHS medtech procurement" %}
+
+{% block beforeContent %}
+{% from "breadcrumb/macro.njk" import breadcrumb %}
+
+{{ breadcrumb({
+  items: [
+    {
+      href: "/" + prototypeVersion + "/index",
+      text: "Home"
+    },
+    {
+      href: "/" + prototypeVersion + "/search",
+      text: "Find medical technologies"
+    }
+  ],
+  href: "#",
+  text: "Wound care"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+{# Page header #}
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+    <h1 class="nhsuk-heading-xl nhsuk-u-margin-bottom-3">Wound care</h1>
+    <p class="nhsuk-body-l">Dressings, negative pressure therapy, skin substitutes, and wound management devices.</p>
+  </div>
+</div>
+
+{# Category stats #}
+<div class="nhsuk-grid-row nhsuk-u-margin-bottom-5">
+  <div class="nhsuk-grid-column-full">
+    <p class="nhsuk-body">
+      <strong>183 products</strong> from 47 suppliers &nbsp;·&nbsp; 
+      <strong>56 NHS trust evaluations</strong> &nbsp;·&nbsp; 
+      <strong>23 trusts</strong> available to contact
+    </p>
+  </div>
+</div>
+
+{# Search within category #}
+<div class="nhsuk-grid-row nhsuk-u-margin-bottom-6">
+  <div class="nhsuk-grid-column-two-thirds">
+    <div class="nhsuk-form-group">
+      <label class="nhsuk-label" for="search-category">
+        Search within wound care
+      </label>
+      <div class="nhsuk-hint" id="search-category-hint">
+        For example: negative pressure, foam dressing, antimicrobial
+      </div>
+      <input class="nhsuk-input nhsuk-u-width-two-thirds" id="search-category" name="search-category" type="search" aria-describedby="search-category-hint">
+    </div>
+  </div>
+</div>
+
+<div class="nhsuk-grid-row">
+
+  {# ==================== #}
+  {# FILTERS SIDEBAR      #}
+  {# ==================== #}
+  <div class="nhsuk-grid-column-one-quarter">
+
+    <h2 class="nhsuk-heading-s nhsuk-u-margin-bottom-3">Filter results</h2>
+
+    {# Product type filter #}
+    {% from "details/macro.njk" import details %}
+    {% from "checkboxes/macro.njk" import checkboxes %}
+
+    {{ details({
+      text: "Product type",
+      open: true,
+      HTML: '
+      <div class="nhsuk-checkboxes nhsuk-checkboxes--small">
+        <div class="nhsuk-checkboxes__item">
+          <input class="nhsuk-checkboxes__input" id="type-1" name="type" type="checkbox" value="npwt">
+          <label class="nhsuk-label nhsuk-checkboxes__label" for="type-1">Negative pressure (NPWT) (24)</label>
+        </div>
+        <div class="nhsuk-checkboxes__item">
+          <input class="nhsuk-checkboxes__input" id="type-2" name="type" type="checkbox" value="foam">
+          <label class="nhsuk-label nhsuk-checkboxes__label" for="type-2">Foam dressings (38)</label>
+        </div>
+        <div class="nhsuk-checkboxes__item">
+          <input class="nhsuk-checkboxes__input" id="type-3" name="type" type="checkbox" value="alginate">
+          <label class="nhsuk-label nhsuk-checkboxes__label" for="type-3">Alginate dressings (29)</label>
+        </div>
+        <div class="nhsuk-checkboxes__item">
+          <input class="nhsuk-checkboxes__input" id="type-4" name="type" type="checkbox" value="hydrocolloid">
+          <label class="nhsuk-label nhsuk-checkboxes__label" for="type-4">Hydrocolloid (31)</label>
+        </div>
+        <div class="nhsuk-checkboxes__item">
+          <input class="nhsuk-checkboxes__input" id="type-5" name="type" type="checkbox" value="antimicrobial">
+          <label class="nhsuk-label nhsuk-checkboxes__label" for="type-5">Antimicrobial (27)</label>
+        </div>
+        <div class="nhsuk-checkboxes__item">
+          <input class="nhsuk-checkboxes__input" id="type-6" name="type" type="checkbox" value="skin">
+          <label class="nhsuk-label nhsuk-checkboxes__label" for="type-6">Skin substitutes (12)</label>
+        </div>
+      </div>
+      '
+    }) }}
+
+    {# Evidence filter #}
+    {{ details({
+      text: "Evidence available",
+      open: true,
+      HTML: '
+      <div class="nhsuk-checkboxes nhsuk-checkboxes--small">
+        <div class="nhsuk-checkboxes__item">
+          <input class="nhsuk-checkboxes__input" id="evidence-1" name="evidence" type="checkbox" value="nice">
+          <label class="nhsuk-label nhsuk-checkboxes__label" for="evidence-1">NICE guidance (8)</label>
+        </div>
+        <div class="nhsuk-checkboxes__item">
+          <input class="nhsuk-checkboxes__input" id="evidence-2" name="evidence" type="checkbox" value="trial">
+          <label class="nhsuk-label nhsuk-checkboxes__label" for="evidence-2">Clinical trials (14)</label>
+        </div>
+        <div class="nhsuk-checkboxes__item">
+          <input class="nhsuk-checkboxes__input" id="evidence-3" name="evidence" type="checkbox" value="trust">
+          <label class="nhsuk-label nhsuk-checkboxes__label" for="evidence-3">Trust evaluations (56)</label>
+        </div>
+        <div class="nhsuk-checkboxes__item">
+          <input class="nhsuk-checkboxes__input" id="evidence-4" name="evidence" type="checkbox" value="supply">
+          <label class="nhsuk-label nhsuk-checkboxes__label" for="evidence-4">NHS Supply Chain (31)</label>
+        </div>
+      </div>
+      '
+    }) }}
+
+    {# Procurement outcomes filter #}
+    {{ details({
+      text: "Procurement outcomes",
+      HTML: '
+      <div class="nhsuk-checkboxes nhsuk-checkboxes--small">
+        <div class="nhsuk-checkboxes__item">
+          <input class="nhsuk-checkboxes__input" id="outcome-1" name="outcome" type="checkbox" value="procured">
+          <label class="nhsuk-label nhsuk-checkboxes__label" for="outcome-1">Procured by trusts (42)</label>
+        </div>
+        <div class="nhsuk-checkboxes__item">
+          <input class="nhsuk-checkboxes__input" id="outcome-2" name="outcome" type="checkbox" value="review">
+          <label class="nhsuk-label nhsuk-checkboxes__label" for="outcome-2">Under review (18)</label>
+        </div>
+      </div>
+      '
+    }) }}
+
+    {# Peer contacts filter #}
+    {{ details({
+      text: "Peer contacts",
+      HTML: '
+      <div class="nhsuk-checkboxes nhsuk-checkboxes--small">
+        <div class="nhsuk-checkboxes__item">
+          <input class="nhsuk-checkboxes__input" id="contact-1" name="contact" type="checkbox" value="available">
+          <label class="nhsuk-label nhsuk-checkboxes__label" for="contact-1">Trusts willing to discuss (23)</label>
+        </div>
+      </div>
+      '
+    }) }}
+
+    {# Trust type filter #}
+    {{ details({
+      text: "Evaluated by",
+      HTML: '
+      <div class="nhsuk-checkboxes nhsuk-checkboxes--small">
+        <div class="nhsuk-checkboxes__item">
+          <input class="nhsuk-checkboxes__input" id="trust-1" name="trust-type" type="checkbox" value="teaching">
+          <label class="nhsuk-label nhsuk-checkboxes__label" for="trust-1">Teaching hospitals (19)</label>
+        </div>
+        <div class="nhsuk-checkboxes__item">
+          <input class="nhsuk-checkboxes__input" id="trust-2" name="trust-type" type="checkbox" value="district">
+          <label class="nhsuk-label nhsuk-checkboxes__label" for="trust-2">District hospitals (24)</label>
+        </div>
+        <div class="nhsuk-checkboxes__item">
+          <input class="nhsuk-checkboxes__input" id="trust-3" name="trust-type" type="checkbox" value="community">
+          <label class="nhsuk-label nhsuk-checkboxes__label" for="trust-3">Community trusts (13)</label>
+        </div>
+      </div>
+      '
+    }) }}
+
+    <button class="nhsuk-button nhsuk-button--secondary nhsuk-u-margin-top-4" type="button">
+      Clear all filters
+    </button>
+
+  </div>
+
+  {# ==================== #}
+  {# RESULTS              #}
+  {# ==================== #}
+  <div class="nhsuk-grid-column-three-quarters">
+
+    {# Results header #}
+    <div class="nhsuk-u-margin-bottom-4">
+      <div class="app-results-header">
+        <p class="nhsuk-body nhsuk-u-margin-bottom-0">Showing <strong>183 products</strong></p>
+        <div class="nhsuk-form-group nhsuk-u-margin-bottom-0">
+          <label class="nhsuk-label nhsuk-u-visually-hidden" for="sort">Sort results</label>
+          <select class="nhsuk-select" id="sort" name="sort">
+            <option value="adoption" selected>Most trusts using</option>
+            <option value="evaluations">Most evaluations</option>
+            <option value="contacts">Most contacts available</option>
+            <option value="recent">Recently added</option>
+            <option value="name">Name A–Z</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    {# Results list #}
+    <ul class="nhsuk-list app-results-list">
+
+      {# Result 1 #}
+      <li class="app-result-item">
+        <div class="nhsuk-checkboxes__item app-result-checkbox">
+          <input class="nhsuk-checkboxes__input" id="select-1" name="compare" type="checkbox" value="pico-7">
+          <label class="nhsuk-label nhsuk-checkboxes__label nhsuk-u-visually-hidden" for="select-1">Select PICO 7 for comparison</label>
+        </div>
+        <div class="app-result-content">
+          <h3 class="nhsuk-heading-m nhsuk-u-margin-bottom-1">
+            <a href="/{{ prototypeVersion }}/product-detail">PICO 7</a>
+          </h3>
+          <p class="nhsuk-body-s nhsuk-u-secondary-text-color nhsuk-u-margin-bottom-2">Smith+Nephew · Single-use negative pressure wound therapy</p>
+          
+          <p class="nhsuk-u-margin-bottom-2">
+            <strong class="nhsuk-tag nhsuk-tag--green">12 trusts procured</strong>
+            <span class="nhsuk-body-s nhsuk-u-secondary-text-color nhsuk-u-margin-left-2">2 under review · 1 excluded</span>
+          </p>
+
+          <p class="nhsuk-u-margin-bottom-2">
+            <span class="nhsuk-tag nhsuk-tag--blue">NICE MTG43</span>
+            <span class="nhsuk-tag nhsuk-tag--grey">8 trust evaluations</span>
+            <span class="nhsuk-tag nhsuk-tag--grey">NHS Supply Chain</span>
+          </p>
+
+          <p class="nhsuk-body-s nhsuk-u-margin-bottom-0">
+            <strong>5 trusts</strong> willing to discuss lessons learned
+          </p>
+        </div>
+      </li>
+
+      {# Result 2 #}
+      <li class="app-result-item">
+        <div class="nhsuk-checkboxes__item app-result-checkbox">
+          <input class="nhsuk-checkboxes__input" id="select-2" name="compare" type="checkbox" value="prevena">
+          <label class="nhsuk-label nhsuk-checkboxes__label nhsuk-u-visually-hidden" for="select-2">Select Prevena for comparison</label>
+        </div>
+        <div class="app-result-content">
+          <h3 class="nhsuk-heading-m nhsuk-u-margin-bottom-1">
+            <a href="/{{ prototypeVersion }}/product-detail">Prevena Incision Management System</a>
+          </h3>
+          <p class="nhsuk-body-s nhsuk-u-secondary-text-color nhsuk-u-margin-bottom-2">3M/KCI · Surgical incision management</p>
+          
+          <p class="nhsuk-u-margin-bottom-2">
+            <strong class="nhsuk-tag nhsuk-tag--green">9 trusts procured</strong>
+            <span class="nhsuk-body-s nhsuk-u-secondary-text-color nhsuk-u-margin-left-2">3 under review</span>
+          </p>
+
+          <p class="nhsuk-u-margin-bottom-2">
+            <span class="nhsuk-tag nhsuk-tag--blue">Clinical trial</span>
+            <span class="nhsuk-tag nhsuk-tag--grey">6 trust evaluations</span>
+          </p>
+
+          <p class="nhsuk-body-s nhsuk-u-margin-bottom-0">
+            <strong>4 trusts</strong> willing to discuss lessons learned
+          </p>
+        </div>
+      </li>
+
+      {# Result 3 #}
+      <li class="app-result-item">
+        <div class="nhsuk-checkboxes__item app-result-checkbox">
+          <input class="nhsuk-checkboxes__input" id="select-3" name="compare" type="checkbox" value="mepilex">
+          <label class="nhsuk-label nhsuk-checkboxes__label nhsuk-u-visually-hidden" for="select-3">Select Mepilex Border Flex for comparison</label>
+        </div>
+        <div class="app-result-content">
+          <h3 class="nhsuk-heading-m nhsuk-u-margin-bottom-1">
+            <a href="/{{ prototypeVersion }}/product-detail">Mepilex Border Flex</a>
+          </h3>
+          <p class="nhsuk-body-s nhsuk-u-secondary-text-color nhsuk-u-margin-bottom-2">Mölnlycke · Foam dressing with Safetac technology</p>
+          
+          <p class="nhsuk-u-margin-bottom-2">
+            <strong class="nhsuk-tag nhsuk-tag--green">7 trusts procured</strong>
+            <span class="nhsuk-body-s nhsuk-u-secondary-text-color nhsuk-u-margin-left-2">1 under review</span>
+          </p>
+
+          <p class="nhsuk-u-margin-bottom-2">
+            <span class="nhsuk-tag nhsuk-tag--grey">5 trust evaluations</span>
+            <span class="nhsuk-tag nhsuk-tag--grey">NHS Supply Chain</span>
+          </p>
+
+          <p class="nhsuk-body-s nhsuk-u-margin-bottom-0">
+            <strong>3 trusts</strong> willing to discuss lessons learned
+          </p>
+        </div>
+      </li>
+
+      {# Result 4 #}
+      <li class="app-result-item">
+        <div class="nhsuk-checkboxes__item app-result-checkbox">
+          <input class="nhsuk-checkboxes__input" id="select-4" name="compare" type="checkbox" value="aquacel">
+          <label class="nhsuk-label nhsuk-checkboxes__label nhsuk-u-visually-hidden" for="select-4">Select Aquacel Ag+ Extra for comparison</label>
+        </div>
+        <div class="app-result-content">
+          <h3 class="nhsuk-heading-m nhsuk-u-margin-bottom-1">
+            <a href="/{{ prototypeVersion }}/product-detail">Aquacel Ag+ Extra</a>
+          </h3>
+          <p class="nhsuk-body-s nhsuk-u-secondary-text-color nhsuk-u-margin-bottom-2">ConvaTec · Antimicrobial Hydrofiber dressing</p>
+          
+          <p class="nhsuk-u-margin-bottom-2">
+            <strong class="nhsuk-tag nhsuk-tag--green">6 trusts procured</strong>
+          </p>
+
+          <p class="nhsuk-u-margin-bottom-2">
+            <span class="nhsuk-tag nhsuk-tag--grey">4 trust evaluations</span>
+            <span class="nhsuk-tag nhsuk-tag--grey">NHS Supply Chain</span>
+          </p>
+
+          <p class="nhsuk-body-s nhsuk-u-margin-bottom-0">
+            <strong>2 trusts</strong> willing to discuss lessons learned
+          </p>
+        </div>
+      </li>
+
+      {# Result 5 #}
+      <li class="app-result-item">
+        <div class="nhsuk-checkboxes__item app-result-checkbox">
+          <input class="nhsuk-checkboxes__input" id="select-5" name="compare" type="checkbox" value="snap">
+          <label class="nhsuk-label nhsuk-checkboxes__label nhsuk-u-visually-hidden" for="select-5">Select SNAP Therapy System for comparison</label>
+        </div>
+        <div class="app-result-content">
+          <h3 class="nhsuk-heading-m nhsuk-u-margin-bottom-1">
+            <a href="/{{ prototypeVersion }}/product-detail">SNAP Therapy System</a>
+          </h3>
+          <p class="nhsuk-body-s nhsuk-u-secondary-text-color nhsuk-u-margin-bottom-2">3M/Acelity · Ultra-portable NPWT</p>
+          
+          <p class="nhsuk-u-margin-bottom-2">
+            <strong class="nhsuk-tag nhsuk-tag--green">4 trusts procured</strong>
+            <span class="nhsuk-body-s nhsuk-u-secondary-text-color nhsuk-u-margin-left-2">2 under review</span>
+          </p>
+
+          <p class="nhsuk-u-margin-bottom-2">
+            <span class="nhsuk-tag nhsuk-tag--grey">3 trust evaluations</span>
+          </p>
+
+          <p class="nhsuk-body-s nhsuk-u-margin-bottom-0">
+            <strong>2 trusts</strong> willing to discuss lessons learned
+          </p>
+        </div>
+      </li>
+
+      {# Result 6 - with exclusion #}
+      <li class="app-result-item">
+        <div class="nhsuk-checkboxes__item app-result-checkbox">
+          <input class="nhsuk-checkboxes__input" id="select-6" name="compare" type="checkbox" value="genadyne">
+          <label class="nhsuk-label nhsuk-checkboxes__label nhsuk-u-visually-hidden" for="select-6">Select Genadyne A4 for comparison</label>
+        </div>
+        <div class="app-result-content">
+          <h3 class="nhsuk-heading-m nhsuk-u-margin-bottom-1">
+            <a href="/{{ prototypeVersion }}/product-detail">Genadyne A4</a>
+          </h3>
+          <p class="nhsuk-body-s nhsuk-u-secondary-text-color nhsuk-u-margin-bottom-2">Genadyne · Portable NPWT system</p>
+          
+          <p class="nhsuk-u-margin-bottom-2">
+            <strong class="nhsuk-tag nhsuk-tag--green">3 trusts procured</strong>
+            <span class="nhsuk-body-s nhsuk-u-secondary-text-color nhsuk-u-margin-left-2">1 under review</span>
+            <strong class="nhsuk-tag nhsuk-tag--yellow nhsuk-u-margin-left-2">1 excluded</strong>
+          </p>
+
+          <p class="nhsuk-u-margin-bottom-2">
+            <span class="nhsuk-tag nhsuk-tag--grey">2 trust evaluations</span>
+          </p>
+
+          <p class="nhsuk-body-s nhsuk-u-margin-bottom-0">
+            <strong>1 trust</strong> willing to discuss lessons learned
+          </p>
+        </div>
+      </li>
+
+      {# Result 7 - no NHS data yet #}
+      <li class="app-result-item">
+        <div class="nhsuk-checkboxes__item app-result-checkbox">
+          <input class="nhsuk-checkboxes__input" id="select-7" name="compare" type="checkbox" value="nanova">
+          <label class="nhsuk-label nhsuk-checkboxes__label nhsuk-u-visually-hidden" for="select-7">Select NANOVA Bioactive Glass for comparison</label>
+        </div>
+        <div class="app-result-content">
+          <h3 class="nhsuk-heading-m nhsuk-u-margin-bottom-1">
+            <a href="/{{ prototypeVersion }}/product-detail">NANOVA Bioactive Glass</a>
+          </h3>
+          <p class="nhsuk-body-s nhsuk-u-secondary-text-color nhsuk-u-margin-bottom-2">NANOVA · Bioactive wound healing</p>
+          
+          <p class="nhsuk-u-margin-bottom-2">
+            <span class="nhsuk-tag nhsuk-tag--white">No NHS trust data yet</span>
+          </p>
+
+          <p class="nhsuk-u-margin-bottom-2">
+            <span class="nhsuk-tag nhsuk-tag--grey">MHRA registered</span>
+            <span class="nhsuk-tag nhsuk-tag--blue">Pilot study</span>
+          </p>
+
+          <p class="nhsuk-body-s nhsuk-u-secondary-text-color nhsuk-u-margin-bottom-0">
+            No trusts available to contact yet
+          </p>
+        </div>
+      </li>
+
+    </ul>
+
+    {# Pagination #}
+    {% from "pagination/macro.njk" import pagination %}
+
+    {{ pagination({
+      previousUrl: "#",
+      previousPage: "Previous",
+      nextUrl: "#",
+      nextPage: "Next"
+    }) }}
+
+  </div>
+
+</div>
+
+{# Comparison selection bar #}
+<div class="app-selection-bar" id="selection-bar">
+  <div class="nhsuk-width-container">
+    <p class="nhsuk-body nhsuk-u-margin-bottom-0 app-selection-bar__text">
+      <strong><span id="count">0</span> products selected</strong>
+    </p>
+    <div class="app-selection-bar__actions">
+      <button class="nhsuk-button nhsuk-button--secondary nhsuk-u-margin-bottom-0 nhsuk-u-margin-right-3" type="button" id="clear-selection">
+        Clear
+      </button>
+      <a href="/{{ prototypeVersion }}/compare" class="nhsuk-button nhsuk-u-margin-bottom-0" id="compare-btn">
+        Compare selected
+      </a>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Selection bar functionality
+  const checkboxes = document.querySelectorAll('input[name="compare"]');
+  const selectionBar = document.getElementById('selection-bar');
+  const countSpan = document.getElementById('count');
+  const clearBtn = document.getElementById('clear-selection');
+  
+  function updateSelection() {
+    const checked = document.querySelectorAll('input[name="compare"]:checked');
+    const count = checked.length;
+    countSpan.textContent = count;
+    
+    if (count > 0) {
+      selectionBar.classList.add('app-selection-bar--visible');
+    } else {
+      selectionBar.classList.remove('app-selection-bar--visible');
+    }
+  }
+  
+  checkboxes.forEach(function(checkbox) {
+    checkbox.addEventListener('change', updateSelection);
+  });
+  
+  clearBtn.addEventListener('click', function() {
+    checkboxes.forEach(function(checkbox) {
+      checkbox.checked = false;
+    });
+    updateSelection();
+  });
+</script>
+
+{% endblock %}

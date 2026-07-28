@@ -1,0 +1,94 @@
+<!-- Use this page as the index for your project -->
+
+<!-- ADDING CUSTOM CSS - Add your custom CSS or Sass in /app/assets/sass/main.scss -->
+
+<!-- Extends the layout from /views/layout.html -->
+{% extends 'layout-signed-out.html' %}
+<!--
+  In /views/layout.html you can:
+    - change the header and footer
+    - add custom CSS and JavaScript
+-->
+
+<!-- Set the page title -->
+{% block pageTitle %}
+Sign in - {{ serviceName }}
+{% endblock %}
+
+<!-- For adding a breadcrumb -->
+<!-- Code examples can be found at https://service-manual.nhs.uk/design-system/components/breadcrumbs -->
+{% block beforeContent %}
+
+{% endblock %}
+
+<!-- For adding a back link -->
+<!-- Code examples can be found at https://service-manual.nhs.uk/design-system/components/back-link -->
+{% block outerContent %}
+{% endblock %}
+
+<!-- For adding page content -->
+<!-- Page layout code can be found at https://service-manual.nhs.uk/design-system/styles/layout -->
+{% block content %}
+
+<div class="nhsuk-grid-row">
+        <div class="nhsuk-grid-column-two-thirds">
+    
+
+<h1>Sign in</h1>
+
+  {{ input({
+    label: {
+      text: "Email address"
+    },
+    id: "email",
+    name: "email",
+    classes: "nhsuk-input--width-10",
+    type: "email"
+  }) }}
+
+
+{{ input({
+  id: "password",
+  classes: "nhsuk-input--width-10",
+  name: "password",
+  type: "password",
+  formGroup: {
+    attributes: {
+      "data-module": "password-reveal"
+    }
+  },
+  label: {
+    text: "Password",
+    classes: "govuk-label--m"
+  },
+  value: "1234ABC!"
+}) }}
+
+
+
+
+{{ checkboxes({
+  idPrefix: "example",
+  name: "example",
+  classes: "nhsuk-checkboxes--small",
+  items: [
+    {
+      value: "remember-me",
+      text: "Remember me on this device"
+    }
+  ]
+}) }}
+
+{% from "button/macro.njk" import button %}
+
+{{ button({
+  text: "Continue",
+  href: "dashboard"
+}) }}
+
+    
+      
+        </div>
+      </div>
+
+{% endblock %}

@@ -1,0 +1,589 @@
+{% extends prototypeVersion + '/layouts/layout-signed-in.html' %}
+
+{% set pageName = "Search and evaluate medical technologies" %}
+
+{% block beforeContent %}
+{% from "breadcrumb/macro.njk" import breadcrumb %}
+
+{{ breadcrumb({
+  items: [
+    {
+      href: "/",
+      text: "Home"
+    }
+  ],
+  href: "#",
+  text: "Search results"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+
+
+    <!-- ═══════════════════════════════════════════
+         PAGE HEADING + CATEGORY CONTEXT
+         ═══════════════════════════════════════════ -->
+    <div class="nhsuk-grid-row">
+      <div class="nhsuk-grid-column-full">
+        <h1 class="nhsuk-heading-l nhsuk-u-margin-bottom-3">Wound care</h1>
+
+        <!-- nhsuk-details component — GMDN description behind progressive disclosure -->
+        <details class="nhsuk-details nhsuk-u-margin-bottom-4">
+          <summary class="nhsuk-details__summary">
+            <span class="nhsuk-details__summary-text">
+              About this category (GMDN 08 — Dressings and wound care)
+            </span>
+          </summary>
+          <div class="nhsuk-details__text">
+            <p class="nhsuk-body">This category is part of the GMDN Wound management group and covers advanced dressings, compression therapy, negative pressure wound therapy, debridement and skin substitutes.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+
+
+    <!-- ═══════════════════════════════════════════
+         SUBCATEGORY NAVIGATION
+         nhsuk-contents-list — canonical NHS pattern
+         for navigating between sections of a category
+         ═══════════════════════════════════════════ -->
+    <div class="nhsuk-grid-row">
+      <div class="nhsuk-grid-column-full">
+
+        <nav class="nhsuk-contents-list nhsuk-u-margin-bottom-0" role="navigation" aria-label="Filter by subcategory">
+          <h2 class="nhsuk-contents-list__title nhsuk-u-font-size-16">Subcategory</h2>
+          <ol class="nhsuk-contents-list__list">
+
+            <li class="nhsuk-contents-list__item">
+              <span class="nhsuk-contents-list__link" aria-current="true">
+                All wound care
+                <span class="nhsuk-u-secondary-text-color nhsuk-u-font-size-14">(143)</span>
+              </span>
+            </li>
+
+            <li class="nhsuk-contents-list__item">
+              <a class="nhsuk-contents-list__link" href="search-results-viz-sub-cat">
+                Advanced dressings
+                <span class="nhsuk-u-secondary-text-color nhsuk-u-font-size-14">(52)</span>
+              </a>
+            </li>
+
+            <li class="nhsuk-contents-list__item">
+              <a class="nhsuk-contents-list__link" href="?cat=wound-care&sub=antimicrobial">
+                Antimicrobial &amp; infection
+                <span class="nhsuk-u-secondary-text-color nhsuk-u-font-size-14">(31)</span>
+              </a>
+            </li>
+
+            <li class="nhsuk-contents-list__item">
+              <a class="nhsuk-contents-list__link" href="?cat=wound-care&sub=compression">
+                Compression therapy
+                <span class="nhsuk-u-secondary-text-color nhsuk-u-font-size-14">(24)</span>
+              </a>
+            </li>
+
+            <li class="nhsuk-contents-list__item">
+              <a class="nhsuk-contents-list__link" href="?cat=wound-care&sub=debridement">
+                Debridement products
+                <span class="nhsuk-u-secondary-text-color nhsuk-u-font-size-14">(11)</span>
+              </a>
+            </li>
+
+            <li class="nhsuk-contents-list__item">
+              <a class="nhsuk-contents-list__link" href="?cat=wound-care&sub=negative-pressure">
+                Negative pressure wound therapy
+                <span class="nhsuk-u-secondary-text-color nhsuk-u-font-size-14">(18)</span>
+              </a>
+            </li>
+
+            <li class="nhsuk-contents-list__item">
+              <a class="nhsuk-contents-list__link" href="?cat=wound-care&sub=skin-grafts">
+                Skin substitutes &amp; grafts
+                <span class="nhsuk-u-secondary-text-color nhsuk-u-font-size-14">(7)</span>
+              </a>
+            </li>
+
+          </ol>
+        </nav>
+
+      </div>
+    </div>
+
+    <hr class="nhsuk-section-break nhsuk-section-break--m nhsuk-section-break--visible">
+
+
+   
+
+
+    <!-- ═══════════════════════════════════════════
+         DATA VIZ SECTION
+         ═══════════════════════════════════════════ -->
+    <div class="nhsuk-grid-row nhsuk-u-margin-bottom-6">
+    
+
+    
+
+        <div class="app-dataviz-grid">
+            <div class="nhsuk-grid-column-one-half">
+
+          <!-- ── Chart 1: Supplier market share ──────────── -->
+          <div class="nhsuk-card">
+            <div class="nhsuk-card__content">
+              <h3 class="nhsuk-heading-s nhsuk-u-margin-bottom-1">Supplier market share</h3>
+              <p class="nhsuk-body-s nhsuk-u-secondary-text-color nhsuk-u-margin-bottom-4">Advanced dressings only &middot; 52 products</p>
+
+            <!-- REPLACE the entire app-pie-wrap div in search-results-viz-all.html with this -->
+
+<div class="app-pie-wrap" style="display:flex;flex-direction:row;align-items:center;gap:12px;">
+
+  <!-- Chart: exactly 50% of the card width -->
+  <svg class="app-pie-svg" viewBox="0 0 140 140" aria-hidden="true" style="flex:0 0 50%;max-width:50%;height:auto;">
+    <path d="M70 70 L70 10 A60 60 0 0 1 118 103 Z" fill="#005eb8"/>
+    <path d="M70 70 L118 103 A60 60 0 0 1 42 127 Z" fill="#007f3b"/>
+    <path d="M70 70 L42 127 A60 60 0 0 1 14 56 Z" fill="#ffb81c"/>
+    <path d="M70 70 L14 56 A60 60 0 0 1 70 10 Z" fill="#aeb7bd"/>
+    <circle cx="70" cy="70" r="32" fill="#fff"/>
+    <text x="70" y="66" text-anchor="middle" font-size="18" font-weight="700" fill="#212b32">52</text>
+    <text x="70" y="80" text-anchor="middle" font-size="10" fill="#000000">products</text>
+  </svg>
+
+  <!-- Legend: remaining 50% -->
+  <div class="app-supplier-legend" style="flex:0 0 50%;min-width:0;">
+    <div class="app-supplier-legend__item">
+      <div class="app-supplier-legend__swatch" style="background:#005eb8;"></div>
+      <div class="app-supplier-legend__body">
+        <p class="nhsuk-body-s nhsuk-u-margin-bottom-0"><strong>Smith and Nephew</strong></p>
+        <p class="nhsuk-body-s nhsuk-u-secondary-text-color nhsuk-u-margin-bottom-1">38% &middot; 20 products</p>
+        <div class="app-supplier-bar-track"><div class="app-supplier-bar-fill" style="width:100%;background:#005eb8;"></div></div>
+      </div>
+    </div>
+    <div class="app-supplier-legend__item">
+      <div class="app-supplier-legend__swatch" style="background:#007f3b;"></div>
+      <div class="app-supplier-legend__body">
+        <p class="nhsuk-body-s nhsuk-u-margin-bottom-0"><strong>M&ouml;lnlycke Health Care</strong></p>
+        <p class="nhsuk-body-s nhsuk-u-secondary-text-color nhsuk-u-margin-bottom-1">29% &middot; 15 products</p>
+        <div class="app-supplier-bar-track"><div class="app-supplier-bar-fill" style="width:76%;background:#007f3b;"></div></div>
+      </div>
+    </div>
+    <div class="app-supplier-legend__item">
+      <div class="app-supplier-legend__swatch" style="background:#ffb81c;"></div>
+      <div class="app-supplier-legend__body">
+        <p class="nhsuk-body-s nhsuk-u-margin-bottom-0"><strong>ConvaTec</strong></p>
+        <p class="nhsuk-body-s nhsuk-u-secondary-text-color nhsuk-u-margin-bottom-1">21% &middot; 11 products</p>
+        <div class="app-supplier-bar-track"><div class="app-supplier-bar-fill" style="width:55%;background:#ffb81c;"></div></div>
+      </div>
+    </div>
+    <div class="app-supplier-legend__item">
+      <div class="app-supplier-legend__swatch" style="background:#aeb7bd;"></div>
+      <div class="app-supplier-legend__body">
+        <p class="nhsuk-body-s nhsuk-u-margin-bottom-0"><strong>Others</strong></p>
+        <p class="nhsuk-body-s nhsuk-u-secondary-text-color nhsuk-u-margin-bottom-1">12% &middot; 6 products</p>
+        <div class="app-supplier-bar-track"><div class="app-supplier-bar-fill" style="width:32%;background:#aeb7bd;"></div></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+            </div>
+          </div>
+
+          </div>
+
+
+            <div class="nhsuk-grid-column-one-half">
+
+          <div class="nhsuk-card">
+            <div class="nhsuk-card__content">
+              <p class="compass-card__label">Innovation vs maturity &mdash; trust adoption</p>
+              <div class="nhsuk-u-margin-top-3">
+                <div class="nhsuk-u-display-flex nhsuk-u-justify-content-space-between nhsuk-body-s nhsuk-u-secondary-text-color nhsuk-u-margin-bottom-2">
+                  <span>Emerging (&lt;2 years)</span>
+                  <span>Proven (&gt;5 years)</span>
+                </div>
+                <div class="seg-bar" role="img" aria-label="Segmented bar: 22% under 2 years, 28% 2-5 years, 31% 5-10 years, 19% over 10 years">
+                  <div class="seg-bar__seg" style="flex:22;background:#00a9ce;">22%</div>
+                  <div class="seg-bar__seg" style="flex:28;background:#1d70b8;">28%</div>
+                  <div class="seg-bar__seg" style="flex:31;background:#003087;">31%</div>
+                  <div class="seg-bar__seg" style="flex:19;background:#002060;">19%</div>
+                </div>
+                <div class="seg-legend">
+                  <div class="seg-legend__item"><div class="seg-legend__dot" style="background:#00a9ce;"></div>&lt;2 yrs (22%)</div>
+                  <div class="seg-legend__item"><div class="seg-legend__dot" style="background:#1d70b8;"></div>2&ndash;5 yrs (28%)</div>
+                  <div class="seg-legend__item"><div class="seg-legend__dot" style="background:#003087;"></div>5&ndash;10 yrs (31%)</div>
+                  <div class="seg-legend__item"><div class="seg-legend__dot" style="background:#002060;"></div>10+ yrs (19%)</div>
+                </div>
+              </div>
+
+              <p class="compass-card__label nhsuk-u-margin-top-6">Top innovative products (adopted last 12 months)</p>
+              <div class="innovation-row">
+                <span class="nhsuk-body-s" style="flex:1;"><strong><a href="">Collagen Pro Matrix</a></strong> &mdash; 3 trusts &middot; 4 months old</span>
+                <strong class="nhsuk-tag nhsuk-tag--green">New</strong>
+              </div>
+              <div class="innovation-row">
+                <span class="nhsuk-body-s" style="flex:1;"><strong><a href="">WoundSeal Antimicrobial</a></strong> &mdash; 1 trust &middot; 8 months old</span>
+                <strong class="nhsuk-tag nhsuk-tag--green">New</strong>
+              </div>
+              <div class="innovation-row">
+                <span class="nhsuk-body-s" style="flex:1;"><strong><a href="product-page-wound-care?product=aquaseal-foam-dressing">AquaSeal Foam Dressing</a></strong> &mdash; 11 trusts &middot; 2 years old</span>
+                <strong class="nhsuk-tag nhsuk-tag--blue">Growing</strong>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      
+    </div>
+
+
+    <!-- ═══════════════════════════════════════════
+         SEARCH BAR HERE
+         ═══════════════════════════════════════════ -->
+    
+
+
+    <!-- ═══════════════════════════════════════════
+         FILTER SIDEBAR + RESULTS
+         ═══════════════════════════════════════════ -->
+    <div class="nhsuk-grid-row">
+      <div class="nhsuk-grid-column-full">
+        <div class="app-layout-filter-results">
+
+            {# Filters Sidebar #}
+  <app-auto-submit class="app-grid-column-filters">
+      
+    <div class="nhsuk-card nhsuk-card--feature app-filters">
+      <div class="nhsuk-card__content nhsuk-card__content--feature">
+        <h3 class="nhsuk-card__heading nhsuk-card__heading--feature">
+          Filter results
+        </h3>
+      
+      
+
+
+        {# Clinical Trial Status Filter #}
+        <div class="nhsuk-form-group">
+          <fieldset class="nhsuk-fieldset">
+            <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--s">
+              Procured in other trusts
+            </legend>
+            
+            <div id="trial-items" class="nhsuk-radios nhsuk-radios--small" data-module="nhsuk-radios" data-nhsuk-radios-init="">
+              <div class="nhsuk-radios__item">
+                <input class="nhsuk-radios__input" id="trial-any" name="[trial]" type="radio" value="any" checked="">
+                <label class="nhsuk-label nhsuk-radios__label" for="trial-any">
+                  Any
+                </label>
+              </div>
+              
+              
+            
+            </div>
+          </fieldset>
+        </div>
+
+        {# Supplier Size Filter #}
+        <div class="nhsuk-form-group">
+          <fieldset class="nhsuk-fieldset">
+            <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--s">
+              Supplier size
+            </legend>
+            
+            <div id="supplier-items" class="nhsuk-checkboxes nhsuk-checkboxes--small" data-module="nhsuk-checkboxes" data-nhsuk-checkboxes-init="">
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="supplier-sme" name="[supplier]" type="checkbox" value="sme">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="supplier-sme">
+                  1-50 employees
+                </label>
+              </div>
+              
+            
+            </div>
+             <div id="supplier-items" class="nhsuk-checkboxes nhsuk-checkboxes--small" data-module="nhsuk-checkboxes" data-nhsuk-checkboxes-init="">
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="supplier-sme" name="[supplier]" type="checkbox" value="sme">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="supplier-sme">
+                  51-250 employees
+                </label>
+              </div>
+              
+            
+            </div>
+
+          </fieldset>
+        </div>
+
+         {# Supplier Maturity Filter #}
+        <div class="nhsuk-form-group">
+          <fieldset class="nhsuk-fieldset">
+            <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--s">
+              Supplier maturity
+            </legend>
+            
+            <div id="supplier-items" class="nhsuk-checkboxes nhsuk-checkboxes--small" data-module="nhsuk-checkboxes" data-nhsuk-checkboxes-init="">
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="supplier-sme" name="[supplier]" type="checkbox" value="sme">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="supplier-sme">
+                  1-2 years old
+                </label>
+              </div>
+              
+            
+            </div>
+             <div id="supplier-items" class="nhsuk-checkboxes nhsuk-checkboxes--small" data-module="nhsuk-checkboxes" data-nhsuk-checkboxes-init="">
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="supplier-sme" name="[supplier]" type="checkbox" value="sme">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="supplier-sme">
+                  3-5 years old
+                </label>
+              </div>
+              
+            
+            </div>
+
+             <div id="supplier-items" class="nhsuk-checkboxes nhsuk-checkboxes--small" data-module="nhsuk-checkboxes" data-nhsuk-checkboxes-init="">
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="supplier-sme" name="[supplier]" type="checkbox" value="sme">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="supplier-sme">
+                  5+ years old
+                </label>
+              </div>
+              
+            
+            </div>
+
+          </fieldset>
+        </div>
+        
+        <div class="nhsuk-button-group">
+          <button class="nhsuk-button nhsuk-button--secondary app-button--small" data-module="nhsuk-button" formaction="" formmethod="post" role="search" type="submit" hidden="" data-nhsuk-button-init="">
+            Update results
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </app-auto-submit>
+
+
+          <!-- ── Results column ─────────────────────────── -->
+          <div class="app-grid-column-results">
+
+            <h3 class="nhsuk-heading-m nhsuk-u-margin-bottom-2">All wound care products</h3>
+            <p class="nhsuk-caption-m nhsuk-u-margin-bottom-4">
+              Showing 1 to 10 of 182 products
+            </p>
+
+            <!-- Result 1 -->
+            <div class="nhsuk-card nhsuk-card--clickable">
+              <div class="nhsuk-card__content">
+                <h4 class="nhsuk-card__heading nhsuk-heading-s">
+                     <a class="nhsuk-card__link" href="product-page-wound-care?product=aquaseal-foam-dressing">AquaSeal Foam Dressing</a>
+                </h4>
+                <p class="nhsuk-body-s nhsuk-u-secondary-text-color nhsuk-u-margin-bottom-2">
+                  Advanced Woundcare Therapeutics &middot; Advanced dressings &rsaquo; Foam
+                </p>
+                <dl class="nhsuk-summary-list">
+                  <div class="nhsuk-summary-list__row">
+                    <dt class="nhsuk-summary-list__key">Trusts using this</dt>
+                    <dd class="nhsuk-summary-list__value">11 trusts</dd>
+                  </div>
+                  <div class="nhsuk-summary-list__row">
+                    <dt class="nhsuk-summary-list__key">Shared documents</dt>
+                    <dd class="nhsuk-summary-list__value">
+                      9 documents<br>
+                      <span class="nhsuk-body-s nhsuk-u-secondary-text-color">Including product trials and business cases</span>
+                    </dd>
+                  </div>
+                  <div class="nhsuk-summary-list__row">
+                    <dt class="nhsuk-summary-list__key">Procurement outcomes</dt>
+                    <dd class="nhsuk-summary-list__value">
+                      <strong class="nhsuk-tag nhsuk-tag--green">Procured: 9 trusts</strong>
+                    
+                    </dd>
+                  </div>
+                </dl>
+                <p class="nhsuk-body-s nhsuk-u-secondary-text-color nhsuk-u-margin-top-3">
+              
+                </p>
+              </div>
+            </div>
+
+            <!-- Result 2 -->
+            <div class="nhsuk-card nhsuk-card--clickable">
+              <div class="nhsuk-card__content">
+                <h4 class="nhsuk-card__heading nhsuk-heading-s">
+                  <a class="nhsuk-card__link" href="product-page-wound-care?allevyn-life">ALLEVYN Life</a>
+                </h4>
+                <p class="nhsuk-body-s nhsuk-u-secondary-text-color nhsuk-u-margin-bottom-2">
+                  Smith+Nephew &middot; Advanced dressings &rsaquo; Foam
+                </p>
+                <dl class="nhsuk-summary-list">
+                  <div class="nhsuk-summary-list__row">
+                    <dt class="nhsuk-summary-list__key">Trusts using this</dt>
+                    <dd class="nhsuk-summary-list__value">8 trusts</dd>
+                  </div>
+                  <div class="nhsuk-summary-list__row">
+                    <dt class="nhsuk-summary-list__key">Shared documents</dt>
+                    <dd class="nhsuk-summary-list__value">
+                      12 documents<br>
+                      <span class="nhsuk-body-s nhsuk-u-secondary-text-color">Including product trials, evaluation criteria and business cases</span>
+                    </dd>
+                  </div>
+                  <div class="nhsuk-summary-list__row">
+                    <dt class="nhsuk-summary-list__key">Procurement outcomes</dt>
+                    <dd class="nhsuk-summary-list__value">
+                      <strong class="nhsuk-tag nhsuk-tag--green">Procured: 7 trusts</strong>
+                  
+                    </dd>
+                  </div>
+                </dl>
+                <p class="nhsuk-body-s nhsuk-u-secondary-text-color nhsuk-u-margin-top-3">
+                
+                </p>
+              </div>
+            </div>
+
+            <!-- Result 3 -->
+            <div class="nhsuk-card nhsuk-card--clickable">
+              <div class="nhsuk-card__content">
+                <h4 class="nhsuk-card__heading nhsuk-heading-s">
+                  <a class="nhsuk-card__link" href="product-page-wound-care?aquacel-ag">Aquacel Ag+ Extra</a>
+                </h4>
+                <p class="nhsuk-body-s nhsuk-u-secondary-text-color nhsuk-u-margin-bottom-2">
+                  ConvaTec &middot; Advanced dressings &rsaquo; Hydrofibre
+                </p>
+                <dl class="nhsuk-summary-list">
+                  <div class="nhsuk-summary-list__row">
+                    <dt class="nhsuk-summary-list__key">Trusts using this</dt>
+                    <dd class="nhsuk-summary-list__value">3 trusts</dd>
+                  </div>
+                  <div class="nhsuk-summary-list__row">
+                    <dt class="nhsuk-summary-list__key">Shared documents</dt>
+                    <dd class="nhsuk-summary-list__value">
+                      7 documents<br>
+                      <span class="nhsuk-body-s nhsuk-u-secondary-text-color">Including case studies and business cases</span>
+                    </dd>
+                  </div>
+                  <div class="nhsuk-summary-list__row">
+                    <dt class="nhsuk-summary-list__key">Procurement outcomes</dt>
+                    <dd class="nhsuk-summary-list__value">
+                      <strong class="nhsuk-tag nhsuk-tag--green">Procured: 5 trusts</strong>
+                    
+                    </dd>
+                  </div>
+                </dl>
+              </div>
+            </div>
+
+            <!-- Result 4 — new product -->
+            <div class="nhsuk-card nhsuk-card--clickable">
+              <div class="nhsuk-card__content">
+                <h4 class="nhsuk-card__heading nhsuk-heading-s">
+                  <a class="nhsuk-card__link" href="product-page-wound-care?collagen-pro-matrix">Collagen Pro Matrix</a>
+                </h4>
+                <p class="nhsuk-body-s nhsuk-u-secondary-text-color nhsuk-u-margin-bottom-2">
+                  Advanced Wound Biotech &middot; Advanced dressings &rsaquo; Collagen / tissue regeneration
+                </p>
+                <dl class="nhsuk-summary-list">
+                  <div class="nhsuk-summary-list__row">
+                    <dt class="nhsuk-summary-list__key">Trusts using this</dt>
+                    <dd class="nhsuk-summary-list__value">3 trusts</dd>
+                  </div>
+                  <div class="nhsuk-summary-list__row">
+                    <dt class="nhsuk-summary-list__key">Shared documents</dt>
+                    <dd class="nhsuk-summary-list__value">
+                      4 documents<br>
+                      <span class="nhsuk-body-s nhsuk-u-secondary-text-color">Including case studies and evaluation criteria</span>
+                    </dd>
+                  </div>
+                  <div class="nhsuk-summary-list__row">
+                    <dt class="nhsuk-summary-list__key">Procurement outcomes</dt>
+                    <dd class="nhsuk-summary-list__value">
+                   
+
+                      <strong class="nhsuk-tag nhsuk-tag--green">Procured: 1 trust</strong>
+                    </dd>
+                  </div>
+                </dl>
+                <p class="nhsuk-body-s nhsuk-u-secondary-text-color nhsuk-u-margin-top-3">
+        
+                </p>
+              </div>
+            </div>
+
+            <!-- Result 5 -->
+            <div class="nhsuk-card nhsuk-card--clickable">
+              <div class="nhsuk-card__content">
+                <h4 class="nhsuk-card__heading nhsuk-heading-s">
+                  <a class="nhsuk-card__link" href="product-page-wound-care?biatain-silicone">Biatain Silicone</a>
+                </h4>
+                <p class="nhsuk-body-s nhsuk-u-secondary-text-color nhsuk-u-margin-bottom-2">
+                  Coloplast &middot; Advanced dressings &rsaquo; Foam
+                </p>
+                <dl class="nhsuk-summary-list">
+                  <div class="nhsuk-summary-list__row">
+                    <dt class="nhsuk-summary-list__key">Trusts using this</dt>
+                    <dd class="nhsuk-summary-list__value">4 trusts</dd>
+                  </div>
+                  <div class="nhsuk-summary-list__row">
+                    <dt class="nhsuk-summary-list__key">Shared documents</dt>
+                    <dd class="nhsuk-summary-list__value">
+                      6 documents<br>
+                      <span class="nhsuk-body-s nhsuk-u-secondary-text-color">Including business cases</span>
+                    </dd>
+                  </div>
+                  <div class="nhsuk-summary-list__row">
+                    <dt class="nhsuk-summary-list__key">Procurement outcomes</dt>
+                    <dd class="nhsuk-summary-list__value">
+                      <strong class="nhsuk-tag nhsuk-tag--green">Procured: 4 trusts</strong>
+                    
+                    </dd>
+                  </div>
+                </dl>
+              </div>
+            </div>
+
+            <!-- nhsuk-pagination--numbered -->
+            <nav class="nhsuk-pagination nhsuk-pagination--numbered" role="navigation" aria-label="Pagination">
+              <ul class="nhsuk-pagination__list">
+                <li class="nhsuk-pagination__item nhsuk-pagination__item--current">
+                  <a class="nhsuk-pagination__link" href="?page=1&limit=10" aria-label="Page 1" aria-current="page">1</a>
+                </li>
+                <li class="nhsuk-pagination__item">
+                  <a class="nhsuk-pagination__link" href="?page=2&limit=10" aria-label="Page 2">2</a>
+                </li>
+                <li class="nhsuk-pagination__item">
+                  <a class="nhsuk-pagination__link" href="?page=3&limit=10" aria-label="Page 3">3</a>
+                </li>
+                <li class="nhsuk-pagination__item">
+                  <a class="nhsuk-pagination__link" href="?page=4&limit=10" aria-label="Page 4">4</a>
+                </li>
+                <li class="nhsuk-pagination__item">
+                  <a class="nhsuk-pagination__link" href="?page=5&limit=10" aria-label="Page 5">5</a>
+                </li>
+                <li class="nhsuk-pagination__item">
+                  <a class="nhsuk-pagination__link" href="?page=6&limit=10" aria-label="Page 6">6</a>
+                </li>
+              </ul>
+              <a href="?page=2&limit=10" class="nhsuk-pagination__next" rel="next">
+                <span class="nhsuk-pagination__title">
+                  Next<span class="nhsuk-u-visually-hidden"> page</span>
+                </span>
+                <svg class="nhsuk-icon nhsuk-icon--arrow-right" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" focusable="false" aria-hidden="true">
+                  <path d="m14.7 6.3 5 5c.2.2.3.4.3.7 0 .3-.1.5-.3.7l-5 5a1 1 0 0 1-1.4-1.4l3.3-3.3H5a1 1 0 0 1 0-2h11.6l-3.3-3.3a1 1 0 1 1 1.4-1.4Z"></path>
+                </svg>
+              </a>
+            </nav>
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+
+
+{% endblock %}

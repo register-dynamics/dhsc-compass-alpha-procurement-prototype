@@ -1,0 +1,58 @@
+{% extends 'layout.html' %}
+
+{% from "back-link/macro.njk" import backLink %}
+{% from "sketchpad/_email-header.html" import emailHeader %}
+
+{% set pageName = "Email 2: permission to be contacted" %}
+
+{% block beforeContent %}
+  {{ backLink({
+    href: "/sketchpad",
+    text: "Back to sketchpad"
+  }) }}
+{% endblock %}
+
+{% block content %}
+  <div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-full">
+
+      {{ emailHeader("Search and evaluate medical technologies") }}
+
+      <div class="app-email__container">
+        <div class="app-email__message">
+
+          <h1 class="nhsuk-u-visually-hidden">{{ pageName }}</h1>
+
+          <p>Dear _,</p>
+
+          <p>Your trust has procured a product that's new to market, iVWatch.</p>
+
+          <p>Can NHS colleagues contact you to learn about your experience with this product?</p>
+
+          <div class="nhsuk-button-group">
+            {{ button({
+              text: "Yes, they can contact me",
+              href: "#"
+            }) }}
+
+            {{ button({
+              text: "No, they cannot contact me",
+              href: "#",
+              classes: "nhsuk-button--secondary"
+            }) }}
+          </div>
+
+          <p>Sharing your insights helps promote innovation in the NHS.</p>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="nhsuk-grid-row nhsuk-u-margin-top-6">
+    <div class="nhsuk-grid-column-two-thirds">
+      <p><a href="/sketchpad/email-3-monthly-report">Next</a></p>
+    </div>
+  </div>
+{% endblock %}

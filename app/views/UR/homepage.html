@@ -1,0 +1,262 @@
+{% extends prototypeVersion + "/layouts/layout-hero-current.html" %}
+
+{% set pageName = "Welcome" %}
+
+{# Override hero content if needed #}
+
+
+
+
+{% block heroActions %}
+<div class="nhsuk-button-group nhsuk-u-margin-bottom-0">
+            
+
+<a class="nhsuk-button nhsuk-button--reverse" data-module="nhsuk-button" href="sign-in-nhs" draggable="false" role="button" data-nhsuk-button-init="">
+ Log in
+</a>
+
+
+            <p class="nhsuk-body nhsuk-u-margin-bottom-0">or <a href="sign-up-trusts-1" class="nhsuk-link nhsuk-link--reverse nhsuk-u-font-weight-bold">Sign up</a></p>
+          </div>
+{% endblock %}
+
+{% block mainContent %}
+
+
+
+<!-- NHS 10 Year Plan Context -->
+
+
+<!-- Key Features Cards -->
+<div class="nhsuk-grid-row nhsuk-u-margin-top-7" id="how-it-works">
+    <div class="nhsuk-grid-column-full">
+        <h2 class="nhsuk-heading-l">What this service offers</h2>
+    </div>
+</div>
+
+<ul class="nhsuk-grid-row nhsuk-card-group">
+  <li class="nhsuk-grid-column-one-third nhsuk-card-group__item">
+    <div class="nhsuk-card nhsuk-card--clickable">
+      <div class="nhsuk-card__content">
+        <h3 class="nhsuk-card__heading nhsuk-heading-s">Centralised evidence</h3>
+        <p>Access data from multiple trusted sources in one place. This includes NICE HealthTech guidance, ODEP Accreditation, 
+           NHS documents and MHRA Registration data.</p>
+      </div>
+      
+
+    </div>
+
+  </li>
+    <li class="nhsuk-grid-column-one-third nhsuk-card-group__item">
+        <div class="nhsuk-card nhsuk-card--clickable">
+        <div class="nhsuk-card__content">
+            <h3 class="nhsuk-card__heading nhsuk-heading-s">Real-world evaluations</h3>
+            <p>Read and share evaluations from NHS trusts that are using technologies in practice. Get insights beyond formal guidance, with a focus on clinical outomes.</p>
+        </div>
+        </div>
+    </li>
+    <li class="nhsuk-grid-column-one-third nhsuk-card-group__item">
+        <div class="nhsuk-card nhsuk-card--clickable">
+        <div class="nhsuk-card__content">
+            <h3 class="nhsuk-card__heading nhsuk-heading-s">Peer contact support</h3>
+            <p>Connect directly with trusts who have evaluated technologies you're considering. Learn
+            from their experience before making decisions.</p>
+        </div>
+        </div>
+    </li>
+</ul>
+
+
+<!-- Who it's for -->
+<div class="nhsuk-grid-row nhsuk-u-margin-top-7">
+    <div class="nhsuk-grid-column-full">
+        <h2 class="nhsuk-heading-l">Who the service is for</h2>
+    </div>
+</div>
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-one-half">
+        {{ card({
+        
+        "heading": "Procurement professionals",
+        "headingLevel": 3,
+        "descriptionHtml": "<p>Access evidence quickly to support tendering processes, supplier evaluation, and business
+            case development for medical technology purchases.</p>"
+        }) }}
+    </div>
+
+    <div class="nhsuk-grid-column-one-half">
+        {{ card({
+        
+        "heading": "Clinicians and clinical leads",
+        "headingLevel": 3,
+        
+        "descriptionHtml": "<p>Review clinical evidence and real-world insights from other NHS trusts to inform
+            technology adoption decisions in your service.</p>"
+        }) }}
+    </div>
+</div>
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-one-half">
+        {{ card({
+        
+        "heading": "Medical device evaluation teams",
+        "headingLevel": 3,
+    
+        "descriptionHtml": "<p>Support your evaluation processes with centralised regulatory and clinical evidence, and
+            share your findings with other NHS organisations.</p>"
+        }) }}
+    </div>
+
+    <div class="nhsuk-grid-column-one-half">
+        {{ card({
+        
+        "heading": "Innovation and transformation teams",
+        "headingLevel": 3,
+        
+        "descriptionHtml": "<p>Identify evidence-based innovations and assess their readiness for adoption across your
+            organisation or integrated care system.</p>"
+        }) }}
+    </div>
+</div>
+
+<!-- Data Sources Section -->
+<div class="nhsuk-grid-row nhsuk-u-margin-top-7" id="data-sources">
+    <div class="nhsuk-grid-column-full">
+        <h2 class="nhsuk-heading-l">Trusted data sources</h2>
+        <p class="nhsuk-body-l">This service integrates data and guidance from the most authoritative sources in healthcare, including:</p>
+    </div>
+</div>
+
+<div class="nhsuk-grid-row nhsuk-u-margin-top-4">
+    <div class="nhsuk-grid-column-one-half">
+        <h3 class="nhsuk-heading-m">
+            <svg class="nhsuk-icon nhsuk-icon--tick" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16"
+                height="16" focusable="false" aria-hidden="true">
+                <path
+                    d="M11.4 18.8a2 2 0 0 1-2.7.1h-.1L4 14.1a1.5 1.5 0 0 1 2.1-2L10 16l8.1-8.1a1.5 1.5 0 1 1 2.2 2l-8.9 9Z" />
+            </svg>
+            National Institute for Health and Care Excellence (NICE)
+        </h3>
+    
+
+        <h3 class="nhsuk-heading-m nhsuk-u-margin-top-4">
+            <svg class="nhsuk-icon nhsuk-icon--tick" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16"
+                height="16" focusable="false" aria-hidden="true">
+                <path
+                    d="M11.4 18.8a2 2 0 0 1-2.7.1h-.1L4 14.1a1.5 1.5 0 0 1 2.1-2L10 16l8.1-8.1a1.5 1.5 0 1 1 2.2 2l-8.9 9Z" />
+            </svg>
+            Orthopaedic Data Evaluation Panel (ODEP)
+        </h3>
+      
+
+       
+    </div>
+
+    <div class="nhsuk-grid-column-one-half">
+        <h3 class="nhsuk-heading-m">
+            <svg class="nhsuk-icon nhsuk-icon--tick" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16"
+                height="16" focusable="false" aria-hidden="true">
+                <path
+                    d="M11.4 18.8a2 2 0 0 1-2.7.1h-.1L4 14.1a1.5 1.5 0 0 1 2.1-2L10 16l8.1-8.1a1.5 1.5 0 1 1 2.2 2l-8.9 9Z" />
+            </svg>
+            NHS Trusts
+        </h3>
+    
+
+        <h3 class="nhsuk-heading-m nhsuk-u-margin-top-4">
+            <svg class="nhsuk-icon nhsuk-icon--blue nhsuk-icon--tick" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16"
+                height="16" focusable="false" aria-hidden="true">
+                <path
+                    d="M11.4 18.8a2 2 0 0 1-2.7.1h-.1L4 14.1a1.5 1.5 0 0 1 2.1-2L10 16l8.1-8.1a1.5 1.5 0 1 1 2.2 2l-8.9 9Z" />
+            </svg>
+            Medicines and Healthcare products Regulatory Agency (MHRA)
+        </h3>
+    
+    </div>
+</div>
+
+
+<!-- Community activity -->
+<div class="nhsuk-grid-row nhsuk-u-margin-top-7" id="community-activity">
+    <div class="nhsuk-grid-column-full">
+        <h2 class="nhsuk-heading-l">Recent activity</h2>
+        <p class="nhsuk-body-l">NHS trusts share evidence, evaluations and contact details through this service. This shows how it is being used.</p>
+    </div>
+</div>
+
+<div class="nhsuk-grid-row nhsuk-u-margin-top-4">
+    <div class="nhsuk-grid-column-one-half">
+        {% call card({ heading: "General activity this month", headingLevel: 3 }) %}
+            {{ summaryList({
+                rows: [
+                    { key: { text: "Documents shared this month" }, value: { text: "20" } },
+                    { key: { text: "Product searches" }, value: { text: "2,000" } },
+                    { key: { text: "Contact details added this month" }, value: { text: "15" } }
+                ]
+            }) }}
+        {% endcall %}
+    </div>
+</div>
+
+<div class="nhsuk-grid-row nhsuk-u-margin-top-2">
+    <div class="nhsuk-grid-column-full">
+        {{ table({
+            caption: "Latest contributions",
+            captionSize: "m",
+            responsive: true,
+            firstCellIsHeader: true,
+            head: [
+                {
+                    text: "Contributor name",
+                    classes: "nhsuk-u-width-one-quarter"
+                },
+                {
+                    text: "Contribution",
+                    classes: "nhsuk-u-width-one-half"
+                },
+                {
+                    text: "Time",
+                    classes: "nhsuk-u-width-one-quarter"
+                }
+            ],
+            rows: [
+                [
+                    { header: "Contributor name", text: "Marshall Allen" },
+                    { header: "Contribution", text: "uploaded evidence for productName" },
+                    { header: "Time", text: "today" }
+                ],
+                [
+                    { header: "Contributor name", text: "Sunanda Sharma" },
+                    { header: "Contribution", text: "added contact details to productName evaluation" },
+                    { header: "Time", text: "today" }
+                ],
+                [
+                    { header: "Contributor name", text: "Knoell Scott" },
+                    { header: "Contribution", text: "uploaded 5 documents" },
+                    { header: "Time", text: "yesterday" }
+                ],
+                [
+                    { header: "Contributor name", text: "Vincent Chancey" },
+                    { header: "Contribution", text: "commented on productName" },
+                    { header: "Time", text: "2 days ago" }
+                ],
+                [
+                    { header: "Contributor name", text: "Abida Parveen" },
+                    { header: "Contribution", text: "uploaded a business case for productName" },
+                    { header: "Time", text: "2 days ago" }
+                ],
+                [
+                    { header: "Contributor name", text: "Davel Patel" },
+                    { header: "Contribution", text: "uploaded evidence for productName" },
+                    { header: "Time", text: "3 days ago" }
+                ]
+            ]
+        }) }}
+    </div>
+</div>
+
+
+
+{% endblock %}
