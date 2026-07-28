@@ -1,16 +1,39 @@
 #!/bin/sh
 
-./build.sh
-
-EXTRA_ARGS=""
+EXTRA_ARGS="-p 3000:3000"
 PORT=3000
+BUILD_DB=0
 
-if [ x$1 == "x-p" ]
-then
-    PORT="$2"
-    EXTRA_ARGS="-p 127.0.0.1:$PORT:3000"
-    shift
-    shift
+while [ "$#" -gt 0 ]
+do
+    case "$1" in
+        -p)
+            if [ -z "$2" ]; then
+                echo "Missing value for -p"
+                echo "Usage: ./run.sh [-p PORT_NUMBER] [--build-db]"
+                exit 1
+            fi
+            PORT="$2"
+            EXTRA_ARGS="-p $PORT:3000"
+            shift
+            shift
+            ;;
+        --build-db)
+            BUILD_DB=1
+            shift
+            ;;
+        *)
+            echo "Unknown option: $1"
+            echo "Usage: ./run.sh [-p PORT_NUMBER] [--build-db]"
+            exit 1
+            ;;
+    esac
+done
+
+if [ "$BUILD_DB" = "1" ]; then
+    ./build.sh --build-db
+else
+    ./build.sh
 fi
 
 echo "RUNNING THE SITE ON http://localhost:$PORT/"
