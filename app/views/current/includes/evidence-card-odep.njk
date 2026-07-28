@@ -1,0 +1,61 @@
+{% macro evidenceCardOdep(document) %}
+  <div class="nhsuk-card">
+    <div class="nhsuk-card__content">
+      {# TODO: Procurement status #}
+      {# Randomised for now as sample data not available #}
+      {% set procurementStatuses = {
+        'nhsuk-tag--yellow': 'Not procured',
+        'nhsuk-tag--green': 'Procured'
+      } %}
+      {% set statusKeys = procurementStatuses | dictsort %}
+      {% set randomStatus = statusKeys[range(0, statusKeys|length) | random] %}
+
+      <div class="nhsuk-u-margin-bottom-3">
+        <strong class="nhsuk-tag {{ randomStatus[0] }}">{{ randomStatus[1] }}</strong>
+      </div>
+
+      <h3 class="nhsuk-card__heading nhsuk-heading-m">
+        {{ document.organisation_name }}
+      </h3>
+
+      <dl class="nhsuk-summary-list nhsuk-summary-list--no-border">
+        <div class="nhsuk-summary-list__row">
+          <dt class="nhsuk-summary-list__key">
+            Document type
+          </dt>
+          <dd class="nhsuk-summary-list__value">
+            {{ document.type_of_doc_desc }}
+          </dd>
+        </div>
+
+        <div class="nhsuk-summary-list__row">
+          <dt class="nhsuk-summary-list__key">
+            Assessment date
+          </dt>
+          <dd class="nhsuk-summary-list__value">
+            {{ document.assessment_date }}
+          </dd>
+        </div>
+
+        <div class="nhsuk-summary-list__row">
+          <dt class="nhsuk-summary-list__key">
+            Rating
+          </dt>
+          <dd class="nhsuk-summary-list__value">
+            {{ document.rating }}
+          </dd>
+        </div>
+      </dl>
+
+      <p class="nhsuk-body nhsuk-u-margin-top-3">
+        {% set documentUrl = document.url_directory %}
+
+        {% if "http" not in documentUrl %}
+          {% set documentUrl = "/pdf/" + documentUrl %}
+        {% endif %}
+        
+        <a href="{{ documentUrl }}">View {{ document.type_of_doc_desc }}</a>
+      </p>
+    </div>
+  </div>
+{% endmacro %}
