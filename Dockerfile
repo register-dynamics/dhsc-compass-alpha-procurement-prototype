@@ -1,4 +1,3 @@
-# syntax=docker/dockerfile:1.4
 # Core setup
 FROM node:24
 ARG BUILD_DB=0
