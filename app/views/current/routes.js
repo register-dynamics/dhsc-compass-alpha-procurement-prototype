@@ -63,19 +63,26 @@ const countQuery = db.prepare(`select COUNT(*) AS count FROM search WHERE search
 const searchQuery = db.prepare(`select MAKE_ID, MODEL_ID, DEVICE_ID, MAKE, MODEL, MANUFACTURER, GMDN_NAME, TYPE, COUNTRY from search where search match @term limit @limit offset @offset`)
 const searchWithCategoriesQuery = db.prepare(`select MAKE_ID, MODEL_ID, DEVICE_ID, MAKE, MODEL, MANUFACTURER, GMDN_NAME, TYPE, COUNTRY from search where search match @term and GMDN_NAME in (select value from json_each(@categories)) limit @limit offset @offset`)
 const categoryQuery = db.prepare(`select GMDN_NAME AS name, COUNT(*) AS count from search where search match ? group by GMDN_NAME order by count DESC`)
+
+// Escape double quotes in the search term for FTS5 queries
+function formatFtsTerm(term) {
+  return `"${term.replaceAll('"', '""')}"`
+}
+
 router.get(/search-/, (req, res, next) => {
   const term = req.query.q?.toString()
   const page = parseInt(req.query.page || "1") - 1
   const queryCategories = [(req.query.category || [])].flat().filter(c => c !== "_unchecked")
   console.log(queryCategories)
-  const queryParams = {term: term, limit: pageSize, offset: pageSize * page, categories: JSON.stringify(queryCategories)}
+  const searchTerm = formatFtsTerm(term)
+  const queryParams = {term: searchTerm, limit: pageSize, offset: pageSize * page, categories: JSON.stringify(queryCategories)}
 
   const query = queryCategories.length > 0 ? searchWithCategoriesQuery : searchQuery
-  const count = countQuery.raw(true).get(queryParams.term)
+  const count = countQuery.raw(true).get(searchTerm)
   const results = query.all(queryParams)
   console.log(`Found ${count} results (retrieved ${results.length}) for term ${term}`)
 
-  const categories = categoryQuery.all(queryParams.term)
+  const categories = categoryQuery.all(searchTerm)
   categories.forEach(c => c.selected = queryCategories.includes(c.name))
 
   res.locals.searchTerm = term
