@@ -65,6 +65,29 @@ CREATE TABLE IF NOT EXISTS "device_make" (
 	"product_code"	TEXT,
 	PRIMARY KEY("make_id")
 );
+CREATE TABLE IF NOT EXISTS `contacts` (
+  `contact_id` integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+  `given_name` varchar(255) NOT NULL,
+  `surname` varchar(255) NOT NULL,
+  `email` varchar(255) NULL,
+  `phone_no` varchar(32) NULL,
+  `role` varchar(128) NOT NULL,
+  UNIQUE (`contact_id`)
+);
+CREATE TABLE IF NOT EXISTS `document_contacts` (
+  `document_id` INT NOT NULL,
+  `contact_id` INT NOT NULL,
+  `discuss_implementation` BOOLEAN NOT NULL DEFAULT 0,
+  `discuss_training` BOOLEAN NOT NULL DEFAULT 0,
+  `discuss_outcomes` BOOLEAN NOT NULL DEFAULT 0,
+  `discuss_pharmacy_integration` BOOLEAN NOT NULL DEFAULT 0,
+  `discuss_business_case` BOOLEAN NOT NULL DEFAULT 0,
+  `discuss_real_world_use` BOOLEAN NOT NULL DEFAULT 0,
+  `discuss_EHR_integration` BOOLEAN NOT NULL DEFAULT 0,
+  PRIMARY KEY (`document_id`, `contact_id`)
+);
+
+
 CREATE VIRTUAL TABLE search USING fts5(MAKE_ID, MODEL_ID, DEVICE_ID, MAKE, MODEL, GMDN_NAME, TYPE, PRODUCT_CODE, MANUFACTURER, COUNTRY, UDI, GMDN_CODE)
 /* search(MAKE_ID,MODEL_ID,DEVICE_ID,MAKE,MODEL,GMDN_NAME,TYPE,PRODUCT_CODE,MANUFACTURER,COUNTRY,UDI,GMDN_CODE) */;
 CREATE TABLE IF NOT EXISTS 'search_data'(id INTEGER PRIMARY KEY, block BLOB);
@@ -185,3 +208,31 @@ INSERT INTO search (MAKE_ID, MODEL_ID, DEVICE_ID, MAKE, MODEL, GMDN_NAME, TYPE, 
   ('1122004', '8841', '5540', 'SurgiWeave',   'SurgiWeave Heavy Hernia Mesh',  'Surgical Mesh, Hernia Repair',                'Non-active Implantable',  'SW-HM-HV',   'SurgiTech Solutions Ltd','United Kingdom', '05012345600041', '47701'),
   ('1122005', '8850', '5550', 'GlucoSense',   'GlucoSense Flex 14-Day Sensor', 'Continuous Glucose Monitor',                  'Active Non-implantable',  'GS-FLEX-14', 'BioSense Medical Ltd',   'Ireland',        '05391234560050', '47783'),
   ('1122005', '8851', '5550', 'GlucoSense',   'GlucoSense Flex Reader',        'Continuous Glucose Monitor',                  'Active Non-implantable',  'GS-FLEX-RD', 'BioSense Medical Ltd',   'Ireland',        '05391234560051', '47783');
+
+
+-- Contacts for documents
+INSERT INTO contacts (contact_id, given_name, surname, email, phone_no, role) VALUES
+  	(1, 'Jeana', 'Somerfield', 'jsomerfield0@nhs.net', '1373644493', 'Staff Scientist'),
+	(2, 'Jessika', 'Boulton', 'jboulton1@nhs.net', '7341050616', 'Doctor'),
+	(3, 'Andris', 'Naldrett', null, '0123456789', 'Statistician'),
+	(4, 'Alena', 'Colomb', 'acolomb3@nhs.net', null, 'Nurse'),
+	(5, 'Emogene', 'Roblett', 'eroblett4@nhs.net', null, 'Design manager'),
+	(6, 'Sara', 'Sparling', 'ssparling5@nhs.net', null, 'Speech Pathologist'),
+	(7, 'Hortensia', 'Sinnott', null, '9133181656', 'Senior Clinician'),
+	(8, 'Louisette', 'Vanns', null, '5606190909', 'Medical Informatics Specialist'),
+	(9, 'Mahalia', 'Immings', null, '6431047410', 'Software Engineer I'),
+	(10, 'Jackelyn', 'Gricewood', 'jgricewood9@nhs.net', null, 'Implant Specialist');
+
+  
+-- Link contacts to documents via document_contacts table
+INSERT INTO document_contacts (document_id, contact_id, discuss_implementation, discuss_training, discuss_outcomes, discuss_pharmacy_integration, discuss_business_case, discuss_real_world_use, discuss_EHR_integration) VALUES
+  (1234, 1, 1, 0, 0, 0, 0, 0, 0),
+  (1234, 2, 1, 1, 0, 0, 0, 0, 0),
+  (4567, 3, 0, 1, 1, 0, 0, 0, 0),
+  (4567, 4, 0, 0, 1, 1, 0, 0, 0),
+  (7891, 5, 0, 0, 0, 1, 1, 0, 0),
+  (7891, 6, 0, 0, 0, 0, 1, 1, 0),
+  (8912, 7, 1, 1, 1, 1, 1, 1, 1),
+  (8912, 8, 1, 0, 0, 0, 0, 0, 0),
+  (9123, 9, 0, 1, 0, 1, 0, 1, 0),
+  (13456, 10, 1, 1, 1, 1, 1, 1, 1);
