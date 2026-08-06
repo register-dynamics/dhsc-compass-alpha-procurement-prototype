@@ -1,19 +1,6 @@
 {% macro evidenceCardOdep(document) %}
   <div class="nhsuk-card">
     <div class="nhsuk-card__content">
-      {# TODO: Procurement status #}
-      {# Randomised for now as sample data not available #}
-      {% set procurementStatuses = {
-        'nhsuk-tag--yellow': 'Not procured',
-        'nhsuk-tag--green': 'Procured'
-      } %}
-      {% set statusKeys = procurementStatuses | dictsort %}
-      {% set randomStatus = statusKeys[range(0, statusKeys|length) | random] %}
-
-      <div class="nhsuk-u-margin-bottom-3">
-        <strong class="nhsuk-tag {{ randomStatus[0] }}">{{ randomStatus[1] }}</strong>
-      </div>
-
       <h3 class="nhsuk-card__heading nhsuk-heading-m">
         {{ document.organisation_name }}
       </h3>
