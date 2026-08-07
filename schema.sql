@@ -67,11 +67,12 @@ CREATE TABLE IF NOT EXISTS "device_make" (
 );
 CREATE TABLE IF NOT EXISTS `contacts` (
   `contact_id` integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+  `title` varchar(32) NULL,
   `given_name` varchar(255) NOT NULL,
   `surname` varchar(255) NOT NULL,
   `email` varchar(255) NULL,
   `phone_no` varchar(32) NULL,
-  `role` varchar(128) NOT NULL,
+  `role` varchar(256) NOT NULL,
   UNIQUE (`contact_id`)
 );
 CREATE TABLE IF NOT EXISTS `document_contacts` (
