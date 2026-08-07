@@ -225,7 +225,7 @@ INSERT INTO org_category (org_category_id, org_category_desc) VALUES
 
 -- Documents — type_of_doc_id/organisation_id/org_type_id/org_category_id resolve via lookup tables above
 INSERT INTO documents (document_id, upload_date, expiry_date, assessment_date, rating, rating_type, type_of_doc_id, organisation_id, org_type_id, org_category_id, procured, scale, ward_department, summary, url_directory) VALUES
-  (1234, 'May-26',  '21/11/2026', '21/11/2025',  NULL, NULL, 2, 2, 1, 1, NULL, NULL, NULL,                                              'NJR report',        'pms_report_hp_stem_corin_proxima_all_26_11_25.pdf'),
+  (1234, 'May-26',  '21/11/2026', '21/11/2025',  NULL, NULL, 2, 2, 1, 1, NULL, NULL, NULL,                                              'NJR report',        'NJR_report_1_FAKE.pdf'),
   (4567, 'Jul-26',  NULL,         '2019-2021',   NULL, NULL, 4, 4, 2, 1, 1,    484,  'Gastroenterology Unit, Queen Alexandra Hospital',  'Trust clinical trial', 'Portsmouth Hospitals University NHS Trust clinical trial FAKE.pdf'),
   (7891, 'Jul-26',  NULL,         'Jan24-Jun24', NULL, NULL, 6, 7, 2, 1, 0,    NULL, 'Ward 3, Northumbria Specialist Emergency Care',    'Trust clinical trial', 'Northumbria Healthcare NHS Foundation Trust clinical trial FAKE.pdf'),
   (8912, 'Jul-26',  NULL,         'Feb23-May24', NULL, NULL, 5, 5, 2, 1, 1,    50,   'Urology department, Guy''s Hospital',              'Trust clinical trial', 'Guys St Thomas NHS trist clinical trial FAKE.pdf'),
