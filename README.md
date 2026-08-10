@@ -55,22 +55,16 @@ If you'd like to run it on a different port, run:
 ./run.sh -p PORT_NUMBER
 ```
 
-If you'd like Docker to create a blank SQLite database from `schema.sql` during image build, run:
+If you'd like to use your own database rather than having one build from fake test data, put that database in a sqlite3 file called `database.db` and run:
 
 ```sh
-./run.sh --build-db
+./run.sh --use-my-db
 ```
 
 You can combine both options:
 
 ```sh
-./run.sh -p PORT_NUMBER --build-db
-```
-
-If you already have an existing database file, you can include it in the container by putting it in the same directory as `run.sh` and `build.sh`, calling it `database.db` and running:
-
-```sh
-./run.sh
+./run.sh -p PORT_NUMBER --use-my-db
 ```
 
 ## How the Site Works

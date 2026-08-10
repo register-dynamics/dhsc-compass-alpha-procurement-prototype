@@ -22,5 +22,6 @@ RUN if [ "$BUILD_DB" = "1" ]; then \
 			apt-get update && \
 			apt-get install -y --no-install-recommends sqlite3 && \
 			rm -rf /var/lib/apt/lists/* && \
+			if [ -f database.db ]; then rm database.db; fi && \
 			sqlite3 database.db < schema.sql; \
 		fi
