@@ -1,8 +1,10 @@
 #!/bin/sh
 
+set -e
+
 EXTRA_ARGS="-p 3000:3000"
 PORT=3000
-BUILD_DB=0
+BUILD_DB=1
 
 while [ "$#" -gt 0 ]
 do
@@ -10,7 +12,7 @@ do
         -p)
             if [ -z "$2" ]; then
                 echo "Missing value for -p"
-                echo "Usage: ./run.sh [-p PORT_NUMBER] [--build-db]"
+                echo "Usage: ./run.sh [-p PORT_NUMBER] [--use-my-db]"
                 exit 1
             fi
             PORT="$2"
@@ -18,8 +20,8 @@ do
             shift
             shift
             ;;
-        --build-db)
-            BUILD_DB=1
+        --use-my-db)
+            BUILD_DB=0
             shift
             ;;
         *)

@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -e
+
 BUILD_DB=0
 
 while [ "$#" -gt 0 ]
