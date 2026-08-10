@@ -47,6 +47,10 @@ Press Ctrl+C in the shell to stop it.
 
 The running container is given live access to the checked-out copy of the source code, so edits you make should be reflected immediately and not requiring rebuilding the thing.
 
+### The included fake test data
+
+In the include fake test data, the "Heart Age Assessment Tool" has evidence cards linking to documents, so search for that if you want to see them.
+
 ### Advanced usage
 
 If you'd like to run it on a different port, run:
