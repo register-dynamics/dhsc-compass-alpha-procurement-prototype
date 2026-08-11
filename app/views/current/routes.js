@@ -77,6 +77,12 @@ router.get(/search-/, (req, res, next) => {
   const searchTerm = formatFtsTerm(term)
   const queryParams = {term: searchTerm, limit: pageSize, offset: pageSize * page, categories: JSON.stringify(queryCategories)}
 
+  // Populate category query string for pagination if required
+  if (queryCategories.length > 0) {
+    const categoryQueryString = `&${queryCategories.map(c => `category=${encodeURIComponent(c)}`).join('&')}`
+    res.locals.categoriesQueryString = categoryQueryString
+  }
+
   const query = queryCategories.length > 0 ? searchWithCategoriesQuery : searchQuery
   const count = countQuery.raw(true).get(searchTerm)
   const results = query.all(queryParams)

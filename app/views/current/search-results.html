@@ -202,7 +202,7 @@
 
     <h3 class="nhsuk-heading-m nhsuk-u-margin-bottom-2">Medical technologies</h3>
     <p class="nhsuk-caption-m nhsuk-u-margin-bottom-4">
-      Showing {% if searchMaxPages > 1 %}<b>{{ searchOffset }}</b> to {% endif %}<b>{{ searchResults | length }}</b> of <b>{{ searchResultsCount }}</b> products
+      Showing {% if searchMaxPages > 1 %}<b>{{ searchOffset }}</b> to {% endif %}<b>{{ (searchResults | length) + searchOffset - 1 }}</b> of <b>{{ searchResultsCount }}</b> products
     </p>
 
     {# Result 1 - ENHANCED #}
@@ -306,7 +306,7 @@
         {% set max_page = (searchMaxPages if searchPage + 2 >= searchMaxPages else searchPage + 2) %}
         {% for page in range(min_page, max_page+1) %}
         <li class="nhsuk-pagination__item {{'nhsuk-pagination__item--current' if page == searchPage else ''}}">
-          <a class="nhsuk-pagination__link" href="?q={{searchTerm}}&page={{page}}" aria-label="Page {{ page }}" {{'aria-current="page"' if page == searchPage else ''}}>
+          <a class="nhsuk-pagination__link" href="?q={{searchTerm}}&page={{page}}{{categoriesQueryString | default('')}}" aria-label="Page {{ page }}" {{'aria-current="page"' if page == searchPage else ''}}>
             {{ page }}
           </a>
         </li>
@@ -314,7 +314,7 @@
       </ul>
 
       {% if searchPage < searchMaxPages %}
-      <a href="?q={{searchTerm}}&page={{searchPage + 1}}" class="nhsuk-pagination__next" rel="next">
+      <a href="?q={{searchTerm}}&page={{searchPage + 1}}{{categoriesQueryString | default('')}}" class="nhsuk-pagination__next" rel="next">
         <span class="nhsuk-pagination__title">
           Next<span class="nhsuk-u-visually-hidden"> page</span>
         </span>
