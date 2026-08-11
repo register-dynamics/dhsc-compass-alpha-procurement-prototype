@@ -202,7 +202,7 @@
 
     <h3 class="nhsuk-heading-m nhsuk-u-margin-bottom-2">Medical technologies</h3>
     <p class="nhsuk-caption-m nhsuk-u-margin-bottom-4">
-      Showing {% if searchMaxPages > 1 %}<b>{{ searchOffset }}</b> to {% endif %}<b>{{ searchResults | length }}</b> of <b>{{ searchResultsCount }}</b> products
+      Showing {% if searchMaxPages > 1 %}<b>{{ searchOffset }}</b> to {% endif %}<b>{{ (searchResults | length) + searchOffset - 1 }}</b> of <b>{{ searchResultsCount }}</b> products
     </p>
 
     {# Result 1 - ENHANCED #}
