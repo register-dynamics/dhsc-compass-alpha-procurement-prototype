@@ -300,17 +300,17 @@ INSERT INTO "search" ("MAKE_ID","MODEL_ID","DEVICE_ID","MAKE","MODEL","GMDN_NAME
 
 
 -- Contacts for documents
-INSERT INTO contacts (contact_id, given_name, surname, email, phone_no, role) VALUES
-  	(1, 'Jeana', 'Somerfield', 'jsomerfield0@nhs.net', '1373644493', 'Staff Scientist, Clinical Research'),
-	(2, 'Jessika', 'Boulton', 'jboulton1@nhs.net', '7341050616', 'Doctor, Emergency Medicine'),
-	(3, 'Andris', 'Naldrett', null, '0123456789', 'Statistician, Clinical Trials'),
-	(4, 'Alena', 'Colomb', 'acolomb3@nhs.net', null, 'Nurse, Ward 3'),
-	(5, 'Emogene', 'Roblett', 'eroblett4@nhs.net', null, 'Design manager, Clinical Trials'),
-	(6, 'Sara', 'Sparling', 'ssparling5@nhs.net', null, 'Speech Pathologist, Therapy Services'),
-	(7, 'Hortensia', 'Sinnott', null, '9133181656', 'Senior Clinician, Clinical Trials'),
-	(8, 'Louisette', 'Vanns', null, '5606190909', 'Medical Informatics Specialist, Statistics'),
-	(9, 'Mahalia', 'Immings', null, '6431047410', 'Software Engineer I, Software Development'),
-	(10, 'Jackelyn', 'Gricewood', 'jgricewood9@nhs.net', null, 'Implant Specialist, Orthopaedic Surgery');
+INSERT INTO contacts (contact_id, title, given_name, surname, email, phone_no, role) VALUES
+  	(1, 'Dr', 'Jeana', 'Somerfield', 'jsomerfield0@nhs.net', '01373 644493', 'Staff Scientist, Clinical Research'),
+	(2, 'Dr', 'Jessika', 'Boulton', 'jboulton1@nhs.net', '07341 050 616', 'Doctor, Emergency Medicine'),
+	(3, 'Mr', 'Andris', 'Naldrett', null, '01234 56789', 'Statistician, Clinical Trials'),
+	(4, 'Ms', 'Alena', 'Colomb', 'acolomb3@nhs.net', null, 'Nurse, Ward 3'),
+	(5, 'Ms', 'Emogene', 'Roblett', 'eroblett4@nhs.net', null, 'Design manager, Clinical Trials'),
+	(6, 'Mrs', 'Sara', 'Sparling', 'ssparling5@nhs.net', null, 'Speech Pathologist, Therapy Services'),
+	(7, 'Ms', 'Hortensia', 'Sinnott', null, '09133 181656', 'Senior Clinician, Clinical Trials'),
+	(8, 'Miss', 'Louisette', 'Vanns', null, '05606 190909', 'Medical Informatics Specialist, Statistics'),
+	(9, 'Ms', 'Mahalia', 'Immings', null, '06431 047410', 'Software Engineer I, Software Development'),
+	(10, 'Ms', 'Jackelyn', 'Gricewood', 'jgricewood9@nhs.net', null, 'Implant Specialist, Orthopaedic Surgery');
 
   
 -- Link contacts to documents via document_contacts table
