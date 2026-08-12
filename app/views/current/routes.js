@@ -126,8 +126,7 @@ const individualQuery = db.prepare("select MAKE, MODEL, MODEL_ID, MANUFACTURER, 
 
 const documentsQuery = db.prepare("SELECT document_id, organisation_name, type_of_doc_desc, rating, procured, scale, ward_department, assessment_date, expiry_date, org_category_desc, org_type_desc, url_directory FROM make_documents WHERE make_id = ?")
 
-// HACK: We don't use params here because better-sqlite3 doesn't support array parameters. This will be supported properly in the beta where we'll use PostgreSQL instead.
-const contactsQueryString = `SELECT
+const contactsQuery = db.prepare(`SELECT
   dc.document_id,
   dc.discuss_implementation,
   dc.discuss_training,
@@ -146,7 +145,7 @@ const contactsQueryString = `SELECT
 FROM document_contacts dc
 JOIN contacts c
   ON c.contact_id = dc.contact_id
-WHERE dc.document_id IN (REPLACE_WITH_DOCUMENT_IDS);`;
+WHERE dc.document_id IN (SELECT value FROM json_each(@documentIds));`)
 
 router.get(/product-page/, (req, res, next) => {
 
@@ -157,13 +156,11 @@ router.get(/product-page/, (req, res, next) => {
 
   const documents = documentsQuery.all(parseInt(req.query.make))
 
-  const documentIds = documents.map(d => d.document_id).join(",")
-
-  const contactsQuery = db.prepare(contactsQueryString.replace("REPLACE_WITH_DOCUMENT_IDS", documentIds))
+  const documentIds = documents.map(d => d.document_id)
 
   console.log("Document IDs for make_id", req.query.make, ":", documentIds)
 
-  const contacts = contactsQuery.all()
+  const contacts = contactsQuery.all({ documentIds: JSON.stringify(documentIds) })
 
   console.log("Found", documents.length, "documents and", contacts.length, "contacts for make_id", req.query.make)
 
