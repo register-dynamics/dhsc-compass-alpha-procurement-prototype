@@ -2,6 +2,14 @@
 
 set -e
 
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+ALPHA_DIR="$SCRIPT_DIR/src/alpha-prototype"
+
+if [ ! -d "$ALPHA_DIR" ]; then
+    echo "Could not find alpha project at $ALPHA_DIR"
+    exit 1
+fi
+
 EXTRA_ARGS="-p 3000:3000"
 PORT=3000
 BUILD_DB=1
@@ -12,7 +20,7 @@ do
         -p)
             if [ -z "$2" ]; then
                 echo "Missing value for -p"
-                echo "Usage: ./run.sh [-p PORT_NUMBER] [--use-my-db]"
+                echo "Usage: ./run-alpha.sh [-p PORT_NUMBER] [--use-my-db]"
                 exit 1
             fi
             PORT="$2"
@@ -26,19 +34,19 @@ do
             ;;
         *)
             echo "Unknown option: $1"
-            echo "Usage: ./run.sh [-p PORT_NUMBER] [--build-db]"
+            echo "Usage: ./run-alpha.sh [-p PORT_NUMBER] [--use-my-db]"
             exit 1
             ;;
     esac
 done
 
 if [ "$BUILD_DB" = "1" ]; then
-    ./build.sh --build-db
+    (cd "$ALPHA_DIR" && ./build.sh --build-db)
 else
-    ./build.sh
+    (cd "$ALPHA_DIR" && ./build.sh)
 fi
 
 echo "RUNNING THE SITE ON http://localhost:$PORT/"
 echo "Press Ctrl+C to stop it"
 
-docker run -it --rm --name dhsc-compass -v "$PWD"/app:/compass/app $EXTRA_ARGS dhsc-compass
+docker run -it --rm --name dhsc-compass -v "$ALPHA_DIR"/app:/compass/app $EXTRA_ARGS dhsc-compass
