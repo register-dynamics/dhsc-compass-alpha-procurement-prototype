@@ -1,0 +1,61 @@
+{% macro contactPeerDiscussion(contacts) %}
+  {% if contacts.length > 0 %}
+    <div class="nhsuk-u-margin-top-6 nhsuk-u-padding-top-4" style="border-top: 1px solid #d8dde0;">
+      <h4 class="nhsuk-heading-s">Contact for peer discussion</h4>
+
+      {% for contact in contacts %}
+        <p class="nhsuk-body">
+          <strong>{{ contact.title }} {{ contact.given_name }} {{ contact.surname }}</strong><br>
+          {{ contact.role }}
+        </p>
+
+        {% if contact.phone_no or contact.email %}
+        <p class="nhsuk-body">
+          {% if contact.email %}
+            <a href="mailto:{{ contact.email }}">{{ contact.email }}</a>
+          {% endif %}
+          {% if contact.email and contact.phone_no %}
+            <br>
+          {% endif %}
+          {% if contact.phone_no %}
+            {{ contact.phone_no }}
+          {% endif %} 
+        </p>
+        {% endif %}
+
+        {% set discussionTopics = [] %}
+        {% if contact.discuss_implementation %}
+          {% set discussionTopics = discussionTopics.concat(["implementation"]) %}
+        {% endif %}
+        {% if contact.discuss_training %}
+          {% set discussionTopics = discussionTopics.concat(["training"]) %}
+        {% endif %}
+        {% if contact.discuss_outcomes %}
+          {% set discussionTopics = discussionTopics.concat(["outcomes"]) %}
+        {% endif %}
+        {% if contact.discuss_pharmacy_integration %}
+          {% set discussionTopics = discussionTopics.concat(["pharmacy integration"]) %}
+        {% endif %}
+        {% if contact.discuss_business_case %}
+          {% set discussionTopics = discussionTopics.concat(["business cases"]) %}
+        {% endif %}
+        {% if contact.discuss_real_world_use %}
+          {% set discussionTopics = discussionTopics.concat(["real world use"]) %}
+        {% endif %}
+        {% if contact.discuss_EHR_integration %}
+          {% set discussionTopics = discussionTopics.concat(["EHR integration"]) %}
+        {% endif %}
+
+        {% if discussionTopics.length > 0 %}
+          <p class="nhsuk-body nhsuk-u-secondary-text-color">
+            {% if discussionTopics.length == 1 %}
+              {{contact.given_name}} is happy to discuss {{ discussionTopics[0] }}.
+            {% else %}
+              {{contact.given_name}} is happy to discuss {{ discussionTopics.slice(0, -1).join(", ") }} and {{ discussionTopics.slice(-1)[0] }}.
+            {% endif %}
+          </p>
+        {% endif %}
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endmacro %}

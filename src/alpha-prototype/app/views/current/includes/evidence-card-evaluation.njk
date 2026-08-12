@@ -1,3 +1,5 @@
+{% from "current/includes/contact-peer-discussion.njk" import contactPeerDiscussion %}
+
 {% macro evidenceCardEvaluation(document) %}
   <div class="nhsuk-card">
     <div class="nhsuk-card__content">
@@ -61,25 +63,7 @@
         <a href="{{ documentUrl }}">View {{ document.type_of_doc_desc }}</a>
       </p>
 
-      {# TODO: Contact information integrated at bottom #}
-      {# Still hardcoded for now as no sample data #}
-      <div class="nhsuk-u-margin-top-6 nhsuk-u-padding-top-4" style="border-top: 1px solid #d8dde0;">
-        <h4 class="nhsuk-heading-s">Contact for peer discussion</h4>
-
-        <p class="nhsuk-body">
-          <strong>Dr Tess Sawyer</strong><br>
-          Consultant, Nephrology
-        </p>
-
-        <p class="nhsuk-body">
-          <a href="mailto:tess.sawyer@nhs.net">tess.sawyer@nhs.net</a><br>
-          0112 244 2795
-        </p>
-
-        <p class="nhsuk-body nhsuk-u-secondary-text-color">
-          Tess is happy to discuss implementation, staff training and clinical outcomes.
-        </p>
-      </div>
+      {{ contactPeerDiscussion(document.contacts) }}
     </div>
   </div>
 {% endmacro %}

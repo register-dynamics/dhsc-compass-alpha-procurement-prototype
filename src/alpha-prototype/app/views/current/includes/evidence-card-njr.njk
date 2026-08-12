@@ -1,3 +1,5 @@
+{% from "current/includes/contact-peer-discussion.njk" import contactPeerDiscussion %}
+
 {% macro evidenceCardNjr(document) %}
   <div class="nhsuk-card">
     <div class="nhsuk-card__content">
@@ -63,6 +65,7 @@
           <a href="{{ documentUrl }}">View {{ document.type_of_doc_desc }}</a>
         </p>
 
+        {{ contactPeerDiscussion(document.contacts) }}
     </div>
   </div>
 {% endmacro %}
