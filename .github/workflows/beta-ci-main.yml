@@ -14,6 +14,9 @@ jobs:
     defaults:
       run:
         working-directory: src/beta-app
+    permissions:
+      contents: read
+      code-quality: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
@@ -31,5 +34,11 @@ jobs:
         run: npm run lint
       - name: Run format check
         run: npm run format:check
-      - name: Run tests
-        run: npm run test
+      - name: Run tests with coverage
+        run: npm run test:coverage
+      - name: Upload coverage report
+        uses: actions/upload-code-coverage@v1
+        with:
+          file: src/beta-app/coverage/cobertura-coverage.xml
+          language: TypeScript
+          label: code-coverage/typescript
