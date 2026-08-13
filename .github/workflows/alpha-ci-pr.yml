@@ -1,6 +1,8 @@
-name: Pull request
+name: Alpha CI on pull requests
 
 on: pull_request
+  paths:
+      - 'src/alpha-procurement-prototype/**'
 
 jobs:
   lint:
