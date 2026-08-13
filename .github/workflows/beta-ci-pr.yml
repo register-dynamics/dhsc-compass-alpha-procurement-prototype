@@ -37,6 +37,8 @@ jobs:
         uses: davelosert/vitest-coverage-report-action@v2
         with:
           json-summary-path: src/beta-app/coverage/coverage-summary.json
+          json-final-path: src/beta-app/coverage/coverage-final.json
           name: Beta app coverage
+          vite-config-path: src/beta-app/vitest.config.ts
 
 
