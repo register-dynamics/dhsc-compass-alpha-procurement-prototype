@@ -13,7 +13,7 @@ jobs:
         working-directory: src/beta-app
     permissions:
       contents: read
-      code-quality: write
+      pull-requests: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
@@ -33,11 +33,10 @@ jobs:
         run: npm run format:check
       - name: Run tests with coverage
         run: npm run test:coverage
-      - name: Upload coverage report
-        uses: actions/upload-code-coverage@v1
+      - name: Report coverage
+        uses: davelosert/vitest-coverage-report-action@v2
         with:
-          file: src/beta-app/coverage/cobertura-coverage.xml
-          language: TypeScript
-          label: code-coverage/typescript
+          json-summary-path: src/beta-app/coverage/coverage-summary.json
+          name: Beta app coverage
 
 
