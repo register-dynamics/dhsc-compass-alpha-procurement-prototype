@@ -17,6 +17,7 @@ jobs:
         with:
           node-version-file: src/alpha-prototype/.nvmrc
           cache: 'npm'
+          cache-dependency-path: src/alpha-prototype/package-lock.json
       - name: Install dependencies
         run: npm ci
       - name: Run linting
