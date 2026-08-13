@@ -8,7 +8,3 @@ app.listen(port, () => {
     `Server listening on port ${String(port)} for ${config.app.name}`,
   );
 });
-
-app.get("/", (req, res) => {
-  res.send(`Hello, world! Welcome to ${config.app.name}.`);
-});
