@@ -1,7 +1,7 @@
 const config = {
-    app: {
-        name: "Compass",
-    }
-}
+  app: {
+    name: "Compass",
+  },
+};
 
 export default config;

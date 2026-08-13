@@ -1,13 +1,13 @@
 // @ts-check
 
-import js from '@eslint/js';
-import perfectionist from 'eslint-plugin-perfectionist';
-import tseslint from 'typescript-eslint';
-import { defineConfig } from 'eslint/config'; 
+import js from "@eslint/js";
+import perfectionist from "eslint-plugin-perfectionist";
+import tseslint from "typescript-eslint";
+import { defineConfig } from "eslint/config";
 
 export default defineConfig([
   {
-    ignores: ['**/*.js'],
+    ignores: ["**/*.js", "eslint.config.mjs", "dist/**"],
   },
   js.configs.recommended,
   tseslint.configs.strictTypeChecked,
@@ -20,5 +20,5 @@ export default defineConfig([
       },
     },
   },
-  perfectionist.configs['recommended-natural'],
+  perfectionist.configs["recommended-natural"],
 ]);
