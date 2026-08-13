@@ -1,8 +1,9 @@
 name: Alpha CI on pull requests
 
-on: pull_request
-  paths:
-      - 'src/alpha-procurement-prototype/**'
+on:
+  pull_request:
+    paths:
+      - 'src/alpha-prototype/**'
 
 jobs:
   lint:
@@ -10,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./src/alpha-procurement-prototype
+        working-directory: ./src/alpha-prototype
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v6
