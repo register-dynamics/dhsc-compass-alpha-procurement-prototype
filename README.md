@@ -1,8 +1,12 @@
 # DHSC Compass
 
-## Running it Locally
+## Alpha prototype
 
-### Quickly getting it running: Mac
+The alpha prototype code now belongs in `src/alpha-prototype`. Support scripts remain in the root of the repository for running the prototype locally.
+
+### Running it Locally
+
+#### Quickly getting it running: Mac
 
 If you haven't already, install [Docker](https://www.docker.com/) on your computer.
 
@@ -15,7 +19,7 @@ Open the Terminal app to get a shell prompt, and go to the directory where you c
 Then type this command into the terminal window:
 
 ```sh
-./run.sh
+./run-alpha.sh
 ```
 
 This will build a docker container and run the app. Visit http://localhost:3000/ to see it. If it's not working, ask a somebody who's done this before and we'll figure it out and improve these instructions!
@@ -31,14 +35,14 @@ For further information on GitHub Desktop (and how to use it to submit your chan
 
 Please ensure to create a new branch for any work you do and push that to the repository - don't commit straight to the `main` branch, please!
 
-### Quickly getting it running: Linux (or Mac in a terminal)
+#### Quickly getting it running: Linux (or Mac in a terminal)
 
 Install [Docker](https://www.docker.com/) on your computer.
 
 Running this command from a terminal:
 
 ```sh
-./run.sh
+./run-alpha.sh
 ```
 
 ...will build a docker container and run the app. Visit http://localhost:3000/ to see it.
@@ -56,25 +60,25 @@ In the include fake test data, the "Heart Age Assessment Tool" has evidence card
 If you'd like to run it on a different port, run:
 
 ```sh
-./run.sh -p PORT_NUMBER
+./run-alpha.sh -p PORT_NUMBER
 ```
 
 If you'd like to use your own database rather than having one build from fake test data, put that database in a sqlite3 file called `database.db` and run:
 
 ```sh
-./run.sh --use-my-db
+./run-alpha.sh --use-my-db
 ```
 
 You can combine both options:
 
 ```sh
-./run.sh -p PORT_NUMBER --use-my-db
+./run-alpha.sh -p PORT_NUMBER --use-my-db
 ```
 
-## How the Site Works
+### How the Site Works
 
 It's an [NHS Prototype Kit](https://prototype-kit.service-manual.nhs.uk/) app so look at their docs for details.
 
-The build.sh script just builds a container based on node 24; the run.sh script runs build.sh and then runs it with $PWD mounted over /compass. Read them and the Dockerfile, there's no surprises.
+The build.sh script just builds a container based on node 24; the run-alpha.sh script runs build.sh and then runs it with $PWD mounted over /compass. Read them and the Dockerfile, there's no surprises.
 
-In future we might make build.sh build two container images: one for prod use (with the site files actually built in) and one for dev use (with the files omitted as we'll mount them in, and a local database, and any automated test tools we want integreated). Then run.sh can use the latter.
+In future we might make build.sh build two container images: one for prod use (with the site files actually built in) and one for dev use (with the files omitted as we'll mount them in, and a local database, and any automated test tools we want integreated). Then run-alpha.sh can use the latter.

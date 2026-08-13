@@ -1,9 +1,9 @@
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 
 # compiled output
-/dist
-/tmp
-/public
+/src/alpha-prototype/dist
+/src/alpha-prototype/tmp
+/src/alpha-prototype/public
 
 # Runtime data
 pids

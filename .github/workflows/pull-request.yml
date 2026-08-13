@@ -6,6 +6,9 @@ jobs:
   lint:
     name: Code style checks
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./src/alpha-procurement-prototype
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v6
