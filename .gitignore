@@ -148,3 +148,6 @@ Thumbs.db
 
 # Sensitive data
 *.db
+
+# Alpha prototype build folder
+public/
