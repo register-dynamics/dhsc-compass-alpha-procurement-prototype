@@ -1,6 +1,9 @@
-name: Pull request
+name: Alpha CI on pull requests
 
-on: pull_request
+on:
+  pull_request:
+    paths:
+      - 'src/alpha-prototype/**'
 
 jobs:
   lint:
@@ -8,13 +11,14 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./src/alpha-procurement-prototype
+        working-directory: ./src/alpha-prototype
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v6
         with:
-          node-version-file: .nvmrc
+          node-version-file: src/alpha-prototype/.nvmrc
           cache: 'npm'
+          cache-dependency-path: src/alpha-prototype/package-lock.json
       - name: Install dependencies
         run: npm ci
       - name: Run linting

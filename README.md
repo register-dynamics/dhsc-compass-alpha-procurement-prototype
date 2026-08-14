@@ -82,3 +82,17 @@ It's an [NHS Prototype Kit](https://prototype-kit.service-manual.nhs.uk/) app so
 The build.sh script just builds a container based on node 24; the run-alpha.sh script runs build.sh and then runs it with $PWD mounted over /compass. Read them and the Dockerfile, there's no surprises.
 
 In future we might make build.sh build two container images: one for prod use (with the site files actually built in) and one for dev use (with the files omitted as we'll mount them in, and a local database, and any automated test tools we want integreated). Then run-alpha.sh can use the latter.
+
+## Beta app
+
+The beta app belongs in `src/beta-app`. It is a separate app from the alpha prototype, and will be built and deployed separately.
+
+### Running it locally (non-Docker for now)
+
+#### Pre-requisites
+
+- Node.js 26 or later
+
+#### Running the app
+
+Within `src/beta-app`, run `npm install` to install dependencies, then run `npm run dev` to start the app. It will be available at http://localhost:3001/.
