@@ -96,3 +96,13 @@ The beta app belongs in `src/beta-app`. It is a separate app from the alpha prot
 #### Running the app
 
 Within `src/beta-app`, run `npm install` to install dependencies, then run `npm run dev` to start the app. It will be available at http://localhost:3001/.
+
+### Testing
+
+Within `src/beta-app`, run the following commands to execute and watch tests or generate coverage:
+
+- `npm run test` - run all tests once
+- `npm run test:watch` - start Vitest in watch mode
+- `npm run test:coverage` - run tests with coverage reporting
+
+Test files should be colocated with implementation using the `.test.ts` suffix (e.g., `index.test.ts` for `index.ts`).

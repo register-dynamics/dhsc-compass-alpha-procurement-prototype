@@ -3,6 +3,7 @@
 import js from "@eslint/js";
 import perfectionist from "eslint-plugin-perfectionist";
 import tseslint from "typescript-eslint";
+import vitestPlugin from "@vitest/eslint-plugin";
 import { defineConfig } from "eslint/config";
 
 export default defineConfig([
@@ -21,4 +22,14 @@ export default defineConfig([
     },
   },
   perfectionist.configs["recommended-natural"],
+  vitestPlugin.configs.recommended,
+  // Override rules for test files
+  {
+    files: ["**/*.test.ts"],
+    rules: {
+      "@typescript-eslint/no-unsafe-assignment": "off",
+      "@typescript-eslint/no-unsafe-call": "off",
+      "@typescript-eslint/no-unsafe-member-access": "off",
+    },
+  },
 ]);
