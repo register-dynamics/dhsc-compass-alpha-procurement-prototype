@@ -28,6 +28,8 @@ app.use(express.json());
 const publicDir = new URL("./public", import.meta.url).pathname;
 app.use(express.static(publicDir));
 
+app.use('/assets', express.static("node_modules/nhsuk-frontend/dist/nhsuk/assets"));
+
 app.get("/", (req, res) => {
   res.render("index.html", { appName: config.app.name });
 });
