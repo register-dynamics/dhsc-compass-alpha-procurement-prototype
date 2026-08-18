@@ -3,9 +3,12 @@
   "version": "0.0.1",
   "description": "A digital service for NHS staff to search and evaluate medical technologies",
   "scripts": {
-    "dev": "tsx --watch --env-file-if-exists .env index.ts",
+    "dev:css": "sass --load-path=node_modules --watch assets/sass:public/css --style=expanded",
+    "dev:ts": "tsx --watch --env-file-if-exists .env index.ts",
+    "dev": "npm-run-all --parallel dev:css dev:ts",
     "start": "node --env-file-if-exists .env dist/index.js",
-    "build": "tsc",
+    "build:css": "sass --load-path=node_modules assets/sass:public/css --style=compressed",
+    "build": "npm run build:css && tsc",
     "type-check": "tsc --noEmit",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
@@ -25,7 +28,10 @@
   "author": "https://github.com/register-dynamics",
   "type": "module",
   "dependencies": {
-    "express": "^5.2.1"
+    "@types/nunjucks": "^3.2.6",
+    "express": "^5.2.1",
+    "nhsuk-frontend": "^10.6.0",
+    "nunjucks": "^3.2.4"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
@@ -37,7 +43,9 @@
     "@vitest/eslint-plugin": "^1.0.0",
     "eslint": "^10.8.1",
     "eslint-plugin-perfectionist": "^5.10.1",
+    "npm-run-all": "^4.1.5",
     "prettier": "^3.9.6",
+    "sass": "^1.102.0",
     "supertest": "^7.2.2",
     "tsx": "^4.23.12",
     "typescript": "^6.0.3",
