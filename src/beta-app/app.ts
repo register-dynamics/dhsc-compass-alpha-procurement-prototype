@@ -12,7 +12,7 @@ const nunjucksEnv = nunjucks.configure(
     "node_modules/nhsuk-frontend/dist/nhsuk/macros",
     "node_modules/nhsuk-frontend/dist/nhsuk",
     "node_modules/nhsuk-frontend/dist",
-    "views"
+    "views",
   ],
   {
     autoescape: true,
@@ -31,7 +31,10 @@ const publicDir = new URL("./public", import.meta.url).pathname;
 app.use(express.static(publicDir));
 
 // Hook-in to node_modules to serve the NHS Design System assets at /assets
-app.use('/assets', express.static("node_modules/nhsuk-frontend/dist/nhsuk/assets"));
+app.use(
+  "/assets",
+  express.static("node_modules/nhsuk-frontend/dist/nhsuk/assets"),
+);
 
 app.get("/", (req, res) => {
   res.render("index.html", { appName: config.app.name });

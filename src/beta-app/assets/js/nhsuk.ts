@@ -1,2 +1,2 @@
-import { initAll } from 'nhsuk-frontend';
+import { initAll } from "nhsuk-frontend";
 initAll();

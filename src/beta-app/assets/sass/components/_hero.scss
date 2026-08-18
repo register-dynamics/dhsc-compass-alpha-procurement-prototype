@@ -41,12 +41,15 @@ $nice-hero-bg: #003087; // NHS dark blue
     padding-right: 24px; // Ensure text stays clear of diagonal edge
   }
 
-  h1, .nhsuk-heading-xl {
+  h1,
+  .nhsuk-heading-xl {
     color: #ffffff;
     margin-bottom: 24px;
   }
 
-  p, .nhsuk-body-l, .nhsuk-body {
+  p,
+  .nhsuk-body-l,
+  .nhsuk-body {
     color: rgba(255, 255, 255, 0.9);
   }
 
@@ -143,14 +146,14 @@ $nice-hero-bg: #003087; // NHS dark blue
 // ==========================================================================
 
 // Hero image path - update this to match your assets folder structure
-$compass-hero-image: '/images/compass-hero.png';
+$compass-hero-image: "/images/compass-hero.png";
 
 .compass-hero {
   position: relative;
   overflow: hidden;
   width: 100%;
   min-height: 400px;
-  
+
   @media (min-width: 769px) {
     min-height: 480px;
   }
@@ -168,7 +171,7 @@ $compass-hero-image: '/images/compass-hero.png';
   background-position: center right;
   background-repeat: no-repeat;
   z-index: 1;
-  
+
   // On larger screens, image sits more to the right
   @media (min-width: 769px) {
     width: 70%;
@@ -185,8 +188,8 @@ $compass-hero-image: '/images/compass-hero.png';
   right: 0;
   bottom: 0;
   z-index: 2;
-  
-// Gradient overlay colours
+
+  // Gradient overlay colours
 
   // Mobile: stronger overlay for readability
   background: linear-gradient(
@@ -196,7 +199,7 @@ $compass-hero-image: '/images/compass-hero.png';
     rgba(255, 255, 255, 0.7) 60%,
     rgba(255, 255, 255, 0.3) 100%
   );
-  
+
   // Desktop: overlay concentrated on left for text, fading to reveal image on right
   @media (min-width: 769px) {
     background: linear-gradient(
@@ -217,7 +220,7 @@ $compass-hero-image: '/images/compass-hero.png';
   z-index: 3;
   padding-top: 48px;
   padding-bottom: 48px;
-  
+
   @media (min-width: 769px) {
     padding-top: 64px;
     padding-bottom: 64px;
@@ -228,7 +231,7 @@ $compass-hero-image: '/images/compass-hero.png';
 .compass-hero__heading {
   color: #212b32; // NHS dark grey
   margin-bottom: 24px;
-  
+
   @media (min-width: 769px) {
     max-width: 580px;
   }
@@ -238,7 +241,7 @@ $compass-hero-image: '/images/compass-hero.png';
 .compass-hero__lede {
   color: #4c6272; // NHS secondary text
   margin-bottom: 32px;
-  
+
   @media (min-width: 769px) {
     max-width: 520px;
   }
@@ -252,16 +255,16 @@ $compass-hero-image: '/images/compass-hero.png';
 // Subtext link
 .compass-hero__subtext {
   color: #4c6272;
-  
+
   a {
     color: #005eb8; // NHS blue
     text-decoration: underline;
-    
+
     &:hover {
       color: #003d78;
       text-decoration: none;
     }
-    
+
     &:focus {
       outline: 4px solid #ffeb3b;
       outline-offset: 0;
@@ -287,7 +290,7 @@ $compass-hero-image: '/images/compass-hero.png';
 //       rgba(0, 94, 184, 0.3) 75%,
 //       rgba(0, 94, 184, 0) 100%
 //     );
-//     
+//
 //     @media (min-width: 769px) {
 //       background: linear-gradient(
 //         to right,
@@ -299,32 +302,32 @@ $compass-hero-image: '/images/compass-hero.png';
 //       );
 //     }
 //   }
-//   
+//
 //   .compass-hero__heading {
 //     color: #ffffff;
 //   }
-//   
+//
 //   .compass-hero__lede {
 //     color: rgba(255, 255, 255, 0.9);
 //   }
-//   
+//
 //   .compass-hero__subtext {
 //     color: rgba(255, 255, 255, 0.8);
-//     
+//
 //     a {
 //       color: #ffffff;
-//       
+//
 //       &:hover {
 //         color: #ffffff;
 //       }
 //     }
 //   }
-//   
+//
 //   // Use white/secondary button on blue background
 //   .nhsuk-button {
 //     background-color: #ffffff;
 //     color: #005eb8;
-//     
+//
 //     &:hover {
 //       background-color: #f0f4f5;
 //       color: #003d78;
@@ -341,7 +344,7 @@ $compass-hero-image: '/images/compass-hero.png';
 //   .compass-hero__image {
 //     width: 100%;
 //   }
-//   
+//
 //   .compass-hero__overlay {
 //     background: linear-gradient(
 //       to right,
@@ -351,7 +354,7 @@ $compass-hero-image: '/images/compass-hero.png';
 //       rgba(33, 43, 50, 0.2) 100%
 //     );
 //   }
-//   
+//
 //   .compass-hero__heading,
 //   .compass-hero__lede,
 //   .compass-hero__subtext {
