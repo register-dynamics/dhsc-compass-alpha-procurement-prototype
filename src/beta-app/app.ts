@@ -6,7 +6,7 @@ import config from "./config.js";
 const app = express();
 
 // Set up Nunjucks templating engine with NHS Design System
-nunjucks.configure(
+const nunjucksEnv = nunjucks.configure(
   [
     "node_modules/nhsuk-frontend/dist/nhsuk/components",
     "node_modules/nhsuk-frontend/dist/nhsuk/macros",
@@ -19,6 +19,8 @@ nunjucks.configure(
     express: app,
   },
 );
+
+nunjucksEnv.addGlobal("serviceName", config.app.name);
 
 app.set("view engine", "html");
 
