@@ -147,6 +147,38 @@ JOIN contacts c
   ON c.contact_id = dc.contact_id
 WHERE dc.document_id IN (SELECT value FROM json_each(@documentIds));`)
 
+const organisationsQuery = db.prepare(`SELECT organisation_id, organisation_name FROM organisation`)
+
+router.get(/share-single-product-evaluation/, (req, res, next) => {
+  console.log("GET share-single-product-evaluation for make_id", req.query.make)
+
+  // Fetch product details so we can remind user what product it is
+  const product = individualQuery.get(parseInt(req.query.make))
+  res.locals.product = {
+    id: req.query.make,
+    make: product.MAKE,
+    model: product.MODEL,
+    model_id: product.MODEL_ID,
+    manufacturer: product.MANUFACTURER,
+    category: product.GMDN_NAME,
+    type: product.TYPE,
+    country: product.COUNTRY,
+  }
+
+  // Fetch list of organisations for org picker (FIXME: filter to trusts somehow?)
+  const organisations = organisationsQuery.all();
+  res.locals.organisations_from_database =
+    [{ value: "", text: "Select an organisation", selected: true }];
+
+  organisations.forEach(o => {
+    res.locals.organisations_from_database.push({
+      value: "" + o.organisation_id,
+      text: o.organisation_name });
+  });
+
+  next()
+});
+
 router.get(/product-page/, (req, res, next) => {
 
   console.log("GET product-page for make_id", req.query.make)
@@ -174,6 +206,7 @@ router.get(/product-page/, (req, res, next) => {
 
   res.locals.searchTerm = req.query.q
   res.locals.product = {
+    id: req.query.make,
     make: result.MAKE,
     model: result.MODEL,
     model_id: result.MODEL_ID,
