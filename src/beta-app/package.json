@@ -4,7 +4,7 @@
   "description": "A digital service for NHS staff to search and evaluate medical technologies",
   "scripts": {
     "dev:css": "sass --load-path=node_modules --watch assets/sass:public/css --style=expanded",
-    "dev:ts": "tsx --watch --env-file-if-exists .env index.ts",
+    "dev:ts": "tsx watch --include './views/**/*.html' --env-file-if-exists .env index.ts",
     "dev": "npm-run-all --parallel dev:css dev:ts",
     "start": "node --env-file-if-exists .env dist/index.js",
     "build:css": "sass --load-path=node_modules assets/sass:public/css --style=compressed",
