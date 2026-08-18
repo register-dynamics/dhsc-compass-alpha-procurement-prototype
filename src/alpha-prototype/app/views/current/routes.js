@@ -4,6 +4,8 @@ const Database = require('better-sqlite3')
 const db = new Database('database.db', { readonly: true }) //Replace database path with correct local directory
 
 const router = require('express').Router()
+const formidable = require('formidable').formidable;
+
 
 // Set version for all templates in this folder
 router.use((req, res, next) => {
@@ -149,6 +151,8 @@ WHERE dc.document_id IN (SELECT value FROM json_each(@documentIds));`)
 
 const organisationsQuery = db.prepare(`SELECT organisation_id, organisation_name FROM organisation`)
 
+const individualOrganisationQuery = db.prepare(`SELECT organisation_name FROM organisation WHERE organisation_id = ?`)
+
 router.get(/share-single-product-evaluation/, (req, res, next) => {
   console.log("GET share-single-product-evaluation for make_id", req.query.make)
 
@@ -178,6 +182,72 @@ router.get(/share-single-product-evaluation/, (req, res, next) => {
 
   next()
 });
+
+router.post(/review-single-product-evaluation/, (req, res, next) => {
+  console.log("POST review-single-product-evaluation")
+
+  // parse multipart form body
+  const form = formidable({});
+
+  form.parse(req, (err, fields, files) => {
+    if (err) {
+      console.log("Form parse error", err)
+      
+      next(err);
+      return;
+    }
+    
+    // Put normal form fields into data
+    for (const name in fields) {
+      req.session.data[name] = fields[name];
+    }
+    // Store uploaded file details in the session. Note that with prototype
+    // kit's automatic poking of any submitted form fields into the session,
+    // there's probably a way for a malicious user to fake the upload file path
+    // here if they wanted to.
+
+    // FIXME: No validation we got exactly 1 file
+    req.session.data['upload'] = files['file-upload'][0];
+
+    next() 
+  });
+})
+
+
+const contactTopicNames = {
+  'implementation': "Implementation",
+  'training': "Training",
+  'outcomes': "Outcomes",
+  'pharmacy-integration': "Pharmacy integration",
+  'business-case': "Business case",
+  'real-world-use': "Real world use",
+  'ehr-integration': "EHR integration"
+}
+
+router.get(/review-single-product-evaluation/, (req, res, next) => {
+  console.log("GET review-single-product-evaluation")
+
+  const product = individualQuery.get(parseInt(req.session.data['make']))
+  res.locals.product = {
+    id: parseInt(req.session.data['make']),
+    make: product.MAKE,
+    model: product.MODEL,
+    model_id: product.MODEL_ID,
+    manufacturer: product.MANUFACTURER,
+    category: product.GMDN_NAME,
+    type: product.TYPE,
+    country: product.COUNTRY,
+  }
+
+  const organisation = individualOrganisationQuery.get(parseInt(req.session.data['organisation']))
+    id: parseInt(req.session.data['organisation']),
+    name: organisation.organisation_name
+  }
+
+  res.locals.niceContactTopics = req.session.data['contact-topics'].map((code) => contactTopicNames[code]).join("<br>")
+
+  next()
+})
 
 router.get(/product-page/, (req, res, next) => {
 

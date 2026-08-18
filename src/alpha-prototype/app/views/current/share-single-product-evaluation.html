@@ -13,7 +13,6 @@
 
 {% block content %}
 
-<!-- NHS 10 Year Plan Context -->
 <div class="nhsuk-grid-row nhsuk-u-margin-top-7">
   <div class="nhsuk-grid-column-two-thirds">
     
@@ -39,19 +38,17 @@
             </h1>
           </legend>
 
-          
-          <p>Then, give us a few details to help other trusts find them.</p>
-
           <div class="nhsuk-form-group">
             <label class="nhsuk-label" for="file-upload">
               Choose file to upload
             </label>
-            <input class="nhsuk-input" id="file-upload" name="file-upload" type="file" multiple accept=".pdf,.doc,.docx,.xls,.xlsx" aria-describedby="file-upload">
+            <input class="nhsuk-input" id="file-upload" name="file-upload" type="file" aria-describedby="file-upload">
           </div>
         </fieldset>
       </div>
 
-      
+      <p>Then, give us a few details to help other trusts find them.</p>
+
       <!-- Summary -->
       <div class="nhsuk-form-group">
         <fieldset class="nhsuk-fieldset">
@@ -64,7 +61,8 @@
           hint: {
              text: "A one-sentence summary of your key findings for this product"
           },
-          rows: "2"
+          rows: "2",
+          value: data.summary
           }) }}
         </fieldset>
       </div>
@@ -93,7 +91,7 @@
                 </div>
                 <div class="nhsuk-form-group nhsuk-u-margin-bottom-0">
                   <label class="nhsuk-label nhsuk-body-s" for="eval-start-year-3">Year</label>
-                  <input class="nhsuk-input nhsuk-input--width-4" id="eval-start-year-3" name="eval-yead" type="number" min="2000" max="2030" placeholder="YYYY">
+                  <input class="nhsuk-input nhsuk-input--width-4" id="eval-start-year-3" name="eval-year" type="number" min="2000" max="2030" placeholder="YYYY">
                 </div>
               </div>
             </div>
@@ -102,7 +100,7 @@
               <div style="display: flex; gap: 12px;">
                 <div class="nhsuk-form-group nhsuk-u-margin-bottom-0">
                   <label class="nhsuk-label nhsuk-body-s" for="eval-end-month-3">Month</label>
-                  <select class="nhsuk-select nhsuk-input--width-10" id="expiry-month" name="eval-end-month-3">
+                  <select class="nhsuk-select nhsuk-input--width-10" id="expiry-month" name="expiry-month">
                     <option value="">Month</option>
                     <option value="01">January</option><option value="02">February</option><option value="03">March</option>
                     <option value="04">April</option><option value="05">May</option><option value="06">June</option>
@@ -112,7 +110,7 @@
                 </div>
                 <div class="nhsuk-form-group nhsuk-u-margin-bottom-0">
                   <label class="nhsuk-label nhsuk-body-s" for="eval-end-year-3">Year</label>
-                  <input class="nhsuk-input nhsuk-input--width-4" id="expiry-year" name="eval-end-year-3" type="number" min="2000" max="2030" placeholder="YYYY">
+                  <input class="nhsuk-input nhsuk-input--width-4" id="expiry-year" name="expiry-year" type="number" min="2000" max="2030" placeholder="YYYY">
                 </div>
               </div>
             </div>

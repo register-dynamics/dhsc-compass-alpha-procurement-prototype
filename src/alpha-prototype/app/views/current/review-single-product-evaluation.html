@@ -1,0 +1,158 @@
+{% extends prototypeVersion + '/layouts/layout-signed-in.html' %}
+
+{% set pageName = "Check your answers" %}
+<!-- We're not doing anything to escape the URL parameter -->
+{% set previousPage = "share-single-product-evaluation?make=" + data.make %}
+
+{% block beforeContent %}
+  {{ breadcrumb({
+    items: [
+      { text: product.make + " - " + product.model, href: "product-page?make={{ product.id }}" },
+      { text: "Share evaluation", href: "share-single-product-evaluation?make={{ product.id }}" }
+    ],
+    attributes: { "aria-label": "Breadcrumb" }
+  }) }}
+{% endblock %}
+
+{% block content %}
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+
+    <h1 class="nhsuk-heading-l">Check your answers</h1>
+    <p>This is what other NHS trusts and the related product supplier will see. Review before submitting.</p>
+
+    <!-- Document -->
+    <h2 class="nhsuk-heading-m">Document</h2>
+    {{ summaryList({
+      rows: [
+        {
+          key: { text: "Uploaded file" },
+          value: { text: data.upload.originalFilename },
+          actions: { items: [{ href: previousPage, text: "Change", visuallyHiddenText: "uploaded file" }] }
+        },
+        {
+          key: { text: "Summary" },
+          value: { text: data.summary },
+          actions: { items: [{ href: previousPage, text: "Change", visuallyHiddenText: "summary" }] }
+        },
+        {
+          key: { text: "Assessment date" },
+          value: { text: data['eval-month'] + " " + data['eval-year'] },
+          actions: { items: [{ href: previousPage, text: "Change", visuallyHiddenText: "summary" }] }
+        },
+        {
+          key: { text: "Expiry date" },
+          value: { text: data['expiry-month'] + " " + data['expiry-year'] },
+          actions: { items: [{ href: previousPage, text: "Change", visuallyHiddenText: "summary" }] }
+        }
+      ]
+    }) }}
+
+    <hr class="nhsuk-section-break nhsuk-section-break--m nhsuk-section-break--visible">
+
+    <!-- About the trust -->
+    <h2 class="nhsuk-heading-m">About the trust</h2>
+    {{ summaryList({
+      rows: [
+        {
+          key: { text: "Trust" },
+          value: { text: organisation.name },
+          actions: { items: [{ href: previousPage, text: "Change", visuallyHiddenText: "trust" }] }
+        }
+      ]
+    }) }}
+
+    <hr class="nhsuk-section-break nhsuk-section-break--m nhsuk-section-break--visible">
+
+    <!-- Product evaluations -->
+    <h2 class="nhsuk-heading-m">Product evaluation</h2>
+
+
+    {{ summaryList({
+      rows: [
+        {
+          key: { text: "Product" },
+          value: { text: product.make + " - " + product.model },
+          actions: { items: [{ href: previousPage, text: "Change", visuallyHiddenText: "product" }] }
+        }
+      ]
+    }) }}
+
+    <hr class="nhsuk-section-break nhsuk-section-break--m nhsuk-section-break--visible">
+
+    <!-- Contacts -->
+    <h2 class="nhsuk-heading-m">Contact for queries</h2>
+    {{ summaryList({
+       rows: [
+        {
+          key: { text: "Name" },
+          value: { text: data['contact-title'] + " " + data['contact-given'] + " " + data['contact-surname'] },
+          actions: { items: [{ href: previousPage, text: "Change", visuallyHiddenText: "contact name" }] }
+        },
+        {
+          key: { text: "Role" },
+          value: { text: data['contact-role'] },
+          actions: { items: [{ href: previousPage, text: "Change", visuallyHiddenText: "contact 1 role" }] }
+        },
+        {
+          key: { text: "Email" },
+          value: { text: data['contact-email']},
+          actions: { items: [{ href: previousPage, text: "Change", visuallyHiddenText: "contact 1 email" }] }
+        },
+        {
+          key: { text: "Willing to discuss" },
+          value: { html: niceContactTopics },
+          actions: { items: [{ href: previousPage, text: "Change", visuallyHiddenText: "contact 1 topics" }] }
+        }
+      ]
+    }) }}
+
+    <hr class="nhsuk-section-break nhsuk-section-break--m nhsuk-section-break--visible">
+
+    <!-- Visibility -->
+    <h2 class="nhsuk-heading-m">Visibility</h2>
+    {{ summaryList({
+      rows: [
+        {
+          key: { text: "Visible to" },
+          value: { html: "All NHS trusts<br><span class='nhsuk-body-s nhsuk-u-secondary-text-color'>Suppliers can see evaluation outcomes but not your contact details</span>" }
+        }
+      ]
+    }) }}
+
+    <hr class="nhsuk-section-break nhsuk-section-break--l nhsuk-section-break--visible">
+
+    <!-- Declaration -->
+    <div class="nhsuk-warning-callout nhsuk-u-margin-top-6">
+      <h3 class="nhsuk-warning-callout__label">
+        <span role="text">
+          <span class="nhsuk-u-visually-hidden">Important: </span>
+          Declaration
+        </span>
+      </h3>
+      <p>I confirm that:</p>
+      <ul class="nhsuk-list nhsuk-list--bullet">
+        <li>I'm providing up-to-date and accurate information.</li>
+        <li>I'm authorised to upload these documents on behalf of my organisation.</li>
+        <li>I'm not sharing anything that is confidential, commercially sensitive or will infringe on intellectual property rights.</li>
+      </ul>
+      <p>I understand that:</p>
+      <ul class="nhsuk-list nhsuk-list--bullet">
+        <li>I'm not offering any warranty or commitments around what I'm sharing.</li>
+        <li>I'm not responsible for the decisions made using my information.</li>
+        <li>I can remove information later if I change my mind.</li>
+      </ul>
+    </div>
+
+    <form action="submit-single-product-evaluation" method="post">
+      <input type="hidden" name="submitted" value="true">
+      {{ button({
+        text: "Submit evaluation"
+      }) }}
+    </form>
+
+    <p><a href="{{ previousPage }}" class="nhsuk-link nhsuk-link--no-visited-state">Back and make changes</a></p>
+
+  </div>
+</div>
+{% endblock %}
