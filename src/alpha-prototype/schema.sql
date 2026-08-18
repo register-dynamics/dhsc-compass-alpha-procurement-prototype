@@ -206,7 +206,7 @@ INSERT INTO organisation (organisation_id, organisation_name) VALUES
  	(1, 'ODEP'),
 	(2, 'NJR'),
 	(3, 'Barts Health NHS Trust'),
-	(4, 'Portsmouth Hospitals University NHS Trus'),
+	(4, 'Portsmouth Hospitals University NHS Trust'),
 	(5, 'Guys & St Thomas'' NHS Foundation Trust'),
 	(6, 'University Hospitals Birmingham NHS Foundation Trust'),
 	(7, 'Northumbria Healthcare NHS Foundation Trust');
