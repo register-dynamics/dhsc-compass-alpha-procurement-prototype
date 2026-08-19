@@ -44,5 +44,9 @@ app.get("/search", (req, res) => {
   res.render("search.html");
 });
 
+app.get("/search-results", (req, res) => {
+  res.render("search-results.html");
+});
+
 
 export default app;
