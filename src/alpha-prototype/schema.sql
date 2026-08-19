@@ -118,11 +118,7 @@ CREATE TABLE IF NOT EXISTS `document_contacts` (
 
 CREATE VIRTUAL TABLE search USING fts5(MAKE_ID, MODEL_ID, DEVICE_ID, MAKE, MODEL, GMDN_NAME, TYPE, PRODUCT_CODE, MANUFACTURER, COUNTRY, UDI, GMDN_CODE)
 /* search(MAKE_ID,MODEL_ID,DEVICE_ID,MAKE,MODEL,GMDN_NAME,TYPE,PRODUCT_CODE,MANUFACTURER,COUNTRY,UDI,GMDN_CODE) */;
-CREATE TABLE IF NOT EXISTS 'search_data'(id INTEGER PRIMARY KEY, block BLOB);
-CREATE TABLE IF NOT EXISTS 'search_idx'(segid, term, pgno, PRIMARY KEY(segid, term)) WITHOUT ROWID;
-CREATE TABLE IF NOT EXISTS 'search_content'(id INTEGER PRIMARY KEY, c0, c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11);
-CREATE TABLE IF NOT EXISTS 'search_docsize'(id INTEGER PRIMARY KEY, sz BLOB);
-CREATE TABLE IF NOT EXISTS 'search_config'(k PRIMARY KEY, v) WITHOUT ROWID;
+
 
 CREATE VIEW "make_documents" AS select m.make_id, d.document_id, d.upload_date, d.expiry_date, d.assessment_date, d.rating, d.rating_type, d.procured, d.scale, d.ward_department, d.summary, t.type_of_doc_desc, o.organisation_name, c.org_category_desc, b.org_type_desc, d.url_directory
 from matches_make as m
