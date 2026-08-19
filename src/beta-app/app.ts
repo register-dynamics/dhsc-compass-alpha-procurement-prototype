@@ -49,23 +49,38 @@ app.get("/search", (req, res) => {
 
 app.get("/search-results", async (req, res) => {
   const searchTerm = typeof req.query.q === "string" ? req.query.q : "";
+  const sanitisedSearchTerm = `"${searchTerm}"`;
   const pageSize = config.search.pageSize;
   const currentPage = (parseInt(req.query.page as string) || 1) - 1;
   const searchPage = currentPage + 1;
 
-  // TODO: Category filtering
+  const queryCategories = [req.query["[category]"] ?? []]
+    .flat()
+    .filter((c): c is string => typeof c === "string" && c !== "_unchecked");
+
+  const categoriesQueryString =
+    queryCategories.length > 0
+      ? `&${queryCategories.map((c) => `[category]=${encodeURIComponent(c)}`).join("&")}`
+      : "";
 
   const queryParams = {
+    categories: JSON.stringify(queryCategories),
     limit: pageSize,
     offset: pageSize * currentPage,
-    term: searchTerm,
+    term: sanitisedSearchTerm,
   };
 
   // Get the total count of search results for the given search term
-  const searchResultsCount = await db
+  let searchResultsCountQuery = db
     .selectFrom("search")
     .select(db.fn.count<number>("makeId").as("count"))
-    .where("search", `match`, searchTerm)
+    .where("search", `match`, sanitisedSearchTerm);
+
+  if (queryCategories.length > 0) {
+    searchResultsCountQuery = searchResultsCountQuery.where("gmdnName", "in", queryCategories);
+  }
+
+  const searchResultsCount = await searchResultsCountQuery
     .executeTakeFirstOrThrow()
     .then((result) => result.count);
 
@@ -78,19 +93,30 @@ app.get("/search-results", async (req, res) => {
   const categoriesInSearchResults = await db
     .selectFrom("search")
     .select(["gmdnName", db.fn.count<number>("gmdnName").as("count")])
-    .where("search", `match`, searchTerm)
+    .where("search", `match`, sanitisedSearchTerm)
     .groupBy("gmdnName")
     .orderBy("count", "desc")
     .execute()
     .then((results) =>
-      results.map((result) => ({ count: result.count, name: result.gmdnName })),
+      results.map((result) => ({
+        checked: queryCategories.includes(result.gmdnName),
+        count: result.count,
+        name: result.gmdnName,
+      })),
     );
 
   // Perform the search query with pagination and render the results page
-  await db
+  let results = db
     .selectFrom("search")
     .selectAll()
-    .where("search", `match`, searchTerm)
+    .where("search", `match`, sanitisedSearchTerm);
+
+  // Add in the category filter if any categories are selected
+  if (queryCategories.length > 0) {
+    results = results.where("gmdnName", "in", queryCategories);
+  }
+
+  await results
     .limit(queryParams.limit)
     .offset(queryParams.offset)
     .execute()
@@ -103,6 +129,7 @@ app.get("/search-results", async (req, res) => {
       }
 
       res.render("search-results.html", {
+        categoriesQueryString,
         searchMaxPages,
         searchOffset,
         searchPage,

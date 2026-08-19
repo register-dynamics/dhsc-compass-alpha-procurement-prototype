@@ -25,6 +25,7 @@ export interface SearchTable {
   excluded: number;
   procured: number;
   under_review: number;
+  checked: boolean;
   
 
   // FTS5 virtual table column for MATCH

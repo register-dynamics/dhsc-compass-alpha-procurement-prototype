@@ -193,16 +193,15 @@
             {# Results Column #}
             <div class="app-grid-column-results">
                 <h3 class="nhsuk-heading-m nhsuk-u-padding-bottom-2">Medical technologies</h3>
-                <p class="nhsuk-caption-m nhsuk-u-padding-bottom-4">
-                    Showing
-                    {% if searchMaxPages > 1 %}
-                        <strong>{{ searchOffset }}</strong>
-                        to
-                    {% endif %}
-                    <strong>{{ (searchResults | length) + searchOffset - 1 }}</strong>
-                    of
-                    <strong>{{ searchResultsCount }}</strong>
-                    products
+                {% set resultsCount = searchResults | length %}
+                <p class="nhsuk-caption-m ...">
+                Showing
+                {% if resultsCount > 0 %}
+                    <strong>{{ searchOffset }}</strong> to <strong>{{ searchOffset + resultsCount - 1 }}</strong>
+                {% else %}
+                    <strong>0</strong>
+                {% endif %}
+                of <strong>{{ searchResultsCount }}</strong> products
                 </p>
 
                 {% for result in searchResults %}
