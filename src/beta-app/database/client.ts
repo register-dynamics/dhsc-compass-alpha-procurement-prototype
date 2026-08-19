@@ -4,7 +4,7 @@ import { CamelCasePlugin, Kysely, SqliteDialect } from "kysely";
 import { Database } from "./types.js";
 
 const dialect = new SqliteDialect({
-  database: new SQLite("database_big.db"),
+  database: new SQLite("database.db"),
 });
 
 export const db = new Kysely<Database>({

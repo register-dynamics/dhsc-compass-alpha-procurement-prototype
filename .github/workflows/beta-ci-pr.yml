@@ -31,6 +31,8 @@ jobs:
         run: npm run lint
       - name: Run format check
         run: npm run format:check
+      - name: Seed some test data
+        run: sqlite3 database.db < ../alpha-prototype/schema.sql
       - name: Run tests with coverage
         run: npm run test:coverage
       - name: Report coverage
