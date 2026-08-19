@@ -30,8 +30,11 @@
   "author": "https://github.com/register-dynamics",
   "type": "module",
   "dependencies": {
+    "@types/better-sqlite3": "^9.6.0",
     "@types/nunjucks": "^3.2.6",
+    "better-sqlite3": "^13.0.3",
     "express": "^5.2.1",
+    "kysely": "^0.29.5",
     "nhsuk-frontend": "^10.6.0",
     "nunjucks": "^3.2.4"
   },

@@ -32,7 +32,7 @@
                                 Search again by product, category or supplier
                             </label>
                             <input class="nhsuk-input nhsuk-input--width-20" id="q" name="q" type="search" value="{{ searchTerm }}">
-                            <button class="nhsuk-button nhsuk-button--secondary nhsuk-u-margin-left-2 app-button--small nhsuk-u-margin-bottom-0" data-module="nhsuk-button" type="submit" data-nhsuk-button-init="">
+                            <button class="nhsuk-button nhsuk-button--secondary nhsuk-u-margin-left-2 nhsuk-button--small nhsuk-u-margin-bottom-0" data-module="nhsuk-button" type="submit" data-nhsuk-button-init="">
                                 Search
                             </button>
                         </div>
@@ -62,7 +62,8 @@
                                     <div id="category-items" style="max-height: 30em; overflow-y: scroll; overflow-x: visible; border-bottom: 1px solid #4c6272" class="nhsuk-checkboxes nhsuk-checkboxes--small" data-module="nhsuk-checkboxes" data-nhsuk-checkboxes-init="">
                                         {% for category in searchResultCategories | sort(true, true, "selected") %}
                                             <div class="nhsuk-checkboxes__item">
-                                                {% set categoryChecked = "checked" if category.checked else "" %}
+                                                {% set categoryChecked = "checked" if category.checked else 
+                                                    "" %}
                                                 <input class="nhsuk-checkboxes__input" id="category-{{ category.name }}" name="[category]" type="checkbox" value="{{ category.name }}" {{ categoryChecked }}>
                                                 <label class="nhsuk-label nhsuk-checkboxes__label" for="category-{{ category.name }}">
                                                     {% if category.name %}
@@ -208,7 +209,7 @@
                     <div class="nhsuk-card nhsuk-card--clickable app-card--compact">
                         <div class="nhsuk-card__content">
                             <h4 class="nhsuk-card__heading nhsuk-heading-s">
-                                <a class="nhsuk-card__link" href="product-page?make={{ result.make_id }}&q={{ searchTerm }}">
+                                <a class="nhsuk-card__link" href="product-page?make={{ result.make_id }}">
                                     {{ result.make }}
                                     –
                                     {{ result.model }}
@@ -224,7 +225,7 @@
                                         Category (GMDN)
                                     </dt>
                                     <dd class="nhsuk-summary-list__value">
-                                        {{ result.category }}
+                                        {{ result.gmdnName }}
                                     </dd>
                                 </div>
 
@@ -267,6 +268,7 @@
                                 </div>
 
                                 {# NEW: Show procurement outcomes #}
+                                {# TODO: Hardcoded #}
                                 <div class="nhsuk-summary-list__row">
                                     <dt class="nhsuk-summary-list__key">
                                         Procurement outcomes
@@ -296,7 +298,7 @@
                                     </dd>
                                 </div>
 
-                                {# NEW: Show country of manufacture #}                                
+                                {# NEW: Show country of manufacture #}
                                 <div class="nhsuk-summary-list__row">
                                     <dt class="nhsuk-summary-list__key">
                                         Country of manufacture
