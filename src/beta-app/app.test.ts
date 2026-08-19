@@ -40,7 +40,9 @@ describe("Beta app server (integration)", () => {
   });
 
   it("GET /search-results with categories should return 200 and search results page", async () => {
-    const response = await request(app).get("/search-results?q=test&[category]=category1");
+    const response = await request(app).get(
+      "/search-results?q=test&[category]=category1",
+    );
 
     expect(response.status).toBe(200);
     expect(response.text).toContain("Search results");
