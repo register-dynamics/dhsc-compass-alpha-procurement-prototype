@@ -77,7 +77,11 @@ app.get("/search-results", async (req, res) => {
     .where("search", `match`, sanitisedSearchTerm);
 
   if (queryCategories.length > 0) {
-    searchResultsCountQuery = searchResultsCountQuery.where("gmdnName", "in", queryCategories);
+    searchResultsCountQuery = searchResultsCountQuery.where(
+      "gmdnName",
+      "in",
+      queryCategories,
+    );
   }
 
   const searchResultsCount = await searchResultsCountQuery

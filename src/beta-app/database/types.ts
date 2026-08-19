@@ -19,14 +19,12 @@ export interface SearchTable {
   gmdnName: string;
   make: string;
   makeId: string;
-  
 
   // Temp hardcoded properties
   excluded: number;
   procured: number;
   under_review: number;
   checked: boolean;
-  
 
   // FTS5 virtual table column for MATCH
   search: string;

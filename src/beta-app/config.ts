@@ -4,7 +4,7 @@ const config = {
   },
   search: {
     pageSize: 25,
-  }
+  },
 };
 
 export default config;
