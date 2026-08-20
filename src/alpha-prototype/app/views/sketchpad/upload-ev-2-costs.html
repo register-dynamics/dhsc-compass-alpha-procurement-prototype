@@ -1,0 +1,65 @@
+{% extends 'sketchpad/layouts/layout-signed-in.html' %}
+
+{% from "back-link/macro.njk" import backLink %}
+{% from "checkboxes/macro.njk" import checkboxes %}
+{% from "button/macro.njk" import button %}
+
+{% set pageName = "What kind of costs does this document show?" %}
+{% set dashboardHref = "/sketchpad/upload-ev-2-start" %}
+
+{% block beforeContent %}
+  {{ backLink({ href: "/sketchpad/upload-ev-2-details-2", text: "Back" }) }}
+{% endblock %}
+
+{% block content %}
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+
+    <form action="/sketchpad/upload-ev-2-done" method="get" novalidate>
+
+      <div class="nhsuk-form-group">
+        <fieldset class="nhsuk-fieldset">
+          <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--l">
+            <h1 class="nhsuk-fieldset__heading">{{ pageName }}</h1>
+          </legend>
+          <div class="nhsuk-hint">
+            Select all that apply. Other trusts can only compare costs measured the same way.
+          </div>
+          <div class="nhsuk-checkboxes" data-module="nhsuk-checkboxes">
+            <div class="nhsuk-checkboxes__item">
+              <input class="nhsuk-checkboxes__input" id="c-1" name="cost-basis" type="checkbox" value="annual">
+              <label class="nhsuk-label nhsuk-checkboxes__label" for="c-1">Annual cost</label>
+              <div class="nhsuk-hint nhsuk-checkboxes__hint">What it costs to run for a year</div>
+            </div>
+            <div class="nhsuk-checkboxes__item">
+              <input class="nhsuk-checkboxes__input" id="c-2" name="cost-basis" type="checkbox" value="whole-life">
+              <label class="nhsuk-label nhsuk-checkboxes__label" for="c-2">Whole life cost</label>
+              <div class="nhsuk-hint nhsuk-checkboxes__hint">Total cost across the lifetime of the device</div>
+            </div>
+            <div class="nhsuk-checkboxes__item">
+              <input class="nhsuk-checkboxes__input" id="c-3" name="cost-basis" type="checkbox" value="per-unit">
+              <label class="nhsuk-label nhsuk-checkboxes__label" for="c-3">Cost per unit</label>
+              <div class="nhsuk-hint nhsuk-checkboxes__hint">What one item or device costs</div>
+            </div>
+            <div class="nhsuk-checkboxes__item">
+              <input class="nhsuk-checkboxes__input" id="c-4" name="cost-basis" type="checkbox" value="patient-level">
+              <label class="nhsuk-label nhsuk-checkboxes__label" for="c-4">Cost per patient</label>
+              <div class="nhsuk-hint nhsuk-checkboxes__hint">What it costs for each patient treated</div>
+            </div>
+            <div class="nhsuk-checkboxes__item">
+              <input class="nhsuk-checkboxes__input" id="c-5" name="cost-basis" type="checkbox" value="none">
+              <label class="nhsuk-label nhsuk-checkboxes__label" for="c-5">The document does not show costs</label>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+
+      {{ button({ text: "Continue" }) }}
+
+      <p><a href="/sketchpad/upload-ev-2-done">I will add this later</a></p>
+
+    </form>
+
+  </div>
+</div>
+{% endblock %}

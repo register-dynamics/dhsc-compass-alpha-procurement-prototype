@@ -1,0 +1,38 @@
+{% extends 'sketchpad/layouts/layout-signed-in.html' %}
+{% from "back-link/macro.njk" import backLink %}
+{% from "button/macro.njk" import button %}
+{% set pageName = "Is this business case about one device or several?" %}
+{% set dashboardHref = "/sketchpad/upload-bc-2-start" %}
+{% block beforeContent %}
+  {{ backLink({ href: "/sketchpad/upload-bc-2-approved", text: "Back" }) }}
+{% endblock %}
+{% block content %}
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+    <form action="/sketchpad/upload-bc-2-device" method="get" novalidate>
+      <input type="hidden" name="bc-n" value="1">
+      <input type="hidden" name="bc-devices" value="">
+      <input type="hidden" name="bc-device-choice" value="">
+      <input type="hidden" name="product-picker" value="">
+      <div class="nhsuk-form-group">
+        <fieldset class="nhsuk-fieldset">
+          <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--l">
+            <h1 class="nhsuk-fieldset__heading">{{ pageName }}</h1>
+          </legend>
+          <div class="nhsuk-radios" data-module="nhsuk-radios">
+            <div class="nhsuk-radios__item">
+              <input class="nhsuk-radios__input" id="bc-hm-one" name="bc-how-many" type="radio" value="one">
+              <label class="nhsuk-label nhsuk-radios__label" for="bc-hm-one">One device</label>
+            </div>
+            <div class="nhsuk-radios__item">
+              <input class="nhsuk-radios__input" id="bc-hm-several" name="bc-how-many" type="radio" value="several">
+              <label class="nhsuk-label nhsuk-radios__label" for="bc-hm-several">Several devices</label>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+      {{ button({ text: "Continue" }) }}
+    </form>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,81 @@
+{% extends 'sketchpad/layouts/layout-signed-in.html' %}
+
+{% from "back-link/macro.njk" import backLink %}
+{% from "input/macro.njk" import input %}
+{% from "textarea/macro.njk" import textarea %}
+{% from "button/macro.njk" import button %}
+
+{% set pageName = "About the evaluation" %}
+{% set dashboardHref = "/sketchpad/upload-ev-2-start" %}
+
+{% block beforeContent %}
+  {{ backLink({ href: "/sketchpad/upload-ev-2-details", text: "Back" }) }}
+{% endblock %}
+
+{% block content %}
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+
+    <h1 class="nhsuk-heading-l">{{ pageName }}</h1>
+
+    <form action="/sketchpad/upload-ev-2-details-2" method="get" novalidate>
+
+      {{ input({ label: { text: "Title", classes: "nhsuk-label--s" }, id: "d-title", name: "d-title",
+        hint: { text: "A short, descriptive title. For example, 'Evaluation of SmartPump 300, Renal Unit'." } }) }}
+
+      {{ textarea({ name: "d-population", id: "d-population", rows: 3,
+        label: { text: "Patient population", classes: "nhsuk-label--s" } }) }}
+
+      {{ textarea({ name: "d-compared", id: "d-compared", rows: 3,
+        label: { text: "Devices compared", classes: "nhsuk-label--s" } }) }}
+
+      {{ textarea({ name: "d-funding", id: "d-funding", rows: 3,
+        label: { text: "Funding sources", classes: "nhsuk-label--s" } }) }}
+
+      <div class="nhsuk-form-group">
+        <fieldset class="nhsuk-fieldset">
+          <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--s">Was the evaluation a randomised controlled trial (RCT)?</legend>
+          <div class="nhsuk-radios" data-module="nhsuk-radios">
+            <div class="nhsuk-radios__item">
+              <input class="nhsuk-radios__input" id="d-rct-yes" name="d-rct" type="radio" value="yes">
+              <label class="nhsuk-label nhsuk-radios__label" for="d-rct-yes">Yes</label>
+            </div>
+            <div class="nhsuk-radios__item">
+              <input class="nhsuk-radios__input" id="d-rct-no" name="d-rct" type="radio" value="no">
+              <label class="nhsuk-label nhsuk-radios__label" for="d-rct-no">No</label>
+            </div>
+            <div class="nhsuk-radios__item">
+              <input class="nhsuk-radios__input" id="d-rct-unknown" name="d-rct" type="radio" value="unknown">
+              <label class="nhsuk-label nhsuk-radios__label" for="d-rct-unknown">I do not know</label>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+
+      <div class="nhsuk-form-group">
+        <fieldset class="nhsuk-fieldset">
+          <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--s">Patient Reported Outcome Measures (PROMs) included</legend>
+          <div class="nhsuk-radios" data-module="nhsuk-radios">
+            <div class="nhsuk-radios__item">
+              <input class="nhsuk-radios__input" id="d-proms-yes" name="d-proms" type="radio" value="yes">
+              <label class="nhsuk-label nhsuk-radios__label" for="d-proms-yes">Yes</label>
+            </div>
+            <div class="nhsuk-radios__item">
+              <input class="nhsuk-radios__input" id="d-proms-no" name="d-proms" type="radio" value="no">
+              <label class="nhsuk-label nhsuk-radios__label" for="d-proms-no">No</label>
+            </div>
+            <div class="nhsuk-radios__item">
+              <input class="nhsuk-radios__input" id="d-proms-unknown" name="d-proms" type="radio" value="unknown">
+              <label class="nhsuk-label nhsuk-radios__label" for="d-proms-unknown">I do not know</label>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+
+      {{ button({ text: "Continue" }) }}
+
+    </form>
+
+  </div>
+</div>
+{% endblock %}

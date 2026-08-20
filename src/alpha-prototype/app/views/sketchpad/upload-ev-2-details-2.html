@@ -1,0 +1,100 @@
+{% extends 'sketchpad/layouts/layout-signed-in.html' %}
+
+{% from "back-link/macro.njk" import backLink %}
+{% from "checkboxes/macro.njk" import checkboxes %}
+{% from "button/macro.njk" import button %}
+
+{% set pageName = "How the device was assessed" %}
+{% set dashboardHref = "/sketchpad/upload-ev-2-start" %}
+
+{% block beforeContent %}
+  {{ backLink({ href: "/sketchpad/upload-ev-2-details-1", text: "Back" }) }}
+{% endblock %}
+
+{% block content %}
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+
+    {% set afterDetails = "/sketchpad/upload-ev-2-done" %}
+    {% if data['procured-any'] == 'yes' or data['procured-any'] == 'in-progress' %}{% set afterDetails = "/sketchpad/upload-ev-2-costs" %}{% endif %}
+
+    <h1 class="nhsuk-heading-l">{{ pageName }}</h1>
+
+    <form action="{{ afterDetails }}" method="get" novalidate>
+
+      {{ checkboxes({
+        name: "d-value-domains", idPrefix: "d-vd",
+        fieldset: { legend: { text: "Assessed value domains", classes: "nhsuk-fieldset__legend--s" } },
+        hint: { html: 'Select all that apply. These are the 5 domains in the <a href="https://www.gov.uk/government/publications/value-based-procurement-for-medical-technology/value-based-procurement-national-standard-guidance-for-medical-technology">national guidance on value based procurement</a>.' },
+        items: [
+          { value: "social-value", text: "Social value" },
+          { value: "efficiency", text: "Efficiency" },
+          { value: "patient-and-staff", text: "Patient and staff" },
+          { value: "supply-chain", text: "Supply chain" },
+          { value: "purpose", text: "Purpose" }
+        ]
+      }) }}
+
+      {{ checkboxes({
+        name: "d-priorities", idPrefix: "d-pri",
+        classes: "nhsuk-checkboxes--small",
+        fieldset: { legend: { text: "NHS priorities", classes: "nhsuk-fieldset__legend--s" } },
+        hint: { text: "Select all that apply" },
+        items: [
+          { value: "analogue-to-digital", text: "Analogue to digital" },
+          { value: "workforce", text: "Workforce solutions" },
+          { value: "early-cancer-diagnosis", text: "Early diagnosis of cancer" },
+          { value: "net-zero", text: "Net zero" },
+          { value: "treatment-to-prevention", text: "Treatment to prevention" },
+          { value: "elective-recovery", text: "Elective recovery" },
+          { value: "mental-health", text: "Mental health" },
+          { value: "cyp", text: "Children and young people" },
+          { value: "hospital-to-home", text: "Hospital to home" },
+          { value: "productivity", text: "Productivity" },
+          { value: "health-inequalities", text: "Reducing health inequalities" },
+          { value: "patient-experience", text: "Patient experience" }
+        ]
+      }) }}
+
+      {{ checkboxes({
+        name: "d-pathway", idPrefix: "d-path",
+        fieldset: { legend: { text: "Pathway", classes: "nhsuk-fieldset__legend--s" } },
+        hint: { text: "Select all that apply" },
+        items: [
+          { value: "face-to-face", text: "Face-to-face" },
+          { value: "autonomous", text: "Autonomous" },
+          { value: "tele", text: "Tele" }
+        ]
+      }) }}
+
+      <div class="nhsuk-form-group">
+        <fieldset class="nhsuk-fieldset">
+          <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--s">National contract or framework</legend>
+          <div class="nhsuk-radios" data-module="nhsuk-radios">
+            <div class="nhsuk-radios__item">
+              <input class="nhsuk-radios__input" id="d-fw-yes" name="d-framework" type="radio" value="yes">
+              <label class="nhsuk-label nhsuk-radios__label" for="d-fw-yes">Yes</label>
+            </div>
+            <div class="nhsuk-radios__item">
+              <input class="nhsuk-radios__input" id="d-fw-no" name="d-framework" type="radio" value="no">
+              <label class="nhsuk-label nhsuk-radios__label" for="d-fw-no">No</label>
+            </div>
+            <div class="nhsuk-radios__item">
+              <input class="nhsuk-radios__input" id="d-fw-unknown" name="d-framework" type="radio" value="unknown">
+              <label class="nhsuk-label nhsuk-radios__label" for="d-fw-unknown">I do not know</label>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+
+      {% if afterDetails == "/sketchpad/upload-ev-2-done" %}
+        {{ button({ text: "Share document" }) }}
+      {% else %}
+        {{ button({ text: "Continue" }) }}
+      {% endif %}
+
+    </form>
+
+  </div>
+</div>
+{% endblock %}

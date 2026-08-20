@@ -1,0 +1,43 @@
+{% extends 'sketchpad/layouts/layout.html' %}
+{% from "panel/macro.njk" import panel %}
+{% from "card/macro.njk" import card %}
+{% set pageName = "Thank you" %}
+{% block content %}
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+
+    {{ panel({
+      titleText: "Thank you",
+      headingLevel: 1,
+      text: "Your trust now appears on SmartPump 300 Infusion System"
+    }) }}
+
+    <h2 class="nhsuk-heading-s nhsuk-u-margin-top-5">What you added</h2>
+    <dl class="nhsuk-summary-list">
+      <div class="nhsuk-summary-list__row">
+        <dt class="nhsuk-summary-list__key">Trust experience</dt>
+        <dd class="nhsuk-summary-list__value">Barts Health NHS Trust</dd>
+        <dd class="nhsuk-summary-list__actions"></dd>
+      </div>
+      <div class="nhsuk-summary-list__row">
+        <dt class="nhsuk-summary-list__key">Contact</dt>
+        <dd class="nhsuk-summary-list__value">Dr Tess Sawyer</dd>
+        <dd class="nhsuk-summary-list__actions"><a href="/sketchpad/experience-contact">Change<span class="nhsuk-u-visually-hidden"> contact</span></a></dd>
+      </div>
+      <div class="nhsuk-summary-list__row">
+        <dt class="nhsuk-summary-list__key">Acquisition</dt>
+        <dd class="nhsuk-summary-list__value">Not added</dd>
+        <dd class="nhsuk-summary-list__actions"><a href="/sketchpad/experience-acquisition">Add<span class="nhsuk-u-visually-hidden"> acquisition</span></a></dd>
+      </div>
+      <div class="nhsuk-summary-list__row">
+        <dt class="nhsuk-summary-list__key">Document</dt>
+        <dd class="nhsuk-summary-list__value">Not added</dd>
+        <dd class="nhsuk-summary-list__actions"><a href="/sketchpad/experience-document">Add<span class="nhsuk-u-visually-hidden"> document</span></a></dd>
+      </div>
+    </dl>
+
+    <p><a href="/sketchpad/experience-device-page">Return to the device</a></p>
+
+  </div>
+</div>
+{% endblock %}

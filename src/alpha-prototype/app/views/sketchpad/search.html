@@ -1,0 +1,46 @@
+{% extends 'sketchpad/layouts/layout-signed-in.html' %}
+
+{% set pageName = "Search and compare" %}
+
+{#
+  Search entry page for the sketchpad. Deliberately plainer than
+  current/search.html: this exists so a participant can start a real search and
+  reach the filters, not to sketch the browse-and-explore page.
+
+  The example searches are terms that actually return results in the test data,
+  so nobody starts a session on an empty results page.
+#}
+
+{% block content %}
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+
+    <h1 class="nhsuk-heading-l">Search and compare medical technologies</h1>
+
+    <p>Look up a device to find evidence from other trusts and people who will talk to you about it.</p>
+
+    <form method="get" action="/sketchpad/search-results" novalidate>
+      <div class="nhsuk-form-group">
+        <label class="nhsuk-label" for="q">
+          Search by device, category or supplier
+        </label>
+        <input class="nhsuk-input nhsuk-input--width-20" id="q" name="q" type="search">
+      </div>
+      <button class="nhsuk-button" data-module="nhsuk-button" type="submit">Search</button>
+    </form>
+
+    <h2 class="nhsuk-heading-m">Try one of these</h2>
+
+    <ul class="nhsuk-list app-tag-list">
+      <li><a class="nhsuk-tag nhsuk-tag--white" href="/sketchpad/search-results?q=hip">Hip</a></li>
+      <li><a class="nhsuk-tag nhsuk-tag--white" href="/sketchpad/search-results?q=knee">Knee</a></li>
+      <li><a class="nhsuk-tag nhsuk-tag--white" href="/sketchpad/search-results?q=heart">Heart</a></li>
+      <li><a class="nhsuk-tag nhsuk-tag--white" href="/sketchpad/search-results?q=insulin">Insulin</a></li>
+      <li><a class="nhsuk-tag nhsuk-tag--white" href="/sketchpad/search-results?q=monitor">Monitor</a></li>
+    </ul>
+
+    <p><a href="/sketchpad/search-results">Browse all devices</a></p>
+
+  </div>
+</div>
+{% endblock %}

@@ -111,6 +111,7 @@ router.post('/redirect-test', function(request, response) {
 // Version-specific routes
 router.use('/current', require('./views/current/routes'))
 router.use('/UR', require('./views/UR/routes'))
+router.use('/sketchpad', require('./views/sketchpad/routes'))
 
 
 

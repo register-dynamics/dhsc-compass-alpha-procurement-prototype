@@ -1,0 +1,48 @@
+{% extends 'sketchpad/layouts/layout-signed-in.html' %}
+
+{% from "back-link/macro.njk" import backLink %}
+{% from "button/macro.njk" import button %}
+
+{% set ordinals = ["", "first", "second", "third", "fourth", "fifth", "sixth"] %}
+{% set n = data['n'] | default(2) | int %}
+{% set stored = data['devices'] | default('') %}
+{% set addedList = stored.split('|') if stored else [] %}
+{% set chosen = data['device-choice'] if data['device-choice'] and data['device-choice'] != 'other' else data['product-picker'] %}
+{% if chosen and chosen not in addedList %}{% set addedList = addedList.concat([chosen]) %}{% endif %}
+
+{% set pageName = chosen + " added" %}
+{% set dashboardHref = "/sketchpad/upload-ev-2-start" %}
+
+{% block beforeContent %}
+  {{ backLink({ href: "/sketchpad/upload-ev-2-product", text: "Back" }) }}
+{% endblock %}
+
+{% block content %}
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+
+    <h1 class="nhsuk-heading-l">{{ pageName }}</h1>
+
+    {% if addedList.length > 1 %}
+    <h2 class="nhsuk-heading-s">Devices you have added</h2>
+    <ol class="nhsuk-list nhsuk-list--number">
+      {% for device in addedList %}<li>{{ device }}</li>{% endfor %}
+    </ol>
+    {% endif %}
+
+    <form action="/sketchpad/upload-ev-2-product" method="get" novalidate>
+      <input type="hidden" name="devices" value="{{ addedList.join('|') }}">
+      <input type="hidden" name="n" value="{{ n }}">
+      <input type="hidden" name="device-choice" value="">
+      <input type="hidden" name="product-picker" value="">
+
+      {% if n < ordinals.length and ordinals[n] %}
+        {{ button({ text: "Add the " + ordinals[n] + " device" }) }}
+      {% else %}
+        {{ button({ text: "Add the next device" }) }}
+      {% endif %}
+    </form>
+
+  </div>
+</div>
+{% endblock %}

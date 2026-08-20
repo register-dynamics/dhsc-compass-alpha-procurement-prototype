@@ -1,0 +1,300 @@
+{% extends 'layout.html' %}
+
+{% from "back-link/macro.njk" import backLink %}
+{% from "radios/macro.njk" import radios %}
+{% from "checkboxes/macro.njk" import checkboxes %}
+{% from "textarea/macro.njk" import textarea %}
+{% from "summary-list/macro.njk" import summaryList %}
+{% from "input/macro.njk" import input %}
+{% from "button/macro.njk" import button %}
+
+{% set pageName = "Upload an evaluation: new questions" %}
+
+{% block beforeContent %}
+  {{ backLink({
+    href: "/sketchpad",
+    text: "Back"
+  }) }}
+{% endblock %}
+
+{% block content %}
+  <div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+
+      <h1 class="nhsuk-heading-l">{{ pageName }}</h1>
+
+
+      <form action="#" method="post" novalidate>
+
+        <h2 class="nhsuk-heading-m nhsuk-u-margin-top-6">Device category</h2>
+
+        {{ summaryList({
+          rows: [
+            {
+              key: { text: "Category" },
+              value: { text: "Hydrotherapy bath/tank" },
+              actions: {
+                items: [
+                  {
+                    href: "#",
+                    text: "Change",
+                    visuallyHiddenText: "device"
+                  }
+                ]
+              }
+            }
+          ]
+        }) }}
+
+        <h2 class="nhsuk-heading-m nhsuk-u-margin-top-6">About the evaluation</h2>
+
+        {{ input({
+          label: {
+            text: "Title (optional)",
+            classes: "nhsuk-label--s"
+          },
+          id: "eval-title",
+          name: "eval-title",
+          hint: {
+            text: "A short, descriptive title. For example, 'Evaluation of SmartPump 300 – Renal Unit'."
+          }
+        }) }}
+
+        {{ textarea({
+          name: "patient-population",
+          id: "patient-population",
+          label: {
+            text: "Patient population (optional)",
+            classes: "nhsuk-label--s"
+          },
+          rows: 3
+        }) }}
+
+        {{ textarea({
+          name: "products-compared",
+          id: "products-compared",
+          label: {
+            text: "Devices compared (optional)",
+            classes: "nhsuk-label--s"
+          },
+          rows: 3
+        }) }}
+
+        {{ radios({
+          name: "rct",
+          idPrefix: "rct",
+          fieldset: {
+            legend: {
+              text: "Was the evaluation a randomised controlled trial (RCT)? (optional)",
+              classes: "nhsuk-fieldset__legend--s"
+            }
+          },
+          items: [
+            { value: "yes", text: "Yes" },
+            { value: "no", text: "No" }
+          ]
+        }) }}
+
+        {{ textarea({
+          name: "funding-sources",
+          id: "funding-sources",
+          label: {
+            text: "Funding sources (optional)",
+            classes: "nhsuk-label--s"
+          },
+          rows: 3
+        }) }}
+
+        {{ radios({
+          name: "proms",
+          idPrefix: "proms",
+          fieldset: {
+            legend: {
+              text: "Patient Reported Outcome Measures (PROMs) included (optional)",
+              classes: "nhsuk-fieldset__legend--s"
+            }
+          },
+          items: [
+            { value: "yes", text: "Yes" },
+            { value: "no", text: "No" }
+          ]
+        }) }}
+
+        <h2 class="nhsuk-heading-m nhsuk-u-margin-top-6">How the device was assessed</h2>
+
+        {{ checkboxes({
+          name: "value-domains",
+          idPrefix: "value-domains",
+          fieldset: {
+            legend: {
+              text: "Assessed value domains (optional)",
+              classes: "nhsuk-fieldset__legend--s"
+            }
+          },
+          hint: {
+            html: 'Select all that apply. These are the 5 domains in the
+              <a href="https://www.gov.uk/government/publications/value-based-procurement-for-medical-technology/value-based-procurement-national-standard-guidance-for-medical-technology">national guidance on value based procurement</a>.'
+          },
+          items: [
+            { value: "social-value", text: "Social value" },
+            { value: "efficiency", text: "Efficiency" },
+            { value: "patient-and-staff", text: "Patient and staff" },
+            { value: "supply-chain", text: "Supply chain" },
+            { value: "purpose", text: "Purpose" }
+          ]
+        }) }}
+
+        {{ checkboxes({
+          name: "nhs-priorities",
+          idPrefix: "nhs-priorities",
+          fieldset: {
+            legend: {
+              text: "NHS priorities (optional)",
+              classes: "nhsuk-fieldset__legend--s"
+            }
+          },
+          hint: {
+            text: "Select all that apply"
+          },
+          classes: "nhsuk-checkboxes--small",
+          items: [
+            { value: "analogue-to-digital", text: "Analogue to digital" },
+            { value: "workforce", text: "Workforce solutions" },
+            { value: "early-cancer-diagnosis", text: "Early diagnosis of cancer" },
+            { value: "net-zero", text: "Net zero" },
+            { value: "treatment-to-prevention", text: "Treatment to prevention" },
+            { value: "elective-recovery", text: "Elective recovery" },
+            { value: "mental-health", text: "Mental health" },
+            { value: "cyp", text: "Children and young people" },
+            { value: "hospital-to-home", text: "Hospital to home" },
+            { value: "productivity", text: "Productivity" },
+            { value: "health-inequalities", text: "Reducing health inequalities" },
+            { value: "patient-experience", text: "Patient experience" }
+          ]
+        }) }}
+
+        {{ checkboxes({
+          name: "pathway",
+          idPrefix: "pathway",
+          fieldset: {
+            legend: {
+              text: "Pathway (optional)",
+              classes: "nhsuk-fieldset__legend--s"
+            }
+          },
+          hint: {
+            text: "Select all that apply"
+          },
+          items: [
+            { value: "face-to-face", text: "Face-to-face" },
+            { value: "autonomous", text: "Autonomous" },
+            { value: "tele", text: "Tele" }
+          ]
+        }) }}
+
+        {{ radios({
+          name: "framework",
+          idPrefix: "framework",
+          fieldset: {
+            legend: {
+              text: "National contract or framework (optional)",
+              classes: "nhsuk-fieldset__legend--s"
+            }
+          },
+          items: [
+            { value: "yes", text: "Yes" },
+            { value: "no", text: "No" }
+          ]
+        }) }}
+
+        <h2 class="nhsuk-heading-m nhsuk-u-margin-top-6">
+          Carried over from the business case flow
+          <strong class="nhsuk-tag nhsuk-tag--grey nhsuk-u-margin-left-3">Proposed</strong>
+        </h2>
+
+        {{ radios({
+          name: "eval-outcome",
+          idPrefix: "eval-outcome",
+          fieldset: {
+            legend: {
+              text: "What was the outcome of this evaluation?",
+              classes: "nhsuk-fieldset__legend--s"
+            }
+          },
+          items: [
+            { value: "procured", text: "We procured this device" },
+            { value: "in-progress", text: "We chose it, but procurement is still going on" },
+            { value: "not-procured", text: "We did not procure this device" }
+          ]
+        }) }}
+
+        {{ checkboxes({
+          name: "eval-contact-topics",
+          idPrefix: "eval-contact-topics",
+          fieldset: {
+            legend: {
+              text: "What are you willing to discuss? (optional)",
+              classes: "nhsuk-fieldset__legend--s"
+            }
+          },
+          hint: {
+            text: "Select all topics you're happy to be contacted about"
+          },
+          items: [
+            {
+              value: "clinical-outcomes",
+              text: "Clinical outcomes and effectiveness",
+              hint: { text: "Patient outcomes, safety data, clinical performance" }
+            },
+            {
+              value: "evaluation-methodology",
+              text: "Evaluation methodology",
+              hint: { text: "How you conducted the evaluation, criteria used, lessons learned" }
+            },
+            {
+              value: "implementation",
+              text: "Implementation and training",
+              hint: { text: "Rollout experience, staff training, change management" }
+            },
+            {
+              value: "integration",
+              text: "System integration",
+              hint: { text: "IT integration, interoperability, data migration" }
+            },
+            {
+              value: "procurement-process",
+              text: "Procurement process",
+              hint: { text: "Tender approach, contract terms, supplier engagement" }
+            },
+            {
+              value: "costs",
+              text: "Costs and value",
+              hint: { text: "Pricing, total cost of ownership, return on investment" }
+            },
+            {
+              value: "supplier-experience",
+              text: "Supplier experience",
+              hint: { text: "Working relationship, support quality, responsiveness" }
+            },
+            {
+              value: "other",
+              text: "Something else",
+              conditional: {
+                html: '<div class="nhsuk-form-group">
+                    <label class="nhsuk-label" for="eval-contact-topics-other">What else are you happy to discuss?</label>
+                    <textarea class="nhsuk-textarea" id="eval-contact-topics-other" name="eval-contact-topics-other" rows="2"></textarea>
+                  </div>'
+              }
+            }
+          ]
+        }) }}
+
+        {{ button({
+          text: "Continue"
+        }) }}
+
+      </form>
+
+    </div>
+  </div>
+{% endblock %}

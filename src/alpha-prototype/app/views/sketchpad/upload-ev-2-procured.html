@@ -1,0 +1,49 @@
+{% extends 'sketchpad/layouts/layout-signed-in.html' %}
+
+{% from "back-link/macro.njk" import backLink %}
+{% from "button/macro.njk" import button %}
+
+{% set pageName = "Did your trust procure any of the devices in this document?" %}
+{% set dashboardHref = "/sketchpad/upload-ev-2-start" %}
+
+{% block beforeContent %}
+  {{ backLink({ href: "/sketchpad/upload-ev-2", text: "Back" }) }}
+{% endblock %}
+
+{% block content %}
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+
+    <form action="/sketchpad/upload-ev-2-how-many" method="get" novalidate>
+      <div class="nhsuk-form-group">
+        <fieldset class="nhsuk-fieldset">
+          <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--l">
+            <h1 class="nhsuk-fieldset__heading">{{ pageName }}</h1>
+          </legend>
+          <div class="nhsuk-hint">You can change any of your answers later.</div>
+          <div class="nhsuk-radios" data-module="nhsuk-radios">
+            <div class="nhsuk-radios__item">
+              <input class="nhsuk-radios__input" id="pa-yes" name="procured-any" type="radio" value="yes">
+              <label class="nhsuk-label nhsuk-radios__label" for="pa-yes">Yes</label>
+            </div>
+            <div class="nhsuk-radios__item">
+              <input class="nhsuk-radios__input" id="pa-no" name="procured-any" type="radio" value="no">
+              <label class="nhsuk-label nhsuk-radios__label" for="pa-no">No</label>
+            </div>
+            <div class="nhsuk-radios__item">
+              <input class="nhsuk-radios__input" id="pa-progress" name="procured-any" type="radio" value="in-progress">
+              <label class="nhsuk-label nhsuk-radios__label" for="pa-progress">Procurement is still going on</label>
+            </div>
+            <div class="nhsuk-radios__item">
+              <input class="nhsuk-radios__input" id="pa-unsure" name="procured-any" type="radio" value="not-sure">
+              <label class="nhsuk-label nhsuk-radios__label" for="pa-unsure">I am not sure</label>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+      {{ button({ text: "Continue" }) }}
+    </form>
+
+  </div>
+</div>
+{% endblock %}

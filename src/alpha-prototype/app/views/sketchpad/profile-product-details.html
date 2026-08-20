@@ -1,0 +1,70 @@
+{% extends 'sketchpad/layouts/layout.html' %}
+
+{% from "back-link/macro.njk" import backLink %}
+{% from "task-list/macro.njk" import taskList %}
+
+{% set pageName = "SmartPump 300 Infusion System" %}
+
+{% block beforeContent %}
+  {{ backLink({ href: "/sketchpad/profile-products", text: "Back to devices" }) }}
+{% endblock %}
+
+{% block content %}
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+
+    <span class="nhsuk-caption-l">Devices in your trust</span>
+    <h1 class="nhsuk-heading-l">{{ pageName }}</h1>
+
+    <p>You have added 2 of 8 details. You can add the rest in any order, and come back later.</p>
+
+    {{ taskList({
+      items: [
+        {
+          title: { text: "Outcome" },
+          href: "/sketchpad/upload-ev-2-procured",
+          status: { tag: { text: "Completed", classes: "nhsuk-tag--green" } }
+        },
+        {
+          title: { text: "Contact for queries" },
+          href: "/sketchpad/upload-ev-2-contact",
+          status: { tag: { text: "Completed", classes: "nhsuk-tag--green" } }
+        },
+        {
+          title: { text: "Patient population" },
+          href: "/sketchpad/upload-ev-2-details-1",
+          status: { tag: { text: "Incomplete", classes: "nhsuk-tag--blue" } }
+        },
+        {
+          title: { text: "Devices compared" },
+          href: "/sketchpad/upload-ev-2-details-1",
+          status: { tag: { text: "Incomplete", classes: "nhsuk-tag--blue" } }
+        },
+        {
+          title: { text: "Funding sources" },
+          href: "/sketchpad/upload-ev-2-details-1",
+          status: { tag: { text: "Incomplete", classes: "nhsuk-tag--blue" } }
+        },
+        {
+          title: { text: "How the device was assessed" },
+          hint: { text: "Value domains, NHS priorities, pathway and framework" },
+          href: "/sketchpad/upload-ev-2-details-2",
+          status: { tag: { text: "Incomplete", classes: "nhsuk-tag--blue" } }
+        },
+        {
+          title: { text: "Costs" },
+          href: "/sketchpad/upload-ev-2-costs",
+          status: { tag: { text: "Incomplete", classes: "nhsuk-tag--blue" } }
+        },
+        {
+          title: { text: "Documents" },
+          hint: { text: "1 document shared" },
+          href: "#",
+          status: { tag: { text: "Completed", classes: "nhsuk-tag--green" } }
+        }
+      ]
+    }) }}
+
+  </div>
+</div>
+{% endblock %}

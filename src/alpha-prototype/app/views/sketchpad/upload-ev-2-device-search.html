@@ -1,0 +1,72 @@
+{% extends 'sketchpad/layouts/layout-signed-in.html' %}
+
+{% from "back-link/macro.njk" import backLink %}
+{% from "button/macro.njk" import button %}
+{% from "select/macro.njk" import select %}
+
+{% set several = data['how-many'] == 'several' %}
+{% set n = data['n'] | default(1) | int %}
+{% set pageName = "Search for the device" %}
+{% set dashboardHref = "/sketchpad/upload-ev-2-start" %}
+
+{% block head %}
+  {{ super() }}
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/accessible-autocomplete@2.0.4/dist/accessible-autocomplete.min.css">
+{% endblock %}
+
+{% block beforeContent %}
+  {{ backLink({ href: "/sketchpad/upload-ev-2-product", text: "Back" }) }}
+{% endblock %}
+
+{% block content %}
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+
+    {% set stored = data['devices'] | default('') %}
+    {% set addedList = stored.split('|') if stored else [] %}
+
+    {% set onwards = "/sketchpad/upload-ev-2-contact" %}
+    {% set nextPage = onwards %}
+    {% if several %}
+      {% if n < 3 %}
+        {% set nextPage = "/sketchpad/upload-ev-2-device-added" %}
+      {% else %}
+        {% set nextPage = "/sketchpad/upload-ev-2-another" %}
+      {% endif %}
+    {% endif %}
+
+    <h1 class="nhsuk-heading-l">{{ pageName }}</h1>
+
+    <form action="{{ nextPage }}" method="get" novalidate>
+
+      <input type="hidden" name="devices" value="{{ addedList.join('|') }}">
+      <input type="hidden" name="n" value="{{ n }}">
+      <input type="hidden" name="device-choice" value="other">
+
+      {% set productLabelText = "Device name" %}
+      {% set productHint = "Search by device name or model number" %}
+      {% include "includes/products.html" %}
+
+      {% if several %}
+        {{ button({ text: "Add device" }) }}
+      {% else %}
+        {{ button({ text: "Continue" }) }}
+      {% endif %}
+
+    </form>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block pageScripts %}
+<script src="https://cdn.jsdelivr.net/npm/accessible-autocomplete@2.0.4/dist/accessible-autocomplete.min.js"></script>
+<script type="text/javascript">
+  if (document.querySelector('#product-picker')) {
+    accessibleAutocomplete.enhanceSelectElement({
+      defaultValue: '',
+      selectElement: document.querySelector('#product-picker')
+    })
+  }
+</script>
+{% endblock %}

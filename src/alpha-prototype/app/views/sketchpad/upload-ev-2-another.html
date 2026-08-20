@@ -1,0 +1,76 @@
+{% extends 'sketchpad/layouts/layout-signed-in.html' %}
+
+{% from "back-link/macro.njk" import backLink %}
+{% from "button/macro.njk" import button %}
+
+{% set pageName = "Do you need to add another device?" %}
+{% set dashboardHref = "/sketchpad/upload-ev-2-start" %}
+
+{% block beforeContent %}
+  {{ backLink({ href: "/sketchpad/upload-ev-2-product", text: "Back" }) }}
+{% endblock %}
+
+{% block content %}
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+
+    {% set nextN = data['n'] | default(2) | int %}
+    {% set onwards = "/sketchpad/upload-ev-2-contact" %}
+    {% if data['procured-any'] == 'yes' %}{% set onwards = "/sketchpad/upload-ev-2-which-procured" %}{% endif %}
+
+    {% set stored = data['devices'] | default('') %}
+    {% set addedList = stored.split('|') if stored else [] %}
+    {% set chosen = data['device-choice'] if data['device-choice'] and data['device-choice'] != 'other' else data['product-picker'] %}
+    {% if chosen and chosen not in addedList %}
+      {% set addedList = addedList.concat([chosen]) %}
+    {% endif %}
+
+    <form action="" method="get" novalidate id="branch-form">
+      <div class="nhsuk-form-group">
+        <fieldset class="nhsuk-fieldset"{% if addedList.length %} aria-describedby="added-hint"{% endif %}>
+          <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--l">
+            <h1 class="nhsuk-fieldset__heading">{{ pageName }}</h1>
+          </legend>
+
+          {% if addedList.length %}
+          <div class="nhsuk-hint" id="added-hint">
+            Devices you have added:
+            <ol class="nhsuk-list nhsuk-list--number nhsuk-u-margin-bottom-0">
+              {% for device in addedList %}<li>{{ device }}</li>{% endfor %}
+            </ol>
+          </div>
+          {% endif %}
+
+          <div class="nhsuk-radios" data-module="nhsuk-radios">
+            <div class="nhsuk-radios__item">
+              <input class="nhsuk-radios__input" id="another-yes" name="add-another" type="radio" value="yes" data-next="/sketchpad/upload-ev-2-product?n={{ nextN }}&amp;devices={{ addedList.join('|') | urlencode }}">
+              <label class="nhsuk-label nhsuk-radios__label" for="another-yes">Yes, add another device</label>
+            </div>
+            <div class="nhsuk-radios__item">
+              <input class="nhsuk-radios__input" id="another-no" name="add-another" type="radio" value="no" data-next="{{ onwards }}">
+              <label class="nhsuk-label nhsuk-radios__label" for="another-no">No, I have added all {{ addedList.length }} devices</label>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+      {{ button({ text: "Continue" }) }}
+    </form>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block pageScripts %}
+<script>
+  // Prototype only. The real service branches in routes.js, see the kit's branching guide.
+  document.addEventListener('DOMContentLoaded', function () {
+    var form = document.querySelector('#branch-form')
+    if (!form) return
+    form.addEventListener('submit', function (event) {
+      event.preventDefault()
+      var chosen = form.querySelector('input[type="radio"]:checked')
+      if (chosen && chosen.dataset.next) window.location.href = chosen.dataset.next
+    })
+  })
+</script>
+{% endblock %}
