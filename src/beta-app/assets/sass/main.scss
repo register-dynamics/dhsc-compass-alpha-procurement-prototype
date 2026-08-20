@@ -4,6 +4,7 @@
 // Import your custom CSS/Sass styles below.
 @use "components/hero" as *;
 @use "components/search-filter" as *;
+@use "components/login-button" as *;
 
 // TODO: Do we need this?
 .nhsuk-width-container {

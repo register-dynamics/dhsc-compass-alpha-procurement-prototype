@@ -4,6 +4,7 @@ import nunjucks from "nunjucks";
 import config from "./config.js";
 import indexRoutes from "./routes/index.routes.js";
 import searchRoutes from "./routes/search.routes.js";
+import sessionRoutes from "./routes/session.routes.js";
 
 const app = express();
 
@@ -41,5 +42,6 @@ app.use(
 // Register routes
 app.use("/", indexRoutes);
 app.use("/", searchRoutes);
+app.use("/", sessionRoutes);
 
 export default app;
