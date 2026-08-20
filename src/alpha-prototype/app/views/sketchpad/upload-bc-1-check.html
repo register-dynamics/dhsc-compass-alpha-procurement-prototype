@@ -1,0 +1,255 @@
+{% extends 'sketchpad/layouts/layout-signed-in.html' %}
+
+{% from "summary-list/macro.njk" import summaryList %}
+{% from "button/macro.njk" import button %}
+{% from "back-link/macro.njk" import backLink %}
+
+{% set pageName = "Check your answers" %}
+{% set dashboardHref = "/sketchpad/upload-bc-1-start" %}
+
+{#
+  Check your answers for the full-size business case upload.
+
+  Follows Patterns/check-answers.md, and mirrors the sections of
+  upload-bc-1.html.
+  Three differences from the equivalent page in current/, each from
+  Patterns/check-answers.md:
+    - the heading says what happens next, so the submit button is not missed
+    - the button names the action it performs
+    - optional questions that were skipped read "Not provided" rather than
+      example content, so nobody is shown an answer they did not give Answers show what the person typed where the kit
+  captured it, and fall back to example content so the page still reads properly
+  if someone lands here without filling the form in.
+#}
+
+{#
+  Shows an answer. `labels` turns a stored value like "clinical-need" back into
+  the wording the person actually saw, so the check page reads the same as the
+  form did. Falls back to example content when the question was not answered.
+#}
+{% macro answer(value, fallback, labels) %}{% if not value %}{{ fallback }}{% elif value is string %}{{ labels[value] if labels and labels[value] else value }}{% else %}{% for v in value %}{{ labels[v] if labels and labels[v] else v }}{{ ", " if not loop.last }}{% endfor %}{% endif %}{% endmacro %}
+
+{# The options each question offered, taken from the form itself. #}
+{% set LABELS = {
+  "bc-approved": {
+    "yes": "Yes, it was approved and procurement proceeded",
+    "no": "No, it was rejected or not taken forward",
+    "pending": "Pending, it's awaiting decision"
+  },
+  "bc-contact-role-1": {
+    "procurement-lead": "Procurement lead",
+    "finance-lead": "Finance lead",
+    "clinical-lead": "Clinical lead",
+    "other": "Other"
+  },
+  "bc-contact-topics": {
+    "costs": "Costs and savings",
+    "approval": "Approval process",
+    "clinical-need": "Clinical need and rationale",
+    "options-appraisal": "Options appraisal",
+    "implementation": "Implementation and training",
+    "other": "Something else"
+  },
+  "bc-department": {
+    "procurement": "Procurement",
+    "finance": "Finance",
+    "clinical-engineering": "Clinical Engineering",
+    "critical-care": "Critical Care / ICU",
+    "other": "Other"
+  },
+  "bc-product-1": {
+    "smartpump": "SmartPump Infusion Device Pro",
+    "medflow": "MedFlow Infusion System 3000",
+    "vitalguard": "VitalGuard Patient Monitor X1",
+    "other": "Other - I'll enter the name"
+  },
+  "bc-product-count": {
+    "1": "1 device",
+    "2": "2 devices",
+    "3": "3 devices",
+    "more": "More than 3"
+  },
+  "bc-type": {
+    "clinical-need": "Clinical need and rationale",
+    "cost-benefit": "Financial analysis and cost-benefit",
+    "options-appraisal": "Options appraisal",
+    "implementation": "Implementation plan",
+    "risk": "Risk assessment",
+    "governance": "Governance and approvals"
+  },
+  "cost-basis": {
+    "annual": "Annual cost",
+    "whole-life": "Whole life cost",
+    "per-unit": "Cost per unit",
+    "patient-level": "Cost per patient"
+  }
+} %}
+
+{% set backHref = "/sketchpad/upload-bc-1" %}
+
+{# Approval carries a tag colour, so it reads at a glance. #}
+{% set approved = data['bc-approved'] or "yes" %}
+{% set approvedHtml %}
+  {%- if approved == "yes" -%}
+    <strong class="nhsuk-tag nhsuk-tag--green">{{ LABELS['bc-approved']['yes'] }}</strong>
+  {%- elif approved == "pending" -%}
+    <strong class="nhsuk-tag nhsuk-tag--blue">{{ LABELS['bc-approved']['pending'] }}</strong>
+  {%- else -%}
+    <strong class="nhsuk-tag nhsuk-tag--yellow">{{ LABELS['bc-approved']['no'] }}</strong>
+  {%- endif -%}
+{% endset %}
+
+{% block beforeContent %}
+  {{ backLink({
+    href: backHref,
+    text: "Back"
+  }) }}
+{% endblock %}
+
+{% block content %}
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+
+    <h1 class="nhsuk-heading-l">Check your answers before sharing your business case</h1>
+
+    <p>This is what other NHS trusts and the device supplier will see. Review it before you submit.</p>
+
+    <h2 class="nhsuk-heading-m">Your document</h2>
+    {{ summaryList({
+      rows: [
+        {
+          key: { text: "Uploaded file" },
+          value: { text: "infusion-pump-business-case-2024.pdf" },
+          actions: { items: [{ href: backHref, text: "Change", visuallyHiddenText: "uploaded file" }] }
+        },
+        {
+          key: { text: "Link to your document" },
+          value: { html: answer(data['bc-document-link'], "Not provided") },
+          actions: { items: [{ href: backHref, text: "Change", visuallyHiddenText: "link to your document" }] }
+        },
+        {
+          key: { text: "Devices covered" },
+          value: { html: answer(data['bc-product-count'], "Not provided", LABELS['bc-product-count']) },
+          actions: { items: [{ href: backHref, text: "Change", visuallyHiddenText: "number of devices this business case covers" }] }
+        },
+        {
+          key: { text: "Device" },
+          value: { html: answer(data['bc-product-1'], "Not provided", LABELS['bc-product-1']) },
+          actions: { items: [{ href: backHref, text: "Change", visuallyHiddenText: "device this business case relates to" }] }
+        }
+      ]
+    }) }}
+
+    <h2 class="nhsuk-heading-m">About this business case</h2>
+    {{ summaryList({
+      rows: [
+        {
+          key: { text: "Title" },
+          value: { html: answer(data['bc-title'], "Not provided") },
+          actions: { items: [{ href: backHref, text: "Change", visuallyHiddenText: "title" }] }
+        },
+        {
+          key: { text: "Date of business case" },
+          value: { html: answer(data['bc-date'], "Not provided") },
+          actions: { items: [{ href: backHref, text: "Change", visuallyHiddenText: "date of business case" }] }
+        },
+        {
+          key: { text: "What it covers" },
+          value: { html: answer(data['bc-type'], "Not provided", LABELS['bc-type']) },
+          actions: { items: [{ href: backHref, text: "Change", visuallyHiddenText: "what this business case covers" }] }
+        },
+        {
+          key: { text: "Kind of costs shown" },
+          value: { html: answer(data['cost-basis'], "Not provided", LABELS['cost-basis']) },
+          actions: { items: [{ href: backHref, text: "Change", visuallyHiddenText: "kind of costs shown" }] }
+        },
+        {
+          key: { text: "Approved" },
+          value: { html: approvedHtml },
+          actions: { items: [{ href: backHref, text: "Change", visuallyHiddenText: "whether the business case was approved" }] }
+        },
+        {
+          key: { text: "Brief summary" },
+          value: { html: answer(data['bc-summary'], "Not provided") },
+          actions: { items: [{ href: backHref, text: "Change", visuallyHiddenText: "brief summary" }] }
+        }
+      ]
+    }) }}
+
+    <h2 class="nhsuk-heading-m">About your trust</h2>
+    {{ summaryList({
+      rows: [
+        {
+          key: { text: "Your trust" },
+          value: { html: answer(data['bc-trust'], "Not provided") },
+          actions: { items: [{ href: backHref, text: "Change", visuallyHiddenText: "your trust" }] }
+        },
+        {
+          key: { text: "Department" },
+          value: { html: answer(data['bc-department'], "Not provided", LABELS['bc-department']) },
+          actions: { items: [{ href: backHref, text: "Change", visuallyHiddenText: "department" }] }
+        }
+      ]
+    }) }}
+
+    <h2 class="nhsuk-heading-m">Contact for queries</h2>
+
+    <h3 class="nhsuk-heading-s">Contact 1</h3>
+    {{ summaryList({
+      rows: [
+        {
+          key: { text: "Contact name" },
+          value: { html: answer(data['bc-contact-name-1'], "Not provided") },
+          actions: { items: [{ href: backHref, text: "Change", visuallyHiddenText: "contact 1 name" }] }
+        },
+        {
+          key: { text: "Role" },
+          value: { html: answer(data['bc-contact-role-1'], "Not provided", LABELS['bc-contact-role-1']) },
+          actions: { items: [{ href: backHref, text: "Change", visuallyHiddenText: "contact 1 role" }] }
+        },
+        {
+          key: { text: "Email address" },
+          value: { html: answer(data['bc-contact-email-1'], "Not provided") },
+          actions: { items: [{ href: backHref, text: "Change", visuallyHiddenText: "contact 1 email address" }] }
+        },
+        {
+          key: { text: "UK phone number" },
+          value: { html: answer(data['bc-contact-phone-1'], "Not provided") },
+          actions: { items: [{ href: backHref, text: "Change", visuallyHiddenText: "contact 1 phone number" }] }
+        },
+        {
+          key: { text: "Happy to be contacted about" },
+          value: { html: answer(data['bc-contact-topics'], "Not provided", LABELS['bc-contact-topics']) },
+          actions: { items: [{ href: backHref, text: "Change", visuallyHiddenText: "what contact 1 is happy to discuss" }] }
+        }
+      ]
+    }) }}
+
+    <div class="nhsuk-warning-callout nhsuk-u-margin-top-6">
+      <h3 class="nhsuk-warning-callout__label">
+        <span role="text">
+          <span class="nhsuk-u-visually-hidden">Important: </span>
+          Declaration
+        </span>
+      </h3>
+      <p>I confirm that:</p>
+      <ul class="nhsuk-list nhsuk-list--bullet">
+        <li>I'm providing up-to-date and accurate information.</li>
+        <li>I'm authorised to upload these documents on behalf of my organisation.</li>
+        <li>I'm not sharing anything that is confidential, commercially sensitive or will infringe on intellectual property rights.</li>
+      </ul>
+      <p>I understand that:</p>
+      <ul class="nhsuk-list nhsuk-list--bullet">
+        <li>I'm not offering any warranty or commitments around what I'm sharing.</li>
+        <li>I'm not responsible for the decisions made using my information.</li>
+        <li>I can remove information later if I change my mind.</li>
+      </ul>
+    </div>
+
+    <form action="upload-bc-1-done" method="post">
+      {{ button({ text: "Confirm and share" }) }}
+    </form>
+
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends 'sketchpad/layouts/layout-signed-in.html' %}
+
+{% from "back-link/macro.njk" import backLink %}
+{% from "checkboxes/macro.njk" import checkboxes %}
+{% from "button/macro.njk" import button %}
+
+{% set pageName = "Which of these did your trust procure?" %}
+{% set dashboardHref = "/sketchpad/upload-ev-2-start" %}
+
+{% block beforeContent %}
+  {{ backLink({ href: "/sketchpad/upload-ev-2-another", text: "Back" }) }}
+{% endblock %}
+
+{% block content %}
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+
+    <form action="/sketchpad/upload-ev-2-contact" method="get" novalidate>
+
+      {{ checkboxes({
+        name: "which-procured",
+        idPrefix: "wp",
+        fieldset: {
+          legend: {
+            text: pageName,
+            classes: "nhsuk-fieldset__legend--l",
+            isPageHeading: true
+          }
+        },
+        hint: { text: "Anything you do not select is recorded as not procured." },
+        items: [
+          { value: "smartpump", text: "SmartPump 300 Infusion System" },
+          { value: "medflow", text: "MedFlow Infusion System 3000" }
+        ]
+      }) }}
+
+      {{ button({ text: "Continue" }) }}
+
+      <p><a href="/sketchpad/upload-ev-2-contact">I will add this later</a></p>
+
+    </form>
+
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends 'sketchpad/layouts/layout.html' %}
+{% from "back-link/macro.njk" import backLink %}
+{% from "button/macro.njk" import button %}
+{% set pageName = "Do you have a document you can share?" %}
+{% block beforeContent %}
+  {{ backLink({ href: "/sketchpad/experience-acquisition", text: "Back" }) }}
+{% endblock %}
+{% block content %}
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+    <span class="nhsuk-caption-l">3 of 3</span>
+    <h1 class="nhsuk-heading-l">{{ pageName }}</h1>
+    <form action="/sketchpad/experience-done" method="get" novalidate>
+      <div class="nhsuk-form-group">
+        <label class="nhsuk-label nhsuk-label--s" for="exp-file">Upload a document</label>
+        <div class="nhsuk-hint" id="exp-file-hint">
+          An evaluation, business case, case study or evaluation criteria. Word, Excel or PDF.
+        </div>
+        <input class="nhsuk-input" id="exp-file" name="exp-file" type="file" accept=".pdf,.doc,.docx,.xls,.xlsx" aria-describedby="exp-file-hint">
+      </div>
+      {{ button({ text: "Continue" }) }}
+      <p><a href="/sketchpad/experience-done">Skip this step</a></p>
+    </form>
+  </div>
+</div>
+{% endblock %}

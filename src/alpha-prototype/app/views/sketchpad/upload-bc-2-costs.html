@@ -1,0 +1,54 @@
+{% extends 'sketchpad/layouts/layout-signed-in.html' %}
+{% from "back-link/macro.njk" import backLink %}
+{% from "button/macro.njk" import button %}
+{% set pageName = "What kind of costs does this business case show?" %}
+{% set dashboardHref = "/sketchpad/upload-bc-2-start" %}
+{% block beforeContent %}
+  {{ backLink({ href: "/sketchpad/upload-bc-2-details-1", text: "Back" }) }}
+{% endblock %}
+{% block content %}
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+    <form action="/sketchpad/upload-bc-2-done" method="get" novalidate>
+      <div class="nhsuk-form-group">
+        <fieldset class="nhsuk-fieldset" aria-describedby="bc-costs-hint">
+          <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--l">
+            <h1 class="nhsuk-fieldset__heading">{{ pageName }}</h1>
+          </legend>
+          <div class="nhsuk-hint" id="bc-costs-hint">
+            Select all that apply. Other trusts can only compare costs measured the same way.
+          </div>
+          <div class="nhsuk-checkboxes" data-module="nhsuk-checkboxes">
+            <div class="nhsuk-checkboxes__item">
+              <input class="nhsuk-checkboxes__input" id="bc-cost-1" name="bc-cost-basis" type="checkbox" value="annual">
+              <label class="nhsuk-label nhsuk-checkboxes__label" for="bc-cost-1">Annual cost</label>
+              <div class="nhsuk-hint nhsuk-checkboxes__hint">What it costs to run for a year</div>
+            </div>
+            <div class="nhsuk-checkboxes__item">
+              <input class="nhsuk-checkboxes__input" id="bc-cost-2" name="bc-cost-basis" type="checkbox" value="whole-life">
+              <label class="nhsuk-label nhsuk-checkboxes__label" for="bc-cost-2">Whole life cost</label>
+              <div class="nhsuk-hint nhsuk-checkboxes__hint">Total cost across the lifetime of the device</div>
+            </div>
+            <div class="nhsuk-checkboxes__item">
+              <input class="nhsuk-checkboxes__input" id="bc-cost-3" name="bc-cost-basis" type="checkbox" value="per-unit">
+              <label class="nhsuk-label nhsuk-checkboxes__label" for="bc-cost-3">Cost per unit</label>
+              <div class="nhsuk-hint nhsuk-checkboxes__hint">What one item or device costs</div>
+            </div>
+            <div class="nhsuk-checkboxes__item">
+              <input class="nhsuk-checkboxes__input" id="bc-cost-4" name="bc-cost-basis" type="checkbox" value="patient-level">
+              <label class="nhsuk-label nhsuk-checkboxes__label" for="bc-cost-4">Cost per patient</label>
+              <div class="nhsuk-hint nhsuk-checkboxes__hint">What it costs for each patient treated</div>
+            </div>
+            <div class="nhsuk-checkboxes__item">
+              <input class="nhsuk-checkboxes__input" id="bc-cost-5" name="bc-cost-basis" type="checkbox" value="none">
+              <label class="nhsuk-label nhsuk-checkboxes__label" for="bc-cost-5">The business case does not show costs</label>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+      {{ button({ text: "Share business case" }) }}
+      <p><a href="/sketchpad/upload-bc-2-done">I will add this later</a></p>
+    </form>
+  </div>
+</div>
+{% endblock %}

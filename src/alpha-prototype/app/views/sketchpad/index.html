@@ -1,8 +1,22 @@
 {% extends 'layout.html' %}
 
 {% from "back-link/macro.njk" import backLink %}
+{% from "details/macro.njk" import details %}
 
-{% set pageName = "Sketchpad" %}
+{% set pageName = "User research journeys" %}
+
+{#
+  Index for the sketchpad, split into two blocks of work that should not be read
+  as one: the current round on the upload flows, and the earlier incentives
+  work. Only the first block is going into research now.
+
+  What each sketch is, and how it differs from its neighbours, sits inside a
+  reveal rather than on the page. A participant choosing from this list should
+  see the choices and nothing that steers them towards one.
+
+  Participants see numbers only. The names sit in the key, where a facilitator
+  can read them, so nothing on the page steers a participant towards one.
+#}
 
 {% block beforeContent %}
   {{ backLink({
@@ -17,23 +31,81 @@
 
       <h1 class="nhsuk-heading-l">{{ pageName }}</h1>
 
-      <p>A space to try out components, layouts and content before they go into a journey.</p>
+      <hr class="nhsuk-section-break nhsuk-section-break--l nhsuk-section-break--visible">
+
+      <h2 class="nhsuk-heading-l">Scenarios</h2>
+
+      {{ details({
+        summaryText: "Scenario key",
+        html: '<p>Each upload journey starts on a dashboard, as it would in a research session.</p>
+          <dl>
+            <dt><strong>Scenario 1 - Upload evaluation full length</strong></dt>
+            <dd>Every question on one page, then check your answers.</dd>
+            <dt><strong>Scenario 2 - Upload evaluation minimal</strong></dt>
+            <dd>One question per page. Trust, contact and category are filled in from the account.</dd>
+            <dt><strong>Scenario 3 - Business case full length</strong></dt>
+            <dd>Every question on one page, then check your answers.</dd>
+            <dt><strong>Scenario 4 - Business case minimal</strong></dt>
+            <dd>One question per page. Trust, contact and document type are filled in from the account.</dd>
+            <dt><strong>Scenario 5 - Product page upload</strong></dt>
+            <dd>Sharing an evaluation starting from a device page rather than a dashboard. One tap, then 3 short steps.</dd>
+            <dt><strong>Scenario 6 - Profile page sketch</strong></dt>
+            <dd>The devices a trust has, and where the details left out earlier get added.</dd>
+            <dt><strong>Scenario 7 - Search page with filters</strong></dt>
+            <dd>The filter panel built from the new upload questions.</dd>
+            <dt><strong>Scenario 8 - Follow up email to finish adding details</strong></dt>
+            <dd>Sent 2 weeks after someone starts an upload and stops. Both triggers, contact details and evaluations, are on the one page.</dd>
+            <dt><strong>Scenario 9 - New fields on product page</strong></dt>
+            <dd>The device page where an uploaded evaluation and business case surface. Every new field from the full length flows appears here.</dd>
+          </dl>'
+      }) }}
 
       <ul class="nhsuk-list nhsuk-list--border">
-        <li><a href="/sketchpad/incentives-sketches">Incentives sketches</a></li>
-        <li><a href="/sketchpad/incentives-emails">Incentives emails</a> — all 4 on one page</li>
+        <li><a href="/sketchpad/upload-ev-1-start">Scenario 1</a></li>
+        <li><a href="/sketchpad/upload-ev-2-start">Scenario 2</a></li>
+        <li><a href="/sketchpad/upload-bc-1-start">Scenario 3</a></li>
+        <li><a href="/sketchpad/upload-bc-2-start">Scenario 4</a></li>
+        <li><a href="/sketchpad/experience-device-page">Scenario 5</a></li>
+        <li><a href="/sketchpad/profile-products">Scenario 6</a></li>
+        <li><a href="/sketchpad/upload-questions-as-filters-proposed-only">Scenario 7</a></li>
+        <li><a href="/sketchpad/email-5-finish-adding-details">Scenario 8</a></li>
+        <li><a href="/sketchpad/upload-questions-on-product-page">Scenario 9</a></li>
       </ul>
 
-      <h2 class="nhsuk-heading-m">Emails one per page</h2>
+      <hr class="nhsuk-section-break nhsuk-section-break--l nhsuk-section-break--visible">
 
-      <p>Start at email 1 to step through all 4 in order.</p>
+      <h2 class="nhsuk-heading-l">Earlier round: incentives</h2>
 
       <ul class="nhsuk-list nhsuk-list--border">
-        <li><a href="/sketchpad/email-1-missing-experience">1. Products missing experience</a></li>
+        <li><a href="/sketchpad/email-1-missing-experience">1. Devices missing experience</a></li>
         <li><a href="/sketchpad/email-2-contact-permission">2. Permission to be contacted</a></li>
         <li><a href="/sketchpad/email-3-monthly-report">3. Monthly report</a></li>
         <li><a href="/sketchpad/email-4-how-you-compare">4. How you compare</a></li>
+        <li><a href="/sketchpad/incentives-emails">All 4 on one page</a></li>
+        <li><a href="/sketchpad/incentives-sketches">Incentives sketches</a></li>
       </ul>
+
+      {{ details({
+        summaryText: "Notes on these",
+        html: '<p>Prompting people to contribute in the first place. A separate piece of work, not part of
+          the upload flows above.</p>'
+      }) }}
+
+
+      <hr class="nhsuk-section-break nhsuk-section-break--l nhsuk-section-break--visible">
+
+      <h2 class="nhsuk-heading-l">Archive</h2>
+
+      {{ details({
+        summaryText: "Sketches no longer in use",
+        html: '<p>Kept for reference. Not part of this round and not for research sessions.</p>
+          <ul class="nhsuk-list nhsuk-list--border">
+            <li><a href="/sketchpad/upload-questions-evaluation">Evaluation questions</a></li>
+            <li><a href="/sketchpad/upload-questions-business-case">Business case questions</a></li>
+          </ul>
+          <p>Both are the proposed fields with no journey around them, for reading rather than clicking
+            through. The same questions now sit inside Upload EV 1 and Upload BC 1.</p>'
+      }) }}
 
     </div>
   </div>

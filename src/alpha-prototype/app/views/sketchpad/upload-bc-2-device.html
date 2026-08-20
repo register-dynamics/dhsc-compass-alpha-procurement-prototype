@@ -1,0 +1,140 @@
+{% extends 'sketchpad/layouts/layout-signed-in.html' %}
+{% from "back-link/macro.njk" import backLink %}
+{% from "button/macro.njk" import button %}
+
+{% set several = data['bc-how-many'] == 'several' %}
+{% set n = data['bc-n'] | default(1) | int %}
+{% set ordinals = ["", "first", "second", "third", "fourth", "fifth", "sixth"] %}
+{% set pageName = "Which device does this business case cover?" %}
+{% set dashboardHref = "/sketchpad/upload-bc-2-start" %}
+{% if several %}
+  {% if n < ordinals.length and ordinals[n] %}
+    {% set pageName = "Which is the " + ordinals[n] + " device this business case covers?" %}
+{% set dashboardHref = "/sketchpad/upload-bc-2-start" %}
+  {% else %}
+    {% set pageName = "Which is the next device this business case covers?" %}
+{% set dashboardHref = "/sketchpad/upload-bc-2-start" %}
+  {% endif %}
+{% endif %}
+
+{% block beforeContent %}
+  {{ backLink({ href: "/sketchpad/upload-bc-2-how-many", text: "Back" }) }}
+{% endblock %}
+
+{% block content %}
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+
+    {% set stored = data['bc-devices'] | default('') %}
+    {% set addedList = stored.split('|') if stored else [] %}
+    {% set chosen = data['bc-device-choice'] if data['bc-device-choice'] and data['bc-device-choice'] != 'other' else data['product-picker'] %}
+    {% if n > 1 and chosen and chosen not in addedList %}
+      {% set addedList = addedList.concat([chosen]) %}
+    {% endif %}
+
+    {% set onwards = "/sketchpad/upload-bc-2-contact" %}
+    {% set nextPage = onwards %}
+    {% if several %}
+      {% if n < 2 %}
+        {% set nextPage = "/sketchpad/upload-bc-2-device-added" %}
+      {% else %}
+        {% set nextPage = "/sketchpad/upload-bc-2-another" %}
+      {% endif %}
+    {% endif %}
+
+    {% set showShortlist = data['bc-approved'] != 'no' %}
+
+    <form action="{{ nextPage }}" method="get" novalidate id="branch-form">
+
+      <input type="hidden" name="bc-devices" value="{{ addedList.join('|') }}">
+      <input type="hidden" name="bc-n" value="{{ n + 1 }}">
+
+      {% set describedBy = [] %}
+      {% if several and addedList.length %}{% set describedBy = describedBy.concat(["bc-added-hint"]) %}{% endif %}
+      {% if showShortlist %}{% set describedBy = describedBy.concat(["bc-shortlist-hint"]) %}{% endif %}
+
+      <div class="nhsuk-form-group">
+        <fieldset class="nhsuk-fieldset"{% if describedBy.length %} aria-describedby="{{ describedBy.join(' ') }}"{% endif %}>
+          <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--l">
+            <h1 class="nhsuk-fieldset__heading">{{ pageName }}</h1>
+          </legend>
+
+          {% if several and addedList.length %}
+          <div class="nhsuk-hint" id="bc-added-hint">
+            Devices you have added:
+            <ol class="nhsuk-list nhsuk-list--number nhsuk-u-margin-bottom-0">
+              {% for device in addedList %}<li>{{ device }}</li>{% endfor %}
+            </ol>
+          </div>
+          {% endif %}
+
+          {% if showShortlist %}
+          <div class="nhsuk-hint" id="bc-shortlist-hint">
+            These are the devices your trust has most recently procured or shared documents about.
+          </div>
+          {% endif %}
+
+          <div class="nhsuk-radios" data-module="nhsuk-radios">
+            {% if showShortlist %}
+            <div class="nhsuk-radios__item">
+              <input class="nhsuk-radios__input" id="bc-device-1" name="bc-device-choice" type="radio" value="SmartPump 300 Infusion System" data-next="{{ nextPage }}">
+              <label class="nhsuk-label nhsuk-radios__label" for="bc-device-1">SmartPump 300 Infusion System</label>
+              <div class="nhsuk-hint nhsuk-radios__hint">MedTech Innovations Ltd. Infusion pump.</div>
+            </div>
+            <div class="nhsuk-radios__item">
+              <input class="nhsuk-radios__input" id="bc-device-2" name="bc-device-choice" type="radio" value="Acme Ultrasound System X200" data-next="{{ nextPage }}">
+              <label class="nhsuk-label nhsuk-radios__label" for="bc-device-2">Acme Ultrasound System X200</label>
+              <div class="nhsuk-hint nhsuk-radios__hint">Acme Medical. Diagnostic ultrasound scanner.</div>
+            </div>
+            <div class="nhsuk-radios__item">
+              <input class="nhsuk-radios__input" id="bc-device-3" name="bc-device-choice" type="radio" value="VitalGuard Patient Monitor X1" data-next="{{ nextPage }}">
+              <label class="nhsuk-label nhsuk-radios__label" for="bc-device-3">VitalGuard Patient Monitor X1</label>
+              <div class="nhsuk-hint nhsuk-radios__hint">VitalGuard Systems. Patient monitor.</div>
+            </div>
+            <div class="nhsuk-radios__item">
+              <input class="nhsuk-radios__input" id="bc-device-4" name="bc-device-choice" type="radio" value="AeroVent Lite Portable Ventilator" data-next="{{ nextPage }}">
+              <label class="nhsuk-label nhsuk-radios__label" for="bc-device-4">AeroVent Lite Portable Ventilator</label>
+              <div class="nhsuk-hint nhsuk-radios__hint">AeroMed. Portable ventilator.</div>
+            </div>
+            <div class="nhsuk-radios__item">
+              <input class="nhsuk-radios__input" id="bc-device-5" name="bc-device-choice" type="radio" value="RapidTest Troponin Kit" data-next="{{ nextPage }}">
+              <label class="nhsuk-label nhsuk-radios__label" for="bc-device-5">RapidTest Troponin Kit</label>
+              <div class="nhsuk-hint nhsuk-radios__hint">RapidTest Diagnostics. Point of care test kit.</div>
+            </div>
+            <div class="nhsuk-radios__divider">or</div>
+            {% endif %}
+
+            <div class="nhsuk-radios__item">
+              <input class="nhsuk-radios__input" id="bc-device-other" name="bc-device-choice" type="radio" value="other" data-next="/sketchpad/upload-bc-2-device-search">
+              <label class="nhsuk-label nhsuk-radios__label" for="bc-device-other">A device not listed here</label>
+              <div class="nhsuk-hint nhsuk-radios__hint">You will be able to search for it.</div>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+
+      {{ button({ text: "Continue" }) }}
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block pageScripts %}
+<script>
+  // Prototype only. The real service branches in routes.js, see the kit's branching guide.
+  document.addEventListener('DOMContentLoaded', function () {
+    var form = document.querySelector('#branch-form')
+    if (!form) return
+    form.addEventListener('submit', function (event) {
+      var chosen = form.querySelector('input[type="radio"]:checked')
+      if (chosen && chosen.dataset.next) {
+        event.preventDefault()
+        window.location.href = chosen.dataset.next +
+          '?bc-n=' + encodeURIComponent(form.querySelector('[name="bc-n"]').value) +
+          '&bc-devices=' + encodeURIComponent(form.querySelector('[name="bc-devices"]').value) +
+          '&bc-device-choice=' + encodeURIComponent(chosen.value)
+      }
+    })
+  })
+</script>
+{% endblock %}

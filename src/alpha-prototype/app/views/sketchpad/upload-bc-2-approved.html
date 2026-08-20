@@ -1,0 +1,43 @@
+{% extends 'sketchpad/layouts/layout-signed-in.html' %}
+{% from "back-link/macro.njk" import backLink %}
+{% from "button/macro.njk" import button %}
+{% set pageName = "Was this business case approved?" %}
+{% set dashboardHref = "/sketchpad/upload-bc-2-start" %}
+{% block beforeContent %}
+  {{ backLink({ href: "/sketchpad/upload-bc-2", text: "Back" }) }}
+{% endblock %}
+{% block content %}
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+    <form action="/sketchpad/upload-bc-2-how-many" method="get" novalidate>
+      <div class="nhsuk-form-group">
+        <fieldset class="nhsuk-fieldset" aria-describedby="approved-hint">
+          <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--l">
+            <h1 class="nhsuk-fieldset__heading">{{ pageName }}</h1>
+          </legend>
+          <div class="nhsuk-hint" id="approved-hint">You can change any of your answers later.</div>
+          <div class="nhsuk-radios" data-module="nhsuk-radios">
+            <div class="nhsuk-radios__item">
+              <input class="nhsuk-radios__input" id="bc-app-yes" name="bc-approved" type="radio" value="yes">
+              <label class="nhsuk-label nhsuk-radios__label" for="bc-app-yes">Yes, and procurement went ahead</label>
+            </div>
+            <div class="nhsuk-radios__item">
+              <input class="nhsuk-radios__input" id="bc-app-no" name="bc-approved" type="radio" value="no">
+              <label class="nhsuk-label nhsuk-radios__label" for="bc-app-no">No, it was rejected or not taken forward</label>
+            </div>
+            <div class="nhsuk-radios__item">
+              <input class="nhsuk-radios__input" id="bc-app-pending" name="bc-approved" type="radio" value="pending">
+              <label class="nhsuk-label nhsuk-radios__label" for="bc-app-pending">It is still awaiting a decision</label>
+            </div>
+            <div class="nhsuk-radios__item">
+              <input class="nhsuk-radios__input" id="bc-app-unsure" name="bc-approved" type="radio" value="not-sure">
+              <label class="nhsuk-label nhsuk-radios__label" for="bc-app-unsure">I am not sure</label>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+      {{ button({ text: "Continue" }) }}
+    </form>
+  </div>
+</div>
+{% endblock %}

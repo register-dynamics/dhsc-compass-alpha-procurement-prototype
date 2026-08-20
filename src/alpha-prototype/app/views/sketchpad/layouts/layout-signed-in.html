@@ -1,0 +1,74 @@
+<!--
+  Signed-in layout for sketchpad pages.
+
+  A local copy of current/layouts/layout-signed-in.html so sketch journeys can look
+  signed in without depending on the dev-owned current/ folder. Two deliberate
+  differences from that file:
+    - the empty navigation item has been dropped (a link with no text fails WCAG 2.4.4)
+    - "Dashboard" points at dashboardHref, so each flow can start from its own
+      mock dashboard. Set it in the page, the same way pageName is set.
+    - the logo and the service name return to /sketchpad, not to the flow's
+      dashboard, so anyone part-way through a scenario can get back to the
+      scenario list from the header.
+-->
+
+{% extends "prototype-kit-template.njk" %}
+
+{% block head %}
+  <link href="/css/main.css" rel="stylesheet">
+{% endblock %}
+
+{% block header %}
+  {% from 'header/macro.njk' import header %}
+
+  {{ header({
+    logo: {
+      href: "/sketchpad"
+    },
+    service: {
+      text: "Search and evaluate medical technologies",
+      href: "/sketchpad"
+    },
+    account: {
+      items: [
+        {
+          text: "Kelvin Simpson (Regional Manager)",
+          icon: true
+        },
+        {
+          text: "Log out",
+          href: "/sketchpad"
+        }
+      ]
+    },
+    navigation: {
+      items: [
+        {
+          text: "Dashboard",
+          href: dashboardHref | default("/sketchpad")
+        },
+        {
+          text: "Search",
+          href: "/sketchpad/search"
+        }
+      ]
+    }
+  }) }}
+{% endblock %}
+
+{% block footer %}
+  {% include "includes/footer.html" %}
+{% endblock %}
+
+{% block bodyEnd %}
+  <script src="/nhsuk-frontend/nhsuk-frontend.min.js" type="module"></script>
+  <script type="module">
+    import { initAll } from '/nhsuk-frontend/nhsuk-frontend.min.js'
+    initAll()
+  </script>
+  {% block scripts %}
+    {% include "includes/scripts.html" %}
+    {% block pageScripts %}
+    {% endblock %}
+  {% endblock %}
+{% endblock %}

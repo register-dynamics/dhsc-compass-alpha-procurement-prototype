@@ -1,0 +1,51 @@
+{% extends 'sketchpad/layouts/layout-signed-in.html' %}
+{% from "panel/macro.njk" import panel %}
+{% set pageName = "Business case shared" %}
+{% set dashboardHref = "/sketchpad/upload-bc-2-start" %}
+{% block content %}
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+
+    {{ panel({ titleText: "Business case shared", headingLevel: 1, text: "Other trusts can now find it" }) }}
+
+    <h2 class="nhsuk-heading-s nhsuk-u-margin-top-5">What we filled in for you</h2>
+
+    <dl class="nhsuk-summary-list">
+      <div class="nhsuk-summary-list__row">
+        <dt class="nhsuk-summary-list__key">Trust</dt>
+        <dd class="nhsuk-summary-list__value">Barts Health NHS Trust</dd>
+        <dd class="nhsuk-summary-list__actions"><a href="#">Change<span class="nhsuk-u-visually-hidden"> trust</span></a></dd>
+      </div>
+      <div class="nhsuk-summary-list__row">
+        <dt class="nhsuk-summary-list__key">Shared by</dt>
+        <dd class="nhsuk-summary-list__value">Dr Tess Sawyer, Consultant</dd>
+        <dd class="nhsuk-summary-list__actions"><a href="#">Change<span class="nhsuk-u-visually-hidden"> contact</span></a></dd>
+      </div>
+      <div class="nhsuk-summary-list__row">
+        <dt class="nhsuk-summary-list__key">Devices</dt>
+        <dd class="nhsuk-summary-list__value">
+          {% set stored = data['bc-devices'] | default('') %}
+          {% set addedList = stored.split('|') if stored else [] %}
+          {% if addedList.length %}{% for device in addedList %}{{ device }}<br>{% endfor %}{% else %}SmartPump 300 Infusion System{% endif %}
+        </dd>
+        <dd class="nhsuk-summary-list__actions"><a href="/sketchpad/upload-bc-2-device">Change<span class="nhsuk-u-visually-hidden"> devices</span></a></dd>
+      </div>
+      <div class="nhsuk-summary-list__row">
+        <dt class="nhsuk-summary-list__key">Document type</dt>
+        <dd class="nhsuk-summary-list__value">Business case</dd>
+        <dd class="nhsuk-summary-list__actions"></dd>
+      </div>
+      <div class="nhsuk-summary-list__row">
+        <dt class="nhsuk-summary-list__key">Title</dt>
+        <dd class="nhsuk-summary-list__value">Infusion pump replacement business case.pdf</dd>
+        <dd class="nhsuk-summary-list__actions"><a href="#">Change<span class="nhsuk-u-visually-hidden"> title</span></a></dd>
+      </div>
+    </dl>
+
+    <p><a href="#">Add details so more people find it</a></p>
+    <p><a href="/sketchpad/upload-bc-2">Share another document</a></p>
+    <p><a href="{{ dashboardHref }}">Return to dashboard</a></p>
+
+  </div>
+</div>
+{% endblock %}

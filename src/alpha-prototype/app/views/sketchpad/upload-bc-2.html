@@ -1,0 +1,28 @@
+{% extends 'sketchpad/layouts/layout-signed-in.html' %}
+{% from "back-link/macro.njk" import backLink %}
+{% from "button/macro.njk" import button %}
+{% set pageName = "Upload your business case" %}
+{% set dashboardHref = "/sketchpad/upload-bc-2-start" %}
+{% block beforeContent %}
+  {{ backLink({ href: "/sketchpad/upload-bc-2-start", text: "Back" }) }}
+{% endblock %}
+{% block content %}
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+    <form action="/sketchpad/upload-bc-2-approved" method="get" novalidate>
+      <input type="hidden" name="bc-n" value="1">
+      <input type="hidden" name="bc-devices" value="">
+      <input type="hidden" name="bc-device-choice" value="">
+      <input type="hidden" name="product-picker" value="">
+      <div class="nhsuk-form-group">
+        <h1 class="nhsuk-heading-l">
+          <label for="bc-file">Upload your business case</label>
+        </h1>
+        <div class="nhsuk-hint" id="bc-file-hint">Word, Excel or PDF</div>
+        <input class="nhsuk-input" id="bc-file" name="bc-file" type="file" accept=".pdf,.doc,.docx,.xls,.xlsx" aria-describedby="bc-file-hint">
+      </div>
+      {{ button({ text: "Continue" }) }}
+    </form>
+  </div>
+</div>
+{% endblock %}

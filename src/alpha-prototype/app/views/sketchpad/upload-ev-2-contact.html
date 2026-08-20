@@ -1,0 +1,58 @@
+{% extends 'sketchpad/layouts/layout-signed-in.html' %}
+
+{% from "back-link/macro.njk" import backLink %}
+{% from "button/macro.njk" import button %}
+
+{% set pageName = "Who should other trusts contact about this document?" %}
+{% set dashboardHref = "/sketchpad/upload-ev-2-start" %}
+
+{% block beforeContent %}
+  {{ backLink({ href: "/sketchpad/upload-ev-2-product", text: "Back" }) }}
+{% endblock %}
+
+{% block content %}
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+
+    <form action="/sketchpad/upload-ev-2-details" method="get" novalidate>
+      <div class="nhsuk-form-group">
+        <fieldset class="nhsuk-fieldset">
+          <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--l">
+            <h1 class="nhsuk-fieldset__heading">{{ pageName }}</h1>
+          </legend>
+          <div class="nhsuk-hint">
+            Other trusts often want to ask about a document before they act on it.
+          </div>
+          <div class="nhsuk-radios" data-module="nhsuk-radios">
+            <div class="nhsuk-radios__item">
+              <input class="nhsuk-radios__input" id="contact-me" name="contact-who" type="radio" value="me">
+              <label class="nhsuk-label nhsuk-radios__label" for="contact-me">Me</label>
+              <div class="nhsuk-hint nhsuk-radios__hint">Dr Tess Sawyer, tess.sawyer@nhs.net</div>
+            </div>
+            <div class="nhsuk-radios__item">
+              <input class="nhsuk-radios__input" id="contact-else" name="contact-who" type="radio" value="someone-else" data-aria-controls="conditional-contact">
+              <label class="nhsuk-label nhsuk-radios__label" for="contact-else">Someone else</label>
+            </div>
+            <div class="nhsuk-radios__conditional nhsuk-radios__conditional--hidden" id="conditional-contact">
+              <div class="nhsuk-form-group">
+                <label class="nhsuk-label" for="contact-name">Contact name</label>
+                <input class="nhsuk-input" id="contact-name" name="contact-name" type="text">
+              </div>
+              <div class="nhsuk-form-group">
+                <label class="nhsuk-label" for="contact-email">Email address</label>
+                <input class="nhsuk-input" id="contact-email" name="contact-email" type="email">
+              </div>
+            </div>
+            <div class="nhsuk-radios__item">
+              <input class="nhsuk-radios__input" id="contact-none" name="contact-who" type="radio" value="none">
+              <label class="nhsuk-label nhsuk-radios__label" for="contact-none">Nobody, do not show a contact</label>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+      {{ button({ text: "Continue" }) }}
+    </form>
+
+  </div>
+</div>
+{% endblock %}
