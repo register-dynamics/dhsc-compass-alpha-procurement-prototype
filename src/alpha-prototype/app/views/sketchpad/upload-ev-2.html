@@ -1,0 +1,38 @@
+{% extends 'sketchpad/layouts/layout-signed-in.html' %}
+
+{% from "back-link/macro.njk" import backLink %}
+{% from "button/macro.njk" import button %}
+
+{% set pageName = "Upload your document" %}
+{% set dashboardHref = "/sketchpad/upload-ev-2-start" %}
+
+{% block beforeContent %}
+  {{ backLink({ href: "/sketchpad/upload-ev-2-start", text: "Back" }) }}
+{% endblock %}
+
+{% block content %}
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+
+    <form action="/sketchpad/upload-ev-2-procured" method="get" novalidate>
+      <input type="hidden" name="n" value="1">
+      <input type="hidden" name="devices" value="">
+      <input type="hidden" name="product-picker" value="">
+
+      <div class="nhsuk-form-group">
+        <h1 class="nhsuk-heading-l">
+          <label for="min-file">Upload your document</label>
+        </h1>
+        <div class="nhsuk-hint" id="min-file-hint">
+          Word, Excel or PDF. You can select more than one file.
+        </div>
+        <input class="nhsuk-input" id="min-file" name="min-file" type="file" multiple accept=".pdf,.doc,.docx,.xls,.xlsx" aria-describedby="min-file-hint">
+      </div>
+
+      {{ button({ text: "Continue" }) }}
+
+    </form>
+
+  </div>
+</div>
+{% endblock %}

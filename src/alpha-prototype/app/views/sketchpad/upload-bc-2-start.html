@@ -1,0 +1,55 @@
+{% extends 'sketchpad/layouts/layout-signed-in.html' %}
+
+{% set pageName = "Dashboard" %}
+{% set dashboardHref = "/sketchpad/upload-bc-2-start" %}
+
+{#
+  Mock dashboard, used as the start page for one upload flow in user research.
+  Content copied from current/dashboard.html. Only the second card's link differs
+  between the four copies, so each flow starts from its own dashboard and the
+  session data of one flow cannot leak into another.
+#}
+
+{% block content %}
+
+<div class="nhsuk-grid-row nhsuk-u-margin-top-7">
+  <div class="nhsuk-grid-column-two-thirds">
+
+    <span class="nhsuk-hint">Kelvin Simpson</span>
+
+    <h1 class="nhsuk-heading-l">Welcome back</h1>
+
+    <p class="nhsuk-body nhsuk-body-l">How will you shape procurement in your trust today?</p>
+
+  </div>
+</div>
+
+<div class="nhsuk-grid-row nhsuk-u-margin-top-7">
+  <div class="nhsuk-grid-column-full">
+
+    <div class="nhsuk-grid-row">
+
+      <div class="nhsuk-grid-column-one-half">
+        <div class="nhsuk-card nhsuk-card--clickable">
+          <div class="nhsuk-card__content">
+            <h2 class="nhsuk-card__heading"><a href="/sketchpad/search">Search and compare medical technologies</a></h2>
+            <p>Look up a specific product or browse categories to find evidence and peer contact information.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="nhsuk-grid-column-one-half">
+        <div class="nhsuk-card nhsuk-card--clickable">
+          <div class="nhsuk-card__content">
+            <h2 class="nhsuk-card__heading"><a href="/sketchpad/upload-bc-2">Share your experience with medical technologies</a></h2>
+            <p>Upload your own product trials, case studies, evaluation criteria or business cases.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,341 @@
+{% extends 'sketchpad/layouts/layout-signed-in.html' %}
+
+{% from "summary-list/macro.njk" import summaryList %}
+{% from "button/macro.njk" import button %}
+{% from "back-link/macro.njk" import backLink %}
+
+{% set pageName = "Check your answers" %}
+{% set dashboardHref = "/sketchpad/upload-ev-1-start" %}
+
+{#
+  Check your answers for the full-size evaluation upload.
+
+  Follows Patterns/check-answers.md: one section per section of the form, every row
+  with its own Change link, and the submit button as the last thing on the page.
+  Three differences from the equivalent page in current/, each from
+  Patterns/check-answers.md:
+    - the heading says what happens next, so the submit button is not missed
+    - the button names the action it performs
+    - optional questions that were skipped read "Not provided" rather than
+      example content, so nobody is shown an answer they did not give
+
+  Sections mirror upload-ev-1.html exactly. Answers show what the person
+  actually typed where the kit captured it, and fall back to example content so the
+  page still reads properly if someone skips the form and lands here directly.
+#}
+
+{#
+  Shows an answer. `labels` turns a stored value like "clinical-need" back into
+  the wording the person actually saw, so the check page reads the same as the
+  form did. Falls back to example content when the question was not answered.
+#}
+{% macro answer(value, fallback, labels) %}{% if not value %}{{ fallback }}{% elif value is string %}{{ labels[value] if labels and labels[value] else value }}{% else %}{% for v in value %}{{ labels[v] if labels and labels[v] else v }}{{ ", " if not loop.last }}{% endfor %}{% endif %}{% endmacro %}
+
+{# The options each question offered, taken from the form itself. #}
+{% set LABELS = {
+  "contact-role-1": {
+    "clinical-lead": "Clinical lead",
+    "procurement-lead": "Procurement lead",
+    "nurse-specialist": "Nurse specialist",
+    "other": "Other"
+  },
+  "contact-topics-1": {
+    "clinical-outcomes": "Clinical outcomes and effectiveness",
+    "evaluation-methodology": "Evaluation methodology",
+    "implementation": "Implementation and training",
+    "integration": "System integration",
+    "procurement-process": "Procurement process",
+    "costs": "Costs and value",
+    "supplier-experience": "Supplier experience"
+  },
+  "department": {
+    "cardiology": "Cardiology",
+    "critical-care": "Critical Care / ICU",
+    "procurement": "Procurement",
+    "renal": "Renal Medicine",
+    "other": "Other"
+  },
+  "evaluation-count": {
+    "1": "1 device",
+    "2": "2 devices",
+    "3": "3 devices",
+    "more": "More than 3"
+  },
+  "framework": {
+    "yes": "Yes",
+    "no": "No"
+  },
+  "nhs-priorities": {
+    "analogue-to-digital": "Analogue to digital",
+    "workforce": "Workforce solutions",
+    "early-cancer-diagnosis": "Early diagnosis of cancer",
+    "net-zero": "Net zero",
+    "treatment-to-prevention": "Treatment to prevention",
+    "elective-recovery": "Elective recovery",
+    "mental-health": "Mental health",
+    "cyp": "Children and young people",
+    "hospital-to-home": "Hospital to home",
+    "productivity": "Productivity",
+    "health-inequalities": "Reducing health inequalities",
+    "patient-experience": "Patient experience"
+  },
+  "outcome-1": {
+    "procured": "We procured this device",
+    "not-procured": "We did not procure this device"
+  },
+  "pathway": {
+    "face-to-face": "Face-to-face",
+    "autonomous": "Autonomous",
+    "tele": "Tele"
+  },
+  "product-1": {
+    "smartpump": "SmartPump Infusion Device Pro",
+    "medflow": "MedFlow Infusion System 3000",
+    "other": "Other - I'll enter the name"
+  },
+  "proms": {
+    "yes": "Yes",
+    "no": "No"
+  },
+  "rct": {
+    "yes": "Yes",
+    "no": "No"
+  },
+  "value-domains": {
+    "social-value": "Social value",
+    "efficiency": "Efficiency",
+    "patient-and-staff": "Patient and staff",
+    "supply-chain": "Supply chain",
+    "purpose": "Purpose"
+  },
+  "why-1": {
+    "decided-against": "We decided against it after evaluation",
+    "stopped-using": "We stopped using it after a trial or pilot",
+    "budget": "We have budget or funding constraints",
+    "other": "Another reason"
+  }
+} %}
+
+{% set backHref = "/sketchpad/upload-ev-1" %}
+
+{# The outcome carries a tag colour and, when it was not procured, the reason. #}
+{% set outcome1 = data['outcome-1'] or "procured" %}
+{% set outcome1Html %}
+  {%- if outcome1 == "procured" -%}
+    <strong class="nhsuk-tag nhsuk-tag--green">We procured this device</strong>
+  {%- elif outcome1 == "in-progress" -%}
+    <strong class="nhsuk-tag nhsuk-tag--blue">We chose it, but procurement is still going on</strong>
+  {%- else -%}
+    <strong class="nhsuk-tag nhsuk-tag--yellow">We did not procure this device</strong>
+    {%- if data['why-1'] %}<br>{{ LABELS['why-1'][data['why-1']] or data['why-1'] }}{% endif -%}
+  {%- endif -%}
+{% endset %}
+
+{% block beforeContent %}
+  {{ backLink({
+    href: backHref,
+    text: "Back"
+  }) }}
+{% endblock %}
+
+{% block content %}
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+
+    <h1 class="nhsuk-heading-l">Check your answers before sharing your evaluation</h1>
+
+    <p>This is what other NHS trusts and the device supplier will see. Review it before you submit.</p>
+
+    <h2 class="nhsuk-heading-m">Your document</h2>
+    {{ summaryList({
+      rows: [
+        {
+          key: { text: "Uploaded file" },
+          value: { text: "infusion-pump-evaluation-2024.pdf" },
+          actions: { items: [{ href: backHref, text: "Change", visuallyHiddenText: "uploaded file" }] }
+        },
+        {
+          key: { text: "Link to your document" },
+          value: { html: answer(data['document-link'], "Not provided") },
+          actions: { items: [{ href: backHref, text: "Change", visuallyHiddenText: "link to your document" }] }
+        },
+        {
+          key: { text: "Devices in this upload" },
+          value: { html: answer(data['evaluation-count'], "Not provided", LABELS['evaluation-count']) },
+          actions: { items: [{ href: backHref, text: "Change", visuallyHiddenText: "number of devices in this upload" }] }
+        }
+      ]
+    }) }}
+
+    <h2 class="nhsuk-heading-m">About the evaluation</h2>
+    {{ summaryList({
+      rows: [
+        {
+          key: { text: "Title" },
+          value: { html: answer(data['eval-title'], "Not provided") },
+          actions: { items: [{ href: backHref, text: "Change", visuallyHiddenText: "evaluation title" }] }
+        },
+        {
+          key: { text: "Patient population" },
+          value: { html: answer(data['patient-population'], "Not provided") },
+          actions: { items: [{ href: backHref, text: "Change", visuallyHiddenText: "patient population" }] }
+        },
+        {
+          key: { text: "Devices compared" },
+          value: { html: answer(data['products-compared'], "Not provided") },
+          actions: { items: [{ href: backHref, text: "Change", visuallyHiddenText: "devices compared" }] }
+        },
+        {
+          key: { text: "Funding sources" },
+          value: { html: answer(data['funding-sources'], "Not provided") },
+          actions: { items: [{ href: backHref, text: "Change", visuallyHiddenText: "funding sources" }] }
+        },
+        {
+          key: { text: "Randomised controlled trial" },
+          value: { html: answer(data['rct'], "Not provided", LABELS['rct']) | capitalize },
+          actions: { items: [{ href: backHref, text: "Change", visuallyHiddenText: "whether the evaluation was a randomised controlled trial" }] }
+        },
+        {
+          key: { text: "PROMs included" },
+          value: { html: answer(data['proms'], "Not provided", LABELS['proms']) | capitalize },
+          actions: { items: [{ href: backHref, text: "Change", visuallyHiddenText: "whether PROMs were included" }] }
+        }
+      ]
+    }) }}
+
+    <h2 class="nhsuk-heading-m">About the trust</h2>
+    {{ summaryList({
+      rows: [
+        {
+          key: { text: "Trust name" },
+          value: { html: answer(data['trust-name'], "Not provided") },
+          actions: { items: [{ href: backHref, text: "Change", visuallyHiddenText: "trust name" }] }
+        },
+        {
+          key: { text: "Department" },
+          value: { html: answer(data['department'], "Not provided", LABELS['department']) },
+          actions: { items: [{ href: backHref, text: "Change", visuallyHiddenText: "department" }] }
+        },
+        {
+          key: { text: "Evaluation lead" },
+          value: { html: answer(data['evaluation-lead'], "Not provided") },
+          actions: { items: [{ href: backHref, text: "Change", visuallyHiddenText: "evaluation lead" }] }
+        }
+      ]
+    }) }}
+
+    <h2 class="nhsuk-heading-m">The devices evaluated</h2>
+
+    <h3 class="nhsuk-heading-s">Device 1</h3>
+    {{ summaryList({
+      rows: [
+        {
+          key: { text: "Device evaluated" },
+          value: { html: answer(data['product-1'], "Not provided", LABELS['product-1']) },
+          actions: { items: [{ href: backHref, text: "Change", visuallyHiddenText: "device 1" }] }
+        },
+        {
+          key: { text: "Evaluation period" },
+          value: { html: answer(data['eval-period-1'], "Not provided") },
+          actions: { items: [{ href: backHref, text: "Change", visuallyHiddenText: "evaluation period for device 1" }] }
+        },
+        {
+          key: { text: "Outcome" },
+          value: { html: outcome1Html },
+          actions: { items: [{ href: backHref, text: "Change", visuallyHiddenText: "outcome for device 1" }] }
+        },
+        {
+          key: { text: "Brief summary" },
+          value: { html: answer(data['summary-1'], "Not provided") },
+          actions: { items: [{ href: backHref, text: "Change", visuallyHiddenText: "summary for device 1" }] }
+        },
+        {
+          key: { text: "Page or section reference" },
+          value: { html: answer(data['page-ref-1'], "Not provided") },
+          actions: { items: [{ href: backHref, text: "Change", visuallyHiddenText: "page reference for device 1" }] }
+        }
+      ]
+    }) }}
+
+    <h2 class="nhsuk-heading-m">How the device was assessed</h2>
+    {{ summaryList({
+      rows: [
+        {
+          key: { text: "Assessed value domains" },
+          value: { html: answer(data['value-domains'], "Not provided", LABELS['value-domains']) },
+          actions: { items: [{ href: backHref, text: "Change", visuallyHiddenText: "assessed value domains" }] }
+        },
+        {
+          key: { text: "NHS priorities" },
+          value: { html: answer(data['nhs-priorities'], "Not provided", LABELS['nhs-priorities']) },
+          actions: { items: [{ href: backHref, text: "Change", visuallyHiddenText: "NHS priorities" }] }
+        },
+        {
+          key: { text: "Pathway" },
+          value: { html: answer(data['pathway'], "Not provided", LABELS['pathway']) },
+          actions: { items: [{ href: backHref, text: "Change", visuallyHiddenText: "pathway" }] }
+        },
+        {
+          key: { text: "National contract or framework" },
+          value: { html: answer(data['framework'], "Not provided", LABELS['framework']) | capitalize },
+          actions: { items: [{ href: backHref, text: "Change", visuallyHiddenText: "whether a national contract or framework was used" }] }
+        }
+      ]
+    }) }}
+
+    <h2 class="nhsuk-heading-m">Contacts for queries</h2>
+
+    <h3 class="nhsuk-heading-s">Contact 1</h3>
+    {{ summaryList({
+      rows: [
+        {
+          key: { text: "Contact name" },
+          value: { html: answer(data['contact-name-1'], "Not provided") },
+          actions: { items: [{ href: backHref, text: "Change", visuallyHiddenText: "contact 1 name" }] }
+        },
+        {
+          key: { text: "Role" },
+          value: { html: answer(data['contact-role-1'], "Not provided", LABELS['contact-role-1']) },
+          actions: { items: [{ href: backHref, text: "Change", visuallyHiddenText: "contact 1 role" }] }
+        },
+        {
+          key: { text: "Email address" },
+          value: { html: answer(data['contact-email-1'], "Not provided") },
+          actions: { items: [{ href: backHref, text: "Change", visuallyHiddenText: "contact 1 email address" }] }
+        },
+        {
+          key: { text: "Happy to be contacted about" },
+          value: { html: answer(data['contact-topics-1'], "Not provided", LABELS['contact-topics-1']) },
+          actions: { items: [{ href: backHref, text: "Change", visuallyHiddenText: "what contact 1 is happy to discuss" }] }
+        }
+      ]
+    }) }}
+
+    <div class="nhsuk-warning-callout nhsuk-u-margin-top-6">
+      <h3 class="nhsuk-warning-callout__label">
+        <span role="text">
+          <span class="nhsuk-u-visually-hidden">Important: </span>
+          Declaration
+        </span>
+      </h3>
+      <p>I confirm that:</p>
+      <ul class="nhsuk-list nhsuk-list--bullet">
+        <li>I'm providing up-to-date and accurate information.</li>
+        <li>I'm authorised to upload these documents on behalf of my organisation.</li>
+        <li>I'm not sharing anything that is confidential, commercially sensitive or will infringe on intellectual property rights.</li>
+      </ul>
+      <p>I understand that:</p>
+      <ul class="nhsuk-list nhsuk-list--bullet">
+        <li>I'm not offering any warranty or commitments around what I'm sharing.</li>
+        <li>I'm not responsible for the decisions made using my information.</li>
+        <li>I can remove information later if I change my mind.</li>
+      </ul>
+    </div>
+
+    <form action="upload-ev-1-done" method="post">
+      {{ button({ text: "Confirm and share" }) }}
+    </form>
+
+  </div>
+</div>
+{% endblock %}

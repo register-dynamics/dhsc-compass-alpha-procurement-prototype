@@ -1,0 +1,305 @@
+{% extends 'sketchpad/layouts/layout.html' %}
+
+{% from "back-link/macro.njk" import backLink %}
+{% from "details/macro.njk" import details %}
+
+{% set pageName = "Search page with filters" %}
+
+{% block beforeContent %}
+  {{ backLink({
+    href: "/sketchpad",
+    text: "Back"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-full">
+
+    <h1 class="nhsuk-heading-l">{{ pageName }}</h1>
+
+
+    {{ details({
+      summaryText: "How to read this sketch",
+      html: '<ul>
+          <li>Counts in brackets are made up. They show how the real filter behaves. The search
+            results page already puts a count next to each category.</li>
+          <li>Everything is a checkbox, even where the upload question was radios. People filtering
+            usually want more than one option at a time.</li>
+          <li>The results on the right are placeholders. Only the filters are being sketched.</li>
+        </ul>'
+    }) }}
+
+  </div>
+</div>
+
+<div class="nhsuk-grid-row">
+
+  {# Filters sidebar #}
+  <div class="app-grid-column-filters">
+
+    <div class="nhsuk-card nhsuk-card--feature app-filters">
+      <div class="nhsuk-card__content nhsuk-card__content--feature">
+        <form method="get">
+        <h3 class="nhsuk-card__heading nhsuk-card__heading--feature">
+          Filter results
+        </h3>
+
+        {# From the evaluation flow #}
+        <div class="nhsuk-form-group">
+          <fieldset class="nhsuk-fieldset">
+            <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--s">
+              Outcome
+            </legend>
+            <div class="nhsuk-checkboxes nhsuk-checkboxes--small" data-module="nhsuk-checkboxes">
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="f-out-1" name="outcome" type="checkbox" value="procured">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="f-out-1">Procured (86)</label>
+              </div>
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="f-out-2" name="outcome" type="checkbox" value="in-progress">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="f-out-2">Procurement still going on (14)</label>
+              </div>
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="f-out-3" name="outcome" type="checkbox" value="not-procured">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="f-out-3">Not procured (23)</label>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+
+        <div class="nhsuk-form-group">
+          <fieldset class="nhsuk-fieldset">
+            <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--s">
+              Assessed value domains
+            </legend>
+            <div class="nhsuk-checkboxes nhsuk-checkboxes--small" data-module="nhsuk-checkboxes">
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="f-vd-1" name="value-domain" type="checkbox" value="social-value">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="f-vd-1">Social value (18)</label>
+              </div>
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="f-vd-2" name="value-domain" type="checkbox" value="efficiency">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="f-vd-2">Efficiency (41)</label>
+              </div>
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="f-vd-3" name="value-domain" type="checkbox" value="patient-and-staff">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="f-vd-3">Patient and staff (37)</label>
+              </div>
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="f-vd-4" name="value-domain" type="checkbox" value="supply-chain">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="f-vd-4">Supply chain (9)</label>
+              </div>
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="f-vd-5" name="value-domain" type="checkbox" value="purpose">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="f-vd-5">Purpose (6)</label>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+
+        <div class="nhsuk-form-group">
+          <fieldset class="nhsuk-fieldset">
+            <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--s">
+              NHS priorities
+            </legend>
+            <div class="nhsuk-checkboxes nhsuk-checkboxes--small" data-module="nhsuk-checkboxes">
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="f-pri-1" name="priority" type="checkbox" value="analogue-to-digital">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="f-pri-1">Analogue to digital (22)</label>
+              </div>
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="f-pri-2" name="priority" type="checkbox" value="workforce">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="f-pri-2">Workforce solutions (15)</label>
+              </div>
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="f-pri-3" name="priority" type="checkbox" value="early-cancer-diagnosis">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="f-pri-3">Early diagnosis of cancer (8)</label>
+              </div>
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="f-pri-4" name="priority" type="checkbox" value="net-zero">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="f-pri-4">Net zero (11)</label>
+              </div>
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="f-pri-5" name="priority" type="checkbox" value="treatment-to-prevention">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="f-pri-5">Treatment to prevention (5)</label>
+              </div>
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="f-pri-6" name="priority" type="checkbox" value="elective-recovery">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="f-pri-6">Elective recovery (19)</label>
+              </div>
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="f-pri-7" name="priority" type="checkbox" value="mental-health">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="f-pri-7">Mental health (4)</label>
+              </div>
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="f-pri-8" name="priority" type="checkbox" value="cyp">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="f-pri-8">Children and young people (7)</label>
+              </div>
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="f-pri-9" name="priority" type="checkbox" value="hospital-to-home">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="f-pri-9">Hospital to home (13)</label>
+              </div>
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="f-pri-10" name="priority" type="checkbox" value="productivity">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="f-pri-10">Productivity (26)</label>
+              </div>
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="f-pri-11" name="priority" type="checkbox" value="health-inequalities">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="f-pri-11">Reducing health inequalities (10)</label>
+              </div>
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="f-pri-12" name="priority" type="checkbox" value="patient-experience">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="f-pri-12">Patient experience (17)</label>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+
+        <div class="nhsuk-form-group">
+          <fieldset class="nhsuk-fieldset">
+            <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--s">
+              Pathway
+            </legend>
+            <div class="nhsuk-checkboxes nhsuk-checkboxes--small" data-module="nhsuk-checkboxes">
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="f-path-1" name="pathway" type="checkbox" value="face-to-face">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="f-path-1">Face-to-face (52)</label>
+              </div>
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="f-path-2" name="pathway" type="checkbox" value="autonomous">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="f-path-2">Autonomous (16)</label>
+              </div>
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="f-path-3" name="pathway" type="checkbox" value="tele">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="f-path-3">Tele (21)</label>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+
+        <div class="nhsuk-form-group">
+          <fieldset class="nhsuk-fieldset">
+            <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--s">
+              Evidence quality
+            </legend>
+            <div class="nhsuk-checkboxes nhsuk-checkboxes--small" data-module="nhsuk-checkboxes">
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="f-ev-1" name="evidence" type="checkbox" value="rct">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="f-ev-1">Randomised controlled trial (9)</label>
+              </div>
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="f-ev-2" name="evidence" type="checkbox" value="proms">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="f-ev-2">Includes PROMs (14)</label>
+              </div>
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="f-ev-3" name="evidence" type="checkbox" value="framework">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="f-ev-3">On a national contract or framework (33)</label>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+
+        {# From the business case flow #}
+        <div class="nhsuk-form-group">
+          <fieldset class="nhsuk-fieldset">
+            <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--s">
+              Kind of costs shown
+            </legend>
+            <div class="nhsuk-checkboxes nhsuk-checkboxes--small" data-module="nhsuk-checkboxes">
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="f-cost-1" name="cost-basis" type="checkbox" value="annual">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="f-cost-1">Annual cost (29)</label>
+              </div>
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="f-cost-2" name="cost-basis" type="checkbox" value="whole-life">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="f-cost-2">Whole life cost (18)</label>
+              </div>
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="f-cost-3" name="cost-basis" type="checkbox" value="per-unit">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="f-cost-3">Cost per unit (35)</label>
+              </div>
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="f-cost-4" name="cost-basis" type="checkbox" value="patient-level">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="f-cost-4">Cost per patient (11)</label>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+
+        {# From the contact questions in both flows #}
+        <div class="nhsuk-form-group">
+          <fieldset class="nhsuk-fieldset">
+            <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--s">
+              Trusts happy to discuss
+            </legend>
+            <div class="nhsuk-checkboxes nhsuk-checkboxes--small" data-module="nhsuk-checkboxes">
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="f-disc-1" name="discuss" type="checkbox" value="clinical-outcomes">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="f-disc-1">Clinical outcomes (24)</label>
+              </div>
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="f-disc-2" name="discuss" type="checkbox" value="implementation">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="f-disc-2">Implementation and training (31)</label>
+              </div>
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="f-disc-3" name="discuss" type="checkbox" value="procurement-process">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="f-disc-3">Procurement process (19)</label>
+              </div>
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="f-disc-4" name="discuss" type="checkbox" value="costs">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="f-disc-4">Costs and value (27)</label>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+
+        <div class="nhsuk-button-group">
+          <button class="nhsuk-button nhsuk-button--secondary app-button--small" data-module="nhsuk-button" type="submit">
+            Update results
+          </button>
+        </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+
+  {# Results column, placeholder only #}
+  <div class="app-grid-column-results">
+
+    <h3 class="nhsuk-heading-m nhsuk-u-margin-bottom-2">Medical technologies</h3>
+    <p class="nhsuk-caption-m nhsuk-u-margin-bottom-4">Showing <b>1</b> to <b>3</b> of <b>128</b> devices</p>
+
+    <div class="nhsuk-card nhsuk-card--clickable app-card--compact">
+      <div class="nhsuk-card__content">
+        <h4 class="nhsuk-card__heading nhsuk-heading-s">
+          <a class="nhsuk-card__link" href="#">SmartPump – 300 Infusion System</a>
+        </h4>
+        <p class="nhsuk-body-s nhsuk-u-secondary-text-colour nhsuk-u-margin-bottom-0">MedTech Innovations Ltd</p>
+      </div>
+    </div>
+
+    <div class="nhsuk-card nhsuk-card--clickable app-card--compact">
+      <div class="nhsuk-card__content">
+        <h4 class="nhsuk-card__heading nhsuk-heading-s">
+          <a class="nhsuk-card__link" href="#">MedFlow – Infusion System 3000</a>
+        </h4>
+        <p class="nhsuk-body-s nhsuk-u-secondary-text-colour nhsuk-u-margin-bottom-0">MedFlow Healthcare</p>
+      </div>
+    </div>
+
+    <div class="nhsuk-card nhsuk-card--clickable app-card--compact">
+      <div class="nhsuk-card__content">
+        <h4 class="nhsuk-card__heading nhsuk-heading-s">
+          <a class="nhsuk-card__link" href="#">VitalGuard – Patient Monitor X1</a>
+        </h4>
+        <p class="nhsuk-body-s nhsuk-u-secondary-text-colour nhsuk-u-margin-bottom-0">VitalGuard Systems</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}

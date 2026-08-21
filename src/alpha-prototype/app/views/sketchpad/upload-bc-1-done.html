@@ -1,0 +1,91 @@
+{% extends 'sketchpad/layouts/layout-signed-in.html' %}
+
+{% set pageName = "Business case shared" %}
+{% set dashboardHref = "/sketchpad/upload-bc-1-start" %}
+
+{#
+  Confirmation page for the full-size business case upload.
+
+  Based on current/business-case-shared.html, with "product" changed to "device",
+  card headings at h2 so the page does not jump h1 to h3, and the navigating
+  button replaced with a link styled as a button.
+#}
+
+{% block content %}
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+
+    <div class="nhsuk-panel nhsuk-panel--confirmation nhsuk-u-margin-top-7 nhsuk-u-margin-bottom-7">
+      <h1 class="nhsuk-panel__title">
+        Business case shared successfully
+      </h1>
+      <div class="nhsuk-panel__body">
+        Your business case for<br>
+        <strong>{{ data['bc-product-1'] or "SmartPump Infusion Device Pro" }}</strong><br>
+        is now visible to NHS procurement professionals
+      </div>
+    </div>
+
+    <div class="nhsuk-card nhsuk-card--care nhsuk-u-margin-top-4">
+      <div class="nhsuk-card__content">
+        <h2 class="nhsuk-card__heading">Your impact</h2>
+        <p class="nhsuk-body-s">You've now shared <strong>1 business case</strong> that can help other NHS trusts build their own procurement proposals.</p>
+        <p class="nhsuk-body-s">Business cases are among the most requested documents.</p>
+      </div>
+    </div>
+
+    <h2 class="nhsuk-heading-m nhsuk-u-margin-top-6">What happens next?</h2>
+
+    <ul class="nhsuk-list nhsuk-list--bullet">
+      <li>Other trusts and the device supplier will soon be able to view your business case.</li>
+      <li>You can update or remove your business case at any time from your dashboard.</li>
+      <li>Contacts you listed may be approached by other trusts with questions about your submission.</li>
+    </ul>
+
+    <a class="nhsuk-action-link" href="/sketchpad/upload-questions-on-product-page">
+      <svg class="nhsuk-icon nhsuk-icon--arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" focusable="false" aria-hidden="true">
+        <path d="M12 2a10 10 0 0 0-10 9h11.7l-4-4a1 1 0 0 1 1.5-1.4l5.6 5.7a1 1 0 0 1 0 1.4l-5.6 5.7a1 1 0 0 1-1.5 0 1 1 0 0 1 0-1.4l4-4H2A10 10 0 1 0 12 2z"></path>
+      </svg>
+      <span class="nhsuk-action-link__text">View your business case as others see it</span>
+    </a>
+
+    <p class="nhsuk-u-margin-top-4">
+      <a href="/sketchpad/upload-bc-1" class="nhsuk-button" data-module="nhsuk-button" role="button" draggable="false">
+        Share something else
+      </a>
+    </p>
+
+    <p>
+      <a href="{{ dashboardHref }}" class="nhsuk-link">Return to dashboard</a>
+    </p>
+
+    <hr class="nhsuk-section-break nhsuk-section-break--l nhsuk-section-break--visible">
+
+    <h2 class="nhsuk-heading-m">Do you also have an evaluation to share?</h2>
+
+    <p>A business case is most useful to other trusts when it's paired with a device evaluation. If your trust has assessed this device clinically, sharing that evaluation gives others the full picture.</p>
+
+    <p>
+      <a href="/sketchpad/upload-ev-1" class="nhsuk-button nhsuk-button--secondary" data-module="nhsuk-button" role="button" draggable="false">
+        Share a device evaluation
+      </a>
+    </p>
+
+    <hr class="nhsuk-section-break nhsuk-section-break--l nhsuk-section-break--visible">
+
+    <div id="contact">
+      <div class="nhsuk-card nhsuk-card--care nhsuk-card--care--non-urgent">
+        <div class="nhsuk-card--care__heading-container">
+          <h2 class="nhsuk-card--care__heading">Need help?</h2>
+          <span class="nhsuk-card--care__arrow" aria-hidden="true"></span>
+        </div>
+        <div class="nhsuk-card__content">
+          <p>If you have questions about managing your submissions:</p>
+          <p>Contact the team on 0330 2234 776 or email: <a href="mailto:enquiries@dhsc.gov.uk">enquiries@dhsc.gov.uk</a></p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

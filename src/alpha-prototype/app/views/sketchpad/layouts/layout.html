@@ -1,0 +1,42 @@
+<!--
+  Plain layout for sketchpad pages that are not part of a signed-in journey.
+
+  A local copy of views/layout.html with one change: the header returns to
+  /sketchpad rather than to the prototype homepage, so a participant part-way
+  through a scenario who clicks the header lands back on the scenario list
+  instead of in the dev index.
+
+  The dead /stylesheets/nhsuk-frontend.min.css link in the original is also
+  dropped here. It 404s; /css/main.css is the stylesheet that loads.
+-->
+
+{% extends "prototype-kit-template.njk" %}
+
+{% block head %}
+  <link href="/css/main.css" rel="stylesheet">
+{% endblock %}
+
+{% block header %}
+  {{ header({
+    service: {
+      text: serviceName,
+      href: "/sketchpad"
+    }
+  }) }}
+{% endblock %}
+
+{% block footer %}
+  {% include "includes/footer.html" %}
+{% endblock %}
+
+{% block bodyEnd %}
+  <script src="/nhsuk-frontend/nhsuk-frontend.min.js" type="module"></script>
+  <script type="module">
+    import { initAll } from '/nhsuk-frontend/nhsuk-frontend.min.js'
+    initAll()
+  </script>
+  {% block scripts %}
+    {% include "includes/scripts.html" %}
+    {% block pageScripts %}{% endblock %}
+  {% endblock %}
+{% endblock %}

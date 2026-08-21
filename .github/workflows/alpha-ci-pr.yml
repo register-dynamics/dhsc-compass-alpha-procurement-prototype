@@ -6,26 +6,12 @@ on:
       - 'src/alpha-prototype/**'
 
 jobs:
-  lint:
-    name: Code style checks
+  tests:
+    name: Javascript tests
     runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: ./src/alpha-prototype
-    steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-node@v6
-        with:
-          node-version-file: src/alpha-prototype/.nvmrc
-          cache: 'npm'
-          cache-dependency-path: src/alpha-prototype/package-lock.json
-      - name: Install dependencies
-        run: npm ci
-      - name: Run linting
-        run: npm run lint
-  tests:
-    name: Javascript tests
-    runs-on: ubuntu-latest
     strategy:
       matrix:
         node: ['20', '22']

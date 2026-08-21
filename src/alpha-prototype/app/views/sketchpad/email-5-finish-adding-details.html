@@ -1,0 +1,125 @@
+{% extends 'sketchpad/layouts/layout.html' %}
+
+{% from "back-link/macro.njk" import backLink %}
+{% from "button/macro.njk" import button %}
+{% from "inset-text/macro.njk" import insetText %}
+{% from "sketchpad/_email-header.html" import emailHeader %}
+
+{% set pageName = "Email 5: finish adding your details" %}
+
+{#
+  The chaser email, sent 2 weeks after someone submits part of an upload and
+  stops. Two triggers were described, so both are on this page:
+    1. contact details started but not completed
+    2. an evaluation started but not completed
+
+  Each has a clear way to say no as well as a way to finish, so the nudge does
+  not read as the only option.
+
+  Unlike emails 1 to 4, these show a subject line. For a chaser the subject is
+  what decides whether it gets opened, so it is worth reviewing alongside the
+  message. Add it to the other 4 if the team agrees.
+#}
+
+{% block beforeContent %}
+  {{ backLink({
+    href: "/sketchpad",
+    text: "Back"
+  }) }}
+{% endblock %}
+
+{% block content %}
+  <div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+      <h1 class="nhsuk-heading-l">{{ pageName }}</h1>
+      <p>Sent 2 weeks after someone submits part of an upload and stops. There are 2 triggers, so both versions are below.</p>
+    </div>
+  </div>
+
+  {# ---------- Trigger 1: contact details not finished ---------- #}
+  <div class="nhsuk-grid-row nhsuk-u-margin-top-6">
+    <div class="nhsuk-grid-column-full">
+
+      <h2 class="nhsuk-heading-m">1. Contact details were started but not finished</h2>
+
+      {{ emailHeader("Search and evaluate medical technologies") }}
+
+      <div class="app-email__container">
+        <div class="app-email__message">
+
+          <p class="nhsuk-body-s nhsuk-u-secondary-text-colour nhsuk-u-margin-bottom-4">
+            <strong>Subject:</strong> Add a contact to your SmartPump 300 evaluation
+          </p>
+
+          <p>Dear Tess,</p>
+
+          <p>Two weeks ago you shared your evaluation of the SmartPump 300 Infusion System with other NHS trusts. Thank you.</p>
+
+          <p>You started adding a contact but did not finish, so anyone reading your evaluation has no one to ask about it.</p>
+
+          {{ button({
+            text: "Finish adding a contact",
+            href: "/sketchpad/experience-contact"
+          }) }}
+
+          <p><a href="#">I do not want to be contacted about this evaluation</a></p>
+
+          <p>You can add or remove a contact at any time from your dashboard.</p>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  {# ---------- Trigger 2: evaluation not finished ---------- #}
+  <div class="nhsuk-grid-row nhsuk-u-margin-top-8">
+    <div class="nhsuk-grid-column-full">
+
+      <h2 class="nhsuk-heading-m">2. An evaluation was started but not finished</h2>
+
+      {{ emailHeader("Search and evaluate medical technologies") }}
+
+      <div class="app-email__container">
+        <div class="app-email__message">
+
+          <p class="nhsuk-body-s nhsuk-u-secondary-text-colour nhsuk-u-margin-bottom-4">
+            <strong>Subject:</strong> Your SmartPump 300 evaluation is not shared yet
+          </p>
+
+          <p>Dear Tess,</p>
+
+          <p>Two weeks ago you began sharing an evaluation of the SmartPump 300 Infusion System. It has not been shared with other trusts yet.</p>
+
+          <p>Your answers are saved. You can pick up where you left off.</p>
+
+          {{ button({
+            text: "Finish sharing your evaluation",
+            href: "/sketchpad/upload-ev-2"
+          }) }}
+
+          <p><a href="#">Delete what I started</a></p>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="nhsuk-grid-row nhsuk-u-margin-top-6">
+    <div class="nhsuk-grid-column-two-thirds">
+
+      {{ insetText({
+        html: '<p>Open questions for the team:</p>
+          <ul>
+            <li>What happens if someone ignores this? One chaser only, or a second after another 2 weeks?</li>
+            <li>Does the contact version go to the person who started it, or to the trust\'s named lead?</li>
+            <li>Two weeks was the number discussed. Nothing tested it yet.</li>
+          </ul>'
+      }) }}
+
+      <p><a href="/sketchpad">Back</a></p>
+
+    </div>
+  </div>
+{% endblock %}

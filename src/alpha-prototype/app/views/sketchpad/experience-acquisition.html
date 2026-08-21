@@ -1,0 +1,50 @@
+{% extends 'sketchpad/layouts/layout.html' %}
+{% from "back-link/macro.njk" import backLink %}
+{% from "button/macro.njk" import button %}
+{% set pageName = "What happened when your trust looked at this device?" %}
+{% block beforeContent %}
+  {{ backLink({ href: "/sketchpad/experience-contact", text: "Back" }) }}
+{% endblock %}
+{% block content %}
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+    <span class="nhsuk-caption-l">2 of 3</span>
+    <form action="/sketchpad/experience-document" method="get" novalidate>
+      <div class="nhsuk-form-group">
+        <fieldset class="nhsuk-fieldset" aria-describedby="exp-acq-hint">
+          <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--l">
+            <h1 class="nhsuk-fieldset__heading">{{ pageName }}</h1>
+          </legend>
+          <div class="nhsuk-hint" id="exp-acq-hint">
+            This is what other trusts most want to know.
+          </div>
+          <div class="nhsuk-radios" data-module="nhsuk-radios">
+            <div class="nhsuk-radios__item">
+              <input class="nhsuk-radios__input" id="exp-a-1" name="exp-acquisition" type="radio" value="procured">
+              <label class="nhsuk-label nhsuk-radios__label" for="exp-a-1">We procured it</label>
+            </div>
+            <div class="nhsuk-radios__item">
+              <input class="nhsuk-radios__input" id="exp-a-2" name="exp-acquisition" type="radio" value="in-progress">
+              <label class="nhsuk-label nhsuk-radios__label" for="exp-a-2">We chose it, procurement is still going on</label>
+            </div>
+            <div class="nhsuk-radios__item">
+              <input class="nhsuk-radios__input" id="exp-a-3" name="exp-acquisition" type="radio" value="under-review">
+              <label class="nhsuk-label nhsuk-radios__label" for="exp-a-3">We are still reviewing it</label>
+            </div>
+            <div class="nhsuk-radios__item">
+              <input class="nhsuk-radios__input" id="exp-a-4" name="exp-acquisition" type="radio" value="not-procured">
+              <label class="nhsuk-label nhsuk-radios__label" for="exp-a-4">We did not procure it</label>
+            </div>
+            <div class="nhsuk-radios__item">
+              <input class="nhsuk-radios__input" id="exp-a-5" name="exp-acquisition" type="radio" value="not-sure">
+              <label class="nhsuk-label nhsuk-radios__label" for="exp-a-5">I am not sure</label>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+      {{ button({ text: "Continue" }) }}
+      <p><a href="/sketchpad/experience-document">Skip this step</a></p>
+    </form>
+  </div>
+</div>
+{% endblock %}
