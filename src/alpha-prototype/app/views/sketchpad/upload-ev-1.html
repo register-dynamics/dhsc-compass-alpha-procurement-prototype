@@ -1,0 +1,503 @@
+{% extends 'sketchpad/layouts/layout-signed-in.html' %}
+
+{% from "back-link/macro.njk" import backLink %}
+{% from "input/macro.njk" import input %}
+{% from "textarea/macro.njk" import textarea %}
+{% from "radios/macro.njk" import radios %}
+{% from "checkboxes/macro.njk" import checkboxes %}
+{% from "select/macro.njk" import select %}
+{% from "button/macro.njk" import button %}
+
+{% set pageName = "Share your evaluation" %}
+{% set dashboardHref = "/sketchpad/upload-ev-1-start" %}
+
+{% block beforeContent %}
+  {{ backLink({
+    href: "/sketchpad/upload-ev-1-start",
+    text: "Back"
+  }) }}
+{% endblock %}
+
+{% block content %}
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+
+    <h1 class="nhsuk-heading-l">{{ pageName }}</h1>
+
+    <form action="upload-ev-1-check" method="post" novalidate>
+
+      {# ---------- Your document ---------- #}
+      <h2 class="nhsuk-heading-m nhsuk-u-margin-top-6">Your document</h2>
+
+      <div class="nhsuk-form-group">
+        <label class="nhsuk-label nhsuk-label--s" for="file-upload">Upload your evaluation</label>
+        <div class="nhsuk-hint" id="file-upload-hint">Word, Excel or PDF. You can select more than one file.</div>
+        <input class="nhsuk-input" id="file-upload" name="file-upload" type="file" multiple accept=".pdf,.doc,.docx,.xls,.xlsx" aria-describedby="file-upload-hint">
+      </div>
+
+      {{ input({
+        label: { text: "Link to your document", classes: "nhsuk-label--s" },
+        id: "document-link",
+        name: "document-link",
+        hint: { text: "If you can't upload the document, provide a link to it" }
+      }) }}
+
+      {# ---------- How many devices ---------- #}
+      <div class="nhsuk-form-group nhsuk-u-margin-top-6">
+        <fieldset class="nhsuk-fieldset">
+          <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--m">
+            <h2 class="nhsuk-fieldset__heading">How many devices are evaluated in this upload?</h2>
+          </legend>
+          {{ radios({
+            idPrefix: "evaluation-count",
+            name: "evaluation-count",
+            items: [
+              { value: "1", text: "1 device" },
+              { value: "2", text: "2 devices" },
+              { value: "3", text: "3 devices" },
+              {
+                value: "more",
+                text: "More than 3",
+                conditional: {
+                  html: '<div class="nhsuk-form-group">
+                      <label class="nhsuk-label" for="evaluation-count-other">How many devices?</label>
+                      <input class="nhsuk-input nhsuk-input--width-3" id="evaluation-count-other" name="evaluation-count-other" type="number" min="4" max="10">
+                    </div>'
+                }
+              }
+            ]
+          }) }}
+        </fieldset>
+      </div>
+
+      {# ---------- About the evaluation (new section) ---------- #}
+      <h2 class="nhsuk-heading-m nhsuk-u-margin-top-6">About the evaluation</h2>
+
+      <div class="nhsuk-form-group">
+        <label class="nhsuk-label nhsuk-label--s" for="eval-title">
+          Title (optional)
+        </label>
+        <div class="nhsuk-hint" id="eval-title-hint">A short, descriptive title. For example, 'Evaluation of SmartPump 300, Renal Unit'.</div>
+        <input class="nhsuk-input" id="eval-title" name="eval-title" type="text" aria-describedby="eval-title-hint">
+      </div>
+
+      <div class="nhsuk-form-group">
+        <label class="nhsuk-label nhsuk-label--s" for="patient-population">
+          Patient population (optional)
+        </label>
+        <textarea class="nhsuk-textarea" id="patient-population" name="patient-population" rows="3"></textarea>
+      </div>
+
+      <div class="nhsuk-form-group">
+        <label class="nhsuk-label nhsuk-label--s" for="products-compared">
+          Devices compared (optional)
+        </label>
+        <textarea class="nhsuk-textarea" id="products-compared" name="products-compared" rows="3"></textarea>
+      </div>
+
+      <div class="nhsuk-form-group">
+        <label class="nhsuk-label nhsuk-label--s" for="funding-sources">
+          Funding sources (optional)
+        </label>
+        <textarea class="nhsuk-textarea" id="funding-sources" name="funding-sources" rows="3"></textarea>
+      </div>
+
+      <div class="nhsuk-form-group">
+        <fieldset class="nhsuk-fieldset">
+          <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--s">
+            Was the evaluation a randomised controlled trial (RCT)? (optional)
+          </legend>
+          <div class="nhsuk-radios" data-module="nhsuk-radios">
+            <div class="nhsuk-radios__item">
+              <input class="nhsuk-radios__input" id="rct-yes" name="rct" type="radio" value="yes">
+              <label class="nhsuk-label nhsuk-radios__label" for="rct-yes">Yes</label>
+            </div>
+            <div class="nhsuk-radios__item">
+              <input class="nhsuk-radios__input" id="rct-no" name="rct" type="radio" value="no">
+              <label class="nhsuk-label nhsuk-radios__label" for="rct-no">No</label>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+
+      <div class="nhsuk-form-group">
+        <fieldset class="nhsuk-fieldset">
+          <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--s">
+            Patient Reported Outcome Measures (PROMs) included (optional)
+          </legend>
+          <div class="nhsuk-radios" data-module="nhsuk-radios">
+            <div class="nhsuk-radios__item">
+              <input class="nhsuk-radios__input" id="proms-yes" name="proms" type="radio" value="yes">
+              <label class="nhsuk-label nhsuk-radios__label" for="proms-yes">Yes</label>
+            </div>
+            <div class="nhsuk-radios__item">
+              <input class="nhsuk-radios__input" id="proms-no" name="proms" type="radio" value="no">
+              <label class="nhsuk-label nhsuk-radios__label" for="proms-no">No</label>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+
+      {# ---------- About the trust ---------- #}
+      <h2 class="nhsuk-heading-m nhsuk-u-margin-top-6">About the trust</h2>
+
+      {{ input({
+        label: { text: "Trust name", classes: "nhsuk-label--s" },
+        id: "trust-name", name: "trust-name"
+      }) }}
+
+      {{ select({
+        id: "department", name: "department",
+        label: { text: "Department", classes: "nhsuk-label--s" },
+        hint: { text: "Select the department that conducted this evaluation" },
+        items: [
+          { value: "", text: "Select a department" },
+          { value: "cardiology", text: "Cardiology" },
+          { value: "critical-care", text: "Critical Care / ICU" },
+          { value: "procurement", text: "Procurement" },
+          { value: "renal", text: "Renal Medicine" },
+          { value: "other", text: "Other" }
+        ]
+      }) }}
+
+      {{ input({
+        label: { text: "Evaluation lead (optional)", classes: "nhsuk-label--s" },
+        id: "evaluation-lead", name: "evaluation-lead",
+        hint: { text: "Name of the person who led or supervised this evaluation" }
+      }) }}
+
+      {# ---------- Device cards ---------- #}
+      <h2 class="nhsuk-heading-m nhsuk-u-margin-top-6">The devices evaluated</h2>
+
+      <div class="nhsuk-card nhsuk-u-margin-bottom-4">
+        <div class="nhsuk-card__content">
+          <h3 class="nhsuk-heading-s nhsuk-u-margin-bottom-3">
+            <span class="nhsuk-tag nhsuk-tag--blue nhsuk-u-margin-right-2">1 of 2</span>
+            Device evaluation
+          </h3>
+
+          {{ select({
+            id: "product-1", name: "product-1",
+            label: { text: "Device evaluated", classes: "nhsuk-label--s" },
+            hint: { text: "Search by device name or model number" },
+            items: [
+              { value: "", text: "" },
+              { value: "smartpump", text: "SmartPump Infusion Device Pro" },
+              { value: "medflow", text: "MedFlow Infusion System 3000" },
+              { value: "other", text: "Other - I'll enter the name" }
+            ]
+          }) }}
+
+          {{ input({
+            label: { text: "Evaluation period", classes: "nhsuk-label--s" },
+            id: "eval-period-1", name: "eval-period-1",
+            hint: { text: "Approximate dates are fine. For example, March 2023 to September 2024." }
+          }) }}
+
+          <div class="nhsuk-form-group">
+            <fieldset class="nhsuk-fieldset">
+              <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--s">
+                What was the outcome of this evaluation?
+              </legend>
+              <div class="nhsuk-radios" data-module="nhsuk-radios">
+                <div class="nhsuk-radios__item">
+                  <input class="nhsuk-radios__input" id="outcome-1-procured" name="outcome-1" type="radio" value="procured">
+                  <label class="nhsuk-label nhsuk-radios__label" for="outcome-1-procured">We procured this device</label>
+                </div>
+                <div class="nhsuk-radios__item">
+                  <input class="nhsuk-radios__input" id="outcome-1-in-progress" name="outcome-1" type="radio" value="in-progress">
+                  <label class="nhsuk-label nhsuk-radios__label" for="outcome-1-in-progress">
+                    We chose it, but procurement is still going on
+                  </label>
+                </div>
+                <div class="nhsuk-radios__item" data-aria-controls="conditional-outcome-1">
+                  <input class="nhsuk-radios__input" id="outcome-1-not-procured" name="outcome-1" type="radio" value="not-procured" data-aria-controls="conditional-outcome-1">
+                  <label class="nhsuk-label nhsuk-radios__label" for="outcome-1-not-procured">We did not procure this device</label>
+                </div>
+                <div class="nhsuk-radios__conditional nhsuk-radios__conditional--hidden" id="conditional-outcome-1">
+                  <div class="nhsuk-form-group">
+                    <fieldset class="nhsuk-fieldset">
+                      <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--s">Why was this device not procured?</legend>
+                      <div class="nhsuk-radios nhsuk-radios--small">
+                        <div class="nhsuk-radios__item">
+                          <input class="nhsuk-radios__input" id="why-1a" name="why-1" type="radio" value="decided-against">
+                          <label class="nhsuk-label nhsuk-radios__label" for="why-1a">We decided against it after evaluation</label>
+                        </div>
+                        <div class="nhsuk-radios__item">
+                          <input class="nhsuk-radios__input" id="why-1b" name="why-1" type="radio" value="stopped-using">
+                          <label class="nhsuk-label nhsuk-radios__label" for="why-1b">We stopped using it after a trial or pilot</label>
+                        </div>
+                        <div class="nhsuk-radios__item">
+                          <input class="nhsuk-radios__input" id="why-1c" name="why-1" type="radio" value="budget">
+                          <label class="nhsuk-label nhsuk-radios__label" for="why-1c">We have budget or funding constraints</label>
+                        </div>
+                        <div class="nhsuk-radios__item">
+                          <input class="nhsuk-radios__input" id="why-1d" name="why-1" type="radio" value="other">
+                          <label class="nhsuk-label nhsuk-radios__label" for="why-1d">Another reason</label>
+                        </div>
+                      </div>
+                    </fieldset>
+                  </div>
+                </div>
+              </div>
+            </fieldset>
+          </div>
+
+          {{ textarea({
+            name: "summary-1", id: "summary-1",
+            label: { text: "Brief summary (optional)", classes: "nhsuk-label--s" },
+            hint: { text: "A one-sentence summary of your key findings for this device" },
+            rows: 2
+          }) }}
+
+          {{ input({
+            label: { text: "Page or section reference (optional)", classes: "nhsuk-label--s" },
+            id: "page-ref-1", name: "page-ref-1"
+          }) }}
+        </div>
+      </div>
+
+      <div class="nhsuk-card nhsuk-u-margin-bottom-4">
+        <div class="nhsuk-card__content">
+          <h3 class="nhsuk-heading-s nhsuk-u-margin-bottom-3">
+            <span class="nhsuk-tag nhsuk-tag--blue nhsuk-u-margin-right-2">2 of 2</span>
+            Device evaluation
+          </h3>
+          <p class="nhsuk-body nhsuk-u-secondary-text-colour">The same questions repeat for each device.</p>
+        </div>
+      </div>
+
+      {# ---------- How it was assessed (new section) ---------- #}
+      <h2 class="nhsuk-heading-m nhsuk-u-margin-top-6">How the device was assessed</h2>
+
+      <p>You can skip this section and add it later.</p>
+
+      <div class="nhsuk-form-group">
+        <fieldset class="nhsuk-fieldset">
+          <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--s">
+            Assessed value domains (optional)
+          </legend>
+          <div class="nhsuk-hint">
+            Select all that apply. These are the 5 domains in the
+            <a href="https://www.gov.uk/government/publications/value-based-procurement-for-medical-technology/value-based-procurement-national-standard-guidance-for-medical-technology">national guidance on value based procurement</a>.
+          </div>
+          <div class="nhsuk-checkboxes nhsuk-checkboxes--small" data-module="nhsuk-checkboxes">
+            <div class="nhsuk-checkboxes__item">
+              <input class="nhsuk-checkboxes__input" id="vd-1" name="value-domains" type="checkbox" value="social-value">
+              <label class="nhsuk-label nhsuk-checkboxes__label" for="vd-1">Social value</label>
+            </div>
+            <div class="nhsuk-checkboxes__item">
+              <input class="nhsuk-checkboxes__input" id="vd-2" name="value-domains" type="checkbox" value="efficiency">
+              <label class="nhsuk-label nhsuk-checkboxes__label" for="vd-2">Efficiency</label>
+            </div>
+            <div class="nhsuk-checkboxes__item">
+              <input class="nhsuk-checkboxes__input" id="vd-3" name="value-domains" type="checkbox" value="patient-and-staff">
+              <label class="nhsuk-label nhsuk-checkboxes__label" for="vd-3">Patient and staff</label>
+            </div>
+            <div class="nhsuk-checkboxes__item">
+              <input class="nhsuk-checkboxes__input" id="vd-4" name="value-domains" type="checkbox" value="supply-chain">
+              <label class="nhsuk-label nhsuk-checkboxes__label" for="vd-4">Supply chain</label>
+            </div>
+            <div class="nhsuk-checkboxes__item">
+              <input class="nhsuk-checkboxes__input" id="vd-5" name="value-domains" type="checkbox" value="purpose">
+              <label class="nhsuk-label nhsuk-checkboxes__label" for="vd-5">Purpose</label>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+
+      <div class="nhsuk-form-group">
+        <fieldset class="nhsuk-fieldset">
+          <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--s">
+            NHS priorities (optional)
+          </legend>
+          <div class="nhsuk-hint">Select all that apply</div>
+          <div class="nhsuk-checkboxes nhsuk-checkboxes--small" data-module="nhsuk-checkboxes">
+            <div class="nhsuk-checkboxes__item">
+              <input class="nhsuk-checkboxes__input" id="pri-1" name="nhs-priorities" type="checkbox" value="analogue-to-digital">
+              <label class="nhsuk-label nhsuk-checkboxes__label" for="pri-1">Analogue to digital</label>
+            </div>
+            <div class="nhsuk-checkboxes__item">
+              <input class="nhsuk-checkboxes__input" id="pri-2" name="nhs-priorities" type="checkbox" value="workforce">
+              <label class="nhsuk-label nhsuk-checkboxes__label" for="pri-2">Workforce solutions</label>
+            </div>
+            <div class="nhsuk-checkboxes__item">
+              <input class="nhsuk-checkboxes__input" id="pri-3" name="nhs-priorities" type="checkbox" value="early-cancer-diagnosis">
+              <label class="nhsuk-label nhsuk-checkboxes__label" for="pri-3">Early diagnosis of cancer</label>
+            </div>
+            <div class="nhsuk-checkboxes__item">
+              <input class="nhsuk-checkboxes__input" id="pri-4" name="nhs-priorities" type="checkbox" value="net-zero">
+              <label class="nhsuk-label nhsuk-checkboxes__label" for="pri-4">Net zero</label>
+            </div>
+            <div class="nhsuk-checkboxes__item">
+              <input class="nhsuk-checkboxes__input" id="pri-5" name="nhs-priorities" type="checkbox" value="treatment-to-prevention">
+              <label class="nhsuk-label nhsuk-checkboxes__label" for="pri-5">Treatment to prevention</label>
+            </div>
+            <div class="nhsuk-checkboxes__item">
+              <input class="nhsuk-checkboxes__input" id="pri-6" name="nhs-priorities" type="checkbox" value="elective-recovery">
+              <label class="nhsuk-label nhsuk-checkboxes__label" for="pri-6">Elective recovery</label>
+            </div>
+            <div class="nhsuk-checkboxes__item">
+              <input class="nhsuk-checkboxes__input" id="pri-7" name="nhs-priorities" type="checkbox" value="mental-health">
+              <label class="nhsuk-label nhsuk-checkboxes__label" for="pri-7">Mental health</label>
+            </div>
+            <div class="nhsuk-checkboxes__item">
+              <input class="nhsuk-checkboxes__input" id="pri-8" name="nhs-priorities" type="checkbox" value="cyp">
+              <label class="nhsuk-label nhsuk-checkboxes__label" for="pri-8">Children and young people</label>
+            </div>
+            <div class="nhsuk-checkboxes__item">
+              <input class="nhsuk-checkboxes__input" id="pri-9" name="nhs-priorities" type="checkbox" value="hospital-to-home">
+              <label class="nhsuk-label nhsuk-checkboxes__label" for="pri-9">Hospital to home</label>
+            </div>
+            <div class="nhsuk-checkboxes__item">
+              <input class="nhsuk-checkboxes__input" id="pri-10" name="nhs-priorities" type="checkbox" value="productivity">
+              <label class="nhsuk-label nhsuk-checkboxes__label" for="pri-10">Productivity</label>
+            </div>
+            <div class="nhsuk-checkboxes__item">
+              <input class="nhsuk-checkboxes__input" id="pri-11" name="nhs-priorities" type="checkbox" value="health-inequalities">
+              <label class="nhsuk-label nhsuk-checkboxes__label" for="pri-11">Reducing health inequalities</label>
+            </div>
+            <div class="nhsuk-checkboxes__item">
+              <input class="nhsuk-checkboxes__input" id="pri-12" name="nhs-priorities" type="checkbox" value="patient-experience">
+              <label class="nhsuk-label nhsuk-checkboxes__label" for="pri-12">Patient experience</label>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+
+      <div class="nhsuk-form-group">
+        <fieldset class="nhsuk-fieldset">
+          <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--s">
+            Pathway (optional)
+          </legend>
+          <div class="nhsuk-hint">Select all that apply</div>
+          <div class="nhsuk-checkboxes nhsuk-checkboxes--small" data-module="nhsuk-checkboxes">
+            <div class="nhsuk-checkboxes__item">
+              <input class="nhsuk-checkboxes__input" id="path-1" name="pathway" type="checkbox" value="face-to-face">
+              <label class="nhsuk-label nhsuk-checkboxes__label" for="path-1">Face-to-face</label>
+            </div>
+            <div class="nhsuk-checkboxes__item">
+              <input class="nhsuk-checkboxes__input" id="path-2" name="pathway" type="checkbox" value="autonomous">
+              <label class="nhsuk-label nhsuk-checkboxes__label" for="path-2">Autonomous</label>
+            </div>
+            <div class="nhsuk-checkboxes__item">
+              <input class="nhsuk-checkboxes__input" id="path-3" name="pathway" type="checkbox" value="tele">
+              <label class="nhsuk-label nhsuk-checkboxes__label" for="path-3">Tele</label>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+
+      <div class="nhsuk-form-group">
+        <fieldset class="nhsuk-fieldset">
+          <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--s">
+            National contract or framework (optional)
+          </legend>
+          <div class="nhsuk-radios" data-module="nhsuk-radios">
+            <div class="nhsuk-radios__item">
+              <input class="nhsuk-radios__input" id="framework-yes" name="framework" type="radio" value="yes">
+              <label class="nhsuk-label nhsuk-radios__label" for="framework-yes">Yes</label>
+            </div>
+            <div class="nhsuk-radios__item">
+              <input class="nhsuk-radios__input" id="framework-no" name="framework" type="radio" value="no">
+              <label class="nhsuk-label nhsuk-radios__label" for="framework-no">No</label>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+
+      {# ---------- Contacts ---------- #}
+      <h2 class="nhsuk-heading-m nhsuk-u-margin-top-6">Contacts for queries</h2>
+
+      <div class="nhsuk-card nhsuk-u-margin-bottom-4">
+        <div class="nhsuk-card__content">
+          <h3 class="nhsuk-heading-s nhsuk-u-margin-bottom-3">Contact 1</h3>
+
+          {{ input({ label: { text: "Contact name", classes: "nhsuk-label--s" }, id: "contact-name-1", name: "contact-name-1" }) }}
+
+          {{ select({
+            id: "contact-role-1", name: "contact-role-1",
+            label: { text: "Role", classes: "nhsuk-label--s" },
+            hint: { text: "This helps other trusts direct their question to the right person" },
+            items: [
+              { value: "", text: "Select a role" },
+              { value: "clinical-lead", text: "Clinical lead" },
+              { value: "procurement-lead", text: "Procurement lead" },
+              { value: "nurse-specialist", text: "Nurse specialist" },
+              { value: "other", text: "Other" }
+            ]
+          }) }}
+
+          {{ input({ label: { text: "Email address", classes: "nhsuk-label--s" }, id: "contact-email-1", name: "contact-email-1", type: "email" }) }}
+
+          {{ input({
+            label: { text: "UK phone number (optional)", classes: "nhsuk-label--s" },
+            id: "contact-phone-1", name: "contact-phone-1",
+            hint: { text: "For example, 07700 900000 or 0113 496 0000" }
+          }) }}
+
+          <div class="nhsuk-form-group">
+            <fieldset class="nhsuk-fieldset">
+              <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--s">What are you willing to discuss?</legend>
+              <div class="nhsuk-hint">Select all topics you're happy to be contacted about</div>
+              <div class="nhsuk-checkboxes nhsuk-checkboxes--small" data-module="nhsuk-checkboxes">
+                <div class="nhsuk-checkboxes__item">
+                  <input class="nhsuk-checkboxes__input" id="topic-1" name="contact-topics-1" type="checkbox" value="clinical-outcomes">
+                  <label class="nhsuk-label nhsuk-checkboxes__label" for="topic-1">Clinical outcomes and effectiveness</label>
+                </div>
+                <div class="nhsuk-checkboxes__item">
+                  <input class="nhsuk-checkboxes__input" id="topic-2" name="contact-topics-1" type="checkbox" value="evaluation-methodology">
+                  <label class="nhsuk-label nhsuk-checkboxes__label" for="topic-2">Evaluation methodology</label>
+                </div>
+                <div class="nhsuk-checkboxes__item">
+                  <input class="nhsuk-checkboxes__input" id="topic-3" name="contact-topics-1" type="checkbox" value="implementation">
+                  <label class="nhsuk-label nhsuk-checkboxes__label" for="topic-3">Implementation and training</label>
+                </div>
+                <div class="nhsuk-checkboxes__item">
+                  <input class="nhsuk-checkboxes__input" id="topic-4" name="contact-topics-1" type="checkbox" value="integration">
+                  <label class="nhsuk-label nhsuk-checkboxes__label" for="topic-4">System integration</label>
+                </div>
+                <div class="nhsuk-checkboxes__item">
+                  <input class="nhsuk-checkboxes__input" id="topic-5" name="contact-topics-1" type="checkbox" value="procurement-process">
+                  <label class="nhsuk-label nhsuk-checkboxes__label" for="topic-5">Procurement process</label>
+                </div>
+                <div class="nhsuk-checkboxes__item">
+                  <input class="nhsuk-checkboxes__input" id="topic-6" name="contact-topics-1" type="checkbox" value="costs">
+                  <label class="nhsuk-label nhsuk-checkboxes__label" for="topic-6">Costs and value</label>
+                </div>
+                <div class="nhsuk-checkboxes__item">
+                  <input class="nhsuk-checkboxes__input" id="topic-7" name="contact-topics-1" type="checkbox" value="supplier-experience">
+                  <label class="nhsuk-label nhsuk-checkboxes__label" for="topic-7">Supplier experience</label>
+                </div>
+                <div class="nhsuk-checkboxes__item">
+                  <input class="nhsuk-checkboxes__input" id="topic-8" name="contact-topics-1" type="checkbox" value="other" data-aria-controls="conditional-topic-other">
+                  <label class="nhsuk-label nhsuk-checkboxes__label" for="topic-8">
+                    Something else
+                  </label>
+                </div>
+                <div class="nhsuk-checkboxes__conditional nhsuk-checkboxes__conditional--hidden" id="conditional-topic-other">
+                  <div class="nhsuk-form-group">
+                    <label class="nhsuk-label" for="topic-other">What else are you happy to discuss?</label>
+                    <textarea class="nhsuk-textarea" id="topic-other" name="topic-other" rows="2"></textarea>
+                  </div>
+                </div>
+              </div>
+            </fieldset>
+          </div>
+        </div>
+      </div>
+
+      <div class="nhsuk-card nhsuk-u-margin-bottom-4">
+        <div class="nhsuk-card__content">
+          <h3 class="nhsuk-heading-s nhsuk-u-margin-bottom-3">Contact 2</h3>
+          <p class="nhsuk-body nhsuk-u-secondary-text-colour">The same questions repeat for each contact.</p>
+        </div>
+      </div>
+
+      {{ button({ text: "Continue" }) }}
+
+    </form>
+
+  </div>
+</div>
+{% endblock %}

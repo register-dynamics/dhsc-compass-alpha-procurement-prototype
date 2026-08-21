@@ -1,0 +1,75 @@
+{% extends 'sketchpad/layouts/layout-signed-in.html' %}
+{% from "back-link/macro.njk" import backLink %}
+{% from "input/macro.njk" import input %}
+{% from "button/macro.njk" import button %}
+{% set pageName = "About this business case" %}
+{% set dashboardHref = "/sketchpad/upload-bc-2-start" %}
+{% block beforeContent %}
+  {{ backLink({ href: "/sketchpad/upload-bc-2-details", text: "Back" }) }}
+{% endblock %}
+{% block content %}
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+    <h1 class="nhsuk-heading-l">{{ pageName }}</h1>
+    <form action="/sketchpad/upload-bc-2-costs" method="get" novalidate>
+
+      {{ input({
+        label: { text: "Title", classes: "nhsuk-label--s" },
+        id: "bc-d-title", name: "bc-d-title",
+        hint: { text: "A short, descriptive title. For example, 'Business case for VitalGuard Monitor X1, Critical Care Unit'." }
+      }) }}
+
+      {{ input({
+        label: { text: "Date of business case", classes: "nhsuk-label--s" },
+        id: "bc-d-date", name: "bc-d-date",
+        hint: { text: "The month and year it was written or approved" }
+      }) }}
+
+      <div class="nhsuk-form-group">
+        <fieldset class="nhsuk-fieldset" aria-describedby="bc-covers-hint">
+          <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--s">What does this business case cover?</legend>
+          <div class="nhsuk-hint" id="bc-covers-hint">Select all that apply</div>
+          <div class="nhsuk-checkboxes nhsuk-checkboxes--small" data-module="nhsuk-checkboxes">
+            <div class="nhsuk-checkboxes__item">
+              <input class="nhsuk-checkboxes__input" id="bc-c-1" name="bc-d-covers" type="checkbox" value="clinical-need">
+              <label class="nhsuk-label nhsuk-checkboxes__label" for="bc-c-1">Clinical need and rationale</label>
+            </div>
+            <div class="nhsuk-checkboxes__item">
+              <input class="nhsuk-checkboxes__input" id="bc-c-2" name="bc-d-covers" type="checkbox" value="cost-benefit">
+              <label class="nhsuk-label nhsuk-checkboxes__label" for="bc-c-2">Financial analysis and cost-benefit</label>
+            </div>
+            <div class="nhsuk-checkboxes__item">
+              <input class="nhsuk-checkboxes__input" id="bc-c-3" name="bc-d-covers" type="checkbox" value="options-appraisal">
+              <label class="nhsuk-label nhsuk-checkboxes__label" for="bc-c-3">Options appraisal</label>
+            </div>
+            <div class="nhsuk-checkboxes__item">
+              <input class="nhsuk-checkboxes__input" id="bc-c-4" name="bc-d-covers" type="checkbox" value="implementation">
+              <label class="nhsuk-label nhsuk-checkboxes__label" for="bc-c-4">Implementation plan</label>
+            </div>
+            <div class="nhsuk-checkboxes__item">
+              <input class="nhsuk-checkboxes__input" id="bc-c-5" name="bc-d-covers" type="checkbox" value="risk">
+              <label class="nhsuk-label nhsuk-checkboxes__label" for="bc-c-5">Risk assessment</label>
+            </div>
+            <div class="nhsuk-checkboxes__item">
+              <input class="nhsuk-checkboxes__input" id="bc-c-6" name="bc-d-covers" type="checkbox" value="governance">
+              <label class="nhsuk-label nhsuk-checkboxes__label" for="bc-c-6">Governance and approvals</label>
+            </div>
+            <div class="nhsuk-checkboxes__item">
+              <input class="nhsuk-checkboxes__input" id="bc-c-7" name="bc-d-covers" type="checkbox" value="other" data-aria-controls="bc-covers-other">
+              <label class="nhsuk-label nhsuk-checkboxes__label" for="bc-c-7">Something else</label>
+            </div>
+            <div class="nhsuk-checkboxes__conditional nhsuk-checkboxes__conditional--hidden" id="bc-covers-other">
+              <div class="nhsuk-form-group">
+                <label class="nhsuk-label" for="bc-covers-other-text">What else does it cover?</label>
+                <textarea class="nhsuk-textarea" id="bc-covers-other-text" name="bc-covers-other-text" rows="2"></textarea>
+              </div>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+
+      {{ button({ text: "Continue" }) }}
+    </form>
+  </div>
+</div>
+{% endblock %}

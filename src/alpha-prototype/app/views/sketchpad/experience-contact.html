@@ -1,0 +1,53 @@
+{% extends 'sketchpad/layouts/layout.html' %}
+{% from "back-link/macro.njk" import backLink %}
+{% from "button/macro.njk" import button %}
+{% set pageName = "Who should other trusts contact about your experience?" %}
+{% block beforeContent %}
+  {{ backLink({ href: "/sketchpad/experience-added", text: "Back" }) }}
+{% endblock %}
+{% block content %}
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+    <span class="nhsuk-caption-l">1 of 3</span>
+    <form action="/sketchpad/experience-acquisition" method="get" novalidate>
+      <div class="nhsuk-form-group">
+        <fieldset class="nhsuk-fieldset" aria-describedby="exp-contact-hint">
+          <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--l">
+            <h1 class="nhsuk-fieldset__heading">{{ pageName }}</h1>
+          </legend>
+          <div class="nhsuk-hint" id="exp-contact-hint">
+            A named contact is the single most useful thing you can add.
+          </div>
+          <div class="nhsuk-radios" data-module="nhsuk-radios">
+            <div class="nhsuk-radios__item">
+              <input class="nhsuk-radios__input" id="exp-c-me" name="exp-contact" type="radio" value="me">
+              <label class="nhsuk-label nhsuk-radios__label" for="exp-c-me">Me</label>
+              <div class="nhsuk-hint nhsuk-radios__hint">Dr Tess Sawyer, tess.sawyer@nhs.net</div>
+            </div>
+            <div class="nhsuk-radios__item">
+              <input class="nhsuk-radios__input" id="exp-c-else" name="exp-contact" type="radio" value="someone-else" data-aria-controls="exp-contact-other">
+              <label class="nhsuk-label nhsuk-radios__label" for="exp-c-else">Someone else</label>
+            </div>
+            <div class="nhsuk-radios__conditional nhsuk-radios__conditional--hidden" id="exp-contact-other">
+              <div class="nhsuk-form-group">
+                <label class="nhsuk-label" for="exp-contact-name">Contact name</label>
+                <input class="nhsuk-input" id="exp-contact-name" name="exp-contact-name" type="text">
+              </div>
+              <div class="nhsuk-form-group">
+                <label class="nhsuk-label" for="exp-contact-email">Email address</label>
+                <input class="nhsuk-input" id="exp-contact-email" name="exp-contact-email" type="email">
+              </div>
+            </div>
+            <div class="nhsuk-radios__item">
+              <input class="nhsuk-radios__input" id="exp-c-none" name="exp-contact" type="radio" value="none">
+              <label class="nhsuk-label nhsuk-radios__label" for="exp-c-none">Nobody, do not show a contact</label>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+      {{ button({ text: "Continue" }) }}
+      <p><a href="/sketchpad/experience-acquisition">Skip this step</a></p>
+    </form>
+  </div>
+</div>
+{% endblock %}
