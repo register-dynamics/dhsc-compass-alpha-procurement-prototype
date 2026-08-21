@@ -1,0 +1,62 @@
+{% extends 'sketchpad/layouts/layout-signed-in.html' %}
+
+{% from "back-link/macro.njk" import backLink %}
+{% from "radios/macro.njk" import radios %}
+{% from "button/macro.njk" import button %}
+
+{% set pageName = "Why was this device not procured?" %}
+{% set dashboardHref = "/sketchpad/upload-ev-2-start" %}
+
+{% block beforeContent %}
+  {{ backLink({ href: "/sketchpad/upload-ev-2-details", text: "Back" }) }}
+{% endblock %}
+
+{% block content %}
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+
+    <form action="/sketchpad/upload-ev-2-details-1" method="get" novalidate>
+
+      <div class="nhsuk-form-group">
+        <fieldset class="nhsuk-fieldset">
+          <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--l">
+            <h1 class="nhsuk-fieldset__heading">{{ pageName }}</h1>
+          </legend>
+          <div class="nhsuk-radios" data-module="nhsuk-radios">
+            <div class="nhsuk-radios__item">
+              <input class="nhsuk-radios__input" id="why-1" name="why-not" type="radio" value="decided-against">
+              <label class="nhsuk-label nhsuk-radios__label" for="why-1">We decided against it after evaluation</label>
+            </div>
+            <div class="nhsuk-radios__item">
+              <input class="nhsuk-radios__input" id="why-2" name="why-not" type="radio" value="stopped-using">
+              <label class="nhsuk-label nhsuk-radios__label" for="why-2">We stopped using it after a trial or pilot</label>
+            </div>
+            <div class="nhsuk-radios__item">
+              <input class="nhsuk-radios__input" id="why-3" name="why-not" type="radio" value="budget">
+              <label class="nhsuk-label nhsuk-radios__label" for="why-3">We have budget or funding constraints</label>
+            </div>
+            <div class="nhsuk-radios__item">
+              <input class="nhsuk-radios__input" id="why-4" name="why-not" type="radio" value="other" data-aria-controls="conditional-why">
+              <label class="nhsuk-label nhsuk-radios__label" for="why-4">Another reason</label>
+            </div>
+            <div class="nhsuk-radios__conditional nhsuk-radios__conditional--hidden" id="conditional-why">
+              <div class="nhsuk-form-group">
+                <label class="nhsuk-label" for="why-other">What was the reason?</label>
+                <textarea class="nhsuk-textarea" id="why-other" name="why-other" rows="2"></textarea>
+              </div>
+            <div class="nhsuk-radios__item">
+              <input class="nhsuk-radios__input" id="why-5" name="why-not" type="radio" value="later">
+              <label class="nhsuk-label nhsuk-radios__label" for="why-5">I will add this later</label>
+            </div>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+
+      {{ button({ text: "Continue" }) }}
+
+    </form>
+
+  </div>
+</div>
+{% endblock %}

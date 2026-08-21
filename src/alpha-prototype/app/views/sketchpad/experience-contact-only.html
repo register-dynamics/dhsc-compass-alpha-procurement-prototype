@@ -1,0 +1,42 @@
+{% extends 'sketchpad/layouts/layout.html' %}
+{% from "back-link/macro.njk" import backLink %}
+{% from "button/macro.njk" import button %}
+{% set pageName = "Add yourself as a contact for this device" %}
+{% block beforeContent %}
+  {{ backLink({ href: "/sketchpad/experience-device-page", text: "Back" }) }}
+{% endblock %}
+{% block content %}
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+
+    <h1 class="nhsuk-heading-l">{{ pageName }}</h1>
+
+    <dl class="nhsuk-summary-list nhsuk-u-margin-bottom-6">
+      <div class="nhsuk-summary-list__row">
+        <dt class="nhsuk-summary-list__key">Contact</dt>
+        <dd class="nhsuk-summary-list__value">Dr Tess Sawyer, Consultant<br>tess.sawyer@nhs.net</dd>
+        <dd class="nhsuk-summary-list__actions"><a href="#">Change<span class="nhsuk-u-visually-hidden"> contact details</span></a></dd>
+      </div>
+      <div class="nhsuk-summary-list__row">
+        <dt class="nhsuk-summary-list__key">Device</dt>
+        <dd class="nhsuk-summary-list__value">SmartPump 300 Infusion System</dd>
+        <dd class="nhsuk-summary-list__actions"></dd>
+      </div>
+    </dl>
+
+    <p>Other NHS trusts will see your name and email on this device, and will be able to contact
+      you about it.</p>
+
+    <p>This also lists Barts Health NHS Trust as having experience with the device.</p>
+
+    <p>You can change this later.</p>
+
+    <form action="/sketchpad/experience-done" method="get" novalidate>
+      {{ button({ text: "Confirm and add me as a contact" }) }}
+    </form>
+
+    <p><a href="/sketchpad/experience-device-page">Cancel</a></p>
+
+  </div>
+</div>
+{% endblock %}

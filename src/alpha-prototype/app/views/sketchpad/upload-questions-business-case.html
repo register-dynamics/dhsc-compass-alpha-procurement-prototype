@@ -1,0 +1,272 @@
+{% extends 'layout.html' %}
+
+{% from "back-link/macro.njk" import backLink %}
+{% from "radios/macro.njk" import radios %}
+{% from "checkboxes/macro.njk" import checkboxes %}
+{% from "textarea/macro.njk" import textarea %}
+{% from "select/macro.njk" import select %}
+{% from "button/macro.njk" import button %}
+
+{% set pageName = "Upload a business case: new questions" %}
+
+{% block beforeContent %}
+  {{ backLink({
+    href: "/sketchpad",
+    text: "Back"
+  }) }}
+{% endblock %}
+
+{% block content %}
+  <div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-two-thirds">
+
+      <h1 class="nhsuk-heading-l">{{ pageName }}</h1>
+
+
+      <form action="#" method="post" novalidate>
+
+        <div class="nhsuk-form-group nhsuk-u-margin-top-6">
+          <fieldset class="nhsuk-fieldset">
+            <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--m">
+              <h2 class="nhsuk-fieldset__heading">
+                How many devices does this business case cover?
+              </h2>
+            </legend>
+            {{ radios({
+              idPrefix: "bc-product-count",
+              name: "bc-product-count",
+              items: [
+                { value: "1", text: "1 device" },
+                { value: "2", text: "2 devices" },
+                { value: "3", text: "3 devices" },
+                {
+                  value: "more",
+                  text: "More than 3",
+                  conditional: {
+                    html: '<div class="nhsuk-form-group">
+                        <label class="nhsuk-label" for="bc-product-count-other">How many devices?</label>
+                        <input class="nhsuk-input nhsuk-input--width-3" id="bc-product-count-other" name="bc-product-count-other" type="number" min="4" max="10">
+                      </div>'
+                  }
+                }
+              ]
+            }) }}
+          </fieldset>
+        </div>
+
+        <div class="nhsuk-card nhsuk-u-margin-bottom-4">
+          <div class="nhsuk-card__content">
+            <h3 class="nhsuk-heading-m nhsuk-u-margin-bottom-3">
+              <span class="nhsuk-tag nhsuk-tag--blue nhsuk-u-margin-right-2">1 of 2</span>
+              Device
+            </h3>
+
+            {{ select({
+              id: "bc-product-1",
+              name: "bc-product-1",
+              label: {
+                text: "Which device does this business case relate to?",
+                classes: "nhsuk-label--s"
+              },
+              hint: {
+                text: "Search by device name or model number"
+              },
+              items: [
+                { value: "", text: "" },
+                { value: "smartpump-infusion-device-pro", text: "SmartPump Infusion Device Pro" },
+                { value: "medflow-infusion-system", text: "MedFlow Infusion System 3000" },
+                { value: "vitalguard-patient-monitor", text: "VitalGuard Patient Monitor X1" },
+                { value: "scanmaster-ultrasound", text: "ScanMaster Portable Ultrasound" },
+                { value: "other", text: "Other - I'll enter the name" }
+              ]
+            }) }}
+          </div>
+        </div>
+
+        <div class="nhsuk-card nhsuk-u-margin-bottom-4">
+          <div class="nhsuk-card__content">
+            <h3 class="nhsuk-heading-m nhsuk-u-margin-bottom-3">
+              <span class="nhsuk-tag nhsuk-tag--blue nhsuk-u-margin-right-2">2 of 2</span>
+              Device
+            </h3>
+
+            {{ select({
+              id: "bc-product-2",
+              name: "bc-product-2",
+              label: {
+                text: "Which device does this business case relate to?",
+                classes: "nhsuk-label--s"
+              },
+              hint: {
+                text: "Search by device name or model number"
+              },
+              items: [
+                { value: "", text: "" },
+                { value: "smartpump-infusion-device-pro", text: "SmartPump Infusion Device Pro" },
+                { value: "medflow-infusion-system", text: "MedFlow Infusion System 3000" },
+                { value: "vitalguard-patient-monitor", text: "VitalGuard Patient Monitor X1" },
+                { value: "scanmaster-ultrasound", text: "ScanMaster Portable Ultrasound" },
+                { value: "other", text: "Other - I'll enter the name" }
+              ]
+            }) }}
+          </div>
+        </div>
+
+        <h2 class="nhsuk-heading-m nhsuk-u-margin-top-6">Costs</h2>
+
+        {{ checkboxes({
+          name: "cost-basis",
+          idPrefix: "cost-basis",
+          fieldset: {
+            legend: {
+              text: "What kind of costs does this business case show? (optional)",
+              classes: "nhsuk-fieldset__legend--s"
+            }
+          },
+          hint: {
+            text: "Select all that apply. Other trusts can only compare costs measured the same way."
+          },
+          items: [
+            {
+              value: "annual",
+              text: "Annual cost",
+              hint: { text: "What it costs to run for a year" }
+            },
+            {
+              value: "whole-life",
+              text: "Whole life cost",
+              hint: { text: "Total cost across the lifetime of the device" }
+            },
+            {
+              value: "per-unit",
+              text: "Cost per unit",
+              hint: { text: "What one item or device costs" }
+            },
+            {
+              value: "patient-level",
+              text: "Cost per patient",
+              hint: { text: "What it costs for each patient treated" }
+            }
+          ]
+        }) }}
+
+        <h2 class="nhsuk-heading-m nhsuk-u-margin-top-6">What the business case covers</h2>
+
+        {{ checkboxes({
+          idPrefix: "bc-type",
+          name: "bc-type",
+          fieldset: {
+            legend: {
+              text: "What does this business case cover?",
+              classes: "nhsuk-fieldset__legend--s"
+            }
+          },
+          hint: {
+            text: "Select all that apply"
+          },
+          items: [
+            {
+              value: "clinical-need",
+              text: "Clinical need and rationale",
+              hint: { text: "Evidence of why the device or change is needed" }
+            },
+            {
+              value: "cost-benefit",
+              text: "Financial analysis and cost-benefit",
+              hint: { text: "Total cost of ownership, ROI, savings projections" }
+            },
+            {
+              value: "options-appraisal",
+              text: "Options appraisal",
+              hint: { text: "Comparison of shortlisted devices or approaches" }
+            },
+            {
+              value: "implementation",
+              text: "Implementation plan",
+              hint: { text: "Rollout timeline, training, change management" }
+            },
+            {
+              value: "risk",
+              text: "Risk assessment",
+              hint: { text: "Identified risks and mitigations" }
+            },
+            {
+              value: "governance",
+              text: "Governance and approvals",
+              hint: { text: "Sign-off requirements, committee approvals" }
+            },
+            {
+              value: "other",
+              text: "Something else",
+              conditional: {
+                html: '<div class="nhsuk-form-group">
+                    <label class="nhsuk-label" for="bc-type-other">What else does it cover?</label>
+                    <textarea class="nhsuk-textarea" id="bc-type-other" name="bc-type-other" rows="2"></textarea>
+                  </div>'
+              }
+            }
+          ]
+        }) }}
+
+        <h2 class="nhsuk-heading-m nhsuk-u-margin-top-6">Contact for queries</h2>
+
+        {{ checkboxes({
+          name: "contact-topics",
+          idPrefix: "contact-topics",
+          fieldset: {
+            legend: {
+              text: "What are you willing to discuss? (optional)",
+              classes: "nhsuk-fieldset__legend--s"
+            }
+          },
+          hint: {
+            text: "Select all topics you're happy to be contacted about"
+          },
+          items: [
+            {
+              value: "costs",
+              text: "Costs and savings",
+              hint: { text: "How you worked out the figures and what they were based on" }
+            },
+            {
+              value: "approval",
+              text: "Approval process",
+              hint: { text: "Who approved it and what they asked for" }
+            },
+            {
+              value: "clinical-need",
+              text: "Clinical need and rationale",
+              hint: { text: "Why the device or change was needed" }
+            },
+            {
+              value: "options-appraisal",
+              text: "Options appraisal",
+              hint: { text: "What else you considered and why you did not choose it" }
+            },
+            {
+              value: "implementation",
+              text: "Implementation and training",
+              hint: { text: "Rollout, staff training, change management" }
+            },
+            {
+              value: "other",
+              text: "Something else",
+              conditional: {
+                html: '<div class="nhsuk-form-group">
+                    <label class="nhsuk-label" for="contact-topics-other">What else are you happy to discuss?</label>
+                    <textarea class="nhsuk-textarea" id="contact-topics-other" name="contact-topics-other" rows="2"></textarea>
+                  </div>'
+              }
+            }
+          ]
+        }) }}
+
+        {{ button({
+          text: "Continue"
+        }) }}
+
+      </form>
+
+    </div>
+  </div>
+{% endblock %}

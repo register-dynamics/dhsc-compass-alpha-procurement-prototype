@@ -1,0 +1,65 @@
+{% extends 'sketchpad/layouts/layout-signed-in.html' %}
+
+{% from "back-link/macro.njk" import backLink %}
+{% from "button/macro.njk" import button %}
+
+{% set pageName = "Do you want to add details that help other trusts find this document?" %}
+{% set dashboardHref = "/sketchpad/upload-ev-2-start" %}
+
+{% block beforeContent %}
+  {{ backLink({ href: "/sketchpad/upload-ev-2-another", text: "Back" }) }}
+{% endblock %}
+
+{% block content %}
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+
+    {% set startDetails = "/sketchpad/upload-ev-2-details-1" %}
+    {% if data['procured-any'] == 'no' %}{% set startDetails = "/sketchpad/upload-ev-2-why-not" %}{% endif %}
+
+    <form action="" method="get" novalidate id="branch-form">
+      <div class="nhsuk-form-group">
+        <fieldset class="nhsuk-fieldset">
+          <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--l">
+            <h1 class="nhsuk-fieldset__heading">{{ pageName }}</h1>
+          </legend>
+          <div class="nhsuk-hint">
+            Details like the patient population and how you assessed the device help people judge
+            whether it applies to their trust. It takes about 2 minutes.
+          </div>
+          <div class="nhsuk-radios" data-module="nhsuk-radios">
+            <div class="nhsuk-radios__item">
+              <input class="nhsuk-radios__input" id="details-yes" name="add-details" type="radio" value="yes" data-next="{{ startDetails }}">
+              <label class="nhsuk-label nhsuk-radios__label" for="details-yes">Yes, add them now</label>
+            </div>
+            <div class="nhsuk-radios__item">
+              <input class="nhsuk-radios__input" id="details-later" name="add-details" type="radio" value="later" data-next="/sketchpad/upload-ev-2-done">
+              <label class="nhsuk-label nhsuk-radios__label" for="details-later">Not now, I will add them later</label>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+      {{ button({ text: "Continue" }) }}
+    </form>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block pageScripts %}
+<script>
+  // Prototype only. The real service branches in routes.js, see the kit's branching guide.
+  document.addEventListener('DOMContentLoaded', function () {
+    var form = document.querySelector('#branch-form')
+    if (!form) return
+
+    form.addEventListener('submit', function (event) {
+      event.preventDefault()
+      var chosen = form.querySelector('input[type="radio"]:checked')
+      if (chosen && chosen.dataset.next) {
+        window.location.href = chosen.dataset.next
+      }
+    })
+  })
+</script>
+{% endblock %}

@@ -1,0 +1,62 @@
+{% extends 'sketchpad/layouts/layout-signed-in.html' %}
+
+{% from "panel/macro.njk" import panel %}
+
+{% set pageName = "Document shared" %}
+{% set dashboardHref = "/sketchpad/upload-ev-2-start" %}
+
+{% block content %}
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+
+    {{ panel({
+      titleText: "Document shared",
+      headingLevel: 1,
+      text: "Other trusts can now find it"
+    }) }}
+
+    <h2 class="nhsuk-heading-s nhsuk-u-margin-top-5">What we filled in for you</h2>
+
+    <dl class="nhsuk-summary-list">
+      <div class="nhsuk-summary-list__row">
+        <dt class="nhsuk-summary-list__key">Trust</dt>
+        <dd class="nhsuk-summary-list__value">Barts Health NHS Trust</dd>
+        <dd class="nhsuk-summary-list__actions"><a href="#">Change<span class="nhsuk-u-visually-hidden"> trust</span></a></dd>
+      </div>
+      <div class="nhsuk-summary-list__row">
+        <dt class="nhsuk-summary-list__key">Shared by</dt>
+        <dd class="nhsuk-summary-list__value">Dr Tess Sawyer, Consultant</dd>
+        <dd class="nhsuk-summary-list__actions"><a href="#">Change<span class="nhsuk-u-visually-hidden"> contact</span></a></dd>
+      </div>
+      <div class="nhsuk-summary-list__row">
+        <dt class="nhsuk-summary-list__key">Devices</dt>
+        <dd class="nhsuk-summary-list__value">
+          SmartPump 300 Infusion System<br>
+          MedFlow Infusion System 3000
+        </dd>
+        <dd class="nhsuk-summary-list__actions"><a href="/sketchpad/upload-ev-2-product">Change<span class="nhsuk-u-visually-hidden"> devices</span></a></dd>
+      </div>
+      <div class="nhsuk-summary-list__row">
+        <dt class="nhsuk-summary-list__key">Category</dt>
+        <dd class="nhsuk-summary-list__value">Infusion pump</dd>
+        <dd class="nhsuk-summary-list__actions"></dd>
+      </div>
+      <div class="nhsuk-summary-list__row">
+        <dt class="nhsuk-summary-list__key">Document type</dt>
+        <dd class="nhsuk-summary-list__value">Device evaluation</dd>
+        <dd class="nhsuk-summary-list__actions"><a href="#">Change<span class="nhsuk-u-visually-hidden"> document type</span></a></dd>
+      </div>
+      <div class="nhsuk-summary-list__row">
+        <dt class="nhsuk-summary-list__key">Title</dt>
+        <dd class="nhsuk-summary-list__value">SmartPump 300 renal evaluation 2024.pdf</dd>
+        <dd class="nhsuk-summary-list__actions"><a href="#">Change<span class="nhsuk-u-visually-hidden"> title</span></a></dd>
+      </div>
+    </dl>
+
+    <p><a href="#">Add details so more people find it</a></p>
+    <p><a href="/sketchpad/upload-ev-2">Share another document</a></p>
+    <p><a href="{{ dashboardHref }}">Return to dashboard</a></p>
+
+  </div>
+</div>
+{% endblock %}

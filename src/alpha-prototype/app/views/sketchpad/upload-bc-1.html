@@ -1,0 +1,332 @@
+{% extends 'sketchpad/layouts/layout-signed-in.html' %}
+
+{% from "back-link/macro.njk" import backLink %}
+{% from "input/macro.njk" import input %}
+{% from "textarea/macro.njk" import textarea %}
+{% from "radios/macro.njk" import radios %}
+{% from "select/macro.njk" import select %}
+{% from "button/macro.njk" import button %}
+
+{% set pageName = "Upload a business case" %}
+{% set dashboardHref = "/sketchpad/upload-bc-1-start" %}
+
+{% block beforeContent %}
+  {{ backLink({
+    href: "/sketchpad/upload-bc-1-start",
+    text: "Back"
+  }) }}
+{% endblock %}
+
+{% block content %}
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+
+    <h1 class="nhsuk-heading-l">{{ pageName }}</h1>
+
+    <form action="upload-bc-1-check" method="post" novalidate>
+
+      {# ---------- Your document ---------- #}
+      <h2 class="nhsuk-heading-m nhsuk-u-margin-top-6">Your document</h2>
+
+      <div class="nhsuk-form-group">
+        <label class="nhsuk-label nhsuk-label--s" for="bc-file-upload">Upload your business case</label>
+        <div class="nhsuk-hint" id="bc-file-upload-hint">Word, Excel or PDF</div>
+        <input class="nhsuk-input" id="bc-file-upload" name="bc-file-upload" type="file" accept=".pdf,.doc,.docx,.xls,.xlsx" aria-describedby="bc-file-upload-hint">
+      </div>
+
+      {{ input({
+        label: { text: "Link to your document", classes: "nhsuk-label--s" },
+        id: "bc-document-link", name: "bc-document-link",
+        hint: { text: "If you can't upload the document, provide a link to it" }
+      }) }}
+
+      {# ---------- Devices ---------- #}
+      <div class="nhsuk-form-group nhsuk-u-margin-top-6">
+        <fieldset class="nhsuk-fieldset">
+          <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--m">
+            <h2 class="nhsuk-fieldset__heading">
+              How many devices does this business case cover?
+            </h2>
+          </legend>
+          {{ radios({
+            idPrefix: "bc-product-count",
+            name: "bc-product-count",
+            items: [
+              { value: "1", text: "1 device" },
+              { value: "2", text: "2 devices" },
+              { value: "3", text: "3 devices" },
+              {
+                value: "more",
+                text: "More than 3",
+                conditional: {
+                  html: '<div class="nhsuk-form-group">
+                      <label class="nhsuk-label" for="bc-product-count-other">How many devices?</label>
+                      <input class="nhsuk-input nhsuk-input--width-3" id="bc-product-count-other" name="bc-product-count-other" type="number" min="4" max="10">
+                    </div>'
+                }
+              }
+            ]
+          }) }}
+        </fieldset>
+      </div>
+
+      <div class="nhsuk-card nhsuk-u-margin-bottom-4">
+        <div class="nhsuk-card__content">
+          <h3 class="nhsuk-heading-s nhsuk-u-margin-bottom-3">
+            <span class="nhsuk-tag nhsuk-tag--blue nhsuk-u-margin-right-2">1 of 2</span>
+            Device
+          </h3>
+          {{ select({
+            id: "bc-product-1", name: "bc-product-1",
+            label: { text: "Which device does this business case relate to?", classes: "nhsuk-label--s" },
+            hint: { text: "Search by device name or model number" },
+            items: [
+              { value: "", text: "" },
+              { value: "smartpump", text: "SmartPump Infusion Device Pro" },
+              { value: "medflow", text: "MedFlow Infusion System 3000" },
+              { value: "vitalguard", text: "VitalGuard Patient Monitor X1" },
+              { value: "other", text: "Other - I'll enter the name" }
+            ]
+          }) }}
+        </div>
+      </div>
+
+      <div class="nhsuk-card nhsuk-u-margin-bottom-4">
+        <div class="nhsuk-card__content">
+          <h3 class="nhsuk-heading-s nhsuk-u-margin-bottom-3">
+            <span class="nhsuk-tag nhsuk-tag--blue nhsuk-u-margin-right-2">2 of 2</span>
+            Device
+          </h3>
+          <p class="nhsuk-body nhsuk-u-secondary-text-colour">The same question repeats for each device.</p>
+        </div>
+      </div>
+
+      {# ---------- About this business case ---------- #}
+      <h2 class="nhsuk-heading-m nhsuk-u-margin-top-6">About this business case</h2>
+
+      {{ input({
+        label: { text: "Title", classes: "nhsuk-label--s" },
+        id: "bc-title", name: "bc-title",
+        hint: { text: "A short, descriptive title. For example, 'Business case for VitalGuard Monitor X1, Critical Care Unit'." }
+      }) }}
+
+      {{ input({
+        label: { text: "Date of business case", classes: "nhsuk-label--s" },
+        id: "bc-date", name: "bc-date",
+        hint: { text: "The month and year this business case was written or approved" }
+      }) }}
+
+      <div class="nhsuk-form-group">
+        <fieldset class="nhsuk-fieldset">
+          <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--s">What does this business case cover?</legend>
+          <div class="nhsuk-hint">Select all that apply</div>
+          <div class="nhsuk-checkboxes nhsuk-checkboxes--small" data-module="nhsuk-checkboxes">
+            <div class="nhsuk-checkboxes__item">
+              <input class="nhsuk-checkboxes__input" id="bc-type-1" name="bc-type" type="checkbox" value="clinical-need">
+              <label class="nhsuk-label nhsuk-checkboxes__label" for="bc-type-1">Clinical need and rationale</label>
+            </div>
+            <div class="nhsuk-checkboxes__item">
+              <input class="nhsuk-checkboxes__input" id="bc-type-2" name="bc-type" type="checkbox" value="cost-benefit">
+              <label class="nhsuk-label nhsuk-checkboxes__label" for="bc-type-2">Financial analysis and cost-benefit</label>
+            </div>
+            <div class="nhsuk-checkboxes__item">
+              <input class="nhsuk-checkboxes__input" id="bc-type-3" name="bc-type" type="checkbox" value="options-appraisal">
+              <label class="nhsuk-label nhsuk-checkboxes__label" for="bc-type-3">Options appraisal</label>
+            </div>
+            <div class="nhsuk-checkboxes__item">
+              <input class="nhsuk-checkboxes__input" id="bc-type-4" name="bc-type" type="checkbox" value="implementation">
+              <label class="nhsuk-label nhsuk-checkboxes__label" for="bc-type-4">Implementation plan</label>
+            </div>
+            <div class="nhsuk-checkboxes__item">
+              <input class="nhsuk-checkboxes__input" id="bc-type-5" name="bc-type" type="checkbox" value="risk">
+              <label class="nhsuk-label nhsuk-checkboxes__label" for="bc-type-5">Risk assessment</label>
+            </div>
+            <div class="nhsuk-checkboxes__item">
+              <input class="nhsuk-checkboxes__input" id="bc-type-6" name="bc-type" type="checkbox" value="governance">
+              <label class="nhsuk-label nhsuk-checkboxes__label" for="bc-type-6">Governance and approvals</label>
+            </div>
+            <div class="nhsuk-checkboxes__item">
+              <input class="nhsuk-checkboxes__input" id="bc-type-7" name="bc-type" type="checkbox" value="other" data-aria-controls="conditional-bc-type-other">
+              <label class="nhsuk-label nhsuk-checkboxes__label" for="bc-type-7">
+                Something else
+              </label>
+            </div>
+            <div class="nhsuk-checkboxes__conditional nhsuk-checkboxes__conditional--hidden" id="conditional-bc-type-other">
+              <div class="nhsuk-form-group">
+                <label class="nhsuk-label" for="bc-type-other">What else does it cover?</label>
+                <textarea class="nhsuk-textarea" id="bc-type-other" name="bc-type-other" rows="2"></textarea>
+              </div>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+
+      <div class="nhsuk-form-group">
+        <fieldset class="nhsuk-fieldset">
+          <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--s">
+            What kind of costs does this business case show? (optional)
+          </legend>
+          <div class="nhsuk-hint">Select all that apply. Other trusts can only compare costs measured the same way.</div>
+          <div class="nhsuk-checkboxes nhsuk-checkboxes--small" data-module="nhsuk-checkboxes">
+            <div class="nhsuk-checkboxes__item">
+              <input class="nhsuk-checkboxes__input" id="cost-1" name="cost-basis" type="checkbox" value="annual">
+              <label class="nhsuk-label nhsuk-checkboxes__label" for="cost-1">Annual cost</label>
+              <div class="nhsuk-hint nhsuk-checkboxes__hint">What it costs to run for a year</div>
+            </div>
+            <div class="nhsuk-checkboxes__item">
+              <input class="nhsuk-checkboxes__input" id="cost-2" name="cost-basis" type="checkbox" value="whole-life">
+              <label class="nhsuk-label nhsuk-checkboxes__label" for="cost-2">Whole life cost</label>
+              <div class="nhsuk-hint nhsuk-checkboxes__hint">Total cost across the lifetime of the device</div>
+            </div>
+            <div class="nhsuk-checkboxes__item">
+              <input class="nhsuk-checkboxes__input" id="cost-3" name="cost-basis" type="checkbox" value="per-unit">
+              <label class="nhsuk-label nhsuk-checkboxes__label" for="cost-3">Cost per unit</label>
+              <div class="nhsuk-hint nhsuk-checkboxes__hint">What one item or device costs</div>
+            </div>
+            <div class="nhsuk-checkboxes__item">
+              <input class="nhsuk-checkboxes__input" id="cost-4" name="cost-basis" type="checkbox" value="patient-level">
+              <label class="nhsuk-label nhsuk-checkboxes__label" for="cost-4">Cost per patient</label>
+              <div class="nhsuk-hint nhsuk-checkboxes__hint">What it costs for each patient treated</div>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+
+      <div class="nhsuk-form-group">
+        <fieldset class="nhsuk-fieldset">
+          <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--s">Was this business case approved?</legend>
+          <div class="nhsuk-radios" data-module="nhsuk-radios">
+            <div class="nhsuk-radios__item">
+              <input class="nhsuk-radios__input" id="bc-approved-yes" name="bc-approved" type="radio" value="yes">
+              <label class="nhsuk-label nhsuk-radios__label" for="bc-approved-yes">Yes, it was approved and procurement proceeded</label>
+            </div>
+            <div class="nhsuk-radios__item">
+              <input class="nhsuk-radios__input" id="bc-approved-no" name="bc-approved" type="radio" value="no">
+              <label class="nhsuk-label nhsuk-radios__label" for="bc-approved-no">No, it was rejected or not taken forward</label>
+            </div>
+            <div class="nhsuk-radios__item">
+              <input class="nhsuk-radios__input" id="bc-approved-pending" name="bc-approved" type="radio" value="pending">
+              <label class="nhsuk-label nhsuk-radios__label" for="bc-approved-pending">Pending, it's awaiting decision</label>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+
+      {{ textarea({
+        name: "bc-summary", id: "bc-summary",
+        label: { text: "Brief summary (optional)", classes: "nhsuk-label--s" },
+        hint: { text: "A one or two sentence summary of this business case" },
+        rows: 3
+      }) }}
+
+      {# ---------- About your trust ---------- #}
+      <h2 class="nhsuk-heading-m nhsuk-u-margin-top-6">About your trust</h2>
+
+      {{ input({ label: { text: "Your trust", classes: "nhsuk-label--s" }, id: "bc-trust", name: "bc-trust" }) }}
+
+      {{ select({
+        id: "bc-department", name: "bc-department",
+        label: { text: "Department", classes: "nhsuk-label--s" },
+        hint: { text: "The department that authored or submitted this business case" },
+        items: [
+          { value: "", text: "Select a department" },
+          { value: "procurement", text: "Procurement" },
+          { value: "finance", text: "Finance" },
+          { value: "clinical-engineering", text: "Clinical Engineering" },
+          { value: "critical-care", text: "Critical Care / ICU" },
+          { value: "other", text: "Other" }
+        ]
+      }) }}
+
+      {# ---------- Contact ---------- #}
+      <h2 class="nhsuk-heading-m nhsuk-u-margin-top-6">Contact for queries</h2>
+
+      <div class="nhsuk-card nhsuk-u-margin-bottom-4">
+        <div class="nhsuk-card__content">
+          <h3 class="nhsuk-heading-s nhsuk-u-margin-bottom-3">Contact 1</h3>
+
+          {{ input({ label: { text: "Contact name", classes: "nhsuk-label--s" }, id: "bc-contact-name-1", name: "bc-contact-name-1" }) }}
+
+          {{ select({
+            id: "bc-contact-role-1", name: "bc-contact-role-1",
+            label: { text: "Role", classes: "nhsuk-label--s" },
+            hint: { text: "This helps other trusts direct their question to the right person" },
+            items: [
+              { value: "", text: "Select a role" },
+              { value: "procurement-lead", text: "Procurement lead" },
+              { value: "finance-lead", text: "Finance lead" },
+              { value: "clinical-lead", text: "Clinical lead" },
+              { value: "other", text: "Other" }
+            ]
+          }) }}
+
+          {{ input({ label: { text: "Email address", classes: "nhsuk-label--s" }, id: "bc-contact-email-1", name: "bc-contact-email-1", type: "email" }) }}
+
+          {{ input({
+            label: { text: "UK phone number (optional)", classes: "nhsuk-label--s" },
+            id: "bc-contact-phone-1", name: "bc-contact-phone-1",
+            hint: { text: "For example, 07700 900000 or 0113 496 0000" }
+          }) }}
+
+          <div class="nhsuk-form-group">
+            <fieldset class="nhsuk-fieldset">
+              <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--s">
+                What are you willing to discuss? (optional)
+              </legend>
+              <div class="nhsuk-hint">Select all topics you're happy to be contacted about</div>
+              <div class="nhsuk-checkboxes nhsuk-checkboxes--small" data-module="nhsuk-checkboxes">
+                <div class="nhsuk-checkboxes__item">
+                  <input class="nhsuk-checkboxes__input" id="bc-topic-1" name="bc-contact-topics" type="checkbox" value="costs">
+                  <label class="nhsuk-label nhsuk-checkboxes__label" for="bc-topic-1">Costs and savings</label>
+                  <div class="nhsuk-hint nhsuk-checkboxes__hint">How you worked out the figures and what they were based on</div>
+                </div>
+                <div class="nhsuk-checkboxes__item">
+                  <input class="nhsuk-checkboxes__input" id="bc-topic-2" name="bc-contact-topics" type="checkbox" value="approval">
+                  <label class="nhsuk-label nhsuk-checkboxes__label" for="bc-topic-2">Approval process</label>
+                  <div class="nhsuk-hint nhsuk-checkboxes__hint">Who approved it and what they asked for</div>
+                </div>
+                <div class="nhsuk-checkboxes__item">
+                  <input class="nhsuk-checkboxes__input" id="bc-topic-3" name="bc-contact-topics" type="checkbox" value="clinical-need">
+                  <label class="nhsuk-label nhsuk-checkboxes__label" for="bc-topic-3">Clinical need and rationale</label>
+                  <div class="nhsuk-hint nhsuk-checkboxes__hint">Why the device or change was needed</div>
+                </div>
+                <div class="nhsuk-checkboxes__item">
+                  <input class="nhsuk-checkboxes__input" id="bc-topic-4" name="bc-contact-topics" type="checkbox" value="options-appraisal">
+                  <label class="nhsuk-label nhsuk-checkboxes__label" for="bc-topic-4">Options appraisal</label>
+                  <div class="nhsuk-hint nhsuk-checkboxes__hint">What else you considered and why you did not choose it</div>
+                </div>
+                <div class="nhsuk-checkboxes__item">
+                  <input class="nhsuk-checkboxes__input" id="bc-topic-5" name="bc-contact-topics" type="checkbox" value="implementation">
+                  <label class="nhsuk-label nhsuk-checkboxes__label" for="bc-topic-5">Implementation and training</label>
+                  <div class="nhsuk-hint nhsuk-checkboxes__hint">Rollout, staff training, change management</div>
+                </div>
+                <div class="nhsuk-checkboxes__item">
+                  <input class="nhsuk-checkboxes__input" id="bc-topic-6" name="bc-contact-topics" type="checkbox" value="other" data-aria-controls="conditional-bc-topic-other">
+                  <label class="nhsuk-label nhsuk-checkboxes__label" for="bc-topic-6">Something else</label>
+                </div>
+                <div class="nhsuk-checkboxes__conditional nhsuk-checkboxes__conditional--hidden" id="conditional-bc-topic-other">
+                  <div class="nhsuk-form-group">
+                    <label class="nhsuk-label" for="bc-topic-other">What else are you happy to discuss?</label>
+                    <textarea class="nhsuk-textarea" id="bc-topic-other" name="bc-topic-other" rows="2"></textarea>
+                  </div>
+                </div>
+              </div>
+            </fieldset>
+          </div>
+        </div>
+      </div>
+
+      <div class="nhsuk-card nhsuk-u-margin-bottom-4">
+        <div class="nhsuk-card__content">
+          <h3 class="nhsuk-heading-s nhsuk-u-margin-bottom-3">Contact 2</h3>
+          <p class="nhsuk-body nhsuk-u-secondary-text-colour">The same questions repeat for each contact.</p>
+        </div>
+      </div>
+
+      {{ button({ text: "Continue" }) }}
+
+    </form>
+
+  </div>
+</div>
+{% endblock %}
