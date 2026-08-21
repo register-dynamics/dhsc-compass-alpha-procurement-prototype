@@ -8,7 +8,6 @@ export const renderSearch = (req: Request, res: Response) => {
 };
 
 export const renderSearchResults = async (req: Request, res: Response) => {
-
   const searchTerm = typeof req.query.q === "string" ? req.query.q : "";
   const sanitisedSearchTerm = `"${searchTerm}"`;
   const pageSize = config.search.pageSize;

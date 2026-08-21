@@ -1,12 +1,16 @@
 import { Router } from "express";
 
-import { renderSignIn } from "../controllers/session.controller.js";
+import {
+  postSignIn,
+  renderSignIn,
+  signOut,
+} from "../controllers/session.controller.js";
 
 const router = Router();
 
 router.get("/sign-in", renderSignIn);
-router.post("/sign-in", () => { throw new Error("Function not implemented."); });
+router.post("/sign-in", postSignIn);
 
-router.get("/sign-out", () => { throw new Error("Function not implemented."); });
+router.get("/sign-out", signOut);
 
 export default router;

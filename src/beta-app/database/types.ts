@@ -4,6 +4,7 @@ import { Generated, Selectable } from "kysely";
 export interface Database {
   organisation: OrganisationTable;
   search: SearchTable;
+  users: UserTable;
 }
 
 export type Organisation = Selectable<OrganisationTable>;
@@ -28,4 +29,17 @@ export interface SearchTable {
 
   // FTS5 virtual table column for MATCH
   search: string;
+}
+
+export type User = Selectable<UserTable>;
+
+export interface UserTable {
+  id: Generated<number>;
+  username: string;
+  passwordHash: string;
+  oidcSubject: string;
+  givenName: string;
+  lastName: string;
+  createdAt: Generated<Date>;
+  modifiedAt: Date;
 }

@@ -4,7 +4,7 @@ import { describe, expect, it } from "vitest";
 import app from "../app.js";
 
 describe("Beta app server (integration)", () => {
-    it("GET / should return 200 and welcome message with content-type text/html", async () => {
+  it("GET / should return 200 and welcome message with content-type text/html", async () => {
     const response = await request(app).get("/");
 
     expect(response.status).toBe(200);

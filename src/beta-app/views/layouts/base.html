@@ -11,6 +11,19 @@
   {{ serviceName }} – NHS 
 {%- endblock %}
 
+{# Set account items for the current user to be used in headers #}
+{% if currentUser %}
+  {% set accountItems = [
+    { text: currentUser.givenName ~ " " ~ currentUser.lastName, icon: true },
+    { text: "Log out", href: "/sign-out" }
+  ] %}
+{% else %}
+  {% set accountItems = [
+    { text: "Log in", href: "/sign-in" }
+  ] %}
+{% endif %}
+
+
 {% block header %}
   {{ header({
     logo: { href: "/", ariaLabel: "Search and evaluate medical technologies" },
@@ -19,6 +32,9 @@
       items: [
         { text: "Search", href: "/search" }
       ]
+    },
+    account: {
+      items: accountItems
     }
   }) }}
 

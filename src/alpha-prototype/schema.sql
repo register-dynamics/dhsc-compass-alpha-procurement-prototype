@@ -115,6 +115,17 @@ CREATE TABLE IF NOT EXISTS `document_contacts` (
   PRIMARY KEY (`document_id`, `contact_id`)
 );
 
+CREATE TABLE IF NOT EXISTS `users` (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  username TEXT UNIQUE,
+  password_hash TEXT,
+  oidc_subject TEXT UNIQUE,
+  given_name TEXT NOT NULL,
+  last_name TEXT NOT NULL,
+  created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  modified_at TEXT
+);
+
 
 CREATE VIRTUAL TABLE search USING fts5(MAKE_ID, MODEL_ID, DEVICE_ID, MAKE, MODEL, GMDN_NAME, TYPE, PRODUCT_CODE, MANUFACTURER, COUNTRY, UDI, GMDN_CODE)
 /* search(MAKE_ID,MODEL_ID,DEVICE_ID,MAKE,MODEL,GMDN_NAME,TYPE,PRODUCT_CODE,MANUFACTURER,COUNTRY,UDI,GMDN_CODE) */;
@@ -321,3 +332,7 @@ INSERT INTO document_contacts (document_id, contact_id, discuss_implementation, 
   (8912, 8, 1, 0, 0, 0, 0, 0, 0),
   (9123, 9, 0, 1, 0, 1, 0, 1, 0),
   (13456, 10, 1, 1, 1, 1, 1, 1, 1);
+
+-- Seed user for beta app login
+INSERT INTO users (username, password_hash, given_name, last_name) VALUES
+  ('test@example.com', '$argon2id$v=19$m=65536,p=4,t=3$FOt9ovCYjfa8MBG+0xhOiA$ql+3cvHd48lV8auNcHSU/Wjw3Lfr1IFRRroA32XFhKM', 'Johnny', 'Test');

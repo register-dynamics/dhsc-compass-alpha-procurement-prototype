@@ -32,17 +32,24 @@
   "dependencies": {
     "@types/better-sqlite3": "^9.6.0",
     "@types/nunjucks": "^3.2.6",
+    "argon2": "^0.45.1",
     "better-sqlite3": "^13.0.3",
     "express": "^5.2.1",
+    "express-session": "^1.19.0",
     "kysely": "^0.29.5",
     "nhsuk-frontend": "^10.6.0",
-    "nunjucks": "^3.2.4"
+    "nunjucks": "^3.2.4",
+    "passport": "^0.7.0",
+    "passport-local": "^1.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@tsconfig/node26": "^26.0.0",
     "@types/express": "^5.0.6",
+    "@types/express-session": "^1.19.0",
     "@types/node": "^26.2.0",
+    "@types/passport": "^1.0.17",
+    "@types/passport-local": "^1.0.38",
     "@types/supertest": "^7.2.1",
     "@vitest/coverage-v8": "^1.0.0",
     "@vitest/eslint-plugin": "^1.0.0",
