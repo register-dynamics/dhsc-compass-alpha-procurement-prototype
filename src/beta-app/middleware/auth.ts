@@ -1,4 +1,4 @@
-import type { Express } from "express";
+import type { Express, RequestHandler } from "express";
 
 import argon2 from "argon2";
 import passport from "passport";
@@ -71,4 +71,12 @@ passport.deserializeUser((id, done) => {
 export const initializeAuth = (app: Express) => {
   app.use(passport.initialize());
   app.use(passport.session());
+};
+
+export const ensureAuthenticated: RequestHandler = (req, res, next) => {
+  if (req.isAuthenticated()) {
+    next();
+    return;
+  }
+  res.redirect("/sign-in");
 };
