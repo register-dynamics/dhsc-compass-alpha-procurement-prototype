@@ -9,7 +9,9 @@ jobs:
   tests:
     name: Javascript tests
     runs-on: ubuntu-latest
-    working-directory: ./src/alpha-prototype
+    defaults:
+      run:
+        working-directory: ./src/alpha-prototype
     strategy:
       matrix:
         node: ['20', '22']
