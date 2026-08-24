@@ -1,7 +1,7 @@
 const allTrusts = require('./trusts')
 
 const Database = require('better-sqlite3')
-const db = new Database('G:/Compass/test.db', { readonly: true }) //Replace database path with correct local directory
+const db = new Database('database.db', { readonly: true }) //Replace database path with correct local directory
 
 const router = require('express').Router()
 

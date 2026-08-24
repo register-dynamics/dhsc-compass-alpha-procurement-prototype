@@ -11,7 +11,7 @@
 // always gets the same answers, so filtering is repeatable between sessions.
 
 const Database = require('better-sqlite3')
-const db = new Database('G:/Compass/test.db', { readonly: true })
+const db = new Database('database.db', { readonly: true })
 
 const router = require('express').Router()
 
