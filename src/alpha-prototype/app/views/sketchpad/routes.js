@@ -6,12 +6,12 @@
 //
 // The database holds the device catalogue - make, model, manufacturer, category,
 // type, country. It does not hold the answers to the upload questions, so every
-// filter below the category filter is generated from the device's MODEL_ID using
+// filter below the category filter is generated from the device's PRODUCT_ID using
 // the same trick current/routes.js already uses for procurement data. A device
 // always gets the same answers, so filtering is repeatable between sessions.
 
 const Database = require('better-sqlite3')
-const db = new Database('database.db', { readonly: true })
+const db = new Database('G:/Compass/test.db', { readonly: true })
 
 const router = require('express').Router()
 
@@ -196,10 +196,10 @@ function optionsFor(name) {
   return FILTERS.find(f => f.name === name).options
 }
 
-// The generated answers for one device. Seeded on MODEL_ID, so the same device
+// The generated answers for one device. Seeded on PRODUCT_ID, so the same device
 // always gets the same answers.
-function mockAnswers(modelId) {
-  const rand = mb32(modelId)
+function mockAnswers(productId) {
+  const rand = mb32(productId)
 
   // Most devices in a real catalogue have been procured by somebody, so the
   // spread here is weighted rather than even.
@@ -231,8 +231,8 @@ function mockAnswers(modelId) {
 }
 
 const pageSize = 25
-const allQuery = db.prepare('select MAKE_ID, MODEL_ID, DEVICE_ID, MAKE, MODEL, MANUFACTURER, GMDN_NAME, TYPE, COUNTRY from search')
-const termQuery = db.prepare('select MAKE_ID, MODEL_ID, DEVICE_ID, MAKE, MODEL, MANUFACTURER, GMDN_NAME, TYPE, COUNTRY from search where search match @term')
+const allQuery = db.prepare('select PRODUCT_ID, DEVICE_ID, PRODUCT_NAME, MODEL, MANUFACTURER, GMDN_NAME, TYPE, COUNTRY from search')
+const termQuery = db.prepare('select PRODUCT_ID, DEVICE_ID, PRODUCT_NAME, MODEL, MANUFACTURER, GMDN_NAME, TYPE, COUNTRY from search where search match @term')
 
 // Escape double quotes for FTS5, as current/routes.js does.
 function formatFtsTerm(term) {
@@ -266,15 +266,14 @@ router.get(/search-/, (req, res, next) => {
 
   const devices = rows.map(row => ({
     make: row.MAKE,
-    make_id: row.MAKE_ID,
+    make_id: row.PRODUCT_ID,
     model: row.MODEL,
-    model_id: row.MODEL_ID,
     device_id: row.DEVICE_ID,
     manufacturer: row.MANUFACTURER,
     category: row.GMDN_NAME,
     type: row.TYPE,
     country: row.COUNTRY,
-    answers: mockAnswers(row.MODEL_ID)
+    answers: mockAnswers(row.PRODUCT_ID)
   }))
 
   const chosenByGroup = { category: selected(req, 'category') }
