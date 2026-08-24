@@ -1,4 +1,4 @@
-#!/bin/sh
+npm#!/bin/sh
 
 set -e
 
