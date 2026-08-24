@@ -18,12 +18,12 @@
         name: productName | default("product-picker", false),
         classes:"govuk-input--width-20",
         label: {
-          text: productLabelText | default("Select a product", false),
+          text: productLabelText | default("Select a device", false),
           classes:'nhsuk-!-font-weight-bold',
           name: productName | default("product-picker", false)
         },
         hint: {
-          text: productHint | default("Search by product name or model number", false)
+          text: productHint | default("Search by device name or model number", false)
         },
         value: productValue or data[productName or productID or "product"] or "",
         items: [
