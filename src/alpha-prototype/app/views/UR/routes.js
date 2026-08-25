@@ -228,7 +228,7 @@ router.get(/product-page/, (req, res, next) => {
       organisation_type: result.org_type_desc,
       organisation_category: result.org_category_desc,
       summary: "This a placeholder summary for NJR reports",
-      url: result.url
+      url: result.url_directory
     }
   })
   }
