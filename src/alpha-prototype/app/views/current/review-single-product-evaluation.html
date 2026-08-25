@@ -58,6 +58,11 @@
           key: { text: "Trust" },
           value: { text: organisation.name },
           actions: { items: [{ href: previousPage, text: "Change", visuallyHiddenText: "trust" }] }
+        },
+        {
+          key: { text: "Ward/Department" },
+          value: { text: data['ward-dept'] },
+          actions: { items: [{ href: previousPage, text: "Change", visuallyHiddenText: "ward or department" }] }
         }
       ]
     }) }}

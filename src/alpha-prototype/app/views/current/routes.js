@@ -256,7 +256,7 @@ const findContactQuery = db.prepare(`SELECT contact_id FROM contacts WHERE title
 
 const createContactQuery = db.prepare(`INSERT INTO contacts (title, given_name, surname, email, phone_no, role) VALUES (?,?,?,?,?,?)`)
 
-const createDocumentQuery = db.prepare(`INSERT INTO documents (upload_date, expiry_date, assessment_date, type_of_doc_id, organisation_id, org_category_id, org_type_id, summary, url_directory) VALUES (DATE(),?,?,(SELECT type_of_doc_id FROM document_type WHERE type_of_doc_desc = 'Evaluation'),?,(SELECT org_category_id FROM org_category WHERE org_category_desc='Trusted'),(SELECT org_type_id FROM org_type WHERE org_type_desc = 'NHS Trust'),?,?)`)
+const createDocumentQuery = db.prepare(`INSERT INTO documents (upload_date, expiry_date, assessment_date, type_of_doc_id, organisation_id, org_category_id, org_type_id, ward_department, summary, url_directory) VALUES (DATE(),?,?,(SELECT type_of_doc_id FROM document_type WHERE type_of_doc_desc = 'Evaluation'),?,(SELECT org_category_id FROM org_category WHERE org_category_desc='Trusted'),(SELECT org_type_id FROM org_type WHERE org_type_desc = 'NHS Trust'),?,?,?)`)
 
 const createDocumentContactQuery = db.prepare(`INSERT INTO document_contacts (document_id, contact_id, discuss_implementation, discuss_training, discuss_outcomes, discuss_pharmacy_integration, discuss_business_case, discuss_real_world_use, discuss_EHR_integration) VALUES (?,?,?,?,?,?,?,?,?)`)
 
@@ -294,7 +294,7 @@ router.post(/submit-single-product-evaluation/, async function (req, res, next) 
   await fs.unlink(data.upload.filepath)
   url = newName
   
-  const docRes = createDocumentQuery.run(expiry_date, assessment_date, organisation, data['summary'], url)
+  const docRes = createDocumentQuery.run(expiry_date, assessment_date, organisation, data['ward-dept'], data['summary'], url)
   const documentId = docRes.lastInsertRowid
   console.log("CREATED DOCUMENT, ID = ", documentId)
 
