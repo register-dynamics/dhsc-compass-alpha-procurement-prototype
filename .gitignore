@@ -150,4 +150,4 @@ Thumbs.db
 *.db
 
 # Alpha prototype build folder
-public/
+/src/alpha-prototype/public/

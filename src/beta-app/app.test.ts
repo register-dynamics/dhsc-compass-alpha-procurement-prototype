@@ -8,8 +8,7 @@ describe("Beta app server (integration)", () => {
     const response = await request(app).get("/");
 
     expect(response.status).toBe(200);
-    expect(response.text).toContain("Hello, world!");
-    expect(response.text).toContain("Compass");
+    expect(response.text).toContain("Search and evaluate medical technologies");
   });
 
   it("GET /nonexistent should return 404", async () => {
