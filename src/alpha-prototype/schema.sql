@@ -66,7 +66,7 @@ CREATE TABLE IF NOT EXISTS "device_make" (
 	PRIMARY KEY("make_id")
 );
 CREATE TABLE IF NOT EXISTS "documents" (
-	"document_id"	INTEGER,
+	"document_id"	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
 	"upload_date"	TEXT,
 	"expiry_date"	TEXT,
 	"assessment_date"	BLOB,
@@ -85,7 +85,6 @@ CREATE TABLE IF NOT EXISTS "documents" (
 	"is_update"	NUMERIC,
 	"parent_id"	INTEGER,
 	"url_directory" TEXT,
-	PRIMARY KEY("document_id"),
 	FOREIGN KEY("parent_id") REFERENCES "documents"("document_id"),
 	FOREIGN KEY("organisation_id") REFERENCES "organisation"("organisation_id"),
 	FOREIGN KEY("type_of_doc_id") REFERENCES "document_type"("type_of_doc_id"),
