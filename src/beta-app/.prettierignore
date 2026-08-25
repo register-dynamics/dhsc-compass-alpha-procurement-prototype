@@ -1,2 +1,9 @@
 dist
 public
+
+# Ignore html views for now until we can get a nunjucks plugin working with prettier
+# TODO: Get a nunjucks plugin working with prettier
+views/**/*.html
+
+# Ignore database files
+*.db

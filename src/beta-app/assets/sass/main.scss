@@ -3,6 +3,7 @@
 
 // Import your custom CSS/Sass styles below.
 @use "components/hero" as *;
+@use "components/search-filter" as *;
 
 // TODO: Do we need this?
 .nhsuk-width-container {
