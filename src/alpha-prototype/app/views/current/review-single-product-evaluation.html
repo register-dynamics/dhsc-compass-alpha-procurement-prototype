@@ -4,6 +4,8 @@
 <!-- We're not doing anything to escape the URL parameter -->
 {% set previousPage = "share-single-product-evaluation?make=" + data.make %}
 
+{% set procurementDescription = { 'yes': 'Procured', 'no': 'Not procured' } %}
+
 {% block beforeContent %}
   {{ breadcrumb({
     items: [
@@ -43,6 +45,11 @@
         {
           key: { text: "Expiry date" },
           value: { text: data['expiry-month'] + " " + data['expiry-year'] },
+          actions: { items: [{ href: previousPage, text: "Change", visuallyHiddenText: "summary" }] }
+        },
+        {
+          key: { text: "Procurement outcome" },
+          value: { text: procurementDescription[data['procured']] },
           actions: { items: [{ href: previousPage, text: "Change", visuallyHiddenText: "summary" }] }
         }
       ]

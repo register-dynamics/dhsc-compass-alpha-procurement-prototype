@@ -5,7 +5,7 @@ const db = new Database('database.db', { readonly: false }) //Replace database p
 
 const router = require('express').Router()
 const formidable = require('formidable').formidable;
-const fs = require('fs/promises');
+const fs = require('fs');
 
 
 // Set version for all templates in this folder
@@ -256,15 +256,13 @@ const findContactQuery = db.prepare(`SELECT contact_id FROM contacts WHERE title
 
 const createContactQuery = db.prepare(`INSERT INTO contacts (title, given_name, surname, email, phone_no, role) VALUES (?,?,?,?,?,?)`)
 
-const createDocumentQuery = db.prepare(`INSERT INTO documents (upload_date, expiry_date, assessment_date, type_of_doc_id, organisation_id, org_category_id, org_type_id, ward_department, summary, url_directory) VALUES (DATE(),?,?,(SELECT type_of_doc_id FROM document_type WHERE type_of_doc_desc = 'Evaluation'),?,(SELECT org_category_id FROM org_category WHERE org_category_desc='Trusted'),(SELECT org_type_id FROM org_type WHERE org_type_desc = 'NHS Trust'),?,?,?)`)
+const createDocumentQuery = db.prepare(`INSERT INTO documents (upload_date, expiry_date, assessment_date, type_of_doc_id, organisation_id, org_category_id, org_type_id, ward_department, summary, url_directory, procured) VALUES (DATE(),?,?,(SELECT type_of_doc_id FROM document_type WHERE type_of_doc_desc = 'Evaluation'),?,(SELECT org_category_id FROM org_category WHERE org_category_desc='Trusted'),(SELECT org_type_id FROM org_type WHERE org_type_desc = 'NHS Trust'),?,?,?,?)`)
 
 const createDocumentContactQuery = db.prepare(`INSERT INTO document_contacts (document_id, contact_id, discuss_implementation, discuss_training, discuss_outcomes, discuss_pharmacy_integration, discuss_business_case, discuss_real_world_use, discuss_EHR_integration) VALUES (?,?,?,?,?,?,?,?,?)`)
 
 const createMatchMakeQuery = db.prepare(`INSERT INTO matches_make (make_id, document_id) VALUES (?,?)`)
 
-router.post(/submit-single-product-evaluation/, async function (req, res, next) {
-  console.log("POST submit-single-product-evaluation")
-
+const createDocument = db.transaction((req) => {
   data = req.session.data;
   make = parseInt(data['make'])
   organisation = parseInt(data['organisation'])
@@ -290,11 +288,18 @@ router.post(/submit-single-product-evaluation/, async function (req, res, next) 
   const localFilename = 'app/assets/pdf/' + newName
   console.log("MOVING FILE", data.upload.filepath, localFilename)
   // Copy then remove, as /tmp and /compass/app are on different filesstems in the container
-  await fs.copyFile(data.upload.filepath, localFilename)
-  await fs.unlink(data.upload.filepath)
+  fs.copyFileSync(data.upload.filepath, localFilename)
+  fs.unlinkSync(data.upload.filepath)
   url = newName
-  
-  const docRes = createDocumentQuery.run(expiry_date, assessment_date, organisation, data['ward-dept'], data['summary'], url)
+
+  var procured;
+  if (data['procured'] == 'yes') {
+    procured = 1;
+  } else {
+    procured = 0;
+  }
+
+  const docRes = createDocumentQuery.run(expiry_date, assessment_date, organisation, data['ward-dept'], data['summary'], url, procured)
   const documentId = docRes.lastInsertRowid
   console.log("CREATED DOCUMENT, ID = ", documentId)
 
@@ -313,6 +318,12 @@ router.post(/submit-single-product-evaluation/, async function (req, res, next) 
 
   const mmRes = createMatchMakeQuery.run(make, documentId)
   console.log("CREATED MATCH MAKE, ID = ", mmRes.lastInsertRowid)
+});
+
+router.post(/submit-single-product-evaluation/, function (req, res, next) {
+  console.log("POST submit-single-product-evaluation")
+
+  createDocument(req)
 
   next()
 })

@@ -67,6 +67,33 @@
         </fieldset>
       </div>
 
+      <!-- Outcome -->
+          {{ radios({
+          idPrefix: "procured",
+          name: "procured",
+        fieldset: {
+          legend: {
+            text: "Procurement outcome",
+            classes: "nhsuk-fieldset__legend--s"
+          }
+        },
+        items: [
+          {
+            value: "yes",
+            text: "Procured",
+            hint: {
+              text: "The device was procured"
+            }
+          },
+          {
+            value: "no",
+            text: "Not procured",
+            hint: {
+              text: "The device was not procured"
+            }
+          }
+        ]
+      }) }}
 
       <!-- Expiry and assessment dates -->
       <div class="nhsuk-form-group">
