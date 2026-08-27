@@ -173,7 +173,7 @@ router.get(/product-page/, (req, res, next) => {
 
   res.locals.searchTerm = req.query.q
   res.locals.product = {
-    make: result.PRODCUT_NAME,
+    make: result.PRODUCT_NAME,
     model: result.MODEL,
     manufacturer: result.MANUFACTURER,
     category: result.GMDN_NAME,
