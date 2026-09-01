@@ -7,7 +7,6 @@ import { loginAndGetCookie } from "../tests/helpers.js";
 import { normalizeAuthError } from "./auth.js";
 
 describe("Authentication middleware", () => {
-
   describe("Authentication flow", () => {
     let authenticatedCookies: string;
 
@@ -36,7 +35,9 @@ describe("Authentication middleware", () => {
 
       const setCookieHeaders = loginResponse.headers["set-cookie"];
       expect(setCookieHeaders).toBeDefined();
-      expect(Array.isArray(setCookieHeaders) || typeof setCookieHeaders === "string").toBe(true);
+      expect(
+        Array.isArray(setCookieHeaders) || typeof setCookieHeaders === "string",
+      ).toBe(true);
     });
   });
 
@@ -50,7 +51,7 @@ describe("Authentication middleware", () => {
     });
 
     it("should convert non-Error objects to Error instances", () => {
-       const stringError = normalizeAuthError("string error");
+      const stringError = normalizeAuthError("string error");
       expect(stringError).toBeInstanceOf(Error);
       expect(stringError.message).toBe("Authentication error");
 
@@ -122,7 +123,11 @@ describe("Authentication middleware", () => {
     });
 
     it("deserializeUser then callback handles found user", () => {
-      const mockUser = { id: 1, passwordHash: "hash", username: "test@example.com" };
+      const mockUser = {
+        id: 1,
+        passwordHash: "hash",
+        username: "test@example.com",
+      };
       let callbackResult: unknown = null;
 
       const done = (err: unknown, user: unknown) => {
@@ -157,7 +162,11 @@ describe("Authentication middleware", () => {
       thenCallback(undefined);
       expect(finalResult).toBe(false);
 
-      const validUser = { id: 5, passwordHash: "hash", username: "valid@test.com" };
+      const validUser = {
+        id: 5,
+        passwordHash: "hash",
+        username: "valid@test.com",
+      };
       thenCallback(validUser);
       expect(finalResult).toEqual(validUser);
     });
@@ -173,14 +182,13 @@ describe("Authentication middleware", () => {
 
       (async () => {
         return Promise.reject(new Error("String error")); // Non-Error object
-      })()
-        .catch((error: unknown) => {
-          done(normalizeAuthError(error));
-        });
+      })().catch((error: unknown) => {
+        done(normalizeAuthError(error));
+      });
 
       setTimeout(() => {
         expect(recoveredError).toBeInstanceOf(Error);
-          expect((recoveredError as Error).message).toBe("String error");
+        expect((recoveredError as Error).message).toBe("String error");
       }, 10);
     });
 
@@ -193,14 +201,15 @@ describe("Authentication middleware", () => {
 
       (async () => {
         return Promise.reject(new Error("Password verification failed"));
-      })()
-        .catch((error: unknown) => {
-          done(normalizeAuthError(error));
-        });
+      })().catch((error: unknown) => {
+        done(normalizeAuthError(error));
+      });
 
       setTimeout(() => {
         expect(caughtError).toBeInstanceOf(Error);
-          expect((caughtError as Error).message).toBe("Password verification failed");
+        expect((caughtError as Error).message).toBe(
+          "Password verification failed",
+        );
       }, 10);
     });
   });
@@ -228,13 +237,10 @@ describe("Authentication middleware", () => {
     });
 
     it("multiple sequential requests should maintain session", async () => {
-
       const paths = ["/search", "/search-results?q=test", "/search"];
 
       for (const path of paths) {
-        const response = await request(app)
-          .get(path)
-          .set("Cookie", cookies);
+        const response = await request(app).get(path).set("Cookie", cookies);
 
         expect(response.status).toBe(200);
       }
@@ -261,7 +267,6 @@ describe("Authentication middleware", () => {
     });
 
     it("should handle errors via normalizeAuthError callback", () => {
-      
       const simulateCatchBlock = (error: unknown) => {
         return normalizeAuthError(error);
       };
@@ -270,7 +275,7 @@ describe("Authentication middleware", () => {
       const errorResult = simulateCatchBlock(testError);
 
       expect(errorResult).toBeInstanceOf(Error);
-      expect((errorResult).message).toBe("Database timeout");
+      expect(errorResult.message).toBe("Database timeout");
     });
 
     it("should handle non-Error throws via normalizeAuthError", () => {
@@ -281,7 +286,7 @@ describe("Authentication middleware", () => {
       const errorResult = simulateCatchBlock("Query failed");
 
       expect(errorResult).toBeInstanceOf(Error);
-      expect((errorResult).message).toBe("Authentication error");
+      expect(errorResult.message).toBe("Authentication error");
     });
   });
 });

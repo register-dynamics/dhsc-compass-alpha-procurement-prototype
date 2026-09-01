@@ -58,9 +58,9 @@ describe("Session controller", () => {
   });
 
   it("GET protected page should redirect to /sign-in when not authenticated", async () => {
-      const response = await request(app).get("/search").redirects(0);
+    const response = await request(app).get("/search").redirects(0);
 
-      expect(response.status).toBe(302);
-      expect(response.headers.location).toBe("/sign-in");
+    expect(response.status).toBe(302);
+    expect(response.headers.location).toBe("/sign-in");
   });
 });
