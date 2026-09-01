@@ -1,0 +1,143 @@
+@use "nhsuk-frontend/dist/nhsuk" as *;
+@forward "nhsuk-frontend/dist/nhsuk";
+
+// Search filters and results
+.app-grid-column-filters {
+  @include nhsuk-grid-column(one-third, $at: large-desktop);
+}
+
+.app-grid-column-results {
+  @include nhsuk-grid-column(two-thirds, $at: large-desktop);
+}
+
+.app-grid-column-filters > .nhsuk-card--feature,
+.app-grid-column-results > .nhsuk-card--feature,
+.app-grid-column-results > .nhsuk-warning-callout {
+  margin-top: nhsuk-spacing(3);
+}
+
+//
+
+$_button-shadow-size: $nhsuk-border-width-form-element;
+$_icon-size: 28px;
+
+.app-form-group--search-input {
+  .nhsuk-input__wrapper {
+    display: flex;
+  }
+
+  .nhsuk-input[type="search"]::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23212b32'><path d='M13.41 12l5.3-5.29a1 1 0 1 0-1.42-1.42L12 10.59l-5.29-5.3a1 1 0 0 0-1.42 1.42l5.3 5.29-5.3 5.29a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l5.29-5.3 5.29 5.3a1 1 0 0 0 1.42 0 1 1 0 0 0 0-1.42z'/></svg>");
+    cursor: pointer;
+    height: nhsuk-px-to-rem($_icon-size);
+    margin: 0;
+    width: nhsuk-px-to-rem($_icon-size);
+  }
+
+  .nhsuk-button {
+    border-bottom-left-radius: 0;
+    border-top-left-radius: 0;
+
+    box-shadow: 0 $_button-shadow-size 0 $nhsuk-button-shadow-colour;
+
+    display: flex;
+    flex: 0 0 nhsuk-px-to-rem($_icon-size);
+
+    // Adjust bottom margin to offset shadow size given flex alignment
+    margin-bottom: $_button-shadow-size;
+
+    // Adjust inline padding
+    padding: 0 nhsuk-spacing(2) 0 6px;
+
+    // Align icon in center of button
+    place-items: center;
+
+    &:focus:not(:active),
+    &:focus:not(:active):hover {
+      box-shadow: 0 $_button-shadow-size 0 $nhsuk-focus-text-colour;
+    }
+
+    &:active,
+    &:active:focus {
+      box-shadow: none;
+      top: $_button-shadow-size;
+    }
+
+    .nhsuk-icon {
+      height: nhsuk-px-to-rem($_icon-size);
+      width: nhsuk-px-to-rem($_icon-size);
+    }
+  }
+}
+
+.app-filters {
+  &.nhsuk-card {
+    background-color: nhsuk-colour("grey-4");
+  }
+
+  .nhsuk-card__heading--feature {
+    background-color: nhsuk-colour("grey-1");
+  }
+
+  .nhsuk-radios__conditional {
+    margin-bottom: nhsuk-spacing(2);
+  }
+
+  .nhsuk-radios__label,
+  .nhsuk-checkboxes__label {
+    padding-right: 0;
+  }
+
+  // Adjust design and spacing of details component
+  .nhsuk-details {
+    margin-left: nhsuk-spacing(-4);
+    margin-right: nhsuk-spacing(-4);
+
+    @include nhsuk-media-query($from: tablet) {
+      margin-left: nhsuk-spacing(-5);
+      margin-right: nhsuk-spacing(-5);
+    }
+
+    &[open] {
+      background-color: nhsuk-colour("grey-4");
+    }
+  }
+
+  .nhsuk-details__summary {
+    @include nhsuk-responsive-margin(5, "left");
+    @include nhsuk-responsive-margin(5, "right");
+  }
+
+  .nhsuk-details__text {
+    border-left: 0;
+
+    // Remove once https://github.com/nhsuk/nhsuk-frontend/pull/1633 released
+    box-sizing: border-box;
+
+    @include nhsuk-responsive-padding(5, "left");
+    @include nhsuk-responsive-padding(5, "right");
+  }
+
+  // Adjust margin around date inputs
+  & .nhsuk-date-input__item {
+    margin-right: nhsuk-spacing(3);
+  }
+
+  & .nhsuk-date-input__item:last-child {
+    margin-right: 0;
+  }
+}
+
+//
+
+// This component is used for filtering a list, eg using search
+.app-filters {
+  padding-top: nhsuk-spacing(3);
+  padding-bottom: nhsuk-spacing(3);
+  background-color: $color_nhsuk-grey-4;
+}
+.app-filters-container {
+  max-width: 540px;
+  margin: 0 auto;
+}

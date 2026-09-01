@@ -83,18 +83,18 @@
       <hr class="nhsuk-section-break nhsuk-section-break--l nhsuk-section-break--visible">
 
       <!-- Product link -->
-      <h2 class="nhsuk-heading-m">Which product does this business case relate to?</h2>
-      <p class="nhsuk-body-s nhsuk-u-secondary-text-color">This helps other trusts find your business case when searching for a specific product.</p>
+      <h2 class="nhsuk-heading-m">Which device does this business case relate to?</h2>
+      <p class="nhsuk-body-s nhsuk-u-secondary-text-color">This helps other trusts find your business case when searching for a device.</p>
 
       {{ select({
         id: "bc-product",
         name: "bc-product",
         label: {
-          text: "Product",
+          text: "Device",
           classes: "nhsuk-label--s"
         },
         items: [
-          { value: "", text: "Select a product", selected: true },
+          { value: "", text: "Select a device", selected: true },
           { value: "smartpump-infusion-device-pro", text: "SmartPump Infusion Device Pro" },
           { value: "medflow-infusion-system", text: "MedFlow Infusion System 3000" },
           { value: "vitalguard-patient-monitor", text: "VitalGuard Patient Monitor X1" },
@@ -106,13 +106,13 @@
       <div class="nhsuk-form-group" id="bc-product-other-group" style="display:none;">
         {{ input({
           label: {
-            text: "Product name",
+            text: "Device name",
             classes: "nhsuk-label--s"
           },
           id: "bc-product-other",
           name: "bc-product-other",
           hint: {
-            text: "Enter the product name as it appears on the supplier's website or packaging"
+            text: "Enter the device name as it appears on the supplier's website or packaging"
           }
         }) }}
       </div>
@@ -177,7 +177,7 @@
           {
             value: "clinical-need",
             text: "Clinical need and rationale",
-            hint: { text: "Evidence of why the product or change is needed" }
+            hint: { text: "Evidence of why the device or change is needed" }
           },
           {
             value: "cost-benefit",
@@ -187,7 +187,7 @@
           {
             value: "options-appraisal",
             text: "Options appraisal",
-            hint: { text: "Comparison of shortlisted products or approaches" }
+            hint: { text: "Comparison of shortlisted devices or approaches" }
           },
           {
             value: "implementation",
@@ -401,7 +401,7 @@
         <p>This business case will be visible to:</p>
         <ul class="nhsuk-list nhsuk-list--bullet">
           <li><strong>All NHS trusts</strong> using this service</li>
-          <li><strong>The supplier</strong> of the product this business case relates to</li>
+          <li><strong>The supplier</strong> of the device this business case relates to</li>
         </ul>
         <p>Suppliers can see that your trust has submitted a business case and its approval status. They cannot see your contact details unless you choose to share them with suppliers on the next screen.</p>
       </div>

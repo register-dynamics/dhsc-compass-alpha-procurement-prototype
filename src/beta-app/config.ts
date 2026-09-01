@@ -1,6 +1,9 @@
 const config = {
   app: {
-    name: "Compass",
+    name: "Search and evaluate medical technologies",
+  },
+  search: {
+    pageSize: 25,
   },
 };
 

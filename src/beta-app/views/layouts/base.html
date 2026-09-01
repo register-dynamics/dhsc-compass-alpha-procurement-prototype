@@ -1,0 +1,47 @@
+{% extends "template.njk" %}
+
+{% from "breadcrumb/macro.njk" import breadcrumb %}
+
+{% block head %}
+  <link rel="stylesheet" href="/css/main.css"/>
+{% endblock %}
+
+{% block pageTitle -%}
+  {%- if pageName %}{{ pageName }} – {% endif -%}
+  {{ serviceName }} – NHS 
+{%- endblock %}
+
+{% block header %}
+  {{ header({
+    logo: { href: "/", ariaLabel: "Search and evaluate medical technologies" },
+    service: { text: "Search and evaluate medical technologies", href: "/" },
+    navigation: {
+      items: [
+        { text: "Search", href: "/search" }
+      ]
+    }
+  }) }}
+
+  {% block headerEnd %}
+  {% endblock %}
+
+{% endblock %}
+
+{% block content %}
+  <div class="nhsuk-grid-row nhsuk-u-margin-top-7">
+    <div class="nhsuk-grid-column-two-thirds">
+      <h1 class="nhsuk-heading-l">Default page template</h1>
+    </div>
+  </div>
+{% endblock %}
+
+{% block footer %}
+  {{ footer({ meta: { items: [ { href: "#",
+text: "Help and support" }, { href: "#", text: "Cookies" }, { href: "#", text:
+"Privacy" }, { href: "#", text: "Terms and conditions" }, { href: "#", text:
+"Accessibility statement" } ] } }) }}
+{% endblock %}
+
+{% block bodyEnd %}
+  <script type="module" src="/javascripts/nhsuk-frontend.min.js"></script>
+{% endblock %}

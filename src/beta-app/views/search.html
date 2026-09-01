@@ -1,31 +1,53 @@
-<!-- Search page iterated based on Four Modes of Information Seeking (Donna Spencer) -->
-<!-- Supports: Known-item, Exploratory, Don't Know What You Need to Know, Re-finding -->
-
-{% extends prototypeVersion + '/layouts/layout-search-sticky.html' %}
+{% extends "layouts/base.html" %}
 
 {% set pageName = "Search and compare" %}
 
+{% block headerEnd %}
 
-{% block beforeContent %}
+<!-- ── Full hero (visible at top) ── -->
+<div class="nhsuk-hero" id="search-hero">
+  <div class="nhsuk-width-container nhsuk-hero--border">
+    <div class="nhsuk-grid-row">
+      <div class="nhsuk-grid-column-two-thirds">
+        <div class="nhsuk-hero__wrapper">
+          <h1 class="nhsuk-heading-xl nhsuk-u-margin-bottom-3">Search</h1>
+          <h3 class="nhsuk-heading-s">Search and evaluate medical technologies</h3>
+          <div class="nhsuk-form-group">
+            <form action="search-results" method="get" novalidate="">
+              <div class="nhsuk-form-group nhsuk-u-margin-bottom-0">
+                <label class="nhsuk-label" for="q">
+                  Search by product, category or supplier
+                </label>
+                <input class="nhsuk-input nhsuk-input--width-20" id="q" name="q" type="search" value="">
+                <button class="nhsuk-button nhsuk-button--reverse nhsuk-u-margin-left-2 nhsuk-button--small" data-module="nhsuk-button" type="submit" data-nhsuk-button-init="">
+                  Search
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 {% endblock %}
 
 {% block content %}
 
-<!-- ============================================ -->
-<!-- COMMON SEARCHES + YOUR ACTIVITY (side by side) -->
-<!-- ============================================ -->
-<div class="nhsuk-grid-row">
+<div class="nhsuk-grid-row nhsuk-u-margin-top-7">
 
   <!-- Common searches: left half -->
   <div class="nhsuk-grid-column-one-half">
     <h2 class="nhsuk-heading-l">Common searches</h2>
     <p class="nhsuk-body">Recently searched across NHS trusts similar to yours</p>
+    {# TODO: Hardcoded data #}
     <ul class="nhsuk-list app-tag-list">
-      <li><a href="category-wound-care" class="nhsuk-tag nhsuk-tag--white">Air mattress system</a></li>
-      <li><a href="category-wound-care" class="nhsuk-tag nhsuk-tag--white">HydroHeal Plus</a></li>
-      <li><a href="category-wound-care" class="nhsuk-tag nhsuk-tag--white">Insulin pumps</a></li>
-      <li><a href="category-wound-care" class="nhsuk-tag nhsuk-tag--white">Surgical mesh</a></li>
-      <li><a href="category-wound-care" class="nhsuk-tag nhsuk-tag--white">Continuous glucose monitors</a></li>
+      <li><a href="#" class="nhsuk-tag nhsuk-tag--white">Air mattress system</a></li>
+      <li><a href="#" class="nhsuk-tag nhsuk-tag--white">HydroHeal Plus</a></li>
+      <li><a href="#" class="nhsuk-tag nhsuk-tag--white">Insulin pumps</a></li>
+      <li><a href="#" class="nhsuk-tag nhsuk-tag--white">Surgical mesh</a></li>
+      <li><a href="#" class="nhsuk-tag nhsuk-tag--white">Continuous glucose monitors</a></li>
     </ul>
   </div>
 
@@ -35,6 +57,7 @@
     <div class="nhsuk-card">
       <div class="nhsuk-card__content">
         <h3 class="nhsuk-card__heading nhsuk-heading-s">Your recently viewed items</h3>
+        {# TODO: Hardcoded data #}
         <ul class="nhsuk-list nhsuk-list--bullet">
           <li><a href="#">Stryker Mako SmartRobotics</a> — viewed yesterday</li>
           <li><a href="#">Smith+Nephew PICO 7</a> — viewed 3 days ago</li>
@@ -45,6 +68,7 @@
     <div class="nhsuk-card">
       <div class="nhsuk-card__content">
         <h3 class="nhsuk-card__heading nhsuk-heading-s">Your saved items</h3>
+        {# TODO: Hardcoded data #}
         <ul class="nhsuk-list nhsuk-list--bullet">
           <li><a href="#">SmartPump 300 Infusion System</a></li>
           <li><a href="#">Collagen Pro Matrix</a></li>
@@ -67,12 +91,13 @@
     <h2 class="nhsuk-heading-l">Browse by care setting</h2>
     <p class="nhsuk-body">Explore what's available in care settings like yours.</p>
 
+    {# TODO: Hardcoded data #}
     <ul class="nhsuk-grid-row nhsuk-card-group">
       <li class="nhsuk-grid-column-one-third nhsuk-card-group__item">
         <div class="nhsuk-card nhsuk-card--clickable">
           <div class="nhsuk-card__content">
             <h3 class="nhsuk-card__heading nhsuk-heading-s">
-              <a class="nhsuk-card__link" href="category-wound-care">Prevention and health promotion</a>
+              <a class="nhsuk-card__link" href="#">Prevention and health promotion</a>
             </h3>
           </div>
         </div>
@@ -81,7 +106,7 @@
         <div class="nhsuk-card nhsuk-card--clickable">
           <div class="nhsuk-card__content">
             <h3 class="nhsuk-card__heading nhsuk-heading-s">
-              <a class="nhsuk-card__link" href="search-results-viz-all">Primary care</a>
+              <a class="nhsuk-card__link" href="#">Primary care</a>
             </h3>
           </div>
         </div>
@@ -90,7 +115,7 @@
         <div class="nhsuk-card nhsuk-card--clickable">
           <div class="nhsuk-card__content">
             <h3 class="nhsuk-card__heading nhsuk-heading-s">
-              <a class="nhsuk-card__link" href="category-wound-care">Primary prescribing</a>
+              <a class="nhsuk-card__link" href="#">Primary prescribing</a>
             </h3>
           </div>
         </div>
@@ -99,7 +124,7 @@
         <div class="nhsuk-card nhsuk-card--clickable">
           <div class="nhsuk-card__content">
             <h3 class="nhsuk-card__heading nhsuk-heading-s">
-              <a class="nhsuk-card__link" href="category-wound-care">Ambulance</a>
+              <a class="nhsuk-card__link" href="#">Ambulance</a>
             </h3>
           </div>
         </div>
@@ -108,7 +133,7 @@
         <div class="nhsuk-card nhsuk-card--clickable">
           <div class="nhsuk-card__content">
             <h3 class="nhsuk-card__heading nhsuk-heading-s">
-              <a class="nhsuk-card__link" href="category-wound-care">A &amp; E</a>
+              <a class="nhsuk-card__link" href="#">A &amp; E</a>
             </h3>
           </div>
         </div>
@@ -134,14 +159,15 @@
   <div class="nhsuk-grid-column-full">
 
     <h2 class="nhsuk-heading-l">Browse by category</h2>
-    <p class="nhsuk-body">Explore what's available and see which devices other trusts use.</p>
+    <p class="nhsuk-body">Explore what's available and see which products other trusts use.</p>
 
+    {# TODO: Hardcoded data #}
     <ul class="nhsuk-grid-row nhsuk-card-group">
       <li class="nhsuk-grid-column-one-third nhsuk-card-group__item">
         <div class="nhsuk-card nhsuk-card--clickable">
           <div class="nhsuk-card__content">
             <h3 class="nhsuk-card__heading nhsuk-heading-s">
-              <a class="nhsuk-card__link" href="category-wound-care">Orthopaedic implants</a>
+              <a class="nhsuk-card__link" href="#">Orthopaedic implants</a>
             </h3>
             <p class="nhsuk-card__description">Hip, knee, shoulder replacements and trauma fixation devices</p>
             <p class="nhsuk-body-s nhsuk-u-secondary-text-color">247 products · 89 trust evaluations</p>
@@ -152,7 +178,7 @@
         <div class="nhsuk-card nhsuk-card--clickable">
           <div class="nhsuk-card__content">
             <h3 class="nhsuk-card__heading nhsuk-heading-s">
-              <a class="nhsuk-card__link" href="search-results-viz-all">Wound care</a>
+              <a class="nhsuk-card__link" href="#">Wound care</a>
             </h3>
             <p class="nhsuk-card__description">Dressings, negative pressure therapy and skin substitutes</p>
             <p class="nhsuk-body-s nhsuk-u-secondary-text-color">183 products · 56 trust evaluations</p>
@@ -163,7 +189,7 @@
         <div class="nhsuk-card nhsuk-card--clickable">
           <div class="nhsuk-card__content">
             <h3 class="nhsuk-card__heading nhsuk-heading-s">
-              <a class="nhsuk-card__link" href="category-wound-care">Diabetes technology</a>
+              <a class="nhsuk-card__link" href="#">Diabetes technology</a>
             </h3>
             <p class="nhsuk-card__description">Insulin pumps, continuous glucose monitors and smart pens</p>
             <p class="nhsuk-body-s nhsuk-u-secondary-text-color">94 products · 112 trust evaluations</p>
@@ -174,7 +200,7 @@
         <div class="nhsuk-card nhsuk-card--clickable">
           <div class="nhsuk-card__content">
             <h3 class="nhsuk-card__heading nhsuk-heading-s">
-              <a class="nhsuk-card__link" href="category-wound-care">Diagnostic imaging</a>
+              <a class="nhsuk-card__link" href="#">Diagnostic imaging</a>
             </h3>
             <p class="nhsuk-card__description">MRI, CT, ultrasound and X-ray equipment</p>
             <p class="nhsuk-body-s nhsuk-u-secondary-text-color">156 products · 34 trust evaluations</p>
@@ -185,7 +211,7 @@
         <div class="nhsuk-card nhsuk-card--clickable">
           <div class="nhsuk-card__content">
             <h3 class="nhsuk-card__heading nhsuk-heading-s">
-              <a class="nhsuk-card__link" href="category-wound-care">Surgical instruments</a>
+              <a class="nhsuk-card__link" href="#">Surgical instruments</a>
             </h3>
             <p class="nhsuk-card__description">Robotic systems, endoscopes and single-use instruments</p>
             <p class="nhsuk-body-s nhsuk-u-secondary-text-color">312 products · 67 trust evaluations</p>
@@ -218,7 +244,7 @@
   <div class="nhsuk-grid-column-two-thirds">
 
     <h2 class="nhsuk-heading-l">New to medical technology procurement?</h2>
-    <p class="nhsuk-body">Not sure where to start? These resources help you understand what to look for when evaluating medical technology.</p>
+    <p class="nhsuk-body">Not sure where to start? These resources help you understand what to look for when evaluating medical technologies.</p>
 
     <div class="nhsuk-card">
       <div class="nhsuk-card__content">
@@ -226,7 +252,7 @@
           <a class="nhsuk-card__link" href="#">Value-based procurement explained</a>
         </h3>
         <p class="nhsuk-card__description">
-          Move beyond lowest-price decisions and evaluate devices on outcomes, safety, integration and sustainability.
+          Move beyond lowest-price decisions and evaluate products on outcomes, safety, integration and sustainability.
         </p>
       </div>
     </div>
@@ -255,5 +281,4 @@
 
   </div>
 </div>
-
 {% endblock %}

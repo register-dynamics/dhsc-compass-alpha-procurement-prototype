@@ -1,0 +1,363 @@
+// ==========================================================================
+// NICE-STYLE HERO
+// Hero section with diagonal edge image (like NICE website)
+// ==========================================================================
+
+$nice-hero-bg: #003087; // NHS dark blue
+
+.nice-hero {
+  position: relative;
+  background-color: $nice-hero-bg;
+  overflow: hidden;
+  min-height: 400px;
+
+  @media (min-width: 769px) {
+    min-height: 450px;
+    display: flex;
+    align-items: stretch;
+  }
+}
+
+.nice-hero__content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  padding: 40px 0;
+
+  @media (min-width: 769px) {
+    padding: 56px 0;
+  }
+}
+
+.nice-hero__inner {
+  width: 100%;
+}
+
+.nice-hero__text {
+  color: #ffffff;
+
+  @media (min-width: 769px) {
+    max-width: 50%;
+    padding-right: 24px; // Ensure text stays clear of diagonal edge
+  }
+
+  h1,
+  .nhsuk-heading-xl {
+    color: #ffffff;
+    margin-bottom: 24px;
+  }
+
+  p,
+  .nhsuk-body-l,
+  .nhsuk-body {
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .nhsuk-button--reverse {
+    background-color: #ffffff;
+    color: $nice-hero-bg;
+
+    &:hover {
+      background-color: #f0f4f5;
+      color: #002266;
+    }
+
+    &:focus {
+      background-color: #ffeb3b;
+      color: #212b32;
+      box-shadow: 0 4px 0 #212b32;
+    }
+  }
+
+  .nhsuk-link--reverse {
+    color: #ffffff;
+    text-decoration: underline;
+
+    &:hover {
+      color: #ffffff;
+      text-decoration: none;
+    }
+
+    &:focus {
+      color: #212b32;
+    }
+  }
+}
+
+.nice-hero__subtext {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.nice-hero__image {
+  display: none;
+
+  @media (min-width: 769px) {
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 35%;
+    z-index: 1;
+
+    // Diagonal edge using clip-path
+    clip-path: polygon(20% 0, 100% 0, 100% 100%, 0% 100%);
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    width: 38%;
+    clip-path: polygon(18% 0, 100% 0, 100% 100%, 0% 100%);
+  }
+}
+
+// Mobile: show image below content
+@media (max-width: 768px) {
+  .nice-hero {
+    flex-direction: column;
+  }
+
+  .nice-hero__image {
+    display: block;
+    position: relative;
+    width: 100%;
+    height: 250px;
+    clip-path: polygon(0 10%, 100% 0, 100% 100%, 0% 100%);
+    margin-top: -20px;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+    }
+  }
+}
+
+// ==========================================================================
+// COMPASS HERO
+// Hero section with full-width background image
+// ==========================================================================
+
+// Hero image path - update this to match your assets folder structure
+$compass-hero-image: "/images/compass-hero.png";
+
+.compass-hero {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  min-height: 400px;
+
+  @media (min-width: 769px) {
+    min-height: 480px;
+  }
+}
+
+// Background image layer
+.compass-hero__image {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  background-image: url($compass-hero-image);
+  background-size: cover;
+  background-position: center right;
+  background-repeat: no-repeat;
+  z-index: 1;
+
+  // On larger screens, image sits more to the right
+  @media (min-width: 769px) {
+    width: 70%;
+    left: auto;
+    right: 0;
+  }
+}
+
+// Gradient overlay positioned over image for text readability
+.compass-hero__overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+
+  // Gradient overlay colours
+
+  // Mobile: stronger overlay for readability
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 1) 0%,
+    rgba(255, 255, 255, 0.95) 30%,
+    rgba(255, 255, 255, 0.7) 60%,
+    rgba(255, 255, 255, 0.3) 100%
+  );
+
+  // Desktop: overlay concentrated on left for text, fading to reveal image on right
+  @media (min-width: 769px) {
+    background: linear-gradient(
+      to right,
+      rgba(255, 255, 255, 1) 0%,
+      rgba(255, 255, 255, 1) 25%,
+      rgba(255, 255, 255, 0.95) 40%,
+      rgba(255, 255, 255, 0.6) 60%,
+      rgba(255, 255, 255, 0.1) 80%,
+      rgba(255, 255, 255, 0) 100%
+    );
+  }
+}
+
+// Content container
+.compass-hero__content {
+  position: relative;
+  z-index: 3;
+  padding-top: 48px;
+  padding-bottom: 48px;
+
+  @media (min-width: 769px) {
+    padding-top: 64px;
+    padding-bottom: 64px;
+  }
+}
+
+// Heading
+.compass-hero__heading {
+  color: #212b32; // NHS dark grey
+  margin-bottom: 24px;
+
+  @media (min-width: 769px) {
+    max-width: 580px;
+  }
+}
+
+// Lead paragraph
+.compass-hero__lede {
+  color: #4c6272; // NHS secondary text
+  margin-bottom: 32px;
+
+  @media (min-width: 769px) {
+    max-width: 520px;
+  }
+}
+
+// Action buttons area
+.compass-hero__actions {
+  margin-bottom: 16px;
+}
+
+// Subtext link
+.compass-hero__subtext {
+  color: #4c6272;
+
+  a {
+    color: #005eb8; // NHS blue
+    text-decoration: underline;
+
+    &:hover {
+      color: #003d78;
+      text-decoration: none;
+    }
+
+    &:focus {
+      outline: 4px solid #ffeb3b;
+      outline-offset: 0;
+      background-color: #ffeb3b;
+      color: #212b32;
+      text-decoration: none;
+    }
+  }
+}
+
+// ==========================================================================
+// ALTERNATIVE: NHS Blue-tinted overlay version
+// Uncomment this section if you prefer the NHS blue colour scheme
+// ==========================================================================
+
+// .compass-hero--blue {
+//   .compass-hero__overlay {
+//     background: linear-gradient(
+//       to right,
+//       rgba(0, 48, 135, 0.95) 0%,    // NHS dark blue
+//       rgba(0, 48, 135, 0.9) 25%,
+//       rgba(0, 94, 184, 0.7) 50%,    // NHS blue
+//       rgba(0, 94, 184, 0.3) 75%,
+//       rgba(0, 94, 184, 0) 100%
+//     );
+//
+//     @media (min-width: 769px) {
+//       background: linear-gradient(
+//         to right,
+//         rgba(0, 48, 135, 0.95) 0%,
+//         rgba(0, 48, 135, 0.95) 30%,
+//         rgba(0, 94, 184, 0.7) 50%,
+//         rgba(0, 94, 184, 0.2) 70%,
+//         transparent 90%
+//       );
+//     }
+//   }
+//
+//   .compass-hero__heading {
+//     color: #ffffff;
+//   }
+//
+//   .compass-hero__lede {
+//     color: rgba(255, 255, 255, 0.9);
+//   }
+//
+//   .compass-hero__subtext {
+//     color: rgba(255, 255, 255, 0.8);
+//
+//     a {
+//       color: #ffffff;
+//
+//       &:hover {
+//         color: #ffffff;
+//       }
+//     }
+//   }
+//
+//   // Use white/secondary button on blue background
+//   .nhsuk-button {
+//     background-color: #ffffff;
+//     color: #005eb8;
+//
+//     &:hover {
+//       background-color: #f0f4f5;
+//       color: #003d78;
+//     }
+//   }
+// }
+
+// ==========================================================================
+// ALTERNATIVE: Full-bleed with darker overlay
+// For when you want the image more prominent
+// ==========================================================================
+
+// .compass-hero--dark {
+//   .compass-hero__image {
+//     width: 100%;
+//   }
+//
+//   .compass-hero__overlay {
+//     background: linear-gradient(
+//       to right,
+//       rgba(33, 43, 50, 0.9) 0%,
+//       rgba(33, 43, 50, 0.85) 30%,
+//       rgba(33, 43, 50, 0.6) 60%,
+//       rgba(33, 43, 50, 0.2) 100%
+//     );
+//   }
+//
+//   .compass-hero__heading,
+//   .compass-hero__lede,
+//   .compass-hero__subtext {
+//     color: #ffffff;
+//   }
+// }
