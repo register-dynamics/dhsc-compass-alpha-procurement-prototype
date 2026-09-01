@@ -63,8 +63,8 @@ function randomEvidence(model_id) {
 
 const pageSize = 25
 const countQuery = db.prepare(`select COUNT(*) AS count FROM search WHERE search MATCH ?`)
-const searchQuery = db.prepare(`select MAKE_ID, MODEL_ID, DEVICE_ID, MAKE, MODEL, MANUFACTURER, GMDN_NAME, TYPE, COUNTRY from search where search match @term limit @limit offset @offset`)
-const searchWithCategoriesQuery = db.prepare(`select MAKE_ID, MODEL_ID, DEVICE_ID, MAKE, MODEL, MANUFACTURER, GMDN_NAME, TYPE, COUNTRY from search where search match @term and GMDN_NAME in (select value from json_each(@categories)) limit @limit offset @offset`)
+const searchQuery = db.prepare(`select PRODUCT_ID, DEVICE_ID, PRODUCT_NAME, MODEL, MANUFACTURER, GMDN_NAME, TYPE, COUNTRY from search where search match @term limit @limit offset @offset`)
+const searchWithCategoriesQuery = db.prepare(`select PRODUCT_ID, DEVICE_ID, PRODUCT_NAME, MODEL, MANUFACTURER, GMDN_NAME, TYPE, COUNTRY from search where search match @term and GMDN_NAME in (select value from json_each(@categories)) limit @limit offset @offset`)
 const categoryQuery = db.prepare(`select GMDN_NAME AS name, COUNT(*) AS count from search where search match ? group by GMDN_NAME order by count DESC`)
 
 // Escape double quotes in the search term for FTS5 queries
@@ -105,10 +105,9 @@ router.get(/search-/, (req, res, next) => {
     const random = randomEvidence(result.MODEL_ID)
 
     return {
-      make: result.MAKE,
-      make_id: result.MAKE_ID,
+      make: result.PRODUCT_NAME,
+      make_id: result.PRODUCT_ID,
       model: result.MODEL,
-      model_id: result.MODEL_ID,
       device_id: result.DEVICE_ID,
       manufacturer: result.MANUFACTURER,
       category: result.GMDN_NAME,
@@ -125,9 +124,9 @@ router.get(/search-/, (req, res, next) => {
   next()
 })
 
-const individualQuery = db.prepare("select MAKE, MODEL, MODEL_ID, MANUFACTURER, GMDN_NAME, TYPE, COUNTRY from search where MAKE_ID = ?")
+const individualQuery = db.prepare("select PRODUCT_NAME, MODEL, MANUFACTURER, GMDN_NAME, TYPE, COUNTRY from search where PRODUCT_ID = ?")
 
-const documentsQuery = db.prepare("SELECT document_id, organisation_name, type_of_doc_desc, rating, procured, scale, ward_department, assessment_date, expiry_date, org_category_desc, org_type_desc, url_directory FROM make_documents WHERE make_id = ?")
+const documentsQuery = db.prepare("SELECT document_id, organisation_name, type_of_doc_desc, rating, procured, scale, ward_department, assessment_date, expiry_date, org_category_desc, org_type_desc, url_directory FROM make_documents WHERE product_id = ?")
 
 const contactsQuery = db.prepare(`SELECT
   dc.document_id,
@@ -373,10 +372,8 @@ router.get(/product-page/, (req, res, next) => {
 
   res.locals.searchTerm = req.query.q
   res.locals.product = {
-    id: req.query.make,
-    make: result.MAKE,
+    make: result.PRODUCT_NAME,
     model: result.MODEL,
-    model_id: result.MODEL_ID,
     manufacturer: result.MANUFACTURER,
     category: result.GMDN_NAME,
     type: result.TYPE,
@@ -391,7 +388,7 @@ router.get(/product-page/, (req, res, next) => {
   next()
 })
 
-const individualODEP = db.prepare("select make_id, rating, rating_type, assessment_date, expiry_date, summary, organisation_name, type_of_doc_desc, org_category_desc, org_type_desc, url_directory from make_documents where make_id = ? and organisation_name = ?")
+const individualODEP = db.prepare("select product_id, rating, rating_type, assessment_date, expiry_date, summary, organisation_name, type_of_doc_desc, org_category_desc, org_type_desc, url_directory from make_documents where product_id = ? and organisation_name = ?")
 router.get(/product-page/, (req, res, next) => {
 
   const results = individualODEP.all(parseInt(req.query.make), "ODEP")
@@ -414,7 +411,7 @@ router.get(/product-page/, (req, res, next) => {
   next()
 })
 
-const individualNJR = db.prepare("select make_id, rating, rating_type, assessment_date, expiry_date, summary, organisation_name, type_of_doc_desc, org_category_desc, org_type_desc, url_directory from make_documents where make_id = ? and organisation_name = ?")
+const individualNJR = db.prepare("select product_id, rating, rating_type, assessment_date, expiry_date, summary, organisation_name, type_of_doc_desc, org_category_desc, org_type_desc, url_directory from make_documents where product_id = ? and organisation_name = ?")
 router.get(/product-page/, (req, res, next) => {
   const results = individualNJR.all(parseInt(req.query.make), "NJR")
   if (results) {
@@ -430,7 +427,7 @@ router.get(/product-page/, (req, res, next) => {
       organisation_type: result.org_type_desc,
       organisation_category: result.org_category_desc,
       summary: "This a placeholder summary for NJR reports",
-      url: result.url
+      url: result.url_directory
     }
   })
   }
