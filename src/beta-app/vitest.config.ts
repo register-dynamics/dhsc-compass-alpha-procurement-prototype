@@ -9,6 +9,8 @@ export default defineConfig({
         "**/*.test.*",
         "assets/**",
         "public/**",
+        "scripts/**",
+        "**/*.d.ts"
       ],
       provider: "v8",
       reporter: ["text", "lcov", "cobertura", "json", "json-summary"],

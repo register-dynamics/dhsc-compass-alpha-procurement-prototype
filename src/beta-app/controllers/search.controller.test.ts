@@ -2,24 +2,9 @@ import request from "supertest";
 import { beforeEach, describe, expect, it } from "vitest";
 
 import app from "../app.js";
+import { loginAndGetCookie } from "../tests/helpers.js";
 
-// TODO: Store the test user config and prep in a more appropriate place that can be shared across tests
-const testUser = {
-  password: "northsouth",
-  username: "test@example.com",
-};
-
-const loginAndGetCookie = async () => {
-  const response = await request(app)
-    .post("/sign-in")
-    .send(testUser)
-    .set("Content-Type", "application/x-www-form-urlencoded");
-
-  const cookies = response.headers["set-cookie"];
-  return cookies;
-};
-
-describe("Beta app server (integration)", () => {
+describe("Search controller", () => {
   let cookies: string;
 
   beforeEach(async () => {

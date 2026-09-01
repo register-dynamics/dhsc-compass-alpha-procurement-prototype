@@ -8,7 +8,7 @@ import type { User } from "../database/types.js";
 
 import { db } from "../database/client.js";
 
-const normalizeAuthError = (error: unknown) => {
+export const normalizeAuthError = (error: unknown) => {
   if (error instanceof Error) {
     return error;
   }
