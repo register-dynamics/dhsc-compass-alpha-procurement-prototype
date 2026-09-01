@@ -1,9 +1,12 @@
 const allTrusts = require('./trusts')
 
 const Database = require('better-sqlite3')
-const db = new Database('database.db', { readonly: true }) //Replace database path with correct local directory
+const db = new Database('database.db', { readonly: false }) //Replace database path with correct local directory
 
 const router = require('express').Router()
+const formidable = require('formidable').formidable;
+const fs = require('fs');
+
 
 // Set version for all templates in this folder
 router.use((req, res, next) => {
@@ -146,6 +149,202 @@ JOIN contacts c
   ON c.contact_id = dc.contact_id
 WHERE dc.document_id IN (SELECT value FROM json_each(@documentIds));`)
 
+// Limit to orgs whose type is 'NHS Trust', but organisation doesn't link to the org_type table for some reason?
+const trustsQuery = db.prepare(`SELECT organisation_id, organisation_name FROM organisation WHERE org_type_id = (SELECT org_type_id FROM org_type WHERE org_type_desc = 'NHS Trust')`)
+
+const individualOrganisationQuery = db.prepare(`SELECT organisation_name FROM organisation WHERE organisation_id = ?`)
+
+router.get(/share-single-product-evaluation/, (req, res, next) => {
+  console.log("GET share-single-product-evaluation for make_id", req.query.make)
+
+  // Fetch product details so we can remind user what product it is
+  const product = individualQuery.get(parseInt(req.query.make))
+  res.locals.product = {
+    id: req.query.make,
+    make: product.PRODUCT_NAME,
+    model: product.MODEL,
+    model_id: product.MODEL_ID,
+    manufacturer: product.MANUFACTURER,
+    category: product.GMDN_NAME,
+    type: product.TYPE,
+    country: product.COUNTRY,
+  }
+
+  // Fetch list of organisations for org picker (FIXME: filter to trusts somehow?)
+  const organisations = trustsQuery.all();
+  res.locals.organisations_from_database =
+    [{ value: "", text: "Select an organisation", selected: true }];
+
+  organisations.forEach(o => {
+    res.locals.organisations_from_database.push({
+      value: "" + o.organisation_id,
+      text: o.organisation_name });
+  });
+
+  next()
+});
+
+router.post(/review-single-product-evaluation/, (req, res, next) => {
+  console.log("POST review-single-product-evaluation")
+
+  // parse multipart form body
+  const form = formidable({});
+
+  form.parse(req, (err, fields, files) => {
+    if (err) {
+      console.log("Form parse error", err)
+      
+      next(err);
+      return;
+    }
+    
+    // Put normal form fields into data
+    for (const name in fields) {
+      req.session.data[name] = fields[name];
+    }
+    // Store uploaded file details in the session. Note that with prototype
+    // kit's automatic poking of any submitted form fields into the session,
+    // there's probably a way for a malicious user to fake the upload file path
+    // here if they wanted to.
+
+    // FIXME: No validation we got exactly 1 file
+    req.session.data['upload'] = files['file-upload'][0];
+
+    next() 
+  });
+})
+
+
+const contactTopicNames = {
+  'implementation': "Implementation",
+  'training': "Training",
+  'outcomes': "Outcomes",
+  'pharmacy-integration': "Pharmacy integration",
+  'business-case': "Business case",
+  'real-world-use': "Real world use",
+  'ehr-integration': "EHR integration"
+}
+
+router.get(/review-single-product-evaluation/, (req, res, next) => {
+  console.log("GET review-single-product-evaluation")
+
+  const product = individualQuery.get(parseInt(req.session.data['make']))
+  res.locals.product = {
+    id: parseInt(req.session.data['make']),
+    make: product.PRODUCT_NAME,
+    model: product.MODEL,
+    model_id: product.MODEL_ID,
+    manufacturer: product.MANUFACTURER,
+    category: product.GMDN_NAME,
+    type: product.TYPE,
+    country: product.COUNTRY,
+  }
+
+  const organisation = individualOrganisationQuery.get(parseInt(req.session.data['organisation']))
+  res.locals.organisation = {
+    id: parseInt(req.session.data['organisation']),
+    name: organisation.organisation_name
+  }
+
+  res.locals.niceContactTopics = req.session.data['contact-topics'].map((code) => contactTopicNames[code]).join("<br>")
+
+  next()
+})
+
+const findContactQuery = db.prepare(`SELECT contact_id FROM contacts WHERE title = ? AND given_name = ? AND surname = ? AND email = ? AND phone_no = ? AND role = ?`)
+
+const createContactQuery = db.prepare(`INSERT INTO contacts (title, given_name, surname, email, phone_no, role) VALUES (?,?,?,?,?,?)`)
+
+const createDocumentQuery = db.prepare(`INSERT INTO documents (upload_date, expiry_date, assessment_date, type_of_doc_id, organisation_id, ward_department, summary, url_directory, procured) VALUES (DATE(),?,?,(SELECT type_of_doc_id FROM document_type WHERE type_of_doc_desc = 'Evaluation'),?,?,?,?,?)`)
+
+const createDocumentContactQuery = db.prepare(`INSERT INTO document_contacts (document_id, contact_id, discuss_implementation, discuss_training, discuss_outcomes, discuss_pharmacy_integration, discuss_business_case, discuss_real_world_use, discuss_EHR_integration) VALUES (?,?,?,?,?,?,?,?,?)`)
+
+const createMatchMakeQuery = db.prepare(`INSERT INTO product_matches (product_id, document_id) VALUES (?,?)`)
+
+const createDocument = db.transaction((req) => {
+  data = req.session.data;
+  make = parseInt(data['make'])
+  organisation = parseInt(data['organisation'])
+
+  // Attempt to use an existing contact
+  let contactId = undefined;
+  const contact = findContactQuery.get(data['contact-title'],data['contact-given'],data['contact-surname'],data['contact-email'],data['contact-phone'],data['contact-role'])
+  if (contact) {
+    console.log("FOUND EXISTING CONTACT, ID = ", contact.contact_id)
+    contactId = contact.contact_id
+  } else {
+    const res = createContactQuery.run(data['contact-title'],data['contact-given'],data['contact-surname'],data['contact-email'],data['contact-phone'],data['contact-role'])
+    contactId = res.lastInsertRowid
+    console.log("CREATED CONTACT, ID = ", contactId)
+  }
+
+  expiry_date = data['expiry-month'] + " " + data['expiry-year'];
+  assessment_date = data['eval-month'] + " " + data['eval-year'];
+
+  // FIXME: When we port this to the beta, add code here to detect that we're in Azure and load the document into Azure blob storage rather than the container filesystem
+  const extension = data.upload.originalFilename.match(new RegExp('[^./]+$'))
+  const newName = data.upload.newFilename + "." + extension
+  const localFilename = 'app/assets/pdf/' + newName
+  console.log("MOVING FILE", data.upload.filepath, localFilename)
+  // Copy then remove, as /tmp and /compass/app are on different filesstems in the container
+  fs.copyFileSync(data.upload.filepath, localFilename)
+  fs.unlinkSync(data.upload.filepath)
+  url = newName
+
+  var procured;
+  if (data['procured'] == 'yes') {
+    procured = 1;
+  } else {
+    procured = 0;
+  }
+
+  const docRes = createDocumentQuery.run(expiry_date, assessment_date, organisation, data['ward-dept'], data['summary'], url, procured)
+  const documentId = docRes.lastInsertRowid
+  console.log("CREATED DOCUMENT, ID = ", documentId)
+
+  const contactTopics = data['contact-topics']
+  const dcRes = createDocumentContactQuery.run(
+    documentId, contactId,
+    contactTopics.includes('implementation') ? 1 : 0,
+    contactTopics.includes('training') ? 1 : 0,
+    contactTopics.includes('outcomes') ? 1 : 0,
+    contactTopics.includes('pharmacy-integration') ? 1 : 0,
+    contactTopics.includes('business-case') ? 1 : 0,
+    contactTopics.includes('real-world-use') ? 1 : 0,
+    contactTopics.includes('ehr-integration') ? 1 : 0)
+
+  console.log("CREATED DOCUMENT CONTACT, ID = ", dcRes.lastInsertRowid)
+
+  const mmRes = createMatchMakeQuery.run(make, documentId)
+  console.log("CREATED MATCH MAKE, ID = ", mmRes.lastInsertRowid)
+});
+
+router.post(/submit-single-product-evaluation/, function (req, res, next) {
+  console.log("POST submit-single-product-evaluation")
+
+  createDocument(req)
+
+  next()
+})
+
+router.get(/submit-single-product-evaluation/, (req, res, next) => {
+  console.log("GET submit-single-product-evaluation")
+
+  const product = individualQuery.get(parseInt(req.session.data['make']))
+  res.locals.product = {
+    id: parseInt(req.session.data['make']),
+    make: product.PRODUCT_NAME,
+    model: product.MODEL,
+    model_id: product.MODEL_ID,
+    manufacturer: product.MANUFACTURER,
+    category: product.GMDN_NAME,
+    type: product.TYPE,
+    country: product.COUNTRY,
+  }
+
+  next()
+})
+
 router.get(/product-page/, (req, res, next) => {
 
   console.log("GET product-page for make_id", req.query.make)
@@ -173,6 +372,7 @@ router.get(/product-page/, (req, res, next) => {
 
   res.locals.searchTerm = req.query.q
   res.locals.product = {
+    id: req.query.make,
     make: result.PRODUCT_NAME,
     model: result.MODEL,
     manufacturer: result.MANUFACTURER,
