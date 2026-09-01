@@ -31,7 +31,7 @@
         <form method="get" novalidate="">
           <div class="nhsuk-form-group nhsuk-u-margin-bottom-0">
             <label class="nhsuk-label" for="q">
-              Search again by product, category or supplier
+              Search again by device, category or supplier
             </label>
             <input class="nhsuk-input nhsuk-input--width-20" id="q" name="q" type="search" value="{{ searchTerm }}">
 
@@ -87,10 +87,10 @@
         <div class="nhsuk-form-group">
           <fieldset class="nhsuk-fieldset">
             <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--s">
-              Evidence from trusts like mine
+              Documents from trusts like mine
             </legend>
             <div class="nhsuk-hint" id="trust-hint">
-              Show products evaluated by trusts similar in size, type, or region
+              Show devices evaluated by trusts similar in size, type, or region
             </div>
 
             <div id="trust-items" class="nhsuk-checkboxes nhsuk-checkboxes--small" data-module="nhsuk-checkboxes" data-nhsuk-checkboxes-init="">
@@ -200,7 +200,7 @@
   {# Results Column #}
   <div class="app-grid-column-results">
 
-    <h3 class="nhsuk-heading-m nhsuk-u-margin-bottom-2">Medical technologies</h3>
+    <h3 class="nhsuk-heading-m nhsuk-u-margin-bottom-2">Medical devices</h3>
     <p class="nhsuk-caption-m nhsuk-u-margin-bottom-4">
       Showing {% if searchMaxPages > 1 %}<b>{{ searchOffset }}</b> to {% endif %}<b>{{ (searchResults | length) + searchOffset - 1 }}</b> of <b>{{ searchResultsCount }}</b> products
     </p>
