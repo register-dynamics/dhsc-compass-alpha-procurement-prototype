@@ -149,8 +149,8 @@ JOIN contacts c
   ON c.contact_id = dc.contact_id
 WHERE dc.document_id IN (SELECT value FROM json_each(@documentIds));`)
 
-// FIXME: Limit to orgs whose type is 'NHS Trust', but organisation doesn't link to the org_type table for some reason?
-const organisationsQuery = db.prepare(`SELECT organisation_id, organisation_name FROM organisation`)
+// Limit to orgs whose type is 'NHS Trust', but organisation doesn't link to the org_type table for some reason?
+const trustsQuery = db.prepare(`SELECT organisation_id, organisation_name FROM organisation WHERE org_type_id = (SELECT org_type_id FROM org_type WHERE org_type_desc = 'NHS Trust')`)
 
 const individualOrganisationQuery = db.prepare(`SELECT organisation_name FROM organisation WHERE organisation_id = ?`)
 
@@ -161,7 +161,7 @@ router.get(/share-single-product-evaluation/, (req, res, next) => {
   const product = individualQuery.get(parseInt(req.query.make))
   res.locals.product = {
     id: req.query.make,
-    make: product.MAKE,
+    make: product.PRODUCT_NAME,
     model: product.MODEL,
     model_id: product.MODEL_ID,
     manufacturer: product.MANUFACTURER,
@@ -171,7 +171,7 @@ router.get(/share-single-product-evaluation/, (req, res, next) => {
   }
 
   // Fetch list of organisations for org picker (FIXME: filter to trusts somehow?)
-  const organisations = organisationsQuery.all();
+  const organisations = trustsQuery.all();
   res.locals.organisations_from_database =
     [{ value: "", text: "Select an organisation", selected: true }];
 
@@ -231,7 +231,7 @@ router.get(/review-single-product-evaluation/, (req, res, next) => {
   const product = individualQuery.get(parseInt(req.session.data['make']))
   res.locals.product = {
     id: parseInt(req.session.data['make']),
-    make: product.MAKE,
+    make: product.PRODUCT_NAME,
     model: product.MODEL,
     model_id: product.MODEL_ID,
     manufacturer: product.MANUFACTURER,
@@ -255,11 +255,11 @@ const findContactQuery = db.prepare(`SELECT contact_id FROM contacts WHERE title
 
 const createContactQuery = db.prepare(`INSERT INTO contacts (title, given_name, surname, email, phone_no, role) VALUES (?,?,?,?,?,?)`)
 
-const createDocumentQuery = db.prepare(`INSERT INTO documents (upload_date, expiry_date, assessment_date, type_of_doc_id, organisation_id, org_category_id, org_type_id, ward_department, summary, url_directory, procured) VALUES (DATE(),?,?,(SELECT type_of_doc_id FROM document_type WHERE type_of_doc_desc = 'Evaluation'),?,(SELECT org_category_id FROM org_category WHERE org_category_desc='Trusted'),(SELECT org_type_id FROM org_type WHERE org_type_desc = 'NHS Trust'),?,?,?,?)`)
+const createDocumentQuery = db.prepare(`INSERT INTO documents (upload_date, expiry_date, assessment_date, type_of_doc_id, organisation_id, ward_department, summary, url_directory, procured) VALUES (DATE(),?,?,(SELECT type_of_doc_id FROM document_type WHERE type_of_doc_desc = 'Evaluation'),?,?,?,?,?)`)
 
 const createDocumentContactQuery = db.prepare(`INSERT INTO document_contacts (document_id, contact_id, discuss_implementation, discuss_training, discuss_outcomes, discuss_pharmacy_integration, discuss_business_case, discuss_real_world_use, discuss_EHR_integration) VALUES (?,?,?,?,?,?,?,?,?)`)
 
-const createMatchMakeQuery = db.prepare(`INSERT INTO matches_make (make_id, document_id) VALUES (?,?)`)
+const createMatchMakeQuery = db.prepare(`INSERT INTO product_matches (product_id, document_id) VALUES (?,?)`)
 
 const createDocument = db.transaction((req) => {
   data = req.session.data;
@@ -333,7 +333,7 @@ router.get(/submit-single-product-evaluation/, (req, res, next) => {
   const product = individualQuery.get(parseInt(req.session.data['make']))
   res.locals.product = {
     id: parseInt(req.session.data['make']),
-    make: product.MAKE,
+    make: product.PRODUCT_NAME,
     model: product.MODEL,
     model_id: product.MODEL_ID,
     manufacturer: product.MANUFACTURER,
@@ -372,6 +372,7 @@ router.get(/product-page/, (req, res, next) => {
 
   res.locals.searchTerm = req.query.q
   res.locals.product = {
+    id: req.query.make,
     make: result.PRODUCT_NAME,
     model: result.MODEL,
     manufacturer: result.MANUFACTURER,

@@ -133,8 +133,7 @@ CREATE TABLE IF NOT EXISTS "documents" (
 	"summary"	TEXT,
 	"is_update"	NUMERIC,
 	"parent_id"	INTEGER,
-	"url_directory"	TEXT,
-	PRIMARY KEY("document_id")
+	"url_directory"	TEXT
 );
 INSERT INTO "document_type" ("type_of_doc_id","type_of_doc_desc") VALUES (1,'ODEP assessment'),
  (2,'NJR report'),
@@ -12943,7 +12942,7 @@ INSERT INTO "product_matches" ("match_id","product_id","document_id") VALUES (1,
 INSERT INTO "organisation" ("organisation_id","organisation_name","org_type_id","org_category_id") VALUES (1,'ODEP',1,1),
  (2,'NJR',1,1),
  (3,'Barts Health NHS Trust',2,1),
- (4,'Portsmouth Hospitals University NHS Trus',2,1),
+ (4,'Portsmouth Hospitals University NHS Trust',2,1),
  (5,'Guys & St Thomas'' NHS Foundation Trust',2,1),
  (6,'University Hospitals Birmingham NHS Foundation Trust',2,1),
  (7,'Northumbria Healthcare NHS Foundation Trust',2,1);
