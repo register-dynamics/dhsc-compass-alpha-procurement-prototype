@@ -33,7 +33,7 @@ export const renderSearchResults = async (req: Request, res: Response) => {
   // Get the total count of search results for the given search term
   let searchResultsCountQuery = db
     .selectFrom("search")
-    .select(db.fn.count<number>("makeId").as("count"))
+    .select(db.fn.count<number>("productId").as("count"))
     .where("search", `match`, sanitisedSearchTerm);
 
   if (queryCategories.length > 0) {

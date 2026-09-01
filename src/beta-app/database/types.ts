@@ -18,8 +18,9 @@ export type Search = Selectable<SearchTable>;
 
 export interface SearchTable {
   gmdnName: string;
-  make: string;
-  makeId: string;
+  productName: string;
+  model: string;
+  productId: string;
 
   // Temp hardcoded properties
   excluded: number;

@@ -38,8 +38,6 @@ describe("Beta app server (integration)", () => {
       .get("/search-results?q=test")
       .set("Cookie", cookies);
 
-    console.log(response.text);
-
     expect(response.status).toBe(200);
     expect(response.text).toContain("Search results");
   });
