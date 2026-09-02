@@ -12,9 +12,10 @@ describe("Index controller", () => {
     expect(response.headers["content-type"]).toMatch(/html/);
   });
 
-  it("GET /nonexistent should return 404", async () => {
-    const response = await request(app).get("/nonexistent");
+  it("GET /nonexistent should redirect to /sign-in", async () => {
+    const response = await request(app).get("/nonexistent").redirects(0);
 
-    expect(response.status).toBe(404);
+    expect(response.status).toBe(302);
+    expect(response.headers.location).toBe("/sign-in");
   });
 });

@@ -41,6 +41,13 @@ describe("Session controller", () => {
     expect(response.headers.location).toBe("/");
   });
 
+  it("GET /sign-out should be accessible without authentication", async () => {
+    const response = await request(app).get("/sign-out").redirects(0);
+
+    expect(response.status).toBe(302);
+    expect(response.headers.location).toBe("/");
+  });
+
   it("GET /sign-out handles logout errors by returning 500", () => {
     const logoutError = new Error("logout failed");
     const req = {
@@ -59,6 +66,13 @@ describe("Session controller", () => {
 
   it("GET protected page should redirect to /sign-in when not authenticated", async () => {
     const response = await request(app).get("/search").redirects(0);
+
+    expect(response.status).toBe(302);
+    expect(response.headers.location).toBe("/sign-in");
+  });
+
+  it("GET another protected page should redirect to /sign-in when not authenticated", async () => {
+    const response = await request(app).get("/search-results").redirects(0);
 
     expect(response.status).toBe(302);
     expect(response.headers.location).toBe("/sign-in");

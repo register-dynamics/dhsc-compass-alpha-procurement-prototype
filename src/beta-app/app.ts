@@ -4,10 +4,15 @@ import session from "express-session";
 import nunjucks from "nunjucks";
 
 import config from "./config.js";
-import { initializeAuth } from "./middleware/auth.js";
-import indexRoutes from "./routes/index.routes.js";
-import searchRoutes from "./routes/search.routes.js";
-import sessionRoutes from "./routes/session.routes.js";
+import { ensureAuthenticated, initializeAuth } from "./middleware/auth.js";
+import indexRoutes, { indexRouteDefinitions } from "./routes/index.routes.js";
+import { buildPublicRouteMatcher } from "./routes/route-definitions.js";
+import searchRoutes, {
+  searchRouteDefinitions,
+} from "./routes/search.routes.js";
+import sessionRoutes, {
+  sessionRouteDefinitions,
+} from "./routes/session.routes.js";
 
 const app = express();
 
@@ -62,9 +67,43 @@ app.use(
   express.static("node_modules/nhsuk-frontend/dist/nhsuk/assets"),
 );
 
+// Define routes for the application
+const routeModules = [
+  {
+    definitions: indexRouteDefinitions,
+    mountPath: "/",
+    router: indexRoutes,
+  },
+  {
+    definitions: searchRouteDefinitions,
+    mountPath: "/",
+    router: searchRoutes,
+  },
+  {
+    definitions: sessionRouteDefinitions,
+    mountPath: "/",
+    router: sessionRoutes,
+  },
+];
+
+const isPublicRoute = buildPublicRouteMatcher(
+  routeModules.flatMap(({ definitions }) => definitions),
+);
+
+// TODO: Put this middleware in a better place
+// Middleware to determine if the current route is public and should bypass authentication
+app.use((req, res, next) => {
+  if (isPublicRoute(req)) {
+    next();
+    return;
+  }
+
+  ensureAuthenticated(req, res, next);
+});
+
 // Register routes
-app.use("/", indexRoutes);
-app.use("/", searchRoutes);
-app.use("/", sessionRoutes);
+for (const { mountPath, router } of routeModules) {
+  app.use(mountPath, router);
+}
 
 export default app;
