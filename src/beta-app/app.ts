@@ -1,10 +1,34 @@
+import bodyParser from "body-parser";
 import express from "express";
+import session from "express-session";
 import nunjucks from "nunjucks";
 
 import config from "./config.js";
-import { db } from "./database/client.js";
+import { ensureAuthenticated, initializeAuth } from "./middleware/auth.js";
+import indexRoutes, { indexRouteDefinitions } from "./routes/index.routes.js";
+import { buildPublicRouteMatcher } from "./routes/route-definitions.js";
+import searchRoutes, {
+  searchRouteDefinitions,
+} from "./routes/search.routes.js";
+import sessionRoutes, {
+  sessionRouteDefinitions,
+} from "./routes/session.routes.js";
 
 const app = express();
+
+// Parse URL-encoded bodies (as sent by HTML forms) - used by passport for login form submission
+app.use(bodyParser.urlencoded({ extended: false }));
+
+// Configure session and authentication middleware
+const sessionOptions: session.SessionOptions = {
+  cookie: { secure: config.env === "production" },
+  resave: false,
+  saveUninitialized: true,
+  secret: config.session.secret,
+};
+
+app.use(session(sessionOptions));
+initializeAuth(app);
 
 // Set up Nunjucks templating engine with NHS Design System
 const nunjucksEnv = nunjucks.configure(
@@ -20,6 +44,12 @@ const nunjucksEnv = nunjucks.configure(
     express: app,
   },
 );
+
+// TODO: Remove this and put it in a better middleware place
+app.use((req, res, next) => {
+  res.locals.currentUser = req.user;
+  next();
+});
 
 nunjucksEnv.addGlobal("serviceName", config.app.name);
 
@@ -37,112 +67,43 @@ app.use(
   express.static("node_modules/nhsuk-frontend/dist/nhsuk/assets"),
 );
 
-// TODO: Add a proper router for the app, this is just a placeholder for now to get some pages going
+// Define routes for the application
+const routeModules = [
+  {
+    definitions: indexRouteDefinitions,
+    mountPath: "/",
+    router: indexRoutes,
+  },
+  {
+    definitions: searchRouteDefinitions,
+    mountPath: "/",
+    router: searchRoutes,
+  },
+  {
+    definitions: sessionRouteDefinitions,
+    mountPath: "/",
+    router: sessionRoutes,
+  },
+];
 
-app.get("/", (req, res) => {
-  res.render("index.html");
-});
+const isPublicRoute = buildPublicRouteMatcher(
+  routeModules.flatMap(({ definitions }) => definitions),
+);
 
-app.get("/search", (req, res) => {
-  res.render("search.html");
-});
-
-app.get("/search-results", async (req, res) => {
-  const searchTerm = typeof req.query.q === "string" ? req.query.q : "";
-  const sanitisedSearchTerm = `"${searchTerm}"`;
-  const pageSize = config.search.pageSize;
-  const currentPage = (parseInt(req.query.page as string) || 1) - 1;
-  const searchPage = currentPage + 1;
-
-  const queryCategories = [req.query["[category]"] ?? []]
-    .flat()
-    .filter((c): c is string => typeof c === "string" && c !== "_unchecked");
-
-  const categoriesQueryString =
-    queryCategories.length > 0
-      ? `&${queryCategories.map((c) => `[category]=${encodeURIComponent(c)}`).join("&")}`
-      : "";
-
-  const queryParams = {
-    categories: JSON.stringify(queryCategories),
-    limit: pageSize,
-    offset: pageSize * currentPage,
-    term: sanitisedSearchTerm,
-  };
-
-  // Get the total count of search results for the given search term
-  let searchResultsCountQuery = db
-    .selectFrom("search")
-    .select(db.fn.count<number>("makeId").as("count"))
-    .where("search", `match`, sanitisedSearchTerm);
-
-  if (queryCategories.length > 0) {
-    searchResultsCountQuery = searchResultsCountQuery.where(
-      "gmdnName",
-      "in",
-      queryCategories,
-    );
+// TODO: Put this middleware in a better place
+// Middleware to determine if the current route is public and should bypass authentication
+app.use((req, res, next) => {
+  if (isPublicRoute(req)) {
+    next();
+    return;
   }
 
-  const searchResultsCount = await searchResultsCountQuery
-    .executeTakeFirstOrThrow()
-    .then((result) => result.count);
-
-  const searchOffset = searchResultsCount > 0 ? currentPage * pageSize + 1 : 0;
-  const searchMaxPages =
-    Math.trunc(searchResultsCount / pageSize) +
-    Math.min(searchResultsCount % pageSize, 1);
-
-  // Get the categories for the filter sidebar, along with the count of results for each category
-  const categoriesInSearchResults = await db
-    .selectFrom("search")
-    .select(["gmdnName", db.fn.count<number>("gmdnName").as("count")])
-    .where("search", `match`, sanitisedSearchTerm)
-    .groupBy("gmdnName")
-    .orderBy("count", "desc")
-    .execute()
-    .then((results) =>
-      results.map((result) => ({
-        checked: queryCategories.includes(result.gmdnName),
-        count: result.count,
-        name: result.gmdnName,
-      })),
-    );
-
-  // Perform the search query with pagination and render the results page
-  let results = db
-    .selectFrom("search")
-    .selectAll()
-    .where("search", `match`, sanitisedSearchTerm);
-
-  // Add in the category filter if any categories are selected
-  if (queryCategories.length > 0) {
-    results = results.where("gmdnName", "in", queryCategories);
-  }
-
-  await results
-    .limit(queryParams.limit)
-    .offset(queryParams.offset)
-    .execute()
-    .then((results) => {
-      // Add some dummy data to the results for now, until we have a proper database with these fields
-      for (const result of results) {
-        result.procured = 1;
-        result.under_review = 1;
-        result.excluded = 1;
-      }
-
-      res.render("search-results.html", {
-        categoriesQueryString,
-        searchMaxPages,
-        searchOffset,
-        searchPage,
-        searchResultCategories: categoriesInSearchResults,
-        searchResults: results,
-        searchResultsCount,
-        searchTerm,
-      });
-    });
+  ensureAuthenticated(req, res, next);
 });
+
+// Register routes
+for (const { mountPath, router } of routeModules) {
+  app.use(mountPath, router);
+}
 
 export default app;

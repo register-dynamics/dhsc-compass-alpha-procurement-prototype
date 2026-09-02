@@ -1,68 +1,81 @@
-{% extends "layouts/base.html" %} {% from "hero/macro.njk" import hero %} {%
-from "card/macro.njk" import card %} {% from "nhsuk/macros/icon.njk" import
-nhsukIcon %} {% set pageName = "Welcome" %} {% block header %} {{ header({ logo:
-{ href: "/", ariaLabel: "Search and evaluate medical technologies" }, service: {
-text: "Search and evaluate medical technologies", href: "/" }, navigation: {
-items: [ { text: "About this service", href: "#" }, { text: "Latest news", href:
-"#" }, { text: "Data standards", href: "#" }, { text: "Case studies", href: "#"
-} ] } }) }}
+{% extends "layouts/base.html" %}
 
-<div class="nice-hero">
-  <div class="nice-hero__content">
-    <div class="nhsuk-width-container">
-      <div class="nice-hero__inner">
-        <div class="nice-hero__text">
-          {% block heroHeading %}
-          <h1 class="nhsuk-heading-l nhsuk-u-margin-bottom-4">
-            Search and evaluate medical technologies based on good clinical
-            outcomes
-          </h1>
+{% from "hero/macro.njk" import hero %}
+{% from "card/macro.njk" import card %}
+{% from "nhsuk/macros/icon.njk" import nhsukIcon %}
 
-          <p class="nhsuk-body-l">Used by <strong>###</strong> NHS trusts</p>
-          {% endblock %} {% block heroActions %}
-          <div class="nhsuk-button-group nhsuk-u-margin-bottom-0">
-            <a
-              class="nhsuk-button nhsuk-button--reverse"
-              data-module="nhsuk-button"
-              href="#"
-              draggable="false"
-              role="button"
-              data-nhsuk-button-init=""
-              >Log in</a
-            >
+{% set pageName = "Welcome" %}
 
-            <p class="nhsuk-body nhsuk-u-margin-bottom-0">
-              or
-              <a
-                href="#"
-                class="nhsuk-link nhsuk-link--reverse nhsuk-u-font-weight-bold"
-                >Sign up</a
-              >
-            </p>
+{% block header %}
+  {{ header({
+    logo: {
+      href: "/",
+      ariaLabel: "Search and evaluate medical technologies"
+    },
+    service: {
+      text: "Search and evaluate medical technologies",
+      href: "/"
+    },
+    navigation: {
+      items: [
+        { text: "About this service", href: "#" },
+        { text: "Latest news", href: "#" },
+        { text: "Data standards", href: "#" },
+        { text: "Case studies", href: "#" }
+      ]
+    },
+    account: {
+      items: accountItems
+    }
+  }) }}
+
+  <div class="nice-hero">
+    <div class="nice-hero__content">
+      <div class="nhsuk-width-container">
+        <div class="nice-hero__inner">
+          <div class="nice-hero__text">
+            {% block heroHeading %}
+              <h1 class="nhsuk-heading-l nhsuk-u-margin-bottom-4">
+                Search and evaluate medical technologies based on good clinical outcomes
+              </h1>
+
+              <p class="nhsuk-body-l">Used by
+                <strong>###</strong>
+                NHS trusts</p>
+            {% endblock %}
+            {% block heroActions %}
+              <div class="nhsuk-button-group nhsuk-u-margin-bottom-0">
+                <a class="nhsuk-button nhsuk-button--reverse" data-module="nhsuk-button" href="/sign-in" draggable="false" role="button" data-nhsuk-button-init="">Log in</a >
+
+                <p class="nhsuk-body nhsuk-u-margin-bottom-0">
+                  or
+                  <a href="#" class="nhsuk-link nhsuk-link--reverse nhsuk-u-font-weight-bold">Sign up</a >
+                </p>
+              </div>
+            {% endblock %}
           </div>
-          {% endblock %}
         </div>
       </div>
     </div>
+    <div class="nice-hero__image">
+      <img src="/images/compass-hero.png" alt="" role="presentation"/>
+    </div>
   </div>
-  <div class="nice-hero__image">
-    <img src="/images/compass-hero.png" alt="" role="presentation" />
+
+{% endblock %}
+{% block content %}
+  <!-- NHS 10 Year Plan Context -->
+
+  <!-- Key Features Cards -->
+  <div class="nhsuk-grid-row nhsuk-u-margin-top-7" id="how-it-works">
+    <div class="nhsuk-grid-column-full">
+      <h2 class="nhsuk-heading-l">What this service offers</h2>
+    </div>
   </div>
-</div>
 
-{% endblock %} {% block content %}
-<!-- NHS 10 Year Plan Context -->
-
-<!-- Key Features Cards -->
-<div class="nhsuk-grid-row nhsuk-u-margin-top-7" id="how-it-works">
-  <div class="nhsuk-grid-column-full">
-    <h2 class="nhsuk-heading-l">What this service offers</h2>
-  </div>
-</div>
-
-<ul class="nhsuk-grid-row nhsuk-card-group">
-  <li class="nhsuk-grid-column-one-third nhsuk-card-group__item">
-    {{ card({ heading: "Centralised evidence", headingSize: "s",
+  <ul class="nhsuk-grid-row nhsuk-card-group">
+    <li class="nhsuk-grid-column-one-third nhsuk-card-group__item">
+      {{ card({ heading: "Centralised evidence", headingSize: "s",
     descriptionHtml: "
     <p>
       Access data from multiple trusted sources in one place. This includes NICE
@@ -70,9 +83,9 @@ items: [ { text: "About this service", href: "#" }, { text: "Latest news", href:
       Registration data.
     </p>
     " }) }}
-  </li>
-  <li class="nhsuk-grid-column-one-third nhsuk-card-group__item">
-    {{ card({ heading: "Real-world evaluations", headingSize: "s",
+    </li>
+    <li class="nhsuk-grid-column-one-third nhsuk-card-group__item">
+      {{ card({ heading: "Real-world evaluations", headingSize: "s",
     descriptionHtml: "
     <p>
       Read and share evaluations from NHS trusts that are using technologies in
@@ -80,28 +93,28 @@ items: [ { text: "About this service", href: "#" }, { text: "Latest news", href:
       outomes.
     </p>
     " }) }}
-  </li>
-  <li class="nhsuk-grid-column-one-third nhsuk-card-group__item">
-    {{ card({ heading: "Peer contact support", headingSize: "s",
+    </li>
+    <li class="nhsuk-grid-column-one-third nhsuk-card-group__item">
+      {{ card({ heading: "Peer contact support", headingSize: "s",
     descriptionHtml: "
     <p>
       Connect directly with trusts who have evaluated technologies you're
       considering. Learn from their experience before making decisions.
     </p>
     " }) }}
-  </li>
-</ul>
+    </li>
+  </ul>
 
-<!-- Who it's for -->
-<div class="nhsuk-grid-row nhsuk-u-margin-top-7">
-  <div class="nhsuk-grid-column-full">
-    <h2 class="nhsuk-heading-l">Who the service is for</h2>
+  <!-- Who it's for -->
+  <div class="nhsuk-grid-row nhsuk-u-margin-top-7">
+    <div class="nhsuk-grid-column-full">
+      <h2 class="nhsuk-heading-l">Who the service is for</h2>
+    </div>
   </div>
-</div>
 
-<div class="nhsuk-grid-row">
-  <div class="nhsuk-grid-column-one-half">
-    {{ card({ "heading": "Procurement professionals", "headingLevel": 3,
+  <div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-one-half">
+      {{ card({ "heading": "Procurement professionals", "headingLevel": 3,
     "descriptionHtml": "
     <p>
       Access evidence quickly to support tendering processes, supplier
@@ -109,72 +122,73 @@ items: [ { text: "About this service", href: "#" }, { text: "Latest news", href:
       purchases.
     </p>
     " }) }}
-  </div>
+    </div>
 
-  <div class="nhsuk-grid-column-one-half">
-    {{ card({ "heading": "Clinicians and clinical leads", "headingLevel": 3,
+    <div class="nhsuk-grid-column-one-half">
+      {{ card({ "heading": "Clinicians and clinical leads", "headingLevel": 3,
     "descriptionHtml": "
     <p>
       Review clinical evidence and real-world insights from other NHS trusts to
       inform technology adoption decisions in your service.
     </p>
     " }) }}
+    </div>
   </div>
-</div>
 
-<div class="nhsuk-grid-row">
-  <div class="nhsuk-grid-column-one-half">
-    {{ card({ "heading": "Medical device evaluation teams", "headingLevel": 3,
+  <div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-one-half">
+      {{ card({ "heading": "Medical device evaluation teams", "headingLevel": 3,
     "descriptionHtml": "
     <p>
       Support your evaluation processes with centralised regulatory and clinical
       evidence, and share your findings with other NHS organisations.
     </p>
     " }) }}
-  </div>
+    </div>
 
-  <div class="nhsuk-grid-column-one-half">
-    {{ card({ "heading": "Innovation and transformation teams", "headingLevel":
+    <div class="nhsuk-grid-column-one-half">
+      {{ card({ "heading": "Innovation and transformation teams", "headingLevel":
     3, "descriptionHtml": "
     <p>
       Identify evidence-based innovations and assess their readiness for
       adoption across your organisation or integrated care system.
     </p>
     " }) }}
-  </div>
-</div>
-
-<!-- Data Sources Section -->
-<div class="nhsuk-grid-row nhsuk-u-margin-top-7" id="data-sources">
-  <div class="nhsuk-grid-column-full">
-    <h2 class="nhsuk-heading-l">Trusted data sources</h2>
-    <p class="nhsuk-body-l">
-      This service integrates data and guidance from the most authoritative
-      sources in healthcare, including:
-    </p>
-  </div>
-</div>
-
-<div class="nhsuk-grid-row nhsuk-u-margin-top-4">
-  <div class="nhsuk-grid-column-one-half">
-    <h3 class="nhsuk-heading-m">
-      {{ nhsukIcon("tick") }} National Institute for Health and Care Excellence
-      (NICE)
-    </h3>
-
-    <h3 class="nhsuk-heading-m nhsuk-u-margin-top-4">
-      {{ nhsukIcon("tick") }} Orthopaedic Data Evaluation Panel (ODEP)
-    </h3>
+    </div>
   </div>
 
-  <div class="nhsuk-grid-column-one-half">
-    <h3 class="nhsuk-heading-m">{{ nhsukIcon("tick") }} NHS Trusts</h3>
-
-    <h3 class="nhsuk-heading-m nhsuk-u-margin-top-4">
-      {{ nhsukIcon("tick") }} Medicines and Healthcare products Regulatory
-      Agency (MHRA)
-    </h3>
+  <!-- Data Sources Section -->
+  <div class="nhsuk-grid-row nhsuk-u-margin-top-7" id="data-sources">
+    <div class="nhsuk-grid-column-full">
+      <h2 class="nhsuk-heading-l">Trusted data sources</h2>
+      <p class="nhsuk-body-l">
+        This service integrates data and guidance from the most authoritative sources in healthcare, including:
+      </p>
+    </div>
   </div>
-</div>
+
+  <div class="nhsuk-grid-row nhsuk-u-margin-top-4">
+    <div class="nhsuk-grid-column-one-half">
+      <h3 class="nhsuk-heading-m">
+        {{ nhsukIcon("tick") }}
+        National Institute for Health and Care Excellence (NICE)
+      </h3>
+
+      <h3 class="nhsuk-heading-m nhsuk-u-margin-top-4">
+        {{ nhsukIcon("tick") }}
+        Orthopaedic Data Evaluation Panel (ODEP)
+      </h3>
+    </div>
+
+    <div class="nhsuk-grid-column-one-half">
+      <h3 class="nhsuk-heading-m">{{ nhsukIcon("tick") }}
+        NHS Trusts</h3>
+
+      <h3 class="nhsuk-heading-m nhsuk-u-margin-top-4">
+        {{ nhsukIcon("tick") }}
+        Medicines and Healthcare products Regulatory Agency (MHRA)
+      </h3>
+    </div>
+  </div>
 
 {% endblock %}

@@ -68,42 +68,6 @@ CREATE TABLE IF NOT EXISTS "gmdn" (
 	"GMDN_TERM_NAME"	TEXT
 );
 CREATE VIRTUAL TABLE search USING fts5(PRODUCT_ID, DEVICE_ID, PRODUCT_NAME, MODEL, GMDN_NAME, TYPE, PRODUCT_CODE, MANUFACTURER, COUNTRY, UDI, GMDN_CODE);
-CREATE TABLE IF NOT EXISTS "search_data" (
-	"id"	INTEGER,
-	"block"	BLOB,
-	PRIMARY KEY("id")
-);
-CREATE TABLE IF NOT EXISTS "search_idx" (
-	"segid"	,
-	"term"	,
-	"pgno"	,
-	PRIMARY KEY("segid","term")
-) WITHOUT ROWID;
-CREATE TABLE IF NOT EXISTS "search_content" (
-	"id"	INTEGER,
-	"c0"	,
-	"c1"	,
-	"c2"	,
-	"c3"	,
-	"c4"	,
-	"c5"	,
-	"c6"	,
-	"c7"	,
-	"c8"	,
-	"c9"	,
-	"c10"	,
-	PRIMARY KEY("id")
-);
-CREATE TABLE IF NOT EXISTS "search_docsize" (
-	"id"	INTEGER,
-	"sz"	BLOB,
-	PRIMARY KEY("id")
-);
-CREATE TABLE IF NOT EXISTS "search_config" (
-	"k"	,
-	"v"	,
-	PRIMARY KEY("k")
-) WITHOUT ROWID;
 CREATE TABLE IF NOT EXISTS "product_matches" (
 	"match_id"	INTEGER,
 	"product_id"	INTEGER,
@@ -134,6 +98,16 @@ CREATE TABLE IF NOT EXISTS "documents" (
 	"is_update"	NUMERIC,
 	"parent_id"	INTEGER,
 	"url_directory"	TEXT
+);
+CREATE TABLE IF NOT EXISTS `users` (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  username TEXT UNIQUE,
+  password_hash TEXT,
+  oidc_subject TEXT UNIQUE,
+  given_name TEXT NOT NULL,
+  last_name TEXT NOT NULL,
+  created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  modified_at TEXT
 );
 INSERT INTO "document_type" ("type_of_doc_id","type_of_doc_desc") VALUES (1,'ODEP assessment'),
  (2,'NJR report'),
@@ -12961,3 +12935,6 @@ join org_category as c on o.org_category_id = c.org_category_id
 join org_type as b on o.org_type_id = b.org_type_id
 /* make_documents(make_id,document_id,upload_date,expiry_date,assessment_date,rating,rating_type,procured,scale,ward_department,summary,type_of_doc_desc,organisation_name,org_category_desc,org_type_desc,url_directory) */;
 
+-- Seed user for beta app login
+INSERT INTO users (username, password_hash, given_name, last_name) VALUES
+  ('test@example.com', '$argon2id$v=19$m=65536,p=4,t=3$FOt9ovCYjfa8MBG+0xhOiA$ql+3cvHd48lV8auNcHSU/Wjw3Lfr1IFRRroA32XFhKM', 'Johnny', 'Test');

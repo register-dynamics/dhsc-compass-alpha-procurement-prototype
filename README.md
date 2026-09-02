@@ -97,6 +97,19 @@ The beta app belongs in `src/beta-app`. It is a separate app from the alpha prot
 
 Within `src/beta-app`, run `npm install` to install dependencies, then run `npm run dev` to start the app. It will be available at http://localhost:3001/.
 
+There is a test user seeded into the database for logging in to the beta app:
+
+- Username: `test@example.com`
+- Password: `northsouth`
+
+If you want to add your own users, you can do so by adding them to the `users` table in the database. Passwords must be hashed using Argon2id, which can be done using the generate-password-hash script in `src/beta-app/scripts/generate-password-hash.ts`. For example, to generate a hash for the password `mypassword`, run:
+
+```bash
+node scripts/generate-password-hash.js mypassword
+```
+
+and then use that value in the `password_hash` column when adding a new user to the `users` table.
+
 ### Testing
 
 Within `src/beta-app`, run the following commands to execute and watch tests or generate coverage:

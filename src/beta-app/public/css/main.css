@@ -13960,6 +13960,18 @@ body:not(.nhsuk-frontend-supported) .nhsuk-scroll__content::after {
   margin: 0 auto;
 }
 
+.nhslogin-button-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.button-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .nhsuk-width-container {
   max-width: 1100px;
 }
