@@ -23,8 +23,13 @@
       {{ input({ label: { text: "Title", classes: "nhsuk-label--s" }, id: "d-title", name: "d-title",
         hint: { text: "A short, descriptive title. For example, 'Evaluation of SmartPump 300, Renal Unit'." } }) }}
 
-      {{ textarea({ name: "d-population", id: "d-population", rows: 3,
-        label: { text: "Patient population", classes: "nhsuk-label--s" } }) }}
+      {{ textarea({ name: "d-pathways", id: "d-pathways", rows: 3,
+        label: { text: "Clinical pathways", classes: "nhsuk-label--s" },
+        hint: { text: "For example, diabetes, shingles or depression" } }) }}
+
+      {{ textarea({ name: "d-eligibility", id: "d-eligibility", rows: 3,
+        label: { text: "Additional eligibility criteria", classes: "nhsuk-label--s" },
+        hint: { text: "Including protected characteristics, for example age, sex, race, disability or socioeconomic status" } }) }}
 
       {{ textarea({ name: "d-compared", id: "d-compared", rows: 3,
         label: { text: "Devices compared", classes: "nhsuk-label--s" } }) }}

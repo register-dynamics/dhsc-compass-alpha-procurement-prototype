@@ -176,9 +176,14 @@
           actions: { items: [{ href: backHref, text: "Change", visuallyHiddenText: "evaluation title" }] }
         },
         {
-          key: { text: "Patient population" },
-          value: { html: answer(data['patient-population'], "Not provided") },
-          actions: { items: [{ href: backHref, text: "Change", visuallyHiddenText: "patient population" }] }
+          key: { text: "Clinical pathways" },
+          value: { html: answer(data['clinical-pathways'], "Not provided") },
+          actions: { items: [{ href: backHref, text: "Change", visuallyHiddenText: "clinical pathways" }] }
+        },
+        {
+          key: { text: "Additional eligibility criteria" },
+          value: { html: answer(data['eligibility-criteria'], "Not provided") },
+          actions: { items: [{ href: backHref, text: "Change", visuallyHiddenText: "additional eligibility criteria" }] }
         },
         {
           key: { text: "Devices compared" },
