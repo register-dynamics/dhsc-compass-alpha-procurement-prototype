@@ -20,7 +20,7 @@ export interface SearchTable {
   gmdnName: string;
   productName: string;
   model: string;
-  productId: string;
+  productId: number;
 
   // Temp hardcoded properties
   excluded: number;

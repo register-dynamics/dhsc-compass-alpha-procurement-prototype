@@ -21,7 +21,7 @@
             }
         ],
         href: "#",
-        text: product.make + " – " + product.model
+        text: product.productName + " – " + product.model
     }) }}
 
 {% endblock %}
@@ -33,7 +33,7 @@
 
             {# Product Header #}
             <h1 class="nhsuk-heading-xl nhsuk-u-margin-bottom-3">
-                {{ product.make }}
+                {{ product.productName }}
                 –
                 {{ product.model }}
             </h1>
