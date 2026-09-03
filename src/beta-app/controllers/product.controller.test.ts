@@ -20,7 +20,7 @@ describe("Product controller", () => {
 
   it("GET /product/:id returns 400 when product ID cannot be parsed", async () => {
     const req = {
-        params: { id: Symbol("bad-id") as unknown as string },
+      params: { id: Symbol("bad-id") as unknown as string },
     } as unknown as Request;
     const send = vi.fn();
     const status = vi.fn().mockReturnValue({ send });
