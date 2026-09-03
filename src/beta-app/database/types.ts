@@ -1,17 +1,64 @@
+/* eslint-disable perfectionist/sort-modules */
 /* eslint-disable perfectionist/sort-interfaces */
 import { Generated, Selectable } from "kysely";
 
+import type { DocumentContact } from "../models/documentContact.js";
+
 export interface Database {
-  organisation: OrganisationTable;
+  contacts: ContactTable;
+  make_documents: DocumentTable;
+  document_contacts: DocumentContactsTable;
   search: SearchTable;
   users: UserTable;
 }
 
-export type Organisation = Selectable<OrganisationTable>;
+export type Contact = Selectable<ContactTable>;
 
-export interface OrganisationTable {
-  organisation_id: Generated<number>;
-  organisation_name: string;
+export interface ContactTable {
+  contactId: number;
+  title: string;
+  givenName: string;
+  surname: string;
+  email: string;
+  phoneNo: string;
+  role: string;
+}
+
+export type Document = Selectable<DocumentTable>;
+
+export interface DocumentTable {
+  productId: number;
+  documentId: number;
+  uploadDate: string;
+  expiryDate: string;
+  assessmentDate: string;
+  rating: string;
+  ratingType: string;
+  procured: boolean;
+  wardDepartment: string;
+  summary: string;
+  typeOfDocDesc: string;
+  organisationName: string;
+  orgCategoryDesc: string;
+  orgTypeDesc: string;
+  urlDirectory: string;
+
+  // Utility prop for contacts
+  contacts: DocumentContact[];
+}
+
+export type DocumentContacts = Selectable<DocumentContactsTable>;
+
+export interface DocumentContactsTable {
+  documentId: number;
+  contactId: number;
+  discussImplementation: boolean;
+  discussTraining: boolean;
+  discussOutcomes: boolean;
+  discussPharmacyIntegration: boolean;
+  discussBusinessCase: boolean;
+  discussRealWorldUse: boolean;
+  discussEhrIntegration: boolean;
 }
 
 export type Search = Selectable<SearchTable>;

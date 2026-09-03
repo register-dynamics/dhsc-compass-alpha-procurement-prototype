@@ -3,6 +3,12 @@
 {% from "breadcrumb/macro.njk" import breadcrumb %}
 {% from "contents-list/macro.njk" import contentsList %}
 {% from "card/macro.njk" import card %}
+{% from "includes/evidence-card-business-case.njk" import evidenceCardBusinessCase %}
+{% from "includes/evidence-card-clinical-trial.njk" import evidenceCardClinicalTrial %}
+{% from "includes/evidence-card-evaluation.njk" import evidenceCardEvaluation %}
+{% from "includes/evidence-card-njr.njk" import evidenceCardNjr %}
+{% from "includes/evidence-card-odep.njk" import evidenceCardOdep %}
+
 
 {# TODO: Set page name based on product content #}
 {% set pageName = "Product" %}
@@ -427,20 +433,22 @@
     <div class="nhsuk-grid-row">
         <div class="nhsuk-grid-column-two-thirds">
 
+            {# {{ documents | dump }} #}
+
             <!-- Trust Evaluation Cards - Loop through product documents -->
-            {# {% for document in product.documents %}
-    {% if document.type_of_doc_desc == "ODEP assessment" %}
-        {{ evidenceCardOdep(document) }}
-    {% elif document.type_of_doc_desc == "NJR report" %}
-      {{ evidenceCardNjr(document) }}
-    {% elif document.type_of_doc_desc == "Business case" %}
-      {{ evidenceCardBusinessCase(document) }}
-    {% elif "Clinical trial" in document.type_of_doc_desc %}
-      {{ evidenceCardClinicalTrial(document) }}
-    {% elif document.type_of_doc_desc == "Evaluation" %}
-      {{ evidenceCardEvaluation(document) }}
-    {% endif %}
-    {% endfor %} #}
+            {% for document in documents %}
+                {% if document.typeOfDocDesc == "ODEP assessment" %}
+                    {{ evidenceCardOdep(document) }}
+                {% elif document.typeOfDocDesc == "NJR report" %}
+                    {{ evidenceCardNjr(document) }}
+                {% elif document.typeOfDocDesc == "Business case" %}
+                    {{ evidenceCardBusinessCase(document) }}
+                {% elif "Clinical trial" in document.typeOfDocDesc %}
+                    {{ evidenceCardClinicalTrial(document) }}
+                {% elif document.typeOfDocDesc == "Evaluation" %}
+                    {{ evidenceCardEvaluation(document) }}
+                {% endif %}
+            {% endfor %}
         </div>
     </div>
 
