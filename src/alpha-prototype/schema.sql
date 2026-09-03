@@ -12851,7 +12851,10 @@ INSERT INTO "gmdn" ("GMDN_CODE","GMDN_TERM_NAME") VALUES (48218,'HIV1/Hepatitis 
  (32053,'Endoscopic measuring device, viewed-object, reusable'),
  (45376,'Penis/scrotum wearable urinal'),
  (58869,'Intravascular extraction catheter-forceps');
-INSERT INTO "search" SELECT products.PRODUCT_ID as PRODUCT_ID,
+
+--Populate search table
+INSERT INTO "search" (PRODUCT_ID, DEVICE_ID, PRODUCT_NAME, MODEL, GMDN_NAME, TYPE, PRODUCT_CODE, MANUFACTURER, COUNTRY, UDI, GMDN_CODE)
+SELECT products.PRODUCT_ID as PRODUCT_ID,
 	type.DEVICE_ID as DEVICE_ID,
 	products.BRAND_TRADE_NAME as PRODUCT_NAME,
 	products.MODEL as MODEL,
@@ -12865,7 +12868,7 @@ INSERT INTO "search" SELECT products.PRODUCT_ID as PRODUCT_ID,
 from products
 left join device_type as type on products.DEVICE_ID = type.DEVICE_ID
 left join manufacturers as man on products.manufacturer_id = man.manufacturer_id
-left join gmdn on type.GMDN_CODE = gmdn.GMDN_CODE
+left join gmdn on type.GMDN_CODE = gmdn.GMDN_CODE;
 
 INSERT INTO "product_matches" ("match_id","product_id","document_id") VALUES (1,45236891,4567),
  (2,64782315,4567),
