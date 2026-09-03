@@ -12851,26 +12851,21 @@ INSERT INTO "gmdn" ("GMDN_CODE","GMDN_TERM_NAME") VALUES (48218,'HIV1/Hepatitis 
  (32053,'Endoscopic measuring device, viewed-object, reusable'),
  (45376,'Penis/scrotum wearable urinal'),
  (58869,'Intravascular extraction catheter-forceps');
-INSERT INTO "search" ("PRODUCT_ID","DEVICE_ID","PRODUCT_NAME","MODEL","GMDN_NAME","TYPE","PRODUCT_CODE","MANUFACTURER","COUNTRY","UDI","GMDN_CODE") VALUES (12467896,4624,'HydroHeal Plus','HydroHeal Plus','Hydrotherapy bath/tank','General Medical Device','751649','Aquatech Ltd','Limited Company',1324657985,14450),
- (14236541,1596,'GlucoSense Flex Reader','GlucoSense','Blood glucose/blood pressure monitoring system, home-use','In Vitro Diagnostic Device','CENK93434','Saccharine & Sons','Limited Company',4563217896,63087),
- (15236497,1896,'Praxis Knee Tibial Component','Praxis Total Knee','Cruciate-retaining total knee prosthesis','General Medical Device','DN334','Praxis & Co','Limited Company',5566948314,33664),
- (15320469,4623,'UNIT Hip Liner','UNIT Artifical Hip','Hydrotherapy bath/tank','General Medical Device','56216','Upper Norfolk Implant Technologies','Other',4520105341,14450),
- (16234975,4623,'UNIT Hip Stem 9mm','UNIT Artifical Hip','Hydrotherapy bath/tank','General Medical Device','56213','Upper Norfolk Implant Technologies','Other',1615626554,14450),
- (18236541,4455,'Clear Eye Shield Sterile','Eye Shield','Eye irrigation shield, reusable','General Medical Device','EF3232','Epsilon tech Ltd','Limited Company',5673194589,63491),
- (19764325,5362,'Omega Gentle Temp 521 Thermometer','Thermometer tympanic device','Continuous electronic patient thermometer, battery-powered','General Medical Device','JU342','OmegaAM Solutions','Limited Company',1111444456,14034),
- (21649535,1896,'Praxis Knee Femoral Compnent','Praxis Total Knee','Cruciate-retaining total knee prosthesis','General Medical Device','DN333','Praxis & Co','Limited Company',4478852562,33664),
- (28462513,4623,'UNIT Hip Cup 9mm','UNIT Artifical Hip','Hydrotherapy bath/tank','General Medical Device','56214','Upper Norfolk Implant Technologies','Other',1264547357,14450),
- (45236891,6542,'Heart Age Assessment Tool','Heart Pro','Bedside heart rate monitor','General Medical Device','C3489F','Aorta Solutions','Limited Company',4452213369,35197),
- (46523195,4567,'Blood pressure cuff multi patient use 16cm-28cm no connector','Blood Pressure Kit','Blood glucose/blood pressure monitoring system, point-of-care','In Vitro Diagnostic Device','FW34342','Ferrus Technology Solutions','Limited Company',1111223654,63088),
- (64782315,6523,'Cardiac pacemaker pack','Pacemaker','Bedside heart rate monitor','General Medical Device','KL290','Aorta Solutions','Limited Company',1122366543,35197),
- (73516943,4623,'UNIT Hip Ball 9mm','UNIT Artifical Hip','Hydrotherapy bath/tank','General Medical Device','56215','Upper Norfolk Implant Technologies','Other',1454424355,14450),
- (74589621,4258,'InsuFlow Pro 300 Pump System','InsuFlow Pro','Ambulatory insulin infusion pump reservoir','General Medical Device','FK54354','ArcTech Ltd','Limited Company',1522446658,35838),
- (74652319,7895,'Ophthalmic lens','Opthalmic','Automated ophthalmic refractometer','General Medical Device','G4567-C','Seinar Systems Ltd','Limited Company',1523463265,36386),
- (78514623,1258,'BetaPlex 4000 Dynamic','BetaPlex 4000','Cochlear implant system','Active Implantable Device','RE-191','Beta Healthcare Solutions','Limited Company',5132649785,35643),
- (78954612,1896,'Praxis Knee Plastic Spacer','Praxis Total Knee','Cruciate-retaining total knee prosthesis','General Medical Device','DN335','Praxis & Co','Limited Company',6632145789,33664),
- (84123596,4523,'Heart Rate Monitor','Heart Rate Monitor','Bedside heart rate monitor','General Medical Device','2124-23-66','Aorta Solutions','Limited Company',1523455265,35197),
- (94621578,6324,'Insulin Safety Syringe with Fixed Needle','Insulin Kit','Insulin syringe/needle, basic','General Medical Device','7824526','Chumley Technologies','Limited Company',2184663215,38501),
- (96541235,1258,'BetaPlex 4000 Static','BetaPlex 4000','Cochlear implant system','Active Implantable Device','RE-190','Beta Healthcare Solutions','Limited Company',4561231522,35643);
+INSERT INTO "search" SELECT products.PRODUCT_ID as PRODUCT_ID,
+	type.DEVICE_ID as DEVICE_ID,
+	products.BRAND_TRADE_NAME as PRODUCT_NAME,
+	products.MODEL as MODEL,
+	gmdn.GMDN_TERM_NAME as GMDN_NAME,
+	type.DEVICE_TYPE_NAME as TYPE,
+	products.PRODUCT_CODE as PRODUCT_CODE,
+	man.man_organisation_name as MANUFACTURER,
+	man.man_country as COUNTRY,
+	products.UDI_NUMBER as UDI_NUMBER,
+	type.GMDN_CODE as GMDN_CODE
+from products
+left join device_type as type on products.DEVICE_ID = type.DEVICE_ID
+left join manufacturers as man on products.manufacturer_id = man.manufacturer_id
+left join gmdn on type.GMDN_CODE = gmdn.GMDN_CODE
 
 INSERT INTO "product_matches" ("match_id","product_id","document_id") VALUES (1,45236891,4567),
  (2,64782315,4567),
