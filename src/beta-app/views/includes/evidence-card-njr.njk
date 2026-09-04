@@ -1,0 +1,71 @@
+{% from "includes/contact-peer-discussion.njk" import contactPeerDiscussion %}
+
+{% macro evidenceCardNjr(document) %}
+  <div class="nhsuk-card">
+    <div class="nhsuk-card__content">
+      <h3 class="nhsuk-card__heading nhsuk-heading-m">
+        {{ document.organisationName }}
+      </h3>
+
+      <dl class="nhsuk-summary-list nhsuk-summary-list--no-border">
+        <div class="nhsuk-summary-list__row">
+          <dt class="nhsuk-summary-list__key">
+            Document type
+          </dt>
+          <dd class="nhsuk-summary-list__value">
+            {{ document.typeOfDocDesc }}
+          </dd>
+        </div>
+
+        <div class="nhsuk-summary-list__row">
+          <dt class="nhsuk-summary-list__key">
+            Assessment date
+          </dt>
+          <dd class="nhsuk-summary-list__value">
+            {{ document.assessmentDate }}
+          </dd>
+        </div>
+
+        <div class="nhsuk-summary-list__row">
+          <dt class="nhsuk-summary-list__key">
+            Renewal date
+          </dt>
+          <dd class="nhsuk-summary-list__value">
+            {{ document.expiryDate }}
+          </dd>
+        </div>
+
+        <div class="nhsuk-summary-list__row">
+          <dt class="nhsuk-summary-list__key">
+            Organisation type
+          </dt>
+          <dd class="nhsuk-summary-list__value">
+            {{ document.orgTypeDesc }}
+          </dd>
+        </div>
+
+        <div class="nhsuk-summary-list__row">
+          <dt class="nhsuk-summary-list__key">
+            Organisation category
+          </dt>
+          <dd class="nhsuk-summary-list__value">
+            {{ document.orgCategoryDesc }}
+          </dd>
+        </div>
+      </dl>
+
+        <h4 class="nhsuk-heading-s nhsuk-u-margin-top-4">Report summary</h4>
+        <p class="nhsuk-body nhsuk-u-margin-top-3">
+          {% set documentUrl = document.urlDirectory %}
+
+          {% if "http" not in documentUrl %}
+            {% set documentUrl = "/pdf/" + documentUrl %}
+          {% endif %}
+          
+          <a href="{{ documentUrl }}">View {{ document.typeOfDocDesc }}</a>
+        </p>
+
+        {{ contactPeerDiscussion(document.contacts) }}
+    </div>
+  </div>
+{% endmacro %}
