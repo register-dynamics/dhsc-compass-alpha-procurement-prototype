@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { existsSync } from "node:fs";
+import { resolve } from "node:path";
 import request from "supertest";
 import { beforeEach, describe, expect, it } from "vitest";
 
@@ -38,6 +40,14 @@ describe("Authentication middleware", () => {
       expect(
         Array.isArray(setCookieHeaders) || typeof setCookieHeaders === "string",
       ).toBe(true);
+    });
+
+    it("should write session records to session.db", async () => {
+      await request(app)
+        .post("/sign-in")
+        .send({ password: "northsouth", username: "test@example.com" });
+
+      expect(existsSync(resolve(process.cwd(), "session.db"))).toBe(true);
     });
   });
 

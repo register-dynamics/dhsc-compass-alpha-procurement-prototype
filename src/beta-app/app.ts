@@ -1,4 +1,5 @@
 import bodyParser from "body-parser";
+import connectSqlite3 from "connect-sqlite3";
 import express from "express";
 import session from "express-session";
 import nunjucks from "nunjucks";
@@ -23,11 +24,24 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 
 // Configure session and authentication middleware
+const SQLiteStore = connectSqlite3(session);
+const sessionStore = new SQLiteStore({
+  db: config.session.store.databaseFileName,
+  dir: config.session.store.directory,
+  table: "sessions",
+}) as session.Store;
+
 const sessionOptions: session.SessionOptions = {
-  cookie: { secure: config.env === "production" },
+  cookie: {
+    httpOnly: config.session.cookie.httpOnly,
+    maxAge: config.session.cookie.maxAgeMs,
+    sameSite: config.session.cookie.sameSite,
+    secure: config.env === "production",
+  },
   resave: false,
   saveUninitialized: true,
   secret: config.session.secret,
+  store: sessionStore,
 };
 
 app.use(session(sessionOptions));
