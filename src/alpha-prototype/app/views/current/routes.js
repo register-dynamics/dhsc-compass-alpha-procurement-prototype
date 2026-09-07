@@ -284,7 +284,7 @@ const createDocument = db.transaction((req) => {
   // FIXME: When we port this to the beta, add code here to detect that we're in Azure and load the document into Azure blob storage rather than the container filesystem
   const extension = data.upload.originalFilename.match(new RegExp('[^./]+$'))
   const newName = data.upload.newFilename + "." + extension
-  const localFilename = 'app/assets/pdf/' + newName
+  const localFilename = 'public/pdf/' + newName
   console.log("MOVING FILE", data.upload.filepath, localFilename)
   // Copy then remove, as /tmp and /compass/app are on different filesstems in the container
   fs.copyFileSync(data.upload.filepath, localFilename)
