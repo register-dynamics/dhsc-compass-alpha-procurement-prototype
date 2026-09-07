@@ -82,10 +82,19 @@
       </div>
 
       <div class="nhsuk-form-group">
-        <label class="nhsuk-label nhsuk-label--s" for="patient-population">
-          Patient population (optional)
+        <label class="nhsuk-label nhsuk-label--s" for="clinical-pathways">
+          Clinical pathways (optional)
         </label>
-        <textarea class="nhsuk-textarea" id="patient-population" name="patient-population" rows="3"></textarea>
+        <div class="nhsuk-hint" id="clinical-pathways-hint">For example, diabetes, shingles or depression</div>
+        <textarea class="nhsuk-textarea" id="clinical-pathways" name="clinical-pathways" rows="3" aria-describedby="clinical-pathways-hint"></textarea>
+      </div>
+
+      <div class="nhsuk-form-group">
+        <label class="nhsuk-label nhsuk-label--s" for="eligibility-criteria">
+          Additional eligibility criteria (optional)
+        </label>
+        <div class="nhsuk-hint" id="eligibility-criteria-hint">Including protected characteristics, for example age, sex, race, disability or socioeconomic status</div>
+        <textarea class="nhsuk-textarea" id="eligibility-criteria" name="eligibility-criteria" rows="3" aria-describedby="eligibility-criteria-hint"></textarea>
       </div>
 
       <div class="nhsuk-form-group">
