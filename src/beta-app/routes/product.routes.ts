@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-import { renderProduct } from "../controllers/product.controller.js";
+import { postMarkUseful, renderProduct } from "../controllers/product.controller.js";
 import { registerRoutes, type RouteDefinition } from "./route-definitions.js";
 
 const router = Router();
@@ -11,7 +11,11 @@ const routeDefinitions: RouteDefinition[] = [
     method: "get",
     path: "/product/:id",
   },
-];
+  {
+    handler: postMarkUseful,
+    method: "post",
+    path: "/product/mark-useful",
+  },];
 
 registerRoutes(router, routeDefinitions);
 

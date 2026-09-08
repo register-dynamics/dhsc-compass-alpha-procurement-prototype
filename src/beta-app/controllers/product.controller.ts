@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 
 import { db } from "../database/client.js";
+import { postMarkUsefulSchema } from "../models/request-schemas/postMarkUsefulSchema.js";
 
 export const renderProduct = async (req: Request, res: Response) => {
   let productId;
@@ -70,4 +71,52 @@ export const renderProduct = async (req: Request, res: Response) => {
   }
 
   res.render("product", { documents, product });
+};
+
+export const postMarkUseful = async (req: Request, res: Response) => {
+
+  console.log(req.body);
+
+  const result = postMarkUsefulSchema.safeParse(req.body);
+
+  if (!result.success) {
+    return res.status(400).send("Product ID and Document ID are required");
+  }
+
+  const { documentId, productId } = result.data;
+
+  // Get the user ID from the session or request context
+  const userId = req.user?.id;
+
+  if (!userId) {
+    // TODO: Send to better error handling page
+    return res.status(500).send("Unable to determine user ID");
+  }
+
+  try {
+    await db
+      .insertInto("product_documents_useful")
+      .values({
+        // @ts-expect-error: TypeScript may complain about the date format
+        // Should be fixed when we switch from SQLite to Postgres
+        dateMarkedUseful: new Date().toUTCString(),
+        documentId: documentId,
+        productId: productId,
+        userId,
+      })
+      .execute();
+
+    const countUseful = await db
+      .selectFrom("product_documents_useful")
+      .select(db.fn.count("documentId").as("count"))
+      .where("documentId", "=", documentId)
+      .where("productId", "=", productId)
+      .execute();
+
+    res.status(200).send({ count: countUseful[0].count });
+  } catch (error) {
+    console.error("Failed to mark as useful", error);
+    // TODO: Add proper error handling and logging here
+    res.status(500).send("Failed to mark as useful");
+  }
 };
