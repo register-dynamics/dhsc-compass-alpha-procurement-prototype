@@ -2,23 +2,6 @@
 
 set -e
 
-BUILD_DB=0
-
-while [ "$#" -gt 0 ]
-do
-	case "$1" in
-		--build-db)
-			BUILD_DB=1
-			;;
-		*)
-			echo "Unknown option: $1"
-			echo "Usage: ./build.sh [--build-db]"
-			exit 1
-			;;
-	esac
-	shift
-done
-
 # Build our app
 
 docker compose build

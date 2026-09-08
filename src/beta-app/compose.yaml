@@ -20,17 +20,21 @@ services:
       - "3001:3001"
     secrets:
       - postgres-passwd
-    volumes:
-      - app-src-views:/compass/views
+    develop:
+      watch:
+         - action: sync
+           path: .
+           target: /compass
+           initial_sync: true
+           ignore:
+            - node_modules
+            - dist
+            - coverage
+         - action: rebuild
+           path: package-lock.json
 
 volumes:
   db-data:
-  app-src-views:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: ./views
 
 secrets:
   postgres-passwd:

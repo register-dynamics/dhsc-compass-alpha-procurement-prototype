@@ -36,9 +36,7 @@ fi
 
 # Fire up the engines
 
-docker compose up -d
-
-# Start the app
-
 echo "RUNNING THE SITE ON http://localhost:3001/"
-echo "Run ./stop-beta.sh to stop it"
+echo "Press ctrl+c to stop it"
+
+docker compose up --watch
