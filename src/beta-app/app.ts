@@ -7,6 +7,9 @@ import nunjucks from "nunjucks";
 import config from "./config.js";
 import { ensureAuthenticated, initializeAuth } from "./middleware/auth.js";
 import indexRoutes, { indexRouteDefinitions } from "./routes/index.routes.js";
+import productRoutes, {
+  productRouteDefinitions,
+} from "./routes/product.routes.js";
 import { buildPublicRouteMatcher } from "./routes/route-definitions.js";
 import searchRoutes, {
   searchRouteDefinitions,
@@ -97,6 +100,11 @@ const routeModules = [
     definitions: sessionRouteDefinitions,
     mountPath: "/",
     router: sessionRoutes,
+  },
+  {
+    definitions: productRouteDefinitions,
+    mountPath: "/",
+    router: productRoutes,
   },
 ];
 

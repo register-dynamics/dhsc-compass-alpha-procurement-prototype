@@ -1,0 +1,69 @@
+{% from "includes/contact-peer-discussion.njk" import contactPeerDiscussion %}
+
+{% macro evidenceCardEvaluation(document) %}
+  <div class="nhsuk-card">
+    <div class="nhsuk-card__content">
+      {% set procurementStatusLabels = {
+        '0': 'Not procured',
+        '1': 'Procured'
+      } %}
+      {% set procurementStatusClasses = {
+        '0': 'nhsuk-tag--yellow',
+        '1': 'nhsuk-tag--green'
+      } %}
+
+      {% set statusLabel = procurementStatusLabels[document.procured] %}
+      {% set statusClass = procurementStatusClasses[document.procured] %}
+
+      <div class="nhsuk-u-margin-bottom-3">
+        <strong class="nhsuk-tag {{ statusClass }}">{{ statusLabel }}</strong>
+      </div>
+
+
+      <h3 class="nhsuk-card__heading nhsuk-heading-m">
+        {{ document.organisationName }}
+      </h3>
+
+      <dl class="nhsuk-summary-list nhsuk-summary-list--no-border">
+        <div class="nhsuk-summary-list__row">
+          <dt class="nhsuk-summary-list__key">
+            Document type
+          </dt>
+          <dd class="nhsuk-summary-list__value">
+            {{ document.typeOfDocDesc }}
+          </dd>
+        </div>
+
+        <div class="nhsuk-summary-list__row">
+          <dt class="nhsuk-summary-list__key">
+            Document period
+          </dt>
+          <dd class="nhsuk-summary-list__value">
+            {{ document.assessmentDate }}
+          </dd>
+        </div>
+
+        <div class="nhsuk-summary-list__row">
+          <dt class="nhsuk-summary-list__key">
+            Ward/Department
+          </dt>
+          <dd class="nhsuk-summary-list__value">
+            {{ document.wardDepartment }}
+          </dd>
+        </div>
+      </dl>
+
+      <p class="nhsuk-body nhsuk-u-margin-top-3">
+        {% set documentUrl = document.urlDirectory %}
+
+        {% if "http" not in documentUrl %}
+          {% set documentUrl = "/pdf/" + documentUrl %}
+        {% endif %}
+        
+        <a href="{{ documentUrl }}">View {{ document.typeOfDocDesc }}</a>
+      </p>
+
+      {{ contactPeerDiscussion(document.contacts) }}
+    </div>
+  </div>
+{% endmacro %}
