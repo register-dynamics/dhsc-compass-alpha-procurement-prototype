@@ -109,6 +109,15 @@ CREATE TABLE IF NOT EXISTS `users` (
   created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
   modified_at TEXT
 );
+
+CREATE TABLE IF NOT EXISTS "product_documents_useful" (
+	"product_id" INTEGER,
+	"document_id" INTEGER,
+	"user_id" INTEGER,
+	"date_marked_useful" TEXT,
+	PRIMARY KEY("product_id","document_id","user_id")
+);
+
 INSERT INTO "document_type" ("type_of_doc_id","type_of_doc_desc") VALUES (1,'ODEP assessment'),
  (2,'NJR report'),
  (3,'Business case'),
