@@ -22,16 +22,16 @@ services:
       - postgres-passwd
     develop:
       watch:
-         - action: sync
-           path: .
-           target: /compass
-           initial_sync: true
-           ignore:
+        - action: sync
+          path: .
+          target: /compass
+          initial_sync: true
+          ignore:
             - node_modules
             - dist
             - coverage
-         - action: rebuild
-           path: package-lock.json
+        - action: rebuild
+          path: package-lock.json
 
 volumes:
   db-data:
