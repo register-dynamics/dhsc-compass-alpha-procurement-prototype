@@ -1,4 +1,5 @@
 {% from "includes/contact-peer-discussion.njk" import contactPeerDiscussion %}
+{% from "includes/mark-useful-button.njk" import mark_useful_button %}
 
 {% macro evidenceCardEvaluation(document) %}
   <div class="nhsuk-card">
@@ -23,6 +24,8 @@
       <h3 class="nhsuk-card__heading nhsuk-heading-m">
         {{ document.organisationName }}
       </h3>
+
+      {{ mark_useful_button(document.usefulCount, document.productId, document.documentId, document.marked) }}
 
       <dl class="nhsuk-summary-list nhsuk-summary-list--no-border">
         <div class="nhsuk-summary-list__row">
