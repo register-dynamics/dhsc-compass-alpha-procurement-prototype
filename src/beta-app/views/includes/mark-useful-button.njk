@@ -11,7 +11,7 @@
             {% endif %}
         </p>
 
-        <button class="nhsuk-button nhsuk-button--icon nhsuk-button--secondary nhsuk-u-margin-bottom-0 mark-useful-button" data-module="nhsuk-button" aria-pressed="false" type="button" data-nhsuk-button-init="" data-product-id="{{ product_id }}" data-document-id="{{ document_id }}">
+        <button class="nhsuk-button nhsuk-button--icon nhsuk-button--secondary nhsuk-u-margin-bottom-0 mark-useful-button" data-module="nhsuk-button" aria-pressed="false" type="button" data-nhsuk-button-init="" data-product-id="{{ product_id }}" data-document-id="{{ document_id }}" data-marked="{{ "true" if marked == 1 else "false" }}">
             {% if marked %}
                 {{ nhsukIcon("tick") }} <span class="nhsuk-button__content">Marked as useful</span>
             {% else %}

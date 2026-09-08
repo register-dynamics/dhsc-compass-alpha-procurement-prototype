@@ -46,6 +46,10 @@ export interface DocumentTable {
 
   // Utility prop for contacts
   contacts: DocumentContact[];
+
+  // Utility prop for usefulness
+  markedUseful: number;
+  totalUsefulCount: number;
 }
 
 export type DocumentContacts = Selectable<DocumentContactsTable>;
