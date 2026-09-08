@@ -4,7 +4,7 @@
   "description": "A digital service for NHS staff to search and evaluate medical technologies",
   "scripts": {
     "dev:css": "sass --load-path=node_modules --watch assets/sass:public/css --style=expanded",
-    "dev:js": "esbuild assets/js/nhsuk.ts --bundle --format=esm --minify --sourcemap --target=es2020 --tsconfig=tsconfig.json --outfile=public/javascripts/nhsuk-frontend.min.js --watch",
+    "dev:js": "esbuild assets/js/nhsuk.ts --bundle --format=esm --minify --sourcemap --target=es2020 --tsconfig=tsconfig.json --outfile=public/javascripts/nhsuk-frontend.min.js --watch=forever",
     "dev:ts": "tsx watch --include './views/**/*.html' --env-file-if-exists .env index.ts",
     "dev": "npm-run-all --parallel dev:css dev:js dev:ts",
     "start": "node --env-file-if-exists .env dist/index.js",

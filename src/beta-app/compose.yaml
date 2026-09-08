@@ -1,0 +1,41 @@
+name: compass-beta
+
+services:
+  db:
+    image: postgres:18.6
+    restart: always
+    environment:
+      POSTGRES_USER: compass
+      POSTGRES_DB: compass
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres-passwd
+    volumes:
+      - db-data:/var/lib/postgresql
+    secrets:
+      - postgres-passwd
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    secrets:
+      - postgres-passwd
+    develop:
+      watch:
+        - action: sync
+          path: .
+          target: /compass
+          initial_sync: true
+          ignore:
+            - node_modules
+            - dist
+            - coverage
+        - action: rebuild
+          path: package-lock.json
+
+volumes:
+  db-data:
+
+secrets:
+  postgres-passwd:
+    file: ./postgres-passwd

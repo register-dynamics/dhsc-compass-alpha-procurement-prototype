@@ -151,3 +151,6 @@ Thumbs.db
 
 # Alpha prototype build folder
 /src/alpha-prototype/public/
+
+# Beta app local postgresql password
+/src/beta-app/postgres-passwd
