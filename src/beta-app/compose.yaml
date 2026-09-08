@@ -13,7 +13,9 @@ services:
     secrets:
       - postgres-passwd
   web:
-    image: dhsc-compass-beta
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
       - "3001:3001"
     secrets:

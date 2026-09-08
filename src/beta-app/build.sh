@@ -21,7 +21,7 @@ done
 
 # Build our app
 
-docker build --build-arg BUILD_DB="$BUILD_DB" -t dhsc-compass-beta .
+docker compose build
 
 # Prefetch postgresql; make sure the version matches what's in the compose.yaml file
 
