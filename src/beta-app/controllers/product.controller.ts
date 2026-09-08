@@ -63,25 +63,21 @@ export const renderProduct = async (req: Request, res: Response) => {
       .where("dc.documentId", "in", documentIds)
       .execute();
 
-      const userId = req.user?.id;
+    const userId = req.user?.id;
 
-      const documentUsefulness = await db
-        .selectFrom("product_documents_useful")
-        .select([
-          "documentId",
-          db.fn
-            .max(
-              sql`CASE WHEN "user_id" = ${userId} THEN 1 ELSE 0 END`,
-            )
-            .as("hasUserMarkedUseful"),
-          db.fn
-            .count("documentId")
-            .as("totalUsefulCount"),
-        ])
-        .where("productId", "=", productId)
-        .where("documentId", "in", documentIds)
-        .groupBy("documentId")
-        .execute();
+    const documentUsefulness = await db
+      .selectFrom("product_documents_useful")
+      .select([
+        "documentId",
+        db.fn
+          .max(sql`CASE WHEN "user_id" = ${userId} THEN 1 ELSE 0 END`)
+          .as("hasUserMarkedUseful"),
+        db.fn.count("documentId").as("totalUsefulCount"),
+      ])
+      .where("productId", "=", productId)
+      .where("documentId", "in", documentIds)
+      .groupBy("documentId")
+      .execute();
 
     // Attach contacts to their respective documents
     documents.forEach((doc) => {
@@ -90,15 +86,13 @@ export const renderProduct = async (req: Request, res: Response) => {
       );
 
       doc.markedUseful = Number(
-        documentUsefulness.find(
-          (du) => du.documentId === doc.documentId,
-        )?.hasUserMarkedUseful ?? 0,
+        documentUsefulness.find((du) => du.documentId === doc.documentId)
+          ?.hasUserMarkedUseful ?? 0,
       );
 
       doc.totalUsefulCount = Number(
-        documentUsefulness.find(
-          (du) => du.documentId === doc.documentId,
-        )?.totalUsefulCount ?? 0,
+        documentUsefulness.find((du) => du.documentId === doc.documentId)
+          ?.totalUsefulCount ?? 0,
       );
     });
   }
@@ -107,7 +101,6 @@ export const renderProduct = async (req: Request, res: Response) => {
 };
 
 export const postMarkUseful = async (req: Request, res: Response) => {
-
   const result = postMarkUsefulSchema.safeParse(req.body);
 
   if (!result.success) {
@@ -153,7 +146,6 @@ export const postMarkUseful = async (req: Request, res: Response) => {
 };
 
 export const postUnmarkUseful = async (req: Request, res: Response) => {
-
   const result = postMarkUsefulSchema.safeParse(req.body);
 
   if (!result.success) {

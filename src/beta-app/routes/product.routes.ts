@@ -1,6 +1,10 @@
 import { Router } from "express";
 
-import { postMarkUseful, postUnmarkUseful, renderProduct } from "../controllers/product.controller.js";
+import {
+  postMarkUseful,
+  postUnmarkUseful,
+  renderProduct,
+} from "../controllers/product.controller.js";
 import { registerRoutes, type RouteDefinition } from "./route-definitions.js";
 
 const router = Router();
@@ -20,7 +24,7 @@ const routeDefinitions: RouteDefinition[] = [
     handler: postUnmarkUseful,
     method: "post",
     path: "/product/unmark-useful",
-  }
+  },
 ];
 
 registerRoutes(router, routeDefinitions);
