@@ -6,14 +6,14 @@
         <p class="nhsuk-body nhsuk-u-margin-bottom-2 useful-count" data-document-id="{{ document_id }}">
             {% if count > 0 %}
             {{ nhsukIcon("tick") }}
-            <strong>{{count}} people</strong>
+            <strong>{{count}} {{"person" if count == 1 else "people" }}</strong>
             found this useful
             {% endif %}
         </p>
 
-        <button class="nhsuk-button nhsuk-button--secondary nhsuk-u-margin-bottom-0 mark-useful-button" data-module="nhsuk-button" aria-pressed="false" type="button" data-nhsuk-button-init="" data-product-id="{{ product_id }}" data-document-id="{{ document_id }}">
+        <button class="nhsuk-button nhsuk-button--icon nhsuk-button--secondary nhsuk-u-margin-bottom-0 mark-useful-button" data-module="nhsuk-button" aria-pressed="false" type="button" data-nhsuk-button-init="" data-product-id="{{ product_id }}" data-document-id="{{ document_id }}">
             {% if marked %}
-                {{ nhsukIcon("tick") }} Marked as useful
+                {{ nhsukIcon("tick") }} <span class="nhsuk-button__content">Marked as useful</span>
             {% else %}
                 Mark as useful
             {% endif %}
