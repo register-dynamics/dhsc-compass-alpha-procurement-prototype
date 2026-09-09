@@ -7,19 +7,14 @@ import {
   renderProduct,
 } from "./product.controller.js";
 
-const {
-  countMock,
-  deleteFromMock,
-  insertIntoMock,
-  maxMock,
-  selectFromMock,
-} = vi.hoisted(() => ({
-  countMock: vi.fn(),
-  deleteFromMock: vi.fn(),
-  insertIntoMock: vi.fn(),
-  maxMock: vi.fn(),
-  selectFromMock: vi.fn(),
-}));
+const { countMock, deleteFromMock, insertIntoMock, maxMock, selectFromMock } =
+  vi.hoisted(() => ({
+    countMock: vi.fn(),
+    deleteFromMock: vi.fn(),
+    insertIntoMock: vi.fn(),
+    maxMock: vi.fn(),
+    selectFromMock: vi.fn(),
+  }));
 
 vi.mock("../database/client.js", () => ({
   db: {
@@ -263,9 +258,11 @@ describe("Product controller", () => {
       where: vi.fn().mockReturnThis(),
     };
     const usefulQuery = {
-      execute: vi.fn().mockResolvedValue([
-        { documentId: 70, hasUserMarkedUseful: 1, totalUsefulCount: 3 },
-      ]),
+      execute: vi
+        .fn()
+        .mockResolvedValue([
+          { documentId: 70, hasUserMarkedUseful: 1, totalUsefulCount: 3 },
+        ]),
       groupBy: vi.fn().mockReturnThis(),
       select: vi.fn().mockReturnThis(),
       where: vi.fn().mockReturnThis(),
@@ -372,7 +369,9 @@ describe("Product controller", () => {
     );
 
     expect(status).toHaveBeenCalledWith(400);
-    expect(send).toHaveBeenCalledWith("Product ID and Document ID are required");
+    expect(send).toHaveBeenCalledWith(
+      "Product ID and Document ID are required",
+    );
   });
 
   it("GET /product/mark-useful should return 500 if user cannot be retrieved", async () => {
@@ -399,7 +398,10 @@ describe("Product controller", () => {
       .mockImplementation(() => undefined);
 
     await postMarkUseful(
-      { body: { documentId: 1, productId: 2 }, user: { id: 3 } } as unknown as Request,
+      {
+        body: { documentId: 1, productId: 2 },
+        user: { id: 3 },
+      } as unknown as Request,
       { send, status } as unknown as Response,
     );
 
@@ -417,7 +419,9 @@ describe("Product controller", () => {
     );
 
     expect(status).toHaveBeenCalledWith(400);
-    expect(send).toHaveBeenCalledWith("Product ID and Document ID are required");
+    expect(send).toHaveBeenCalledWith(
+      "Product ID and Document ID are required",
+    );
   });
 
   it("GET /product/unmark-useful should return 500 if user cannot be retrieved", async () => {
@@ -444,7 +448,10 @@ describe("Product controller", () => {
       .mockImplementation(() => undefined);
 
     await postUnmarkUseful(
-      { body: { documentId: 1, productId: 2 }, user: { id: 3 } } as unknown as Request,
+      {
+        body: { documentId: 1, productId: 2 },
+        user: { id: 3 },
+      } as unknown as Request,
       { send, status } as unknown as Response,
     );
 
@@ -452,5 +459,4 @@ describe("Product controller", () => {
     expect(send).toHaveBeenCalledWith("Failed to unmark as useful");
     consoleError.mockRestore();
   });
-
 });
