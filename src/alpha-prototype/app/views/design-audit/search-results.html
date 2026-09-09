@@ -1,0 +1,460 @@
+{#
+  DESIGN AUDIT copy of UR/search-results.html for ?q=pump
+  Static snapshot: the route data below is the real output captured from the
+  live page. No database, no routing. The UR original is untouched.
+#}
+
+{% extends "design-audit/layouts/layout-signed-in.html" %}
+
+{% from "design-audit/includes/audit.njk" import note, banner %}
+
+{% set pageName = "Search results" %}
+
+{% set searchTerm = "pump" %}
+{% set searchOffset = 1 %}
+{% set searchPage = 1 %}
+{% set searchMaxPages = 1 %}
+{% set searchResultsCount = 1 %}
+{% set searchResultCategories = [
+  { name: "Ambulatory insulin infusion pump reservoir", count: 1, selected: false }
+] %}
+{% set searchResults = [
+  {
+    make: "InsuFlow Pro 300 Pump System",
+    make_id: "74589621",
+    model: "InsuFlow Pro",
+    manufacturer: "ArcTech Ltd",
+    category: "Ambulatory insulin infusion pump reservoir",
+    type: "General Medical Device",
+    country: "Limited Company",
+    trusts: 0,
+    documents: 0,
+    document_types: [],
+    procured: 0,
+    under_review: 0,
+    excluded: 0
+  }
+] %}
+
+{% block beforeContent %}
+{% from "breadcrumb/macro.njk" import breadcrumb %}
+
+{{ breadcrumb({
+  items: [
+    {
+      href: "/",
+      text: "Home"
+    }
+  ],
+  href: "#",
+  text: "Search results"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+{{ banner("Search results (?q=pump)", "/UR/search-results?q=pump", "19 notes on this page — 3 high, 13 medium, 3 low. Layout note GL-02 also applies.") }}
+
+{{ note("med", "SR-01", "Breadcrumb — shows the current page",
+  "The trail is “Home” → “Search results”, and “Search results” is the page the user is already on. The search page they came from is not in the trail at all.",
+  "The breadcrumb gives no way back to the search the user came from, so returning means the browser back button or retyping the query.",
+  "<a href=\"https://service-manual.nhs.uk/design-system/components/breadcrumbs\">Design system: breadcrumbs</a> — “Don’t show the current page (it’s already in the H1)”, and the trail should let users move back a level.",
+  "Drop the “Search results” crumb. Point the trail back at the search the user came from.") }}
+
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-full">
+
+    <h1 class="nhsuk-heading-l">Search results</h1>
+
+{{ note("high", "SR-02", "The h1 does not contain the search term",
+  "The h1 is “Search results” on every search. The term the user typed appears only inside the search field. The browser title is “Search results – …” with no term and no page number either, so someone with several tabs open, or a screen reader user arriving at the page, cannot tell one result set from another.",
+  "Every result set looks identical in the tab, the title and the heading. A user comparing two searches in two tabs — the normal way to compare devices — cannot tell them apart, and someone using a screen reader is never told what was searched for.",
+  "<a href=\"https://service-manual.nhs.uk/accessibility/design\">Accessibility: design</a> — “Provide informative page titles”: each title must be unique and informative. <a href=\"https://service-manual.nhs.uk/design-system/components/pagination\">Design system: pagination</a> — “Show the page number in the page <code>&lt;title&gt;</code> … for example, ‘Search results (page 1 of 4)’.”",
+  "Put the term in the h1 and the term and page number in the title.") }}
+
+{{ note("high", "SR-03", "No h2 anywhere on the page",
+  "The outline is h1 “Search results” → h3 “Filter results” → h3 “Medical technologies” → h4 for each result. Two heading levels are skipped, and there is no h2 anywhere on the page.",
+  "Someone navigating by heading gets no usable structure for the two halves of the page. They cannot jump to the filters or to the results, and every result title sits at a level implying it belongs to a section that is not there.",
+  "<a href=\"https://service-manual.nhs.uk/accessibility/design\">Accessibility: design</a> — “Use headings correctly”: structure headings in order without skipping levels. WCAG 2.2 1.3.1 Info and Relationships, Level A.",
+  "h2 for “Filter results”, h2 for the results list, h3 for each result.",
+  "1.3.1 Info and Relationships (Level A)") }}
+
+    {# Search bar #}
+  <div class="app-filters nhsuk-u-margin-top-5 nhsuk-u-margin-bottom-5">
+      <div class="app-filters-container">
+        <form method="get" novalidate="">
+          <div class="nhsuk-form-group nhsuk-u-margin-bottom-0">
+            <label class="nhsuk-label" for="q">
+              Search again by product, category or supplier
+            </label>
+            <input class="nhsuk-input nhsuk-input--width-20" id="q" name="q" type="search" value="{{ searchTerm }}">
+
+<button class="nhsuk-button nhsuk-button--secondary nhsuk-u-margin-left-2 app-button--small nhsuk-u-margin-bottom-0" data-module="nhsuk-button" type="submit" data-nhsuk-button-init="">
+  Search
+</button>
+
+          </div>
+        </form>
+      </div>
+
+  </div>
+</div>
+
+{{ note("med", "SR-04", "The same field is labelled three different ways",
+  "Here it is “Search again by product, category or supplier”. On the search page the same field is “Search by product, category or supplier”, and in the sticky bar it is “Search” with an <code>aria-label</code> of the longer version. One control, three names.",
+  "The same control is called three different things in one journey, so a user cannot be sure the sticky bar searches the same thing as the field in the page. Voice-input users have three names to guess between.",
+  "WCAG 2.2 3.2.4 Consistent Identification, Level AA — components with the same function must be identified consistently. <a href=\"https://service-manual.nhs.uk/design-system/components/search-input\">Design system: search input</a>.",
+  "One label for this field everywhere in the journey.",
+  "3.2.4 Consistent Identification (Level AA)") }}
+
+{{ note("med", "SR-05", "Searching again silently discards the filters",
+  "This form and the filter panel below are two separate <code>&lt;form&gt;</code> elements. Submitting this one sends only <code>q</code>, so any categories the user had ticked disappear without warning. The filter form has its own hidden copy of <code>q</code> to compensate, which means the search term now lives in two places.",
+  "A user who narrows to two categories and then refines their search term silently loses the filters, with nothing to say so. They will read the wider result set as the effect of the new term, and may conclude the filter never worked.",
+  "WCAG 2.2 3.3.7 Redundant Entry, Level A — a user should not have to re-enter information they have already given in the same journey. Service convention — derive rather than ask.",
+  "One form. Carry the filters through when the term changes, and show which are still on.",
+  "3.3.7 Redundant Entry (Level A)") }}
+
+{{ note("low", "SR-06", "The search field is centred while the rest of the page is left-aligned",
+  "The search field sits centred on a grey band running the full width of the page. Everything else — the breadcrumb, the filter panel, the results — is left-aligned to the grid.",
+  "The one control users reach for most is the only thing on the page that is not where the rest of the layout has taught them to look.",
+  "<a href=\"https://service-manual.nhs.uk/design-system/styles/layout\">Design system: layout</a> — the grid and the width container set the measure of the page. <a href=\"https://service-manual.nhs.uk/design-system/styles/typography\">Design system: typography</a> — left-align in English.",
+  "Left-align the search field to the grid.") }}
+
+<div class="nhsuk-grid-row">
+
+    {# Filters Sidebar #}
+  <div class="app-grid-column-filters">
+
+    <div class="nhsuk-card nhsuk-card--feature app-filters">
+      <div class="nhsuk-card__content nhsuk-card__content--feature">
+        <form method="get">
+        <input type="hidden" name="q" value="{{ searchTerm }}" style="display: none;">
+        <h3 class="nhsuk-card__heading nhsuk-card__heading--feature">
+          Filter results
+        </h3>
+
+{{ note("high", "SR-07", "“Filter results” — the filter panel has no usable submit control",
+  "The only submit control in the form is the “Update results” button at the bottom, and it carries <code>hidden=\"\"</code>. Nothing submits the form on change either, so ticking a box has no effect by any input method. A keyboard user can reach every checkbox in the panel and then has no way to act on them.",
+  "Nobody can apply a filter — not by mouse, keyboard or any other input. In a session this reads as the service ignoring the user, and it blocks the task the page exists for. A keyboard user can tab through every checkbox and then find there is nothing to press.",
+  "WCAG 2.2 2.1.1 Keyboard, Level A, and 3.2.2 On Input, Level A. <a href=\"https://service-manual.nhs.uk/design-system/components/checkboxes\">Design system: checkboxes</a> — a filter needs an explicit submit control unless auto-submission is built and tested. Decide which of the two this pattern is before it goes into a session.",
+  "Show the “Update results” button. If filters should apply on change, build and test that instead — not both.",
+  "2.1.1 Keyboard (Level A) and 3.2.2 On Input (Level A)") }}
+
+        {# Category Filter #}
+        <div class="nhsuk-form-group">
+          <fieldset class="nhsuk-fieldset">
+            <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--s">
+              Category (GMDN)
+            </legend>
+
+            <div id="category-items" style="max-height: 30em; overflow-y: scroll; overflow-x: visible; border-bottom: 1px solid #4c6272" class="nhsuk-checkboxes nhsuk-checkboxes--small" data-module="nhsuk-checkboxes" data-nhsuk-checkboxes-init="">
+            {% for category in searchResultCategories | sort(true, true, "selected") %}
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="category-{{ category.name }}" name="[category]" type="checkbox" value="{{ category.name }}" {% if category.selected %}checked{% endif %}>
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="category-{{ category.name }}">
+                  {% if category.name %}{{ category.name }}{% else %}No category{% endif %} ({{ category.count }})
+                </label>
+              </div>
+            {% endfor %}
+            </div>
+          </fieldset>
+        </div>
+
+{{ note("med", "SR-09", "“GMDN” is never expanded",
+  "The legend is “Category (GMDN)”, and the same acronym appears in every result card. It is the Global Medical Device Nomenclature, and it is never spelled out or explained anywhere in the journey.",
+  "A user who does not already know the Global Medical Device Nomenclature meets the acronym in the filter legend and in every result, with no way to find out what they are filtering by. Even a specialist audience contains people new to this vocabulary.",
+  "<a href=\"https://service-manual.nhs.uk/content/formatting\">Content guide: formatting</a> — abbreviations and acronyms: spell out on first use. <a href=\"https://service-manual.nhs.uk/content/health-literacy\">Content guide: health literacy</a> — do not assume specialist vocabulary, even with a specialist audience.",
+  "Expand on first use in the legend, with a hint saying what it is.") }}
+
+{{ note("med", "SR-11", "Category list is a fixed-height scroll region inside the page",
+  "The category checkboxes sit in a box with its own scrollbar, inside the filter panel, inside the page. The box shows a scrollbar even when there is only one category in it, as here, and for a common search it hides most of the categories behind a scroll a user has to discover.",
+  "Most of the categories are hidden behind a scrollbar inside the page that a user has to notice before they can use it. Someone zoomed in, or on a small screen, is scrolling a box inside a scrolling page — which is where this pattern usually breaks down.",
+  "WCAG 2.2 1.4.10 Reflow, Level AA — a fixed-height inner scroller is where reflow at 400% zoom usually fails. This needs testing in a browser; reading the markup cannot settle it. <a href=\"https://service-manual.nhs.uk/design-system/styles/layout\">Design system: layout</a> — a list too long to show is a case for a skip link or a shorter list, not a scroller nested in the page.",
+  "Remove the fixed height. Show the top categories with a “Show all” control.",
+  "1.4.10 Reflow (Level AA) &mdash; not confirmed, needs testing at 400% zoom in a browser") }}
+
+{{ note("med", "SR-12", "No skip link over the filter list",
+  "For a common search the category list runs to dozens of checkboxes inside the scroll region, with the rest of the filters and the results after it. There is no way to jump past them.",
+  "A keyboard or screen reader user has to move through every checkbox in the filter panel before reaching the first result. On a common search that is dozens of them, every time they come back to the page.",
+  "<a href=\"https://service-manual.nhs.uk/accessibility/design\">Accessibility: design</a> — “Define skip links”: add a skip link at the start of a long list of links or form fields, and it names “over 20 checkboxes in a filter” as the example.",
+  "Add a skip link above the filter panel: “Skip to results”.") }}
+
+        {# NEW: Trust Similarity Filter #}
+        <div class="nhsuk-form-group">
+          <fieldset class="nhsuk-fieldset">
+            <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--s">
+              Evidence from trusts like mine
+            </legend>
+            <div class="nhsuk-hint" id="trust-hint">
+              Show products evaluated by trusts similar in size, type, or region
+            </div>
+
+            <div id="trust-items" class="nhsuk-checkboxes nhsuk-checkboxes--small" data-module="nhsuk-checkboxes" data-nhsuk-checkboxes-init="">
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="trust-similar" name="[trust]" type="checkbox" value="similar">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="trust-similar">
+                  Similar size to my trust
+                </label>
+              </div>
+
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="trust-teaching" name="[trust]" type="checkbox" value="teaching">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="trust-teaching">
+                  Teaching hospitals
+                </label>
+              </div>
+
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="trust-region" name="[trust]" type="checkbox" value="region">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="trust-region">
+                  In my region
+                </label>
+              </div>
+
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="trust-specialist" name="[trust]" type="checkbox" value="specialist">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="trust-specialist">
+                  Specialist trusts
+                </label>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+
+        {# Supplier Size Filter #}
+        <div class="nhsuk-form-group">
+        {{ checkboxes({
+          name: "size",
+          fieldset: {
+            legend: {
+              text: "Supplier size",
+              classes: "nhsuk-fieldset__legend--s"
+            }
+          },
+          items: [
+            { value: "micro", text: "Micro (1-10 employees)"},
+            { value: "small", text: "Small (11-50 employees)"},
+            { value: "medium", text: "Medium (51-250 employees)"},
+            { value: "large", text: "Large (251+ employees)"}
+          ],
+          classes: "nhsuk-checkboxes--small"
+        })}}
+        </div>
+
+         {# Supplier Maturity Filter #}
+        <div class="nhsuk-form-group">
+          <fieldset class="nhsuk-fieldset">
+            <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--s">
+              Supplier maturity
+            </legend>
+
+            <div id="supplier-items" class="nhsuk-checkboxes nhsuk-checkboxes--small" data-module="nhsuk-checkboxes" data-nhsuk-checkboxes-init="">
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="supplier-sme" name="[supplier]" type="checkbox" value="sme">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="supplier-sme">
+                  1-2 years old
+                </label>
+              </div>
+            </div>
+             <div id="supplier-items" class="nhsuk-checkboxes nhsuk-checkboxes--small" data-module="nhsuk-checkboxes" data-nhsuk-checkboxes-init="">
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="supplier-sme" name="[supplier]" type="checkbox" value="sme">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="supplier-sme">
+                  3-5 years old
+                </label>
+              </div>
+            </div>
+
+             <div id="supplier-items" class="nhsuk-checkboxes nhsuk-checkboxes--small" data-module="nhsuk-checkboxes" data-nhsuk-checkboxes-init="">
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="supplier-sme" name="[supplier]" type="checkbox" value="sme">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="supplier-sme">
+                  5+ years old
+                </label>
+              </div>
+            </div>
+
+          </fieldset>
+        </div>
+
+{{ note("low", "SR-16", "“1-2 years old” — ranges and hyphens",
+  "The three options read “1-2 years old”, “3-5 years old”, “5+ years old”. They use hyphens for ranges, they overlap at 5 years, and “maturity” measured in company age is not what the legend leads you to expect.",
+  "The options overlap at five years, so a user whose supplier is exactly five years old cannot tell which to choose, and two people will answer the same situation differently. “Maturity” measured as company age is also not what the legend leads them to expect.",
+  "<a href=\"https://service-manual.nhs.uk/content/numbers-measurements-dates-time\">Content guide: numbers, measurements, dates and time</a> — use “to” for ranges. <a href=\"https://service-manual.nhs.uk/content/how-we-write\">Content guide: how we write</a> — options in a group must be mutually exclusive and complete.",
+  "“1 to 2 years”, “3 to 5 years”, “More than 5 years”. Rename the legend to what is actually being measured.") }}
+
+        <div class="nhsuk-button-group">
+          <button class="nhsuk-button nhsuk-button--secondary app-button--small" data-module="nhsuk-button" formmethod="get" role="search" type="submit" hidden="" data-nhsuk-button-init="">
+            Update results
+          </button>
+        </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+
+  {# Results Column #}
+  <div class="app-grid-column-results">
+
+    <h3 class="nhsuk-heading-m nhsuk-u-margin-bottom-2">Medical technologies</h3>
+    <p class="nhsuk-caption-m nhsuk-u-margin-bottom-4">
+      Showing {% if searchMaxPages > 1 %}<b>{{ searchOffset }}</b> to {% endif %}<b>{{ (searchResults | length) + searchOffset - 1 }}</b> of <b>{{ searchResultsCount }}</b> products
+    </p>
+
+{{ note("med", "SR-18", "“Medical technologies” and “products” in consecutive lines",
+  "The results heading says “medical technologies” and the count line immediately underneath says “products”, for the same list. The count line is set in <code>nhsuk-caption-m</code>, a caption class carrying body text, and it does not repeat the search term.",
+  "Two words for the same list, one line apart. And “Showing 1 of 1” never says 1 of 1 what, or for which query, so the count cannot be read on its own or quoted anywhere else.",
+  "Service convention — say “device”. <a href=\"https://service-manual.nhs.uk/design-system/styles/typography\">Design system: typography</a> — captions belong with the heading they caption. <a href=\"https://service-manual.nhs.uk/content/how-we-write\">Content guide: how we write</a> — use the same word for the same thing.",
+  "One word for the list, the term in the count, and body text rather than a caption class.") }}
+
+{{ note("med", "SR-19", "There is no zero-results state",
+  "Nothing in the template handles an empty list: no “No results for pump”, no suggestion of what to try instead, no route back to browsing. When a filter empties the results, the page still renders the results heading, the count line and the whole filter panel.",
+  "A user whose filter empties the list gets a heading, a count and a filter panel with nothing underneath — no explanation, no suggestion, no way back. This is the moment they are most likely to give up on the service, and it is unhandled.",
+  "<a href=\"https://service-manual.nhs.uk/design-system/patterns\">Design system: patterns</a> — an empty state is part of a search pattern. <a href=\"https://service-manual.nhs.uk/content/how-we-write\">Content guide: how we write</a> — tell users what happened and what to do next.",
+  "Add an empty state: what was searched, why nothing matched, and two ways out — clear the filters, or browse by category.") }}
+
+    {# Result cards #}
+    {% for result in searchResults %}
+    <div class="nhsuk-card nhsuk-card--clickable app-card--compact">
+      <div class="nhsuk-card__content">
+        <h4 class="nhsuk-card__heading nhsuk-heading-s">
+          <a class="nhsuk-card__link" href="product-page?make={{ result.make_id }}&q={{ searchTerm }}">
+            {{ result.make }} – {{ result.model }}
+          </a>
+        </h4>
+        <p class="nhsuk-body-s nhsuk-u-secondary-text-color nhsuk-u-margin-bottom-2">
+          {{ result.manufacturer }}
+        </p>
+
+        <dl class="nhsuk-summary-list">
+          <div class="nhsuk-summary-list__row">
+            <dt class="nhsuk-summary-list__key">
+              Category (GMDN)
+            </dt>
+            <dd class="nhsuk-summary-list__value">
+              {{ result.category }}
+            </dd>
+          </div>
+
+          <div class="nhsuk-summary-list__row">
+            <dt class="nhsuk-summary-list__key">
+              Type
+            </dt>
+            <dd class="nhsuk-summary-list__value">
+              {{ result.type }}
+            </dd>
+          </div>
+
+          <div class="nhsuk-summary-list__row">
+            <dt class="nhsuk-summary-list__key">
+              Trusts using this
+            </dt>
+            <dd class="nhsuk-summary-list__value">
+              {{ result.trusts if result.trusts > 0 else "No" }} trust{{ "s" if result.trusts !== 1 }}
+            </dd>
+          </div>
+
+          <div class="nhsuk-summary-list__row">
+            <dt class="nhsuk-summary-list__key">
+              Shared documents
+            </dt>
+            <dd class="nhsuk-summary-list__value">
+              {{ result.documents if result.documents > 0 else "No" }} document{{ "s" if result.documents !== 1 }}
+              <br>
+              {% if result.documents > 0 %}
+              <span class="nhsuk-body-s nhsuk-u-secondary-text-color">
+                Including {{ result.document_types | join(", ") | lower }}
+              </span>
+              {% endif %}
+            </dd>
+          </div>
+
+          <div class="nhsuk-summary-list__row">
+            <dt class="nhsuk-summary-list__key">
+              Procurement outcomes
+            </dt>
+            <dd class="nhsuk-summary-list__value">
+              {% if result.procured > 0 %}
+              <strong class="nhsuk-tag nhsuk-tag--green">Procured: {{ result.procured }} trust{{ "s" if result.procured !== 1 }}</strong>
+              {% endif %}
+              {% if result.under_review > 0 %}
+              <strong class="nhsuk-tag nhsuk-tag--blue">Under review: {{ result.under_review }} trust{{ "s" if result.under_review !== 1 }}</strong>
+              {% endif %}
+              {% if result.excluded > 0 %}
+              <strong class="nhsuk-tag nhsuk-tag--yellow">Not procured: {{ result.excluded }} trust{{ "s" if result.excluded !== 1 }}</strong>
+              {% endif %}
+            </dd>
+          </div>
+
+          <div class="nhsuk-summary-list__row">
+            <dt class="nhsuk-summary-list__key">
+              Country of manufacture
+            </dt>
+            <dd class="nhsuk-summary-list__value">
+              {{ result.country }}
+            </dd>
+          </div>
+
+        </dl>
+
+      </div>
+    </div>
+    {% endfor %}
+
+{{ note("med", "SR-21", "“Procurement outcomes” renders as an empty row",
+  "All three tags are conditional on a count above zero, so when a device has no recorded outcomes the row shows a key and nothing at all. The same happens on the device page. There is no “Not recorded” or “No trust has recorded an outcome” fallback.",
+  "A key with nothing beside it reads as a page that has failed to load rather than as a device nobody has recorded an outcome for. A user cannot tell “no data” from “broken”.",
+  "<a href=\"https://service-manual.nhs.uk/design-system/styles/colour\">Design system: colour</a> — the secondary text colour exists precisely “for describing missing data in a table or summary list”. <a href=\"https://service-manual.nhs.uk/design-system/components/summary-list\">Design system: summary list</a> — a summary list row is a key and at least one value.",
+  "Show “Not recorded” in the secondary text colour instead of an empty value.") }}
+
+{{ note("med", "SR-22", "Six summary list rows per result",
+  "Each result is a full summary list of six key–value rows inside a card. For a page of 25 results that is 150 rows of keys repeated 25 times, and the keys are the same every time. Summary lists are for presenting one thing’s details, not for tabulating a list of things.",
+  "On a full page of results the same six keys repeat 25 times, so a user scanning for one fact reads it 25 times over. It makes comparing devices — the point of the page — slower rather than faster.",
+  "<a href=\"https://service-manual.nhs.uk/design-system/components/summary-list\">Design system: summary list</a> — “Do not use it for tabular data or a simple list of information”. <a href=\"https://service-manual.nhs.uk/design-system/components/card\">Design system: card</a> — “Keep the card short so it is easy to scan for relevant and actionable information”.",
+  "Cut each result to the three facts users compare on. Move the rest to the device page.") }}
+
+{{ note("low", "SR-23", "Result heading is an h4, and the tags mix meanings",
+  "The device name is <code>&lt;h4&gt;</code> — see SR-03. “Procured / Under review / Not procured” are green, blue and yellow tags used as counts rather than statuses; a tag says what state one thing is in, not how many trusts are in each of three states.",
+  "Result titles sit at a heading level implying they belong to a section that does not exist, so the heading list is no use for moving between results. The green, blue and yellow tags also read as one device’s status when they are counts of how many trusts are in each state.",
+  "<a href=\"https://service-manual.nhs.uk/design-system/components/tag\">Design system: tag</a> — “Use the tag component when it’s possible for something to have more than 1 status”; tags carry a status, not a tally. Keep tag colours consistent wherever the same tag is used.",
+  "Result titles at h3. Replace the three tags with one line of counts.") }}
+
+    {# Pagination #}
+    <nav class="nhsuk-pagination nhsuk-pagination--numbered" role="navigation" aria-label="Pagination">
+      <ul class="nhsuk-pagination__list">
+        {% set min_page = (1 if searchPage <= 2 else searchPage - 2) %}
+        {% set max_page = (searchMaxPages if searchPage + 2 >= searchMaxPages else searchPage + 2) %}
+        {% for page in range(min_page, max_page+1) %}
+        <li class="nhsuk-pagination__item {{'nhsuk-pagination__item--current' if page == searchPage else ''}}">
+          <a class="nhsuk-pagination__link" href="?q={{searchTerm}}&page={{page}}{{categoriesQueryString | default('')}}" aria-label="Page {{ page }}" {{'aria-current="page"' if page == searchPage else ''}}>
+            {{ page }}
+          </a>
+        </li>
+        {% endfor %}
+      </ul>
+    </nav>
+
+{{ note("med", "SR-24", "Pagination is shown when there is only one page",
+  "With a single page of results the component still renders, giving a lone “1”. The design system says not to.",
+  "A lone “1” suggests there are more pages to come. A user may click looking for results that do not exist.",
+  "<a href=\"https://service-manual.nhs.uk/design-system/components/pagination\">Design system: pagination</a> — “Do not show pagination if there’s only 1 page of content.”",
+  "Hide pagination when there is one page.") }}
+
+{{ note("med", "SR-25", "Pagination has no Previous link, no first or last page, no ellipses",
+  "The template renders a window of up to five numbers and a Next link only. There is no Previous link on any page, and no first/last page or “…” for the pages in between, so from page 7 of 40 you cannot get back to page 1 or on to the end.",
+  "From page 7 there is no way back to page 1 or on to the end without clicking one page at a time. A user who overshoots has to step back through every intervening page.",
+  "<a href=\"https://service-manual.nhs.uk/design-system/components/pagination\">Design system: pagination</a> — always show the current page, the page before and after, and the first and last pages, with ellipses for the gaps; and use “Previous” with a left arrow except on the first page.",
+  "Add Previous, the first and last pages, and ellipses for the gaps.") }}
+
+  </div>
+
+</div>
+
+{{ note("med", "SR-26", "Filters and results are two columns that never meet",
+  "The filter panel is a feature card in a one-third column and the results are in a two-thirds column, with nothing in between: no count of active filters, no “clear all”, no indication in the results heading that a filter is on. Below the large-desktop breakpoint the filter panel stacks above the results.",
+  "Nothing tells a user a filter is on — no count of active filters, no clear-all, no change to the results heading — so a narrowed result set looks like a poor search. On a tablet or phone the whole filter panel stacks above the results, so users scroll past all of it before seeing a single device.",
+  "<a href=\"https://service-manual.nhs.uk/design-system/styles/layout\">Design system: layout</a> — design mobile-first: what stacks first should be what the user came for. <a href=\"https://service-manual.nhs.uk/accessibility/design\">Accessibility: design</a> — “Define skip links” for exactly this case.",
+  "Show active filters and a clear-all above the results. On narrow screens collapse the panel behind a “Filter” control above the results.") }}
+
+{% endblock %}

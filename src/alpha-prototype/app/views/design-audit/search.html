@@ -1,0 +1,331 @@
+{#
+  DESIGN AUDIT copy of UR/search.html
+  Static snapshot — the UR original is untouched.
+#}
+
+{% extends "design-audit/layouts/layout-search-sticky.html" %}
+
+{% from "design-audit/includes/audit.njk" import note, banner %}
+
+{% set pageName = "Search and compare" %}
+
+{% block beforeContent %}
+{% endblock %}
+
+{% block content %}
+
+{{ banner("Search", "/UR/search", "11 notes on this page — 1 high, 7 medium, 3 low. Layout notes GL-09, GL-10, GL-12 and GL-13 also apply.") }}
+
+{{ note("med", "SE-01", "Five ways to start a search, no hierarchy between them",
+  "The page offers a search box (in the hero above), a list of common searches, browse by care setting, browse by category, and three explainer cards. Nothing indicates which is the main route or how they differ, and the two browse grids look identical while doing different things.",
+  "A first-time user has five entry points and nothing to say which is the main one or how they differ. The likely outcome is that they try one, do not find what they want, and never realise the others would have searched something different.",
+  "<a href=\"https://service-manual.nhs.uk/design-system/components/search-input\">Design system: search input</a> — “Do not rely on search in place of a well-structured information architecture and navigation”; the converse also holds. Service convention — one affordance per interaction.",
+  "Choose one primary route. Demote the rest to a single browse section beneath it.") }}
+
+<!-- ============================================ -->
+<!-- COMMON SEARCHES + YOUR ACTIVITY (side by side) -->
+<!-- ============================================ -->
+<div class="nhsuk-grid-row">
+
+  <!-- Common searches: left half -->
+  <div class="nhsuk-grid-column-one-half">
+    <h2 class="nhsuk-heading-l">Common searches</h2>
+    <p class="nhsuk-body">Recently searched across NHS trusts similar to yours</p>
+    <ul class="nhsuk-list app-tag-list">
+      <li><a href="category-wound-care" class="nhsuk-tag nhsuk-tag--white">Air mattress system</a></li>
+      <li><a href="category-wound-care" class="nhsuk-tag nhsuk-tag--white">HydroHeal Plus</a></li>
+      <li><a href="category-wound-care" class="nhsuk-tag nhsuk-tag--white">Insulin pumps</a></li>
+      <li><a href="category-wound-care" class="nhsuk-tag nhsuk-tag--white">Surgical mesh</a></li>
+      <li><a href="category-wound-care" class="nhsuk-tag nhsuk-tag--white">Continuous glucose monitors</a></li>
+    </ul>
+  </div>
+
+  <!-- Your activity: right half -->
+  <div class="nhsuk-grid-column-one-half">
+    <h2 class="nhsuk-heading-l">Your activity</h2>
+    <div class="nhsuk-card">
+      <div class="nhsuk-card__content">
+        <h3 class="nhsuk-card__heading nhsuk-heading-s">Your recently viewed items</h3>
+        <ul class="nhsuk-list nhsuk-list--bullet">
+          <li><a href="#">Stryker Mako SmartRobotics</a> — viewed yesterday</li>
+          <li><a href="#">Smith+Nephew PICO 7</a> — viewed 3 days ago</li>
+          <li><a href="#">Medtronic MiniMed 780G</a> — viewed last week</li>
+        </ul>
+      </div>
+    </div>
+    <div class="nhsuk-card">
+      <div class="nhsuk-card__content">
+        <h3 class="nhsuk-card__heading nhsuk-heading-s">Your saved items</h3>
+        <ul class="nhsuk-list nhsuk-list--bullet">
+          <li><a href="#">SmartPump 300 Infusion System</a></li>
+          <li><a href="#">Collagen Pro Matrix</a></li>
+        </ul>
+        <p class="nhsuk-body-s nhsuk-u-margin-top-3"><a href="#">View all saved items</a></p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+{{ note("high", "SE-02", "“Common searches” — tags used as links",
+  "Each of the five is a tag element used as a link. Tags are a status component and the design system is explicit that they are not interactive. The tag style also removes the underline and sets a solid box, so the link styling used everywhere else in the service is absent here.",
+  "These do not look like links — no underline, solid boxes, no link colour — so a user has to hover to discover the page’s five shortcuts exist at all. Most people will never find them.",
+  "<a href=\"https://service-manual.nhs.uk/design-system/components/tag\">Design system: tag</a> — “Tags are just used to indicate a status. Do not add links.” <a href=\"https://service-manual.nhs.uk/design-system/styles/typography\">Design system: typography</a> — links are blue and underlined by default. WCAG 2.2 1.4.1 Use of Colour, Level A, since nothing but the box shape distinguishes them.",
+  "Use links, not tags. A plain list of underlined links.",
+  "1.4.1 Use of Colour (Level A)") }}
+
+{{ note("med", "SE-05", "“Recently searched across NHS trusts similar to yours”",
+  "Three claims in one line with nothing behind any of them: what makes a trust “similar”, how recent “recently” is, and where the list comes from. There is no control anywhere on the page to change or question the similarity match.",
+  "A user cannot judge whether this list is worth acting on, because they cannot tell whether a “similar” trust means one their size, in their region, or buying the same kinds of thing. Presented as personalisation, it invites more trust than it can carry.",
+  "Service convention — state where system-generated content comes from, and say how it is ordered. <a href=\"https://service-manual.nhs.uk/content/how-we-write\">Content guide: how we write</a> — do not make claims a user cannot check.",
+  "Say what makes a trust similar and how recent the list is, or drop the personalisation and call it recent searches.") }}
+
+{{ note("low", "SE-07", "Em dashes in the activity lists",
+  "“Stryker Mako SmartRobotics — viewed yesterday”. The NHS content guide discourages dashes and, where one is used, specifies an en dash (–), not an em dash (—). Assistive technologies read dashes inconsistently.",
+  "Assistive technology reads dashes inconsistently, so “Stryker Mako SmartRobotics — viewed yesterday” may be heard as one run-on phrase with no break between the device and when it was seen.",
+  "<a href=\"https://service-manual.nhs.uk/content/punctuation\">Content guide: punctuation</a> — “Dashes can make content hard to read so we do not often use them. If you use a dash, it should be an en dash.”",
+  "Split into two lines — name, then “Viewed yesterday” — or use an en dash.") }}
+
+{{ note("low", "SE-08", "Clickable and non-clickable cards that look nearly identical",
+  "“Your recently viewed items” and “Your saved items” are plain cards. The eleven browse cards above them are clickable cards. At a glance the two sets look the same, so nothing tells a user which cards respond to being clicked and which are just boxes of text.",
+  "A user cannot tell by looking which cards do something. They will click the ones that do not, and conclude that part of the service is broken.",
+  "<a href=\"https://service-manual.nhs.uk/design-system/components/card\">Design system: card</a> — a clickable card carries a link and is styled to show it. Service convention — one affordance per interaction.",
+  "Make the two activity cards visibly distinct from the browse cards, or make them clickable too.") }}
+
+<hr class="nhsuk-section-break nhsuk-section-break--l nhsuk-section-break--visible">
+
+<!-- ============================================ -->
+<!-- MODE 3: EXPLORATORY SEEKING                  -->
+<!-- ============================================ -->
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-full">
+
+    <h2 class="nhsuk-heading-l">Browse by care setting</h2>
+    <p class="nhsuk-body">Explore what's available in care settings like yours.</p>
+
+    <ul class="nhsuk-grid-row nhsuk-card-group">
+      <li class="nhsuk-grid-column-one-third nhsuk-card-group__item">
+        <div class="nhsuk-card nhsuk-card--clickable">
+          <div class="nhsuk-card__content">
+            <h3 class="nhsuk-card__heading nhsuk-heading-s">
+              <a class="nhsuk-card__link" href="category-wound-care">Prevention and health promotion</a>
+            </h3>
+          </div>
+        </div>
+      </li>
+      <li class="nhsuk-grid-column-one-third nhsuk-card-group__item">
+        <div class="nhsuk-card nhsuk-card--clickable">
+          <div class="nhsuk-card__content">
+            <h3 class="nhsuk-card__heading nhsuk-heading-s">
+              <a class="nhsuk-card__link" href="search-results-viz-all">Primary care</a>
+            </h3>
+          </div>
+        </div>
+      </li>
+      <li class="nhsuk-grid-column-one-third nhsuk-card-group__item">
+        <div class="nhsuk-card nhsuk-card--clickable">
+          <div class="nhsuk-card__content">
+            <h3 class="nhsuk-card__heading nhsuk-heading-s">
+              <a class="nhsuk-card__link" href="category-wound-care">Primary prescribing</a>
+            </h3>
+          </div>
+        </div>
+      </li>
+      <li class="nhsuk-grid-column-one-third nhsuk-card-group__item">
+        <div class="nhsuk-card nhsuk-card--clickable">
+          <div class="nhsuk-card__content">
+            <h3 class="nhsuk-card__heading nhsuk-heading-s">
+              <a class="nhsuk-card__link" href="category-wound-care">Ambulance</a>
+            </h3>
+          </div>
+        </div>
+      </li>
+      <li class="nhsuk-grid-column-one-third nhsuk-card-group__item">
+        <div class="nhsuk-card nhsuk-card--clickable">
+          <div class="nhsuk-card__content">
+            <h3 class="nhsuk-card__heading nhsuk-heading-s">
+              <a class="nhsuk-card__link" href="category-wound-care">A &amp; E</a>
+            </h3>
+          </div>
+        </div>
+      </li>
+      <li class="nhsuk-grid-column-one-third nhsuk-card-group__item">
+        <div class="nhsuk-card nhsuk-card--clickable">
+          <div class="nhsuk-card__content">
+            <a class="nhsuk-action-link" href="#">
+              <svg class="nhsuk-icon nhsuk-icon--arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" focusable="false" aria-hidden="true">
+                <path d="M12 2a10 10 0 0 0-10 9h11.7l-4-4a1 1 0 0 1 1.5-1.4l5.6 5.7a1 1 0 0 1 0 1.4l-5.6 5.7a1 1 0 0 1-1.5 0 1 1 0 0 1 0-1.4l4-4H2A10 10 0 1 0 12 2z" />
+              </svg>
+              <span class="nhsuk-action-link__text">View all care settings</span>
+            </a>
+          </div>
+        </div>
+      </li>
+    </ul>
+
+  </div>
+</div>
+
+{{ note("med", "SE-10", "“A &amp; E” — spacing",
+  "The NHS style is “A&amp;E”, with no spaces and no expansion.",
+  "It reads as an abbreviation the service has invented rather than the standard one, and the spaced ampersand may be voiced differently by a screen reader.",
+  "<a href=\"https://service-manual.nhs.uk/content/a-to-z-of-nhs-health-writing\">Content guide: A to Z of NHS health writing</a> — “A&amp;E”: “We use ‘A&amp;E’. You do not need to spell out ‘accident and emergency’.”",
+  "“A&E”.") }}
+
+{{ note("med", "SE-11", "Action links used as a grid tile",
+  "“View all care settings” is an action link placed inside a card in the card group. The same thing happens again in the category grid below with “Explore more categories”, putting two action links a few hundred pixels apart on one page.",
+  "Inside a card grid, “View all care settings” reads as a sixth care setting rather than as the way out of the list. Two action links a few hundred pixels apart also cancel each other’s emphasis, so neither stands out.",
+  "<a href=\"https://service-manual.nhs.uk/design-system/components/action-link\">Design system: action link</a> — “Do not use them just to link to another page or site — use inset text if you need a link to stand out”; and “You can have more than one on a page but avoid putting them near each other”. Action links signpost the start of a service, not the end of a list.",
+  "Take both action links out of the card grids. A plain link under each grid.") }}
+
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-full">
+
+    <h2 class="nhsuk-heading-l">Browse by category</h2>
+    <p class="nhsuk-body">Explore what's available and see which products other trusts use.</p>
+
+    <ul class="nhsuk-grid-row nhsuk-card-group">
+      <li class="nhsuk-grid-column-one-third nhsuk-card-group__item">
+        <div class="nhsuk-card nhsuk-card--clickable">
+          <div class="nhsuk-card__content">
+            <h3 class="nhsuk-card__heading nhsuk-heading-s">
+              <a class="nhsuk-card__link" href="category-wound-care">Orthopaedic implants</a>
+            </h3>
+            <p class="nhsuk-card__description">Hip, knee, shoulder replacements and trauma fixation devices</p>
+            <p class="nhsuk-body-s nhsuk-u-secondary-text-color">247 products · 89 trust evaluations</p>
+          </div>
+        </div>
+      </li>
+      <li class="nhsuk-grid-column-one-third nhsuk-card-group__item">
+        <div class="nhsuk-card nhsuk-card--clickable">
+          <div class="nhsuk-card__content">
+            <h3 class="nhsuk-card__heading nhsuk-heading-s">
+              <a class="nhsuk-card__link" href="search-results-viz-all">Wound care</a>
+            </h3>
+            <p class="nhsuk-card__description">Dressings, negative pressure therapy and skin substitutes</p>
+            <p class="nhsuk-body-s nhsuk-u-secondary-text-color">183 products · 56 trust evaluations</p>
+          </div>
+        </div>
+      </li>
+      <li class="nhsuk-grid-column-one-third nhsuk-card-group__item">
+        <div class="nhsuk-card nhsuk-card--clickable">
+          <div class="nhsuk-card__content">
+            <h3 class="nhsuk-card__heading nhsuk-heading-s">
+              <a class="nhsuk-card__link" href="category-wound-care">Diabetes technology</a>
+            </h3>
+            <p class="nhsuk-card__description">Insulin pumps, continuous glucose monitors and smart pens</p>
+            <p class="nhsuk-body-s nhsuk-u-secondary-text-color">94 products · 112 trust evaluations</p>
+          </div>
+        </div>
+      </li>
+      <li class="nhsuk-grid-column-one-third nhsuk-card-group__item">
+        <div class="nhsuk-card nhsuk-card--clickable">
+          <div class="nhsuk-card__content">
+            <h3 class="nhsuk-card__heading nhsuk-heading-s">
+              <a class="nhsuk-card__link" href="category-wound-care">Diagnostic imaging</a>
+            </h3>
+            <p class="nhsuk-card__description">MRI, CT, ultrasound and X-ray equipment</p>
+            <p class="nhsuk-body-s nhsuk-u-secondary-text-color">156 products · 34 trust evaluations</p>
+          </div>
+        </div>
+      </li>
+      <li class="nhsuk-grid-column-one-third nhsuk-card-group__item">
+        <div class="nhsuk-card nhsuk-card--clickable">
+          <div class="nhsuk-card__content">
+            <h3 class="nhsuk-card__heading nhsuk-heading-s">
+              <a class="nhsuk-card__link" href="category-wound-care">Surgical instruments</a>
+            </h3>
+            <p class="nhsuk-card__description">Robotic systems, endoscopes and single-use instruments</p>
+            <p class="nhsuk-body-s nhsuk-u-secondary-text-color">312 products · 67 trust evaluations</p>
+          </div>
+        </div>
+      </li>
+      <li class="nhsuk-grid-column-one-third nhsuk-card-group__item">
+        <div class="nhsuk-card nhsuk-card--clickable">
+          <div class="nhsuk-card__content">
+            <a class="nhsuk-action-link" href="#">
+              <svg class="nhsuk-icon nhsuk-icon--arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" focusable="false" aria-hidden="true">
+                <path d="M12 2a10 10 0 0 0-10 9h11.7l-4-4a1 1 0 0 1 1.5-1.4l5.6 5.7a1 1 0 0 1 0 1.4l-5.6 5.7a1 1 0 0 1-1.5 0 1 1 0 0 1 0-1.4l4-4H2A10 10 0 1 0 12 2z" />
+              </svg>
+              <span class="nhsuk-action-link__text">Explore more categories</span>
+            </a>
+          </div>
+        </div>
+      </li>
+    </ul>
+
+  </div>
+</div>
+
+{{ note("med", "SE-13", "Category counts — unsourced, and using the wrong word",
+  "“247 products · 89 trust evaluations”. Six sets of counts with no statement of where they come from or when they were counted, separated by a middot rather than words, and calling devices “products”.",
+  "A user comparing categories cannot tell whether 247 is a lot, when it was counted, or what a “trust evaluation” is. The middot between the two figures gives no clue how they relate to each other.",
+  "Service convention — say “device”, not “product”, and state where system-generated content comes from. <a href=\"https://service-manual.nhs.uk/content/formatting\">Content guide: formatting</a> — use words rather than symbols where a symbol has no established meaning.",
+  "“Devices”. Spell out the second figure and add a source line under the grid.") }}
+
+{{ note("med", "SE-14", "Two browse grids that look identical and behave differently",
+  "“Browse by care setting” gives heading-only cards; “Browse by category” gives cards with a description and counts. Same component, same size, same grid, immediately below each other — but one set is a taxonomy of places and the other a taxonomy of things, and only one tells you how much is behind it. The two lead-in lines are near-identical: “Explore what’s available in care settings like yours” and “Explore what’s available and see which products other trusts use”.",
+  "Two grids that look identical do different things — one is a taxonomy of places, the other of things — and only one says how much is behind it. Users will treat them as one list and be surprised by where they land.",
+  "<a href=\"https://service-manual.nhs.uk/design-system/components/card\">Design system: card</a> — keep cards short and consistent so they can be scanned. <a href=\"https://service-manual.nhs.uk/content/how-we-write\">Content guide: how we write</a> — do not repeat the same construction for two different things.",
+  "Give the two grids different treatments, and rewrite the lead-ins so each says what it is for.") }}
+
+<hr class="nhsuk-section-break nhsuk-section-break--l nhsuk-section-break--visible">
+
+<!-- ============================================ -->
+<!-- MODE 4: DON'T KNOW WHAT YOU NEED TO KNOW    -->
+<!-- ============================================ -->
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+
+    <h2 class="nhsuk-heading-l">New to medical technology procurement?</h2>
+    <p class="nhsuk-body">Not sure where to start? These resources help you understand what to look for when evaluating medical technologies.</p>
+
+    <div class="nhsuk-card">
+      <div class="nhsuk-card__content">
+        <h3 class="nhsuk-card__heading nhsuk-heading-m">
+          <a class="nhsuk-card__link" href="#">Value-based procurement explained</a>
+        </h3>
+        <p class="nhsuk-card__description">
+          Move beyond lowest-price decisions and evaluate products on outcomes, safety, integration and sustainability.
+        </p>
+      </div>
+    </div>
+
+    <div class="nhsuk-card">
+      <div class="nhsuk-card__content">
+        <h3 class="nhsuk-card__heading nhsuk-heading-m">
+          <a class="nhsuk-card__link" href="#">What makes good evidence?</a>
+        </h3>
+        <p class="nhsuk-card__description">
+          Learn the difference between NICE guidance, ODEP ratings, clinical trials and trust evaluations — and when each matters for your decision.
+        </p>
+      </div>
+    </div>
+
+    <div class="nhsuk-card">
+      <div class="nhsuk-card__content">
+        <h3 class="nhsuk-card__heading nhsuk-heading-m">
+          <a class="nhsuk-card__link" href="#">Questions to ask other trusts</a>
+        </h3>
+        <p class="nhsuk-card__description">
+          Find out what questions procurement leads and clinical engineers ask their peers about their experience.
+        </p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+{{ note("med", "SE-15", "Headings written as questions, on a page that is not a question page",
+  "“New to medical technology procurement?” as an h2, “What makes good evidence?” as a card heading, and “Not sure where to start?” opening the paragraph — three questions within four lines.",
+  "Three questions in four lines, none of which the page answers. A user looking for a way in reads what sounds like help and receives none.",
+  "<a href=\"https://service-manual.nhs.uk/content/formatting\">Content guide: formatting</a> — headings should “not be written as questions (except on question pages when you need to ask users questions in your service)”, and should be action-oriented where possible.",
+  "Rewrite the three as statements.") }}
+
+{{ note("low", "SE-16", "These three cards are a size up from every other card on the page",
+  "They use <code>nhsuk-heading-m</code> where the eleven browse cards above use <code>nhsuk-heading-s</code>. The least important content on the page is set in the largest card headings.",
+  "Size signals importance. The least important content on the page carries the largest headings, so a scanning eye is pulled to the explainers rather than to the browse routes that are the point of the page.",
+  "<a href=\"https://service-manual.nhs.uk/design-system/styles/typography\">Design system: typography</a> — keep to the type scale, and let size reflect importance.",
+  "Set these card headings to heading-s, matching the browse cards.") }}
+
+{% endblock %}

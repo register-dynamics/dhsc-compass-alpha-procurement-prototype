@@ -1,0 +1,103 @@
+{#
+  DESIGN AUDIT copy of UR/layouts/layout-hero-current.html
+  Static: no route data, no database. The UR original is untouched.
+#}
+
+{% extends "prototype-kit-template.njk" %}
+
+{% from "design-audit/includes/audit.njk" import note, styles %}
+
+{% block head %}
+<link href="/css/main.css" rel="stylesheet">
+{{ styles() }}
+{% endblock %}
+
+{% block header %}
+{{ header({
+  logo: {
+    href: "/",
+    ariaLabel: "Search and evaluate medical technologies"
+  },
+  service: {
+    text: "Search and evaluate medical technologies",
+    href: "/"
+  },
+  navigation: {
+    items: [
+      { text: "About this service", href: "#" },
+      { text: "Latest news", href: "#" },
+      { text: "Data standards", href: "#" },
+      { text: "Case studies", href: "#" }
+    ]
+  }
+}) }}
+
+<div class="nhsuk-width-container">
+  </div>
+{% endblock %}
+
+{% block main %}
+<!-- HERO: Full-width NICE-style with diagonal image -->
+<div class="nice-hero">
+  <div class="nice-hero__content">
+    <div class="nhsuk-width-container">
+      <div class="nice-hero__inner">
+        <div class="nice-hero__text">
+
+          {% block heroHeading %}
+          <h1 class="nhsuk-heading-l nhsuk-u-margin-bottom-4">Search and evaluate medical technologies based on good clinical outcomes</h1>
+
+          <p class="nhsuk-body-l">Used by <strong>104</strong> NHS trusts</strong></p>
+          {% endblock %}
+
+          {% block heroActions %}
+          <div class="nhsuk-u-margin-top-5">
+            <a class="nhsuk-button nhsuk-button--reverse" data-module="nhsuk-button" href="/UR/sign-in-nhs" draggable="false" role="button">
+              Log in
+            </a>
+            <p class="nhsuk-body nhsuk-u-margin-top-2 nhsuk-u-margin-bottom-0 nice-hero__subtext">
+              or <a href="/UR/sign-up-trusts-1" class="nhsuk-link nhsuk-link--reverse nhsuk-u-font-weight-bold">sign up your trust</a>
+            </p>
+          </div>
+          {% endblock %}
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="nice-hero__image">
+    <img src="/images/compass-hero.png" alt="" role="presentation">
+  </div>
+</div>
+
+<!-- MAIN CONTENT: Wrapped in container -->
+<div class="nhsuk-width-container">
+
+    {{ note("med", "GL-07", "Hero — a bespoke component where the design system has one",
+  "This page uses a custom <code>nice-hero</code> with a diagonal cut across the bottom and its own button and link treatment. The search page uses the design system’s <code>nhsuk-hero</code>. The service has two different heroes, and a user meets both within two clicks of each other.",
+  "Users meet two different heroes within two clicks of each other, so the service looks like two services. A bespoke component also carries none of the testing the design system’s hero has behind it.",
+  "<a href=\"https://service-manual.nhs.uk/accessibility/design\">Accessibility: design</a> — “Discuss any custom components”: test an existing component and show a clear need before designing a new one. <a href=\"https://service-manual.nhs.uk/design-system/styles/colour\">Design system: colour</a> — design system colours are defined for the contexts they were tested in.",
+  "Use <code>nhsuk-hero</code> on both pages.") }}
+
+  {% block mainContent %}
+  {% endblock %}
+</div>
+{% endblock %}
+
+{% block footer %}
+<div class="nhsuk-width-container">
+  </div>
+{% include "includes/footer.html" %}
+{% endblock %}
+
+{% block bodyEnd %}
+<script src="/nhsuk-frontend/nhsuk-frontend.min.js" type="module"></script>
+<script type="module">
+import { initAll } from '/nhsuk-frontend/nhsuk-frontend.min.js'
+initAll()
+</script>
+{% block scripts %}
+  {% include "includes/scripts.html" %}
+  {% block pageScripts %}{% endblock %}
+{% endblock %}
+{% endblock %}

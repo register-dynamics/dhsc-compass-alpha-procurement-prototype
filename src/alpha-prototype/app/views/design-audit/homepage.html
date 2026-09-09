@@ -1,0 +1,320 @@
+{#
+  DESIGN AUDIT copy of UR/homepage.html
+  Static snapshot — the UR original is untouched.
+#}
+
+{% extends "design-audit/layouts/layout-hero-current.html" %}
+
+{% from "design-audit/includes/audit.njk" import note, banner %}
+
+{% set pageName = "Welcome" %}
+
+{% block heroActions %}
+<div class="nhsuk-button-group nhsuk-u-margin-bottom-0">
+  <a class="nhsuk-button nhsuk-button--reverse" data-module="nhsuk-button" href="/UR/sign-in-nhs" draggable="false" role="button" data-nhsuk-button-init="">
+    Log in
+  </a>
+  <p class="nhsuk-body nhsuk-u-margin-bottom-0">or <a href="/UR/sign-up-trusts-1" class="nhsuk-link nhsuk-link--reverse nhsuk-u-font-weight-bold">Sign up</a></p>
+</div>
+{% endblock %}
+
+{% block mainContent %}
+
+{{ banner("Homepage", "/UR/homepage", "16 notes on this page — 1 high, 10 medium, 5 low. Layout note GL-07 also applies.") }}
+
+{{ note("med", "HP-01", "Page title and h1 do not match",
+  "The browser title is “Welcome – Search and evaluate medical technologies – NHS” but the h1 is “Search and evaluate medical technologies based on good clinical outcomes”. A screen reader user hears “Welcome” on arrival, then a completely different heading. All five audited pages set a <code>pageName</code> that differs from the h1 in some way.",
+  "Someone using a screen reader hears “Welcome” on arrival and then a completely different heading, so the first thing they learn about the page is contradicted by the second. Anyone working with several tabs open is choosing between tabs labelled with a word that does not describe what is in them.",
+  "<a href=\"https://service-manual.nhs.uk/design-system/styles/page-template\">Design system: page template</a> — the title format is <code>&lt;h1&gt; – service name – website</code>. <a href=\"https://service-manual.nhs.uk/accessibility/design\">Accessibility: design</a> — “Provide informative page titles”: the title is the first thing a screen reader reads and should reflect the purpose of the page.",
+  "Build the title from the h1. Drop “Welcome”.") }}
+
+{{ note("med", "HP-02", "h1 — repeats the service name, and is a size down",
+  "The h1 is a longer restatement of the service name shown in the header two lines above it, at 87 characters. It uses <code>nhsuk-heading-l</code>.",
+  "A first-time visitor reads 87 characters that say nothing the header did not already say. Because the h1 is the same size as every heading below it, the page also gives no visual cue about where to start reading.",
+  "<a href=\"https://service-manual.nhs.uk/content/formatting\">Content guide: formatting</a> — keep the h1 concise, ideally 65 characters or fewer. <a href=\"https://service-manual.nhs.uk/design-system/styles/typography\">Design system: typography</a> — long content and start pages use <code>nhsuk-heading-xl</code> for the h1, with <code>nhsuk-heading-l</code> for h2; here the h1 and every h2 on the page are the same size.",
+  "Cut the h1 to the task, not the service name. Set it at heading-xl and drop every h2 to heading-l.") }}
+
+{{ note("med", "HP-03", "“Used by 104 NHS trusts” — unsourced figure",
+  "A specific number is presented as fact in the hero with nothing to say where it comes from or when it was counted.",
+  "A procurement lead deciding whether this service is worth their time has no way to judge the claim. If the figure is challenged in a business case, nobody can say where it came from or when it was counted.",
+  "Service convention — state where system-generated content comes from, and how it is ordered. <a href=\"https://service-manual.nhs.uk/content/how-we-write\">Content guide: how we write</a> voice and tone: claims in NHS services should be checkable.",
+  "Add a source and a count date beneath the figure, or remove it.") }}
+
+<!-- Key Features Cards -->
+<div class="nhsuk-grid-row nhsuk-u-margin-top-7" id="how-it-works">
+    <div class="nhsuk-grid-column-full">
+        <h2 class="nhsuk-heading-l">What this service offers</h2>
+    </div>
+</div>
+
+{{ note("high", "HP-05", "“What this service offers” — cards look clickable but are not links",
+  "All three cards carry <code>nhsuk-card--clickable</code> and none of them contains a link. The class adds the 4px raised bottom border and the pressed-down active state, so the cards read as buttons and respond to being clicked — but there is nothing to click. Sighted users try them; keyboard and screen reader users cannot reach them at all, because there is no focusable element.",
+  "Sighted users click them, nothing happens, and they conclude the service is broken. Keyboard and screen reader users cannot reach them at all, because there is nothing focusable inside them — so a whole section of the start page does not exist for those users.",
+  "<a href=\"https://service-manual.nhs.uk/design-system/components/card\">Design system: card</a> — a clickable card is a card with a link in it (<code>nhsuk-card__link</code>, or an anchor inside <code>nhsuk-card__heading</code>); “if you include a link, the link should mirror the heading of the page it links to”. Service convention — one affordance per interaction: a card should either be clickable or not be styled as if it were.",
+  "Put a link in each card heading, or drop <code>nhsuk-card--clickable</code> and let them read as plain content cards.") }}
+
+<ul class="nhsuk-grid-row nhsuk-card-group">
+  <li class="nhsuk-grid-column-one-third nhsuk-card-group__item">
+    <div class="nhsuk-card nhsuk-card--clickable">
+      <div class="nhsuk-card__content">
+        <h3 class="nhsuk-card__heading nhsuk-heading-s">Centralised evidence</h3>
+        <p>Access data from multiple trusted sources in one place. This includes NICE HealthTech guidance, ODEP Accreditation,
+           NHS documents and MHRA Registration data.</p>
+      </div>
+    </div>
+  </li>
+    <li class="nhsuk-grid-column-one-third nhsuk-card-group__item">
+        <div class="nhsuk-card nhsuk-card--clickable">
+        <div class="nhsuk-card__content">
+            <h3 class="nhsuk-card__heading nhsuk-heading-s">Real-world evaluations</h3>
+            <p>Read and share evaluations from NHS trusts that are using technologies in practice. Get insights beyond formal guidance, with a focus on clinical outomes.</p>
+        </div>
+        </div>
+    </li>
+    <li class="nhsuk-grid-column-one-third nhsuk-card-group__item">
+        <div class="nhsuk-card nhsuk-card--clickable">
+        <div class="nhsuk-card__content">
+            <h3 class="nhsuk-card__heading nhsuk-heading-s">Peer contact support</h3>
+            <p>Connect directly with trusts who have evaluated technologies you're considering. Learn
+            from their experience before making decisions.</p>
+        </div>
+        </div>
+    </li>
+</ul>
+
+{{ note("low", "HP-06", "“Real-world evaluations” card — typo",
+  "“with a focus on clinical outomes” — should be “outcomes”.",
+  "Small in itself, but it is on the start page of a service asking a professional audience to trust its evidence, and a visible typo is the kind of thing that gets noticed first.",
+  "<a href=\"https://service-manual.nhs.uk/content/how-we-write\">Content guide: how we write</a>. Flagged rather than corrected: the wording on this page is the content designer’s.",
+  "“outcomes”.") }}
+
+{{ note("med", "HP-07", "Capitalised source names mid-sentence",
+  "“NICE HealthTech guidance, ODEP Accreditation, NHS documents and MHRA Registration data” — “Accreditation” and “Registration” are capitalised mid-sentence where they are being used as ordinary nouns.",
+  "The capitals imply a formal product name, so a reader may go looking for something called “ODEP Accreditation” as a named scheme, and not find it.",
+  "<a href=\"https://service-manual.nhs.uk/content/punctuation\">Content guide: punctuation</a> capitalisation — sentence case, capitals only for proper nouns.",
+  "Lower-case “accreditation” and “registration”.") }}
+
+<!-- Who it's for -->
+<div class="nhsuk-grid-row nhsuk-u-margin-top-7">
+    <div class="nhsuk-grid-column-full">
+        <h2 class="nhsuk-heading-l">Who the service is for</h2>
+    </div>
+</div>
+
+{{ note("low", "HP-08", "Two sets of cards on one page, styled two different ways",
+  "The three cards under “What this service offers” and the four under “Who the service is for” sit a screen apart and look different: different heading sizes, different spacing, and only one set is aligned as a group. Nothing in the content explains the difference, so the page reads as two designs stitched together.",
+  "The page reads as two designs stitched together. A user cannot tell whether the two sections are meant to carry equal weight, or whether one set is actions and the other is not.",
+  "<a href=\"https://service-manual.nhs.uk/design-system/components/card\">Design system: card</a> — group related cards so they align and share a heading level. <a href=\"https://service-manual.nhs.uk/design-system/styles/typography\">Design system: typography</a> — keep to the type scale consistently across a page.",
+  "One card treatment and one heading size for both sets. Put both in a card group.") }}
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-one-half">
+        {{ card({
+        "heading": "Procurement professionals",
+        "headingLevel": 3,
+        "descriptionHtml": "<p>Access evidence quickly to support tendering processes, supplier evaluation, and business
+            case development for medical technology purchases.</p>"
+        }) }}
+    </div>
+
+    <div class="nhsuk-grid-column-one-half">
+        {{ card({
+        "heading": "Clinicians and clinical leads",
+        "headingLevel": 3,
+        "descriptionHtml": "<p>Review clinical evidence and real-world insights from other NHS trusts to inform
+            technology adoption decisions in your service.</p>"
+        }) }}
+    </div>
+</div>
+
+<div class="nhsuk-grid-row">
+    <div class="nhsuk-grid-column-one-half">
+        {{ card({
+        "heading": "Medical device evaluation teams",
+        "headingLevel": 3,
+        "descriptionHtml": "<p>Support your evaluation processes with centralised regulatory and clinical evidence, and
+            share your findings with other NHS organisations.</p>"
+        }) }}
+    </div>
+
+    <div class="nhsuk-grid-column-one-half">
+        {{ card({
+        "heading": "Innovation and transformation teams",
+        "headingLevel": 3,
+        "descriptionHtml": "<p>Identify evidence-based innovations and assess their readiness for adoption across your
+            organisation or integrated care system.</p>"
+        }) }}
+    </div>
+</div>
+
+{{ note("med", "HP-09", "“Who the service is for” — four cards, no next step",
+  "Four audience descriptions in cards, none of which links anywhere or changes what the user can do. Cards are for grouping related content <em>and actions</em>; here they are four paragraphs in boxes, and they push the only real action on the page — logging in — further off screen.",
+  "Someone arriving to work out whether the service is for them reads four boxes, finds nothing they can act on, and has to scroll past all of them to reach the only real action on the page.",
+  "<a href=\"https://service-manual.nhs.uk/design-system/components/card\">Design system: card</a> — “Do not use a card to highlight content on a page of long form content”; consider inset text or plain body copy instead. If this content is signposting, <a href=\"https://service-manual.nhs.uk/design-system/components/action-link\">Design system: action link</a> covers signposting the start of a service.",
+  "Replace the four cards with a short list or body copy, and move sign-in above them.") }}
+
+<!-- Data Sources Section -->
+<div class="nhsuk-grid-row nhsuk-u-margin-top-7" id="data-sources">
+    <div class="nhsuk-grid-column-full">
+        <h2 class="nhsuk-heading-l">Trusted data sources</h2>
+        <p class="nhsuk-body-l">This service integrates data and guidance from the most authoritative sources in healthcare, including:</p>
+    </div>
+</div>
+
+{{ note("med", "HP-10", "Three lead paragraphs on one page",
+  "<code>nhsuk-body-l</code> is used in the hero, here, and again under “Recent activity”.",
+  "Three passages compete for the same “read this first” signal, so a scanning reader gets no help deciding which one to read, and is likely to read none of them.",
+  "<a href=\"https://service-manual.nhs.uk/design-system/styles/typography\">Design system: typography</a> — the lead paragraph is an intro summary, “use once per page”. Using it three times removes the emphasis it exists to give.",
+  "Keep the lead paragraph in the hero. Set the other two as body text.") }}
+
+<div class="nhsuk-grid-row nhsuk-u-margin-top-4">
+    <div class="nhsuk-grid-column-one-half">
+        <h3 class="nhsuk-heading-m">
+            <svg class="nhsuk-icon nhsuk-icon--tick" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16"
+                height="16" focusable="false" aria-hidden="true">
+                <path d="M11.4 18.8a2 2 0 0 1-2.7.1h-.1L4 14.1a1.5 1.5 0 0 1 2.1-2L10 16l8.1-8.1a1.5 1.5 0 1 1 2.2 2l-8.9 9Z" />
+            </svg>
+            National Institute for Health and Care Excellence (NICE)
+        </h3>
+
+        <h3 class="nhsuk-heading-m nhsuk-u-margin-top-4">
+            <svg class="nhsuk-icon nhsuk-icon--tick" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16"
+                height="16" focusable="false" aria-hidden="true">
+                <path d="M11.4 18.8a2 2 0 0 1-2.7.1h-.1L4 14.1a1.5 1.5 0 0 1 2.1-2L10 16l8.1-8.1a1.5 1.5 0 1 1 2.2 2l-8.9 9Z" />
+            </svg>
+            Orthopaedic Data Evaluation Panel (ODEP)
+        </h3>
+    </div>
+
+    <div class="nhsuk-grid-column-one-half">
+        <h3 class="nhsuk-heading-m">
+            <svg class="nhsuk-icon nhsuk-icon--tick" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16"
+                height="16" focusable="false" aria-hidden="true">
+                <path d="M11.4 18.8a2 2 0 0 1-2.7.1h-.1L4 14.1a1.5 1.5 0 0 1 2.1-2L10 16l8.1-8.1a1.5 1.5 0 1 1 2.2 2l-8.9 9Z" />
+            </svg>
+            NHS Trusts
+        </h3>
+
+        <h3 class="nhsuk-heading-m nhsuk-u-margin-top-4">
+            <svg class="nhsuk-icon nhsuk-icon--blue nhsuk-icon--tick" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16"
+                height="16" focusable="false" aria-hidden="true">
+                <path d="M11.4 18.8a2 2 0 0 1-2.7.1h-.1L4 14.1a1.5 1.5 0 0 1 2.1-2L10 16l8.1-8.1a1.5 1.5 0 1 1 2.2 2l-8.9 9Z" />
+            </svg>
+            Medicines and Healthcare products Regulatory Agency (MHRA)
+        </h3>
+    </div>
+</div>
+
+{{ note("med", "HP-11", "Four data sources presented as four empty headings",
+  "Each source is a heading with a tick icon and nothing underneath it. The four sit in two columns, so they are laid out across the page but ordered down it.",
+  "Someone navigating by heading meets four sections that turn out to be empty, which reads as an unfinished page. Read in order, the four are NICE, ODEP, NHS Trusts, MHRA — down one column then the other — which is not the order they appear to be in on screen.",
+  "<a href=\"https://service-manual.nhs.uk/accessibility/design\">Accessibility: design</a> — “Use headings correctly”: a heading introduces the content beneath it. This is a list of four things, so it wants to be a list. <a href=\"https://service-manual.nhs.uk/design-system/styles/typography\">Design system: typography</a> — list styles.",
+  "Make the four sources a list under one heading.") }}
+
+{{ note("low", "HP-13", "“NHS Trusts” — capitalisation",
+  "“NHS Trusts” sits alongside three proper names of organisations. As a generic noun it is “NHS trusts”, and the rest of the page writes it that way.",
+  "Sitting between three organisation names, the capitals suggest “NHS Trusts” is a named body like NICE or the MHRA rather than a general group of organisations.",
+  "<a href=\"https://service-manual.nhs.uk/content/punctuation\">Content guide: punctuation</a> capitalisation; the A to Z entry for NHS organisations.",
+  "“NHS trusts”.") }}
+
+<!-- Community activity -->
+<div class="nhsuk-grid-row nhsuk-u-margin-top-7" id="community-activity">
+    <div class="nhsuk-grid-column-full">
+        <h2 class="nhsuk-heading-l">Recent activity</h2>
+        <p class="nhsuk-body-l">NHS trusts share evidence, evaluations and contact details through this service. This shows how it is being used.</p>
+    </div>
+</div>
+
+<div class="nhsuk-grid-row nhsuk-u-margin-top-4">
+    <div class="nhsuk-grid-column-one-half">
+        {% call card({ heading: "General activity this month", headingLevel: 3 }) %}
+            {{ summaryList({
+                rows: [
+                    { key: { text: "Documents shared this month" }, value: { text: "20" } },
+                    { key: { text: "Product searches" }, value: { text: "2,000" } },
+                    { key: { text: "Contact details added this month" }, value: { text: "15" } }
+                ]
+            }) }}
+        {% endcall %}
+    </div>
+</div>
+
+{{ note("med", "HP-14", "“General activity this month” — three metrics, three time periods",
+  "The card heading says “this month”. Two rows then repeat “this month” inside the card, and the middle row — “Product searches — 2,000” — carries no period at all, so it is unclear whether it is this month, ever, or today. The repetition of “this month” inside a card already titled “this month” is also redundant.",
+  "A user cannot tell whether “Product searches — 2,000” covers this month, today or all time, so it cannot be compared with the two figures beside it. Anyone quoting these numbers may quote them for the wrong period.",
+  "<a href=\"https://service-manual.nhs.uk/content/numbers-measurements-dates-time\">Content guide: numbers, measurements, dates and time</a> — be explicit about the period a figure covers. Service convention — say where system-generated content comes from.",
+  "Give the three figures one period, stated once in the card heading.") }}
+
+{{ note("med", "HP-15", "“Product searches” — the service’s word is “device”",
+  "This page uses “product” (twice), “device” (once) and “medical technologies” (six times) for the same thing. Across the five audited pages the split is 17 “product”, 3 “device”, 12 “technolog…”.",
+  "A reader has to work out whether “products”, “devices” and “medical technologies” are three things or one. In a service whose whole purpose is finding a particular device, that ambiguity costs search attempts.",
+  "Service convention — say “device”, not “product”, in anything user-facing. <a href=\"https://service-manual.nhs.uk/content/how-we-write\">Content guide: how we write</a> — use the same word for the same thing throughout.",
+  "“Device searches”. Use “device” across the page.") }}
+
+<div class="nhsuk-grid-row nhsuk-u-margin-top-2">
+    <div class="nhsuk-grid-column-full">
+        {{ table({
+            caption: "Latest contributions",
+            captionSize: "m",
+            responsive: true,
+            firstCellIsHeader: true,
+            head: [
+                { text: "Contributor name", classes: "nhsuk-u-width-one-quarter" },
+                { text: "Contribution", classes: "nhsuk-u-width-one-half" },
+                { text: "Time", classes: "nhsuk-u-width-one-quarter" }
+            ],
+            rows: [
+                [
+                    { header: "Contributor name", text: "Marshall Allen" },
+                    { header: "Contribution", text: "uploaded evidence for SmartPump 300 Infusion System" },
+                    { header: "Time", text: "today" }
+                ],
+                [
+                    { header: "Contributor name", text: "Sunanda Sharma" },
+                    { header: "Contribution", text: "added contact details to SafeFlow IV Administration Set evaluation" },
+                    { header: "Time", text: "today" }
+                ],
+                [
+                    { header: "Contributor name", text: "Knoell Scott" },
+                    { header: "Contribution", text: "uploaded 5 documents" },
+                    { header: "Time", text: "yesterday" }
+                ],
+                [
+                    { header: "Contributor name", text: "Vincent Chancey" },
+                    { header: "Contribution", text: "commented on PortaPump Mini Ambulatory Pump" },
+                    { header: "Time", text: "2 days ago" }
+                ],
+                [
+                    { header: "Contributor name", text: "Abida Parveen" },
+                    { header: "Contribution", text: "uploaded a business case for PreciseDose PCA System" },
+                    { header: "Time", text: "2 days ago" }
+                ],
+                [
+                    { header: "Contributor name", text: "Davel Patel" },
+                    { header: "Contribution", text: "uploaded evidence for MultiFlow Central Infusion Hub" },
+                    { header: "Time", text: "3 days ago" }
+                ]
+            ]
+        }) }}
+    </div>
+</div>
+
+{{ note("med", "HP-16", "“Latest contributions” — named individuals on a signed-out page",
+  "This is the public start page: anyone can read it without an account. The section names six individuals and says what each of them uploaded and when. The dashboard already carries a trust-level version of the same information behind sign-in.",
+  "Anyone on the internet can see which named NHS staff uploaded what, and when. Those individuals have not necessarily agreed to that, and it is a different exposure from showing the same list to signed-in colleagues.",
+  "<a href=\"https://service-manual.nhs.uk/standards-and-technology/service-standard-points/9-create-a-secure-service-which-protects-peoples-privacy\">Service standard point 9: create a secure service which protects people’s privacy</a> — protect users’ privacy: decide deliberately what is visible before sign-in. If the intent is to show the service is active, the counts in the card above do that without naming anyone.",
+  "Show the counts, not the names, before sign-in. Keep the named list behind the dashboard.") }}
+
+{{ note("low", "HP-17", "Table rows read as sentence fragments",
+  "Each row is a sentence split across three columns — “Marshall Allen | uploaded evidence for SmartPump 300 Infusion System | today”. The middle cell starts lower case and only makes sense read alongside the first.",
+  "On a phone the responsive table stacks each cell under its own column heading, so “uploaded evidence for SmartPump 300 Infusion System” appears on its own, separated from the name it belongs to. The sentence stops making sense.",
+  "<a href=\"https://service-manual.nhs.uk/design-system/components/table\">Design system: table</a> — do not use a table to lay out content. <a href=\"https://service-manual.nhs.uk/content/formatting\">Content guide: formatting</a> — each cell should stand on its own.",
+  "Drop the table. One sentence per entry in a list, name first.") }}
+
+{{ note("low", "HP-18", "Relative times with no absolute date",
+  "“today”, “yesterday”, “2 days ago” are the only timestamps. They are correct only on the day the page is read, and a screen reader user has no way to get the actual date.",
+  "“2 days ago” is only true on the day it is read, so a screenshot, a printout or a page left open overnight becomes wrong. Anyone recording when a piece of evidence was added has no date to record.",
+  "<a href=\"https://service-manual.nhs.uk/content/numbers-measurements-dates-time\">Content guide: numbers, measurements, dates and time</a> — give the date; relative time can be added alongside it.",
+  "Lead with the date, relative time after it: “7 September 2026 (2 days ago)”.") }}
+
+{% endblock %}

@@ -1,0 +1,168 @@
+{#
+  Design audit annotation layer.
+
+  Deliberately styled OUTSIDE the NHS design system — mono type, off-scale
+  sizes, non-palette amber — so an annotation can never be mistaken for part
+  of the service. Severity is carried by a text tag as well as colour, so it
+  does not depend on colour alone (Accessibility/design.md).
+
+  Colours: high  #d5281b  NHS red        (5.0:1 on white)
+           med   #7a4500  dark amber     (8.3:1 on white — a bright amber
+                                          would fail AA, so it is darkened)
+           low   #4c6272  NHS grey-1     (7.0:1 on white)
+#}
+
+{% macro note(severity, ref, where, issue, impact, guidance, fix, wcag) %}
+<div class="audit-note audit-note--{{ severity }}{% if wcag %} audit-note--wcag{% endif %}">
+  <p class="audit-note__head">[{{ severity | upper }}] {{ ref }} &middot; {{ where }}</p>
+  {% if wcag %}<p class="audit-note__flag">WCAG 2.2 &middot; {{ wcag }}</p>{% endif %}
+  <p class="audit-note__row"><span class="audit-note__label">ISSUE</span><span class="audit-note__text">{{ issue | safe }}</span></p>
+  <p class="audit-note__row"><span class="audit-note__label">IMPACT</span><span class="audit-note__text">{{ impact | safe }}</span></p>
+  <p class="audit-note__row"><span class="audit-note__label">GUIDANCE</span><span class="audit-note__text">{{ guidance | safe }}</span></p>
+  <p class="audit-note__row audit-note__row--fix"><span class="audit-note__label">FIX</span><span class="audit-note__text">{{ fix | safe }}</span></p>
+</div>
+{% endmacro %}
+
+{% macro banner(pageTitle, liveUrl, counts) %}
+<div class="audit-banner">
+  <p class="audit-banner__title">DESIGN AUDIT &middot; {{ pageTitle }}</p>
+  <p class="audit-banner__row">Annotated copy. The live page is at <a href="{{ liveUrl }}">{{ liveUrl }}</a> and is unchanged.</p>
+  <p class="audit-banner__row">{{ counts }} &middot; <a href="/design-audit/index">All audited pages</a></p>
+</div>
+{% endmacro %}
+
+{% macro styles() %}
+<style>
+  .audit-note,
+  .audit-banner {
+    font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, "Liberation Mono", monospace;
+    font-size: 14px;
+    line-height: 1.45;
+    background-color: #ffffff;
+  }
+
+  .audit-note {
+    border-left: 4px solid;
+    padding: 8px 12px 8px 12px;
+    margin: 8px 0 20px 0;
+  }
+
+  .audit-note--high { border-color: #d5281b; color: #d5281b; }
+  .audit-note--med  { border-color: #7a4500; color: #7a4500; }
+  .audit-note--low  { border-color: #4c6272; color: #4c6272; }
+
+  .audit-note__head {
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    color: inherit;
+    margin: 0 0 6px 0;
+    text-transform: none;
+  }
+
+  .audit-note__row {
+    font-family: inherit;
+    font-size: 14px;
+    color: inherit;
+    margin: 0 0 2px 0;
+    display: flex;
+    gap: 8px;
+  }
+
+  .audit-note__label {
+    flex: 0 0 9ch;
+    font-weight: 700;
+  }
+
+  .audit-note__text { flex: 1 1 auto; }
+
+  /* The fix row is the actionable one, so it is set apart from the three
+     rows of description above it. */
+  .audit-note__row--fix {
+    margin-top: 6px;
+    font-weight: 700;
+  }
+
+  /* A conformance flag, shown only on notes that name a WCAG 2.2 criterion.
+     It separates “this breaches an accessibility requirement” from “this
+     departs from design or content guidance”, which severity alone does not:
+     severity says how bad, this says what kind. Carried as text, not as a
+     colour or a border alone, and it inherits the note colour so the layer
+     keeps the two ratios already checked. */
+  .audit-note__flag {
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: inherit;
+    margin: 0 0 6px 0;
+    padding: 2px 6px;
+    border: 2px solid;
+    display: inline-block;
+  }
+
+  /* Second, redundant cue for scanning a long page: a doubled left edge. */
+  .audit-note--wcag {
+    border-left-style: double;
+    border-left-width: 7px;
+    padding-left: 10px;
+  }
+
+  .audit-note code {
+    font-family: inherit;
+    background-color: #f0f4f5;
+    padding: 0 3px;
+  }
+
+  /* Guidance links point at the NHS service manual. They inherit the note's
+     colour so the annotation layer stays visually separate from the service,
+     and keep their underline so they are not distinguished by colour alone
+     (Accessibility/design.md, WCAG 2.2 1.4.1). The focus state is the NHS one,
+     because focus visibility is a requirement wherever the link lives. */
+  .audit-note a {
+    color: inherit;
+    text-decoration: underline;
+  }
+
+  .audit-note a:hover {
+    text-decoration-thickness: 3px;
+  }
+
+  .audit-note a:focus {
+    background-color: #ffeb3b;
+    color: #212b32;
+    box-shadow: 0 -2px #ffeb3b, 0 4px #212b32;
+    text-decoration: none;
+    outline: 4px solid transparent;
+  }
+
+  .audit-banner {
+    border: 2px solid #d5281b;
+    color: #d5281b;
+    padding: 12px;
+    margin: 0 0 24px 0;
+  }
+
+  .audit-banner__title {
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    color: inherit;
+    margin: 0 0 6px 0;
+  }
+
+  .audit-banner__row {
+    font-family: inherit;
+    font-size: 14px;
+    color: inherit;
+    margin: 0;
+  }
+
+  .audit-banner a { color: inherit; }
+
+  @media (max-width: 40.0625em) {
+    .audit-note__row { display: block; }
+    .audit-note__label { display: block; }
+  }
+</style>
+{% endmacro %}
