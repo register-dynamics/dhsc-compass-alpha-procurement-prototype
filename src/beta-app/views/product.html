@@ -8,6 +8,7 @@
 {% from "includes/evidence-card-evaluation.njk" import evidenceCardEvaluation %}
 {% from "includes/evidence-card-njr.njk" import evidenceCardNjr %}
 {% from "includes/evidence-card-odep.njk" import evidenceCardOdep %}
+{% from "includes/evidence-card-generic.njk" import evidenceCardGeneric %}
 {% from "nhsuk/macros/icon.njk" import nhsukIcon %}
 
 {# TODO: Set page name based on product content #}
@@ -446,6 +447,8 @@
                     {{ evidenceCardClinicalTrial(document) }}
                 {% elif document.typeOfDocDesc == "Evaluation" %}
                     {{ evidenceCardEvaluation(document) }}
+                {% else %}
+                    {{ evidenceCardGeneric(document) }}
                 {% endif %}
             {% endfor %}
         </div>
