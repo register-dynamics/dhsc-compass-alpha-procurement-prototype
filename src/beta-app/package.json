@@ -39,6 +39,7 @@
     "express-session": "^1.19.0",
     "kysely": "^0.29.5",
     "nhsuk-frontend": "^10.6.0",
+    "node-gyp": "^10.3.1",
     "nunjucks": "^3.2.4",
     "passport": "^0.7.0",
     "passport-local": "^1.0.0"
