@@ -1,0 +1,84 @@
+{#
+  DESIGN AUDIT copy of UR/layouts/layout-signed-in.html
+  Static: no route data, no database. The UR original is untouched.
+#}
+
+{% extends "prototype-kit-template.njk" %}
+
+{% from "design-audit/includes/audit.njk" import note, styles %}
+
+{% block head %}
+  <link href="/css/main.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/accessible-autocomplete@2.0.4/dist/accessible-autocomplete.min.css">
+  {{ styles() }}
+{% endblock %}
+
+{% block header %}
+{% from 'header/macro.njk' import header %}
+
+{{ header({
+  logo: {
+    href: "/"
+  },
+  service: {
+    text: "Search and evaluate medical technologies",
+    href: "/"
+  },
+  account: {
+    items: [
+      {
+        text: "Kelvin Simpson (Regional Manager)",
+        icon: true
+      },
+      {
+        text: "Log out",
+        href: "sign-in-nhs"
+      }
+    ]
+  },
+  navigation: {
+    items: [
+      {
+        text: "Dashboard",
+        href: "dashboard"
+      },
+      {
+        text: "",
+        href: "#"
+      },
+      {
+        text: "Search",
+        href: "search"
+      }
+    ]
+  }
+}) }}
+
+<div class="nhsuk-width-container">
+    {{ note("med", "GL-02", "Header navigation — coverage and current page",
+  "The only destinations are Dashboard and Search. There is no link to the section the user is currently in, and no item is marked as the current page, so the navigation never tells a user where they are.",
+  "Nothing in the navigation marks where the user currently is, and there are only two destinations, so users have to orient themselves from the page content rather than from the navigation.",
+  "NHS header component — set <code>current</code> on the active navigation item. <a href=\"https://service-manual.nhs.uk/accessibility/design\">Accessibility: design</a> — “Define page structure”: navigation landmarks should let users move between the regions of the service.",
+  "Mark the current section in the navigation, and add the sections users actually move between.") }}
+
+  </div>
+{% endblock %}
+
+{% block footer %}
+<div class="nhsuk-width-container">
+  </div>
+  {% include "includes/footer.html" %}
+{% endblock %}
+
+{% block bodyEnd %}
+  <script src="/nhsuk-frontend/nhsuk-frontend.min.js" type="module"></script>
+  <script type="module">
+    import { initAll } from '/nhsuk-frontend/nhsuk-frontend.min.js'
+    initAll()
+  </script>
+  {% block scripts %}
+    {% include "includes/scripts.html" %}
+    {% block pageScripts %}
+    {% endblock %}
+  {% endblock %}
+{% endblock %}

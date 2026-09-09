@@ -1,0 +1,206 @@
+{% extends "layout.html" %}
+
+{% from "design-audit/includes/audit.njk" import styles %}
+
+{% set pageName = "Design audit" %}
+
+{% block head %}
+  <link href="/css/main.css" rel="stylesheet">
+  <link rel="stylesheet" href="/stylesheets/nhsuk-frontend.min.css">
+  {{ styles() }}
+{% endblock %}
+
+{% block content %}
+
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+    <h1 class="nhsuk-heading-xl">Design audit</h1>
+
+    <p class="nhsuk-body-l">Annotated copies of the five main pages of the user research prototype, checked against the NHS design system, the NHS content guide, WCAG 2.2 AA and this service’s own conventions.</p>
+
+    <p>The audit is scoped to what the interaction designer and the content designer can act on: component and pattern choice, journey and layout, hierarchy, states, wording, and the accessibility that is decided in design rather than in code. Prototype scaffolding, build choices and developer-owned markup are out of scope — see <a href="#scope">what this audit leaves out</a>.</p>
+
+    <p>Each page below is a static copy. The notes sit in the flow of the page, next to what they are about, in red mono type so they cannot be mistaken for the service. The <code>UR/</code> originals are untouched.</p>
+
+    <p>Every note has four parts. <strong>Issue</strong> is what is there. <strong>Impact</strong> is the confusion or error it is likely to cause, and who is likely to meet it. <strong>Guidance</strong> links to the NHS page the finding rests on. <strong>Fix</strong> is the proposed change. The impact line is an expectation drawn from the guidance and from how the page is built — it is not an observation from a research session, and where a session contradicts it, the session wins. Fixes that change wording are proposals for the content designer, not rewrites.</p>
+
+    <p>Notes that breach a WCAG 2.2 criterion carry a <strong>conformance flag</strong> above the issue, naming the criterion and its level, and a doubled left edge so they can be picked out when scanning. Notes without a flag are design and content findings.</p>
+  </div>
+</div>
+
+<div class="nhsuk-grid-row nhsuk-u-margin-top-4">
+  <div class="nhsuk-grid-column-two-thirds">
+    <h2 class="nhsuk-heading-l">The audited pages</h2>
+
+    {{ table({
+      caption: "Pages, with the number of notes on each",
+      captionSize: "m",
+      responsive: true,
+      firstCellIsHeader: true,
+      head: [
+        { text: "Page", classes: "nhsuk-u-width-one-half" },
+        { text: "High", format: "numeric" },
+        { text: "Medium", format: "numeric" },
+        { text: "Low", format: "numeric" },
+        { text: "WCAG", format: "numeric" }
+      ],
+      rows: [
+        [
+          { header: "Page", html: '<a href="/design-audit/homepage">Homepage</a><br><span class="nhsuk-body-s">Three cards styled as clickable that contain no link. Four data sources marked up as four empty headings. Named individuals on a page anyone can read without signing in.</span>' },
+          { header: "High", text: "1", format: "numeric" },
+          { header: "Medium", text: "11", format: "numeric" },
+          { header: "Low", text: "5", format: "numeric" },
+          { header: "WCAG", text: "0", format: "numeric" }
+        ],
+        [
+          { header: "Page", html: '<a href="/design-audit/dashboard">Dashboard</a><br><span class="nhsuk-body-s">Headings sit in a different grid row from their tables, so on mobile every table lands under the wrong heading. Two uncaptioned tables. h1 straight to h3.</span>' },
+          { header: "High", text: "3", format: "numeric" },
+          { header: "Medium", text: "9", format: "numeric" },
+          { header: "Low", text: "1", format: "numeric" },
+          { header: "WCAG", text: "3", format: "numeric" }
+        ],
+        [
+          { header: "Page", html: '<a href="/design-audit/search">Search</a><br><span class="nhsuk-body-s">Tags used as links, so five status labels turn out to be the page’s shortcuts. Five competing ways to start a search. A fixed sticky bar that can obscure keyboard focus.</span>' },
+          { header: "High", text: "3", format: "numeric" },
+          { header: "Medium", text: "8", format: "numeric" },
+          { header: "Low", text: "4", format: "numeric" },
+          { header: "WCAG", text: "4", format: "numeric" }
+        ],
+        [
+          { header: "Page", html: '<a href="/design-audit/search-results">Search results</a><br><span class="nhsuk-body-s">The filter panel has no usable submit control. No h2 anywhere on the page, and the h1 never contains the search term. No zero-results state.</span>' },
+          { header: "High", text: "3", format: "numeric" },
+          { header: "Medium", text: "14", format: "numeric" },
+          { header: "Low", text: "3", format: "numeric" },
+          { header: "WCAG", text: "5", format: "numeric" }
+        ],
+        [
+          { header: "Page", html: '<a href="/design-audit/product-page">Device page</a><br><span class="nhsuk-body-s">A contents list used for in-page anchors, a care card used as a contact box, and cost analysis — the thing this audience came for — hidden inside an expander.</span>' },
+          { header: "High", text: "1", format: "numeric" },
+          { header: "Medium", text: "14", format: "numeric" },
+          { header: "Low", text: "3", format: "numeric" },
+          { header: "WCAG", text: "2", format: "numeric" }
+        ]
+      ]
+    }) }}
+
+    <p class="nhsuk-body-s">Counts include the layout notes (GL-02 to GL-13) that appear on each page. There are 75 page-level notes and 6 layout notes; the layout notes are counted once for every page they appear on. The WCAG column counts how many of a page's notes carry a conformance flag, and those notes are also counted in the severity columns. Reference numbers are not contiguous — withdrawn notes were removed rather than renumbered.</p>
+  </div>
+</div>
+
+<div class="nhsuk-grid-row nhsuk-u-margin-top-6">
+  <div class="nhsuk-grid-column-two-thirds">
+    <h2 class="nhsuk-heading-l">What the severities mean</h2>
+
+    {{ summaryList({
+      rows: [
+        {
+          key: { text: "High" },
+          value: { html: "Blocks or misleads: a user cannot complete the action, or takes away the opposite of what is true." }
+        },
+        {
+          key: { text: "Medium" },
+          value: { html: "Departs from NHS design system, content or pattern guidance in a way that will affect how people read or use the page, but does not stop them." }
+        },
+        {
+          key: { text: "Low" },
+          value: { html: "Consistency, markup tidiness and style points. Worth fixing when the surrounding code is next touched." }
+        }
+      ]
+    }) }}
+
+    <p><strong>Severity and conformance are different things, and they are shown separately.</strong> Severity says how much a finding costs a user. The conformance flag says whether it breaches an accessibility requirement — a legal obligation for an NHS service rather than a matter of judgement. 14 of the 81 notes carry a flag, and 2 of those say they still need confirming in a browser. The two axes do not line up: a note can be high severity with no flag, where nothing is breached but the page misleads, or flagged at medium, where a requirement is breached but users can still get through.</p>
+
+    <p>Severity is shown as a text tag as well as a colour, and the conformance flag is text as well as a border, so neither depends on colour alone. The annotation layer is deliberately styled outside the design system — mono type, a non-palette dark amber for medium — so that it can never be read as part of the service. Every annotation colour was checked to at least 4.5:1 on white.</p>
+  </div>
+</div>
+
+<div class="nhsuk-grid-row nhsuk-u-margin-top-6">
+  <div class="nhsuk-grid-column-two-thirds">
+    <h2 class="nhsuk-heading-l">What runs through all five pages</h2>
+
+    <h3 class="nhsuk-heading-m">Components used for jobs they are not for</h3>
+    <p>Tags as links and tags as counts. A contents list — a component for moving between related pages — used for in-page anchors. A care card, the pattern for telling patients when to seek clinical care, used as an administrative contact box. Inset text used as a badge on a person. Action links used as tiles at the end of a card grid. Summary lists used to tabulate 25 results. Hint text, a form component, used as a caption above an h1. Each of these has a design system component that does the job, and the guidance for the one being borrowed says not to use it this way.</p>
+
+    <h3 class="nhsuk-heading-m">Heading structure is broken on four of the five pages</h3>
+    <p>Dashboard, search, search results and device page all skip levels — usually h1 straight to h3, and the search results page has no h2 at all. This is WCAG 2.2 1.3.1 at Level A, and it is the structure screen reader users navigate by.</p>
+
+    <h3 class="nhsuk-heading-m">Three words for one thing</h3>
+    <p>Across the five pages: “product” 17 times, “medical technolog…” 12 times, “device” 3 times. The service convention is “device”. Two of the dashboard cards switch between “medical technologies” in the heading and “product” in the description underneath, and the search results page puts both words within one line of each other.</p>
+
+    <h3 class="nhsuk-heading-m">Pages open by talking about themselves</h3>
+    <p>The dashboard h1 is “Welcome back”, followed by “How will you shape procurement in your trust today?”. The homepage h1 is an 87-character restatement of the service name shown in the header two lines above it. The search page asks “New to medical technology procurement?”, “What makes good evidence?” and “Not sure where to start?” in the space of four lines. None of these tells a user what page they are on or what they can do here, and the content guide is explicit that headings outside question pages should not be questions.</p>
+
+    <h3 class="nhsuk-heading-m">The type scale is flat</h3>
+    <p>On three pages the h1 and every h2 are the same size, so nothing looks like the main heading. The homepage uses the lead paragraph three times, which removes the emphasis it exists to give. On the search page the least important cards carry the largest card headings.</p>
+
+    <h3 class="nhsuk-heading-m">Numbers appear with no source and lists with no stated order</h3>
+    <p>“Used by 104 NHS trusts”, “247 products · 89 trust evaluations”, “Recently searched across NHS trusts similar to yours”, a trust leaderboard, “Found useful 5”. None says where it comes from, what period it covers, or how it is ordered — and the two dashboard tables sitting side by side are ordered on different principles. This is a service convention as well as a content one: state where system-generated content comes from, and say how it is ordered.</p>
+
+    <h3 class="nhsuk-heading-m">The states either side of the happy path are missing</h3>
+    <p>There is no zero-results state on the search results page. Summary list rows render as a key with nothing beside them when a device has no recorded outcomes. The device page’s “no trusts have used this” card is styled as the most prominent thing on the page and offers no next step, even though the dashboard has an upload journey to point at.</p>
+  </div>
+</div>
+
+<div class="nhsuk-grid-row nhsuk-u-margin-top-6">
+  <div class="nhsuk-grid-column-two-thirds" id="scope">
+    <h2 class="nhsuk-heading-l">What this audit leaves out</h2>
+
+    <p>This is a research and proof-of-concept prototype, so findings that only exist because it is a prototype have been excluded. They are not design debt and they would have buried the findings that are. Specifically, nothing here reports:</p>
+
+    <ul class="nhsuk-list nhsuk-list--bullet">
+      <li>placeholder links, <code>href="#"</code>, and links that resolve to a page other than the one they name</li>
+      <li>pages that 404 because they have not been built — including the footer’s cookies, privacy, terms and accessibility statement links</li>
+      <li>hardcoded and placeholder content, and the contradictions between hardcoded figures and figures drawn from the dummy database</li>
+      <li>form parameters that do not reach the route, and other wiring that would be written properly in a build</li>
+      <li>leftover development code and third-party CDN dependencies</li>
+      <li>build choices that a refactor will settle — hardcoded values where a variable belongs, hand-written markup where a component macro exists, class names that match nothing in the stylesheet, and markup tidiness</li>
+      <li>defects that only a developer can fix — duplicate and invalid ids, missing <code>aria-describedby</code> wiring, a missing <code>main</code> landmark, an empty navigation link, an empty <code>href</code></li>
+    </ul>
+
+    <p>Some of these still matter, just not to this audience. A facilitator should know which links are dead before a participant finds one, and the developers should know that three checkboxes on the search results page share one id, so clicking “3 to 5 years old” toggles “1 to 2 years old” instead. Those belong on a session-preparation list and a defect list respectively, not in a design audit.</p>
+
+    <p>Accessibility is split along the same line. Findings that are decided in design are in: heading structure, skip links, alt text, link text, visible labels, focus, and anything that depends on colour alone. Findings that live only in the markup are out, however real they are.</p>
+
+    <p>Where a note in an excluded category carried a design or content point underneath it, the point has been kept and the scaffolding dropped: the device image is reported for alt text that describes a file rather than the device, not for the class name on the element around it.</p>
+  </div>
+</div>
+
+<div class="nhsuk-grid-row nhsuk-u-margin-top-6">
+  <div class="nhsuk-grid-column-two-thirds">
+    <h2 class="nhsuk-heading-l">How this was checked</h2>
+
+    <p>Findings come from reading the templates, layouts and includes, from the rendered HTML of each live page, and from the compiled stylesheet.</p>
+
+    <p>Every guidance reference in the notes is a link to the page it comes from on the <a href="https://service-manual.nhs.uk/">NHS service manual</a>, so a finding can be checked against the original wording rather than taken on trust. Where a note cites a service convention instead, that is a decision of this team’s and is labelled as one.</p>
+
+    <p>What that method can find, within the scope above: heading order and page hierarchy, alt text, link text against link purpose, page titles, table captions, which component has been used where and what the guidance for it says, layout and stacking order, and content style against the NHS content guide.</p>
+
+    <p>What it cannot find, and what has <strong>not</strong> been claimed here as a result:</p>
+
+    <ul class="nhsuk-list nhsuk-list--bullet">
+      <li>colour contrast as rendered, beyond the values read out of the stylesheet</li>
+      <li>keyboard traps and focus visibility</li>
+      <li>target size in practice (WCAG 2.2 2.5.8)</li>
+      <li>what breaks at 400% zoom or with altered text spacing</li>
+      <li>screen reader behaviour in a real browser and screen reader pairing</li>
+    </ul>
+
+    <p>Two notes — GL-12 on the sticky search bar and SR-11 on the scrolling filter list — say explicitly that they need confirming in a browser. This is a static read against guidance, not a WCAG 2.2 AA audit, and it should not be recorded as one.</p>
+
+    <p>Wording written by the content designer is flagged with the guidance behind it rather than rewritten — the guidance is the argument, and the decision stays with her. Where <code>current/</code> shares the same code as <code>UR/</code>, the same finding will apply there; changing <code>current/</code> is the developers’ call.</p>
+  </div>
+</div>
+
+<div class="nhsuk-grid-row nhsuk-u-margin-top-6">
+  <div class="nhsuk-grid-column-two-thirds">
+    <h2 class="nhsuk-heading-l">About these copies</h2>
+
+    <p>Each page is a static snapshot taken from the live page on 7 September 2026. Search results and the device page use the content the prototype returned for <code>?q=pump</code> and <code>?make=74589621</code>, hardcoded into the template — there is no database or routing behind these copies, so search boxes and filters do not run, and links to pages outside the five audited ones will not resolve.</p>
+
+    <p>The copies live in <code>app/views/design-audit/</code>, including annotated copies of the three layouts. Nothing in <code>UR/</code> or <code>current/</code> was changed.</p>
+
+    <p><a href="/">Back to the prototype index</a></p>
+  </div>
+</div>
+
+{% endblock %}
