@@ -1,0 +1,499 @@
+{#
+  DESIGN AUDIT copy of UR/product-page.html for ?make=74589621&q=pump
+  Static snapshot: the values below are the real output captured from the
+  live page. No database, no routing. The UR original is untouched.
+#}
+
+{% extends "design-audit/layouts/layout-signed-in.html" %}
+
+{% from "design-audit/includes/audit.njk" import note, banner %}
+
+{% set product = {
+  make: "InsuFlow Pro 300 Pump System",
+  model: "InsuFlow Pro",
+  manufacturer: "ArcTech Ltd"
+} %}
+{% set searchTerm = "pump" %}
+
+{% set pageName = product.make + " – " + product.model %}
+
+{% block beforeContent %}
+{% from "breadcrumb/macro.njk" import breadcrumb %}
+
+{{ breadcrumb({
+  items: [
+    {
+      href: "dashboard",
+      text: "Home"
+    },
+    {
+      href: "search-results?q=" + searchTerm,
+      text: "Search"
+    }
+  ],
+  href: "#",
+  text: product.make + " – " + product.model
+}) }}
+{% endblock %}
+
+{% block content %}
+
+{{ banner("Device page (?make=74589621&q=pump)", "/UR/product-page?make=74589621&q=pump", "17 notes on this page — 1 high, 13 medium, 3 low. Layout note GL-02 also applies.") }}
+
+{{ note("med", "DP-01", "Breadcrumb — repeats the h1, and the crumbs do not name their targets",
+  "The device name is the third crumb, sitting immediately above the same string as the h1. “Home” leads to a page whose h1 is “Welcome back”, and “Search” to one whose h1 is “Search results”, so neither crumb is named after the page it opens.",
+  "The crumbs do not name the pages they open, so a user cannot predict where “Home” or “Search” will take them. The third crumb repeats the heading directly beneath it, which adds a line without adding information.",
+  "<a href=\"https://service-manual.nhs.uk/design-system/components/breadcrumbs\">Design system: breadcrumbs</a> — “Don’t show the current page (it’s already in the H1)”. <a href=\"https://service-manual.nhs.uk/accessibility/design\">Accessibility: design</a> — “Ideally link text should match the heading of the target page”.",
+  "Drop the device crumb. Name each remaining crumb after the page it opens.") }}
+
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+
+    {# Product Header #}
+    <h1 class="nhsuk-heading-xl nhsuk-u-margin-bottom-3">
+      {{ product.make }} – {{ product.model }}
+    </h1>
+
+    <p class="nhsuk-body-l nhsuk-u-secondary-text-color">
+      {{ product.manufacturer }}
+    </p>
+
+{{ note("med", "DP-02", "The h1 says the same thing twice",
+  "“InsuFlow Pro 300 Pump System – InsuFlow Pro” is the make followed by the model, and the model is contained in the make, so the heading repeats itself. The same doubled string is then used in the breadcrumb and again in the page title, which runs to four dash-separated parts before the service name: “InsuFlow Pro 300 Pump System – InsuFlow Pro – Search and evaluate medical technologies – NHS”.",
+  "The heading reads as though the service does not know the device’s name. In the browser tab the title runs to four dash-separated parts before the service name, so tabs are indistinguishable when several devices are open at once — which is exactly how this page will be used.",
+  "<a href=\"https://service-manual.nhs.uk/content/formatting\">Content guide: formatting</a> — keep the h1 concise and informative. <a href=\"https://service-manual.nhs.uk/design-system/styles/page-template\">Design system: page template</a> — a complex title runs to at most four parts including the site name.",
+  "Show the make once. Keep the title to device, service, NHS.") }}
+
+    <div class="nhsuk-card nhsuk-u-margin-bottom-6">
+    <img src="/images/smartpump-300.png"
+         alt="SmartPump 300 Infusion System"
+         class="product-image" />
+  </div>
+
+{{ note("med", "DP-03", "Device image — alt text describes the file, not the device",
+  "The same image and the same alt text render on every device page, so the alt text names a file rather than describing the device this page is about. A screen reader user is given a description that does not match what a sighted user sees. If the image is decoration it needs <code>alt=\"\"</code>; if it carries information, the alt text has to come from the device record.",
+  "A screen reader user is told they are looking at a device other than the one they searched for, which is worse than being told nothing at all. Sighted users see the same picture on every device page and learn to ignore it.",
+  "<a href=\"https://service-manual.nhs.uk/accessibility/design\">Accessibility: design</a> — “Use alternative text for images in content”: alt text must describe the image in its context. <a href=\"https://service-manual.nhs.uk/design-system/components/images\">Design system: images</a> — “Use images only if there is a real user need. Avoid unnecessary decoration”.",
+  "Take the alt text from the device record, or set <code>alt=\"\"</code> if the image is decorative.") }}
+
+    {% from "contents-list/macro.njk" import contentsList %}
+    {{ contentsList({
+  items: [
+    { href: "#supplier", text: "Supplier information" },
+    { href: "#tech-spec", text: "Technical specifications" },
+    { href: "#costs", text: "Cost analysis" },
+    { href: "#information", text: "Information shared by NHS organisations" },
+    { href: "#contact", text: "Contact us" }
+  ]
+}) }}
+
+{{ note("med", "DP-04", "Contents list used for in-page anchors",
+  "The contents list is a navigation component for moving between a group of related <em>pages</em> — it announces itself as “Pages in this guide” and expects one item to be marked as the current page. Here it links to five anchors on this page, and two of the five targets, “Technical specifications” and “Cost analysis”, are collapsed sections.",
+  "Assistive technology announces a set of related pages that does not exist, and no item is ever marked as the current one. Two of the five links jump to collapsed sections, so following them looks as though nothing happened.",
+  "<a href=\"https://service-manual.nhs.uk/design-system/components/contents-list\">Design system: contents list</a> — “Use contents lists to help users navigate through a series of related pages” and pair it with pagination as the mini-hub pattern. For jumping within a page, a plain list of links is the honest markup.",
+  "Use a plain list of links. Open the two collapsed sections, or drop them from the list.") }}
+
+      {# Supplier Information Card #}
+    <div class="nhsuk-card" id="supplier">
+      <div class="nhsuk-card__content">
+        <h3 class="nhsuk-card__heading nhsuk-heading-s">
+          Supplier information
+        </h3>
+
+        <dl class="nhsuk-summary-list nhsuk-summary-list--no-border">
+          <div class="nhsuk-summary-list__row">
+            <dt class="nhsuk-summary-list__key">
+              Company
+            </dt>
+            <dd class="nhsuk-summary-list__value">
+              {{ product.manufacturer }}
+            </dd>
+          </div>
+
+          <div class="nhsuk-summary-list__row">
+            <dt class="nhsuk-summary-list__key">
+              Contact
+            </dt>
+            <dd class="nhsuk-summary-list__value">
+              sales@medtechinnovations.co.uk<br>
+              0800 123 4567
+            </dd>
+          </div>
+
+          <div class="nhsuk-summary-list__row">
+            <dt class="nhsuk-summary-list__key">
+              Website
+            </dt>
+            <dd class="nhsuk-summary-list__value">
+              <a href="#">www.medtechinnovations.co.uk</a>
+            </dd>
+          </div>
+        </dl>
+
+      </div>
+    </div>
+
+{{ note("high", "DP-06", "Heading level skipped — h1 straight to h3",
+  "“Supplier information” is an <code>&lt;h3&gt;</code> and it is the first heading after the h1. The page then goes h3 → h2 → h2 → h3 → h2 → h3 → h4.",
+  "Someone navigating by heading meets supplier information nested under a section that does not exist, and the rest of the page moves between levels unpredictably, so the heading list is no reliable map of it.",
+  "<a href=\"https://service-manual.nhs.uk/accessibility/design\">Accessibility: design</a> — “Use headings correctly”. WCAG 2.2 1.3.1 Info and Relationships, Level A.",
+  "“Supplier information” at h2. Every section on this page at h2, with h3 inside.",
+  "1.3.1 Info and Relationships (Level A)") }}
+
+    {# Trust Adoption Section #}
+    <div class="nhsuk-card nhsuk-card--feature nhsuk-u-margin-bottom-6">
+      <div class="nhsuk-card__content">
+        <h2 class="nhsuk-card__heading nhsuk-heading-m">
+         <strong>No NHS trusts</strong> have experience with this product
+        </h2>
+        <p class="nhsuk-body">
+        </p>
+
+        <p class="nhsuk-body nhsuk-u-margin-top-3">
+          <strong>3 trusts</strong> have shared contact details for peer discussions
+        </p>
+      </div>
+    </div>
+
+{{ note("med", "DP-08", "The “no data” state is a feature card that says nothing",
+  "With no trusts recorded, the tags paragraph renders empty and the card reduces to a headline about absence, styled as the most prominent thing on the page. There is no explanation of what it means for a device to have no recorded experience, and no next step — no “be the first to share”, no link to the upload journey the dashboard offers.",
+  "The most prominent thing on the page tells a user what is missing and gives them nothing to do about it. Somebody who has used this device and could contribute evidence is not asked to, even though the service has an upload journey waiting.",
+  "<a href=\"https://service-manual.nhs.uk/design-system/components/card\">Design system: card</a> — “Keep the card short so it is easy to scan for relevant and actionable information”. <a href=\"https://service-manual.nhs.uk/design-system/styles/colour\">Design system: colour</a> — the secondary text colour exists for describing missing data.",
+  "Say what no recorded experience means, and link to the upload journey: “Be the first to share evidence”.") }}
+
+    {# Supplier Performance Section #}
+    <div class="nhsuk-u-margin-bottom-6">
+      <h2 class="nhsuk-heading-m">Working with this supplier</h2>
+      <p class="nhsuk-body">
+        Based on feedback from trusts that have procured this product:
+      </p>
+
+      <dl class="nhsuk-summary-list">
+
+        <div class="nhsuk-summary-list__row">
+          <dt class="nhsuk-summary-list__key">
+            Supply chain reliability
+          </dt>
+          <dd class="nhsuk-summary-list__value">
+            <strong class="nhsuk-tag nhsuk-tag--green">No issues reported</strong>
+          </dd>
+        </div>
+
+        <div class="nhsuk-summary-list__row">
+          <dt class="nhsuk-summary-list__key">
+            Training quality
+          </dt>
+          <dd class="nhsuk-summary-list__value">
+            <strong>Excellent</strong> - Shorter than expected training time, comprehensive materials
+          </dd>
+        </div>
+
+        <div class="nhsuk-summary-list__row">
+          <dt class="nhsuk-summary-list__key">
+            Technical support
+          </dt>
+          <dd class="nhsuk-summary-list__value">
+            <strong>Responsive</strong> - Average response time: less than 4 hours
+          </dd>
+        </div>
+
+      </dl>
+    </div>
+
+{{ note("low", "DP-10", "Hyphens used as sentence punctuation",
+  "“<strong>Excellent</strong> - Shorter than expected training time” and “<strong>Responsive</strong> - Average response time”. These are hyphens standing in for a dash or a colon.",
+  "Read aloud, “Excellent - Shorter than expected training time” runs together, because a hyphen gives none of the pause a colon or dash would.",
+  "<a href=\"https://service-manual.nhs.uk/content/punctuation\">Content guide: punctuation</a> — dashes are discouraged and, where used, should be an en dash (–), not a hyphen.",
+  "Use a colon.") }}
+
+    {# Technical Specifications - Collapsed by default #}
+    <details class="nhsuk-details nhsuk-expander" id="tech-spec">
+  <summary class="nhsuk-details__summary">
+    <span class="nhsuk-details__summary-text">
+     View technical specifications
+    </span>
+  </summary>
+  <div class="nhsuk-details__text">
+
+    <dl class="nhsuk-summary-list">
+          <div class="nhsuk-summary-list__row">
+            <dt class="nhsuk-summary-list__key">Flow rate range</dt>
+            <dd class="nhsuk-summary-list__value">0.1 - 999 ml/hr</dd>
+          </div>
+          <div class="nhsuk-summary-list__row">
+            <dt class="nhsuk-summary-list__key">Accuracy</dt>
+            <dd class="nhsuk-summary-list__value">±5% at steady state</dd>
+          </div>
+          <div class="nhsuk-summary-list__row">
+            <dt class="nhsuk-summary-list__key">Pressure range</dt>
+            <dd class="nhsuk-summary-list__value">0-1000 mmHg</dd>
+          </div>
+          <div class="nhsuk-summary-list__row">
+            <dt class="nhsuk-summary-list__key">Power supply</dt>
+            <dd class="nhsuk-summary-list__value">AC 100-240V, 50/60Hz; Internal rechargeable battery</dd>
+          </div>
+          <div class="nhsuk-summary-list__row">
+            <dt class="nhsuk-summary-list__key">Dimensions</dt>
+            <dd class="nhsuk-summary-list__value">310mm (H) x 180mm (W) x 150mm (D)</dd>
+          </div>
+          <div class="nhsuk-summary-list__row">
+            <dt class="nhsuk-summary-list__key">Weight</dt>
+            <dd class="nhsuk-summary-list__value">3.2 kg</dd>
+          </div>
+          <div class="nhsuk-summary-list__row">
+            <dt class="nhsuk-summary-list__key">Certifications</dt>
+            <dd class="nhsuk-summary-list__value">CE marked (MDR 2017/745), MHRA registered, ISO 13485:2016</dd>
+          </div>
+          <div class="nhsuk-summary-list__row">
+            <dt class="nhsuk-summary-list__key">Connectivity</dt>
+            <dd class="nhsuk-summary-list__value">Wi-Fi 802.11 a/b/g/n, Bluetooth 5.0, USB 3.0</dd>
+          </div>
+        </dl>
+
+  </div>
+</details>
+
+{{ note("med", "DP-12", "Expanders on a page full of other interactive content",
+  "Technical specifications and cost analysis are both <code>nhsuk-expander</code>. The design system is explicit that expanders should not be used on pages with other interactive elements, and not for content that most users need.",
+  "Cost is what a procurement audience came for, and it is the one thing placed behind two clicks. Users who do not open the expander will compare devices without ever seeing a price.",
+  "<a href=\"https://service-manual.nhs.uk/design-system/components/expander\">Design system: expander</a> — “Not on pages with other interactive elements like buttons/text inputs — risk of distraction”, “Use for info relevant to a <em>wide</em> audience”, and “Only when there’s a clear user need — test without an expander first”.",
+  "Show cost analysis on the page. Keep specifications in an expander only if testing shows people skip past them.") }}
+
+{{ note("low", "DP-13", "Units and ranges",
+  "“0.1 - 999 ml/hr”, “0-1000 mmHg”, “100-240V”, “310mm (H) x 180mm (W) x 150mm (D)” — hyphens for ranges, a lowercase x for by, and no space between number and unit in some rows but not others (“3.2 kg”).",
+  "Inconsistent spacing and hyphenated ranges are read out unpredictably, and “0.1 - 999 ml/hr” can be misread as a single figure. Specifications are exactly where a misread number carries a cost.",
+  "<a href=\"https://service-manual.nhs.uk/content/numbers-measurements-dates-time\">Content guide: numbers, measurements, dates and time</a> — use “to” for ranges and be consistent with units.",
+  "“0.1 to 999 ml/hr”, “100 to 240V”, “310mm (H) × 180mm (W) × 150mm (D)”. Space every number from its unit.") }}
+
+    {# Cost Analysis - Collapsed by default #}
+    <details class="nhsuk-details nhsuk-expander" id="costs">
+  <summary class="nhsuk-details__summary">
+    <span class="nhsuk-details__summary-text">
+      View cost analysis
+    </span>
+  </summary>
+  <div class="nhsuk-details__text">
+    <dl class="nhsuk-summary-list">
+          <div class="nhsuk-summary-list__row">
+            <dt class="nhsuk-summary-list__key">
+              Acquisition cost (source: AdviseInc)
+            </dt>
+            <dd class="nhsuk-summary-list__value">
+              £8,500 - £12,000 (depending on configuration and volume)
+            </dd>
+          </div></dl>
+  </div>
+</details>
+
+{{ note("low", "DP-14", "Source attribution inside a summary list key",
+  "The row key is “Acquisition cost (source: AdviseInc)”. A summary list key names the thing; putting the provenance of the value inside it makes the key long, hard to scan and different in kind from every other key in the list.",
+  "The key is long enough to be hard to scan against the other keys in the list, and the provenance is easy to miss because it sits where the label should be.",
+  "<a href=\"https://service-manual.nhs.uk/design-system/components/summary-list\">Design system: summary list</a> — keys are short labels for the values beside them. Service convention — state where system-generated content comes from; a source line under the list does that without overloading the key.",
+  "Key reads “Acquisition cost”. Put the source in a line under the list.") }}
+
+  </div>
+
+  {# Sidebar #}
+  <div class="nhsuk-grid-column-one-third">
+  </div>
+</div>
+
+{{ note("med", "DP-16", "An empty one-third column",
+  "The right-hand column contains two empty comments (“Sidebar”, “Quick Links”) and nothing else, so every section of the page is constrained to two-thirds width for a sidebar that does not exist.",
+  "Every section is squeezed into two-thirds of the page for a sidebar that is not there, so the evidence cards — the part users came to read — sit in a narrow column with a third of the screen blank beside them.",
+  "<a href=\"https://service-manual.nhs.uk/design-system/styles/layout\">Design system: layout</a> — use the grid to structure content that exists.",
+  "Remove the empty column. Let each section take the width it needs.") }}
+
+{# Trust Evaluations Section #}
+<div class="nhsuk-grid-row nhsuk-u-margin-top-8">
+  <div class="nhsuk-grid-column-two-thirds" id="information">
+    <h2 class="nhsuk-heading-l">Information shared by trusted organisations</h2>
+    <p class="nhsuk-body">
+      12 NHS organisations have shared information about this product.  Documents shared may include full clinical trials, pilot studies, business cases or quick desk reviews. Contact details are included for those willing to discuss their experience.
+    </p>
+  </div>
+</div>
+
+{{ note("med", "DP-18", "The section has two different names",
+  "The contents list at the top calls it “Information shared by NHS organisations”. The heading here is “Information shared by trusted organisations”. There is also a double space after the first sentence.",
+  "A user following “Information shared by NHS organisations” arrives at a heading reading “Information shared by trusted organisations” and cannot be sure they are in the right place.",
+  "<a href=\"https://service-manual.nhs.uk/design-system/components/contents-list\">Design system: contents list</a> — the link and the target should carry the same name. <a href=\"https://service-manual.nhs.uk/accessibility/design\">Accessibility: design</a> — link text should match the heading it leads to.",
+  "One name for the section, used in the contents list and the heading.") }}
+
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+
+    <div class="nhsuk-card">
+      <div class="nhsuk-card__content">
+        <div class="nhsuk-u-margin-bottom-3">
+          <strong class="nhsuk-tag nhsuk-tag--green">Procured</strong>
+        </div>
+
+        <h3 class="nhsuk-card__heading nhsuk-heading-m">
+          Barts Health NHS Trust
+        </h3>
+
+        <div class="nhsuk-u-margin-bottom-4">
+          <p class="nhsuk-body nhsuk-u-margin-bottom-2">
+            <svg class="nhsuk-icon nhsuk-icon__tick" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" focusable="false" aria-hidden="true" style="vertical-align: middle;">
+              <path d="M11.4 18.8a2 2 0 0 1-2.7.1h-.1L4 14.1a1.5 1.5 0 0 1 2.1-2L10 16l8.1-8.1a1.5 1.5 0 1 1 2.2 2l-8.9 9Z"></path>
+            </svg>
+            <strong>25 people</strong> found this useful
+          </p>
+          <button class="nhsuk-button nhsuk-button--secondary nhsuk-u-margin-bottom-0" data-module="nhsuk-button" type="button" id="mark-useful" aria-pressed="false">Mark as useful</button>
+        </div>
+
+        <dl class="nhsuk-summary-list nhsuk-summary-list--no-border">
+          <div class="nhsuk-summary-list__row">
+            <dt class="nhsuk-summary-list__key">Document type</dt>
+            <dd class="nhsuk-summary-list__value">Business case</dd>
+          </div>
+          <div class="nhsuk-summary-list__row">
+            <dt class="nhsuk-summary-list__key">Document period</dt>
+            <dd class="nhsuk-summary-list__value">Jan-23</dd>
+          </div>
+          <div class="nhsuk-summary-list__row">
+            <dt class="nhsuk-summary-list__key">Ward/Department</dt>
+            <dd class="nhsuk-summary-list__value">Dialysis Unit, St Bartholomew's Hospital</dd>
+          </div>
+        </dl>
+
+        <p class="nhsuk-body nhsuk-u-margin-top-3">
+          <a href="/pdf/Barts Health NHS Trust business case FAKE.pdf">View Business case</a>
+        </p>
+
+        <div class="nhsuk-u-margin-top-6 nhsuk-u-padding-top-4" style="border-top: 1px solid #d8dde0;">
+          <h4 class="nhsuk-heading-s">Contact for peer discussion</h4>
+          <p class="nhsuk-body">
+            <strong> Mahalia Immings</strong><br>
+            Software Engineer I, Software Development
+          </p>
+          <div class="nhsuk-inset-text">
+            <span class="nhsuk-u-visually-hidden">Information: </span>
+            <p>Top contributor on Compass</p>
+          </div>
+          <p class="nhsuk-body">
+            6431047410
+          </p>
+          <p class="nhsuk-body nhsuk-u-secondary-text-color">
+            Mahalia is happy to discuss training, pharmacy integration and real world use.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="nhsuk-card">
+      <div class="nhsuk-card__content">
+        <div class="nhsuk-u-margin-bottom-3">
+          <strong class="nhsuk-tag nhsuk-tag--green">Procured</strong>
+        </div>
+
+        <h3 class="nhsuk-card__heading nhsuk-heading-m">
+          Barts Health NHS Trust
+        </h3>
+
+        <dl class="nhsuk-summary-list nhsuk-summary-list--no-border">
+          <div class="nhsuk-summary-list__row">
+            <dt class="nhsuk-summary-list__key">Document type</dt>
+            <dd class="nhsuk-summary-list__value">Business case</dd>
+          </div>
+          <div class="nhsuk-summary-list__row">
+            <dt class="nhsuk-summary-list__key">Document period</dt>
+            <dd class="nhsuk-summary-list__value">Jan-23</dd>
+          </div>
+          <div class="nhsuk-summary-list__row">
+            <dt class="nhsuk-summary-list__key">Ward/Department</dt>
+            <dd class="nhsuk-summary-list__value">Dialysis Unit, St Bartholomew's Hospital</dd>
+          </div>
+        </dl>
+
+        <p class="nhsuk-body nhsuk-u-margin-top-3">
+          <a href="/pdf/Barts Health NHS Trust business case FAKE.pdf">View Business case</a>
+        </p>
+
+        <div class="nhsuk-u-margin-top-6 nhsuk-u-padding-top-4" style="border-top: 1px solid #d8dde0;">
+          <h4 class="nhsuk-heading-s">Contact for peer discussion</h4>
+          <p class="nhsuk-body">
+            <strong> Mahalia Immings</strong><br>
+            Software Engineer I, Software Development
+          </p>
+          <p class="nhsuk-body">
+            6431047410
+          </p>
+          <p class="nhsuk-body nhsuk-u-secondary-text-color">
+            Mahalia is happy to discuss training, pharmacy integration and real world use.
+          </p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+{{ note("med", "DP-20", "Document link gives no file type or size",
+  "“View Business case” opens a PDF. The link says nothing about the format or the size, so a user cannot tell they are about to leave the page for a download. The link text also capitalises “Business case” mid-sentence, because the document type is interpolated into it.",
+  "A user clicks expecting a page and gets a PDF download, possibly a large one on a slow connection. Anyone deciding whether it is worth opening has nothing to decide with.",
+  "<a href=\"https://service-manual.nhs.uk/accessibility/design\">Accessibility: design</a> — “If the link goes to a document, include the file type and size in the link phrase. For example: ‘Link name (PDF, 200KB)’.” <a href=\"https://service-manual.nhs.uk/content/pdfs-and-other-non-html-documents\">Content guide: PDFs and other non-HTML documents</a>. <a href=\"https://service-manual.nhs.uk/content/punctuation\">Content guide: punctuation</a> — sentence case.",
+  "“Business case (PDF, 240KB)”, in sentence case.") }}
+
+{{ note("med", "DP-21", "Contact details are not usable as written",
+  "The phone number renders as <code>6431047410</code> — ten unbroken digits, not a UK format, and not a <code>tel:</code> link. The name renders with a leading space, because an empty title field is concatenated in front of it. This block is the point of the whole page: it is how a procurement user reaches a peer who has used the device.",
+  "The number cannot be dialled from the page, and ten unbroken digits are hard to read back correctly onto a notepad or into a phone. Reaching a peer who has used the device is the reason this page exists, and this is the step where that fails.",
+  "<a href=\"https://service-manual.nhs.uk/content/a-to-z-of-nhs-health-writing\">Content guide: A to Z of NHS health writing</a> — “phone and phone numbers”: use spaces between the city and local exchange, for example “0800 890 567”. <a href=\"https://service-manual.nhs.uk/accessibility/design\">Accessibility: design</a> — “Write good link and form control names”.",
+  "Format the number as a UK number and make it a <code>tel:</code> link. Trim the leading space from the name.") }}
+
+{{ note("med", "DP-22", "“Top contributor on Compass” — inset text, and a name used nowhere else",
+  "The badge is rendered with the inset text component. Inset text is for important content in body copy, not for a status on a person — that is what a tag is for. “Compass” is also the only place in the whole journey where the service is called Compass; the header, the page titles and the footer all call it “Search and evaluate medical technologies”.",
+  "A screen reader announces “Information: Top contributor on Compass”, framing a badge on a person as an important notice. “Compass” is also the only place in the journey the service is called that, so a user cannot be sure it is the service they are on.",
+  "<a href=\"https://service-manual.nhs.uk/design-system/components/inset-text\">Design system: inset text</a> — “Use inset text for content that needs to stand out from the rest of the page”, and do not overdo it. <a href=\"https://service-manual.nhs.uk/design-system/components/tag\">Design system: tag</a> — tags indicate a status. <a href=\"https://service-manual.nhs.uk/content/how-we-write\">Content guide: how we write</a> — call the service one thing.",
+  "Use a tag for the badge. Call the service one name throughout.") }}
+
+{{ note("med", "DP-23", "“Mark as useful” — a custom component",
+  "The button is an <code>aria-pressed</code> toggle sitting beside a count of how many people found the document useful, with no design system component behind it. Pressing it changes the pressed state but not the count, so the visible state and the number disagree. The tick icon it uses also appears elsewhere in the service as pure decoration, so the same icon carries two meanings.",
+  "Pressing it moves the count from 25 to 25, so the service appears to ignore the action and the user is likely to press again. A screen reader user gets a pressed state that the visible number contradicts.",
+  "<a href=\"https://service-manual.nhs.uk/accessibility/design\">Accessibility: design</a> — “Discuss any custom components”: there is no design system like or favourite component, so this needs evidence of the need, an accessibility test and a maintenance owner. The include’s own comment acknowledges this. WCAG 2.2 4.1.2 Name, Role, Value, Level A — a toggle button must reflect its state.",
+  "Update the count when the button is pressed. Before building further, test whether the feature is needed and have it accessibility tested.",
+  "4.1.2 Name, Role, Value (Level A)") }}
+
+{# Contact Information Card #}
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+    {% from "card/macro.njk" import card %}
+
+{% set cardDescriptionHtml %}
+  <ul>
+    <li>disagree with something on this page</li>
+    <li>have a query about something on this page</li>
+    <li>would like to amend something on this page</li>
+  </ul>
+  <p>Contact the team on 0330 2234 776 or email: <a href="">enquiries@dhsc.gov.uk</a></p>
+{% endset %}
+
+<div id="contact">
+{{ card({
+  type: "non-urgent",
+  heading: "You can contact us if you:",
+  descriptionHtml: cardDescriptionHtml
+}) }}
+</div>
+  </div>
+</div>
+
+{{ note("med", "DP-25", "A care card used for a contact box",
+  "This is the non-urgent care card, which renders the blue “Non-urgent advice:” prefix and repeats it as visually hidden text before the heading. Care cards are a clinical pattern for telling patients when and where to get care. The three list items inside it also say the same thing three times.",
+  "The blue “Non-urgent advice:” prefix is clinical signalling on an administrative contact box, and it is announced before the heading. Users familiar with NHS services will read urgency into what is only a set of contact details.",
+  "<a href=\"https://service-manual.nhs.uk/design-system/patterns/help-users-decide-when-and-where-to-get-care\">Design system: care cards pattern</a> — care cards carry the three levels of clinical care and nothing else. <a href=\"https://service-manual.nhs.uk/design-system/components/card\">Design system: card</a> — a plain card, or body copy, carries an administrative contact without borrowing clinical urgency.",
+  "Use a plain card or body copy. Keep care cards for clinical advice. Cut the three list items to one.") }}
+
+{# Back to Search #}
+<div class="nhsuk-grid-row nhsuk-u-margin-top-8">
+  <div class="nhsuk-grid-column-full">
+    <p class="nhsuk-body">
+      <a href="search" class="nhsuk-link nhsuk-link--no-visited-state">
+      Back to search results
+      </a>
+    </p>
+  </div>
+</div>
+
+{% endblock %}

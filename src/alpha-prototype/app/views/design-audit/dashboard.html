@@ -1,0 +1,239 @@
+{#
+  DESIGN AUDIT copy of UR/dashboard.html
+  Static snapshot — the UR original is untouched.
+#}
+
+{% extends "design-audit/layouts/layout-signed-in.html" %}
+
+{% from "design-audit/includes/audit.njk" import note, banner %}
+
+{% set pageName = "Dashboard" %}
+
+{% block beforeContent %}
+{% endblock %}
+
+{% block content %}
+
+{{ banner("Dashboard", "/UR/dashboard", "12 notes on this page — 3 high, 8 medium, 1 low. Layout note GL-02 also applies.") }}
+
+<!-- NHS 10 Year Plan Context -->
+<div class="nhsuk-grid-row nhsuk-u-margin-top-7">
+  <div class="nhsuk-grid-column-two-thirds">
+
+    <span class="nhsuk-hint">Kelvin Simpson</span>
+
+  <h1 class='nhsuk-heading-l'>Welcome back</h1>
+
+  <p class="nhsuk-body nhsuk-body-l"> How will you shape procurement in your trust today? </p>
+
+  </div>
+</div>
+
+{{ note("med", "DB-01", "The user’s name is styled as hint text",
+  "“Kelvin Simpson” sits above the h1 in the hint text style. Hint text is a form component: it exists to explain what to enter in a field, so it carries the wrong visual weight here and reads as a loose fragment before the heading rather than as part of it.",
+  "The user’s own name is set in the style the service uses for “here is how to fill in this field”, so it reads as an instruction rather than as identification, and it does not visually attach to the heading beneath it.",
+  "<a href=\"https://service-manual.nhs.uk/design-system/styles/typography\">Design system: typography</a> — “Headings with captions”: a caption above an h1 uses the caption style, either before the heading or nested inside it. <a href=\"https://service-manual.nhs.uk/design-system/components/hint-text\">Design system: hint text</a> — hint text belongs to a form field.",
+  "Use the caption style, nested inside the h1 or directly above it.") }}
+
+{{ note("med", "DB-02", "“Welcome back” — the h1 does not say what the page is",
+  "The browser title is “Dashboard”; the h1 is “Welcome back”. The h1 is the same on every visit, does not describe the page and is not unique to it.",
+  "A returning user cannot tell this page from any other at a glance, and someone using a screen reader who jumps to the h1 to find out where they are learns nothing. With several tabs open, every visit to the dashboard looks identical.",
+  "<a href=\"https://service-manual.nhs.uk/accessibility/design\">Accessibility: design</a> — “Use headings correctly” and “Provide informative page titles”: the h1 should be unique and informative, and the title is built from it. <a href=\"https://service-manual.nhs.uk/content/formatting\">Content guide: formatting</a> — headings should describe the content that follows.",
+  "Name the page in the h1. Move the greeting to a caption, or drop it.") }}
+
+{{ note("med", "DB-03", "“How will you shape procurement in your trust today?”",
+  "A rhetorical question as the page’s lead paragraph. It asks something the user cannot answer, and the tone is promotional rather than functional. The element also carries both <code>nhsuk-body</code> and <code>nhsuk-body-l</code>, which set competing sizes on the same paragraph.",
+  "The most prominent sentence on a working page asks something the user cannot answer and offers nothing to do. Someone arriving to complete a task has to read past it before finding one.",
+  "<a href=\"https://service-manual.nhs.uk/content/voice-and-tone\">Content guide: voice and tone</a> — NHS content is clear and direct. <a href=\"https://service-manual.nhs.uk/content/formatting\">Content guide: formatting</a> — do not write headings or lead copy as questions outside question pages. Flagged rather than rewritten: this wording is the content designer’s.",
+  "Replace with a sentence saying what the user can do here.") }}
+
+<!-- NHS 10 Year Plan Context -->
+<div class="nhsuk-grid-row nhsuk-u-margin-top-7">
+  <div class="nhsuk-grid-column-full">
+
+    <div class="nhsuk-grid-row">
+
+  <div class="nhsuk-grid-column-one-half">
+
+<div class="nhsuk-card nhsuk-card--clickable">
+  <div class="nhsuk-card__content">
+    <h3 class="nhsuk-card__heading"><a href="search">Search and compare medical technologies</a></h3>
+    <p>Look up a specific product or browse categories to find evidence and peer contact information.</p>
+  </div>
+</div>
+
+  </div>
+
+  <div class="nhsuk-grid-column-one-half">
+
+<div class="nhsuk-card nhsuk-card--clickable">
+  <div class="nhsuk-card__content">
+    <h3 class="nhsuk-card__heading"><a href="evaluation-choice">Share your experience with medical technologies</a></h3>
+  <p>Upload your own product trials, case studies, evaluation criteria or business cases.</p>
+  </div>
+</div>
+
+  </div>
+
+</div>
+
+    </div>
+    </div>
+
+{{ note("high", "DB-04", "Heading level skipped — h1 straight to h3",
+  "The two task cards are <code>&lt;h3&gt;</code> and they are the first headings after the h1. There is no h2 above them. The page outline runs h1 → h3 → h2 → h3 → h2 → h3, so a screen reader user navigating by heading meets the page’s two main actions nested under nothing.",
+  "Someone navigating by heading finds the page’s two main actions nested under a section that does not exist, so nothing signals that these are the top-level things to do here.",
+  "<a href=\"https://service-manual.nhs.uk/accessibility/design\">Accessibility: design</a> — “Use headings correctly”: structure headings in order without skipping levels. WCAG 2.2 1.3.1 Info and Relationships, Level A.",
+  "Add an h2 above the two task cards and set the card headings to h3.",
+  "1.3.1 Info and Relationships (Level A)") }}
+
+{{ note("med", "DB-06", "Cards use three different words for the same thing",
+  "The first heading says “medical technologies”, its description says “a specific product”. The second says “medical technologies”, then “product trials”. “Search and compare medical technologies” also links to a page whose h1 is just “Search”.",
+  "A user reading a card heading and its description in one glance is told they are two different things — “medical technologies” and “a specific product”. Clicking through then lands them on a page headed “Search”, a third name for the same thing.",
+  "Service convention — say “device”, not “product”. <a href=\"https://service-manual.nhs.uk/content/how-we-write\">Content guide: how we write</a> — use one word for one thing. <a href=\"https://service-manual.nhs.uk/design-system/components/card\">Design system: card</a> — the card link should mirror the heading of the page it links to.",
+  "“Devices” in both headings and both descriptions. Rename the search page h1 to match the card that links to it.") }}
+
+{{ note("med", "DB-07", "Two cards, but the dashboard is where users come back to",
+  "These two cards are the only actions on the page; everything below them is read-only. “Your recently viewed items” and “Your saved items” do exist in the service, but on the search page, and nothing here points to them.",
+  "A returning user who wants to pick up the device they were looking at yesterday has to start from search again. The two things that would help — recently viewed and saved items — exist, but on another page, with nothing here pointing to them.",
+  "<a href=\"https://service-manual.nhs.uk/design-system/patterns/hub-page\">Design system: hub page pattern</a> — a hub should expose the tasks users come back for. Service convention — derive rather than ask: the account already knows what this user was last doing.",
+  "Surface recently viewed and saved devices on this page, above the read-only sections.") }}
+
+<!-- Contributions and leaderboard -->
+<!-- Row 1: section headings -->
+<div class="nhsuk-grid-row nhsuk-u-margin-top-7">
+  <div class="nhsuk-grid-column-one-half">
+    <h2 class="nhsuk-heading-l">Your contributions</h2>
+    <h3 class="nhsuk-heading-m">Your recent uploads</h3>
+  </div>
+  <div class="nhsuk-grid-column-one-half">
+    <h2 class="nhsuk-heading-l">Trust leaderboard</h2>
+    <h3 class="nhsuk-heading-m">Documents uploaded this month</h3>
+  </div>
+</div>
+
+{{ note("high", "DB-08", "Headings sit in a different grid row from their tables",
+  "Both headings sit in one grid row and both tables in the next. Side by side on a wide screen this looks correct. Below the 769px breakpoint the columns stack, so the order becomes: “Your contributions”, “Your recent uploads”, “Trust leaderboard”, “Documents uploaded this month”, then the uploads table, then the leaderboard table.",
+  "On a phone or a narrow window every table appears under the wrong heading, so the trust ranking sits under “Your contributions” and the user’s own uploads sit under “Trust leaderboard”. Anyone reading the numbers takes away the opposite of what is true, and this hits sighted mobile users and screen reader users alike.",
+  "WCAG 2.2 1.3.2 Meaningful Sequence, Level A. <a href=\"https://service-manual.nhs.uk/design-system/styles/layout\">Design system: layout</a> — design mobile-first, single column, and keep each heading in the same column as the content it introduces.",
+  "Move each heading into the same grid column as its table.",
+  "1.3.2 Meaningful Sequence (Level A)") }}
+
+{{ note("med", "DB-09", "h1 and both h2s are the same size",
+  "The h1 is <code>nhsuk-heading-l</code> and so are both h2s, so “Welcome back”, “Your contributions” and “Trust leaderboard” render identically. Nothing on the page looks like the main heading.",
+  "Nothing on the page looks like the main heading, so a scanning reader has no anchor and has to read the content to work out what the page is for.",
+  "<a href=\"https://service-manual.nhs.uk/design-system/styles/typography\">Design system: typography</a> — on a dashboard the h1 is <code>nhsuk-heading-xl</code> and h2 is <code>nhsuk-heading-l</code>.",
+  "h1 at heading-xl, both h2s at heading-l.") }}
+
+<!-- Row 2: tables -->
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-one-half">
+
+    {{ table({
+      responsive: true,
+      firstCellIsHeader: true,
+      head: [
+        { text: "Document", classes: "nhsuk-u-width-one-half" },
+        { text: "Views", format: "numeric", classes: "nhsuk-u-width-one-quarter" },
+        { text: "Found useful", format: "numeric", classes: "nhsuk-u-width-one-quarter" }
+      ],
+      rows: [
+        [
+          { header: "Document", html: '<a href="#">Dialysis unit business case</a>' },
+          { header: "Views", text: "47", format: "numeric" },
+          { header: "Found useful", text: "2", format: "numeric" }
+        ],
+        [
+          { header: "Document", html: '<a href="#">Clinical outcomes report</a>' },
+          { header: "Views", text: "200", format: "numeric" },
+          { header: "Found useful", text: "5", format: "numeric" }
+        ],
+        [
+          { header: "Document", html: '<a href="#">Staff training guide</a>' },
+          { header: "Views", text: "12", format: "numeric" },
+          { header: "Found useful", text: "11", format: "numeric" }
+        ]
+      ]
+    }) }}
+
+    <p>
+      <a href="/your-contributions">View all your contributed documents</a>
+    </p>
+
+  </div>
+
+  <div class="nhsuk-grid-column-one-half">
+
+    {{ table({
+      responsive: true,
+      firstCellIsHeader: true,
+      head: [
+        { text: "Trust", classes: "nhsuk-u-width-three-quarters" },
+        { text: "Documents", format: "numeric", classes: "nhsuk-u-width-one-quarter" }
+      ],
+      rows: [
+        [
+          { header: "Trust", text: "Guy's and St Thomas' NHS Foundation Trust" },
+          { header: "Documents", text: "48", format: "numeric" }
+        ],
+        [
+          { header: "Trust", text: "Manchester University NHS Foundation Trust" },
+          { header: "Documents", text: "41", format: "numeric" }
+        ],
+        [
+          { header: "Trust", text: "Leeds Teaching Hospitals NHS Trust" },
+          { header: "Documents", text: "37", format: "numeric" }
+        ],
+        [
+          { header: "Trust", text: "University Hospitals Birmingham NHS Foundation Trust" },
+          { header: "Documents", text: "29", format: "numeric" }
+        ],
+        [
+          { header: "Trust", text: "Barts Health NHS Trust" },
+          { header: "Documents", text: "22", format: "numeric" }
+        ]
+      ]
+    }) }}
+
+  </div>
+</div>
+
+{{ note("high", "DB-10", "Neither table has a caption",
+  "Both are built with <code>table()</code> and no <code>caption</code> option. The headings above them are not associated with them programmatically, so a screen reader user moving between tables hears two uncaptioned tables of numbers. The homepage does pass <code>caption: \"Latest contributions\"</code>, so the service is inconsistent with itself.",
+  "Someone using a screen reader to move between the two tables hears two uncaptioned tables of numbers, with nothing to say which is their own uploads and which is the trust ranking.",
+  "<a href=\"https://service-manual.nhs.uk/design-system/components/table\">Design system: table</a> — the responsive table markup includes <code>&lt;caption class=\"nhsuk-table__caption\"&gt;</code>. WCAG 2.2 1.3.1 Info and Relationships, Level A.",
+  "Caption each table. Use the caption as the visible heading rather than repeating it above.",
+  "1.3.1 Info and Relationships (Level A)") }}
+
+{{ note("med", "DB-11", "“Found useful” — a count with no explanation and no scale",
+  "“Views 200 / Found useful 5” and “Views 12 / Found useful 11” sit side by side with nothing to say what marking something useful means, who can do it, or whether 5 is good. The control that produces this number lives on the device page and is never explained here.",
+  "A user sees “Found useful 5” beside “Views 200” and cannot tell whether 5 is good, who is able to mark something useful, or what marking it does. The number invites a judgement it cannot support.",
+  "<a href=\"https://service-manual.nhs.uk/content/how-we-write\">Content guide: how we write</a> — do not show numbers users cannot interpret. This is also a custom endorsement mechanism with no design system equivalent: <a href=\"https://service-manual.nhs.uk/accessibility/design\">Accessibility: design</a> — “Discuss any custom components” applies to the whole feature.",
+  "Say what marking useful means and who can do it, once, beside the count. Otherwise remove the count.") }}
+
+{{ note("med", "DB-13", "“Trust leaderboard” — a ranking with no way in",
+  "Five trusts are ranked by document count. Kelvin’s own trust is not marked, there is no indication of where it sits, no link to a full list, and nothing to say where the ranking comes from, what period it covers beyond “this month”, or how ties are broken.",
+  "Everyone outside the top five sees a ranking they cannot find themselves in and cannot act on. As a motivator it does the opposite of its intent for the majority of the people who see it.",
+  "Service convention — state where system-generated content comes from and say how it is ordered. As a motivator it currently gives everyone outside the top five nothing to act on.",
+  "Mark the user’s own trust in the list, state the period and the ordering, and link to the full ranking.") }}
+
+{{ note("low", "DB-14", "The two tables are ordered on different principles",
+  "“Your recent uploads” runs 47, 200, 12 — not by views, not alphabetically, and with no date column to evidence “recent”. The leaderboard beside it is strictly descending. Two adjacent tables set two different expectations about what the order means.",
+  "A reader assumes two tables side by side are ordered on the same principle. Here one is ranked and one is not, so the uploads list looks ranked when it is not, and “top of the list” means something different in each.",
+  "Service convention — say how a list is ordered. <a href=\"https://service-manual.nhs.uk/design-system/components/table\">Design system: table</a>.",
+  "Order the uploads table by date and show the date. State the ordering under each table.") }}
+
+{% endblock %}
+
+{% block pageScripts %}
+<script src="https://cdn.jsdelivr.net/npm/accessible-autocomplete@2.0.4/dist/accessible-autocomplete.min.js"></script>
+<script type="text/javascript">
+  accessibleAutocomplete.enhanceSelectElement({
+    defaultValue: '',
+    selectElement: document.querySelector('#product-picker')
+  })
+</script>
+
+<div class="nhsuk-width-container">
+  </div>
+{% endblock %}

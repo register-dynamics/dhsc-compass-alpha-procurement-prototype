@@ -19,4 +19,4 @@ do
 	shift
 done
 
-docker build --build-arg BUILD_DB="$BUILD_DB" -t dhsc-compass .
+docker build --build-arg BUILD_DB="$BUILD_DB" -t dhsc-compass-alpha .
