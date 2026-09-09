@@ -3,19 +3,34 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { renderProduct } from "./product.controller.js";
 
-const { selectFromMock } = vi.hoisted(() => ({
+const { countMock, maxMock, selectFromMock } = vi.hoisted(() => ({
+  countMock: vi.fn(),
+  maxMock: vi.fn(),
   selectFromMock: vi.fn(),
 }));
 
 vi.mock("../database/client.js", () => ({
   db: {
+    fn: {
+      count: countMock,
+      max: maxMock,
+    },
     selectFrom: selectFromMock,
   },
 }));
 
 describe("Product controller", () => {
   beforeEach(() => {
+    countMock.mockReset();
+    maxMock.mockReset();
     selectFromMock.mockReset();
+
+    countMock.mockReturnValue({
+      as: vi.fn().mockReturnValue("totalUsefulCount"),
+    });
+    maxMock.mockReturnValue({
+      as: vi.fn().mockReturnValue("hasUserMarkedUseful"),
+    });
   });
 
   it("GET /product/:id returns 400 when product ID cannot be parsed", async () => {
@@ -158,11 +173,19 @@ describe("Product controller", () => {
       select: vi.fn().mockReturnThis(),
       where: vi.fn().mockReturnThis(),
     };
+    const usefulQuery = {
+      execute: vi.fn().mockResolvedValue([]),
+      groupBy: vi.fn().mockReturnThis(),
+      select: vi.fn().mockReturnThis(),
+      selectAll: vi.fn().mockReturnThis(),
+      where: vi.fn().mockReturnThis(),
+    };
 
     selectFromMock
       .mockReturnValueOnce(productQuery)
       .mockReturnValueOnce(documentsQuery)
-      .mockReturnValueOnce(contactsQuery);
+      .mockReturnValueOnce(contactsQuery)
+      .mockReturnValueOnce(usefulQuery);
 
     const req = { params: { id: "42" } } as unknown as Request;
     const render = vi.fn();
