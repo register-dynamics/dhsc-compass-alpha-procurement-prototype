@@ -42,6 +42,11 @@ jobs:
           json-final-path: src/beta-app/coverage/coverage-final.json
           name: Beta app coverage
           vite-config-path: src/beta-app/vitest.config.ts
+      - name: Install Chrome for Pa11y tests
+        run: |
+          npx puppeteer browsers list
+          npx puppeteer browsers install chrome
+          npx puppeteer browsers list
       - name: Generate sitemap for Pa11y tests
         run: npm run generate:sitemap
       - name: Run Pa11y accessibility tests
