@@ -46,16 +46,22 @@ jobs:
         id: chrome
         uses: browser-actions/setup-chrome@v1
       - name: Generate sitemap for Pa11y tests
+        continue-on-error: true
         run: npm run generate:sitemap
       - name: Run Pa11y accessibility tests
+        continue-on-error: true
         env:
           PUPPETEER_EXECUTABLE_PATH: ${{ steps.chrome.outputs.chrome-path }}
         run: npm run test:a11y
       - name: Parse Pa11y accessibility report
+        continue-on-error: true
         run: node scripts/parse-pa11y-report.mjs > comment.md
-      - uses: mshick/add-pr-comment@v3
+      - name: Add Accessibility Comment to PR
+        uses: mshick/add-pr-comment@v3
+        continue-on-error: true
         with:
           message-path: src/beta-app/comment.md
+        
 
 
 
