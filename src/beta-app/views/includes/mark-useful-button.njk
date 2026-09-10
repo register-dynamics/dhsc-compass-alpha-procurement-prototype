@@ -1,0 +1,23 @@
+{% from "nhsuk/macros/icon.njk" import nhsukIcon %}
+
+{% macro mark_useful_button(count, product_id, document_id, marked) %}
+
+    <div class="nhsuk-u-margin-bottom-4">        
+        <p class="nhsuk-body nhsuk-u-margin-bottom-2 useful-count" data-document-id="{{ document_id }}">
+            {% if count > 0 %}
+            {{ nhsukIcon("tick") }}
+            <strong>{{count}} {{"person" if count == 1 else "people" }}</strong>
+            found this useful
+            {% endif %}
+        </p>
+
+        <button class="nhsuk-button nhsuk-button--icon nhsuk-button--secondary nhsuk-u-margin-bottom-0 mark-useful-button" data-module="nhsuk-button" aria-pressed="false" type="button" data-nhsuk-button-init="" data-product-id="{{ product_id }}" data-document-id="{{ document_id }}" data-marked="{{ "true" if marked == 1 else "false" }}">
+            {% if marked %}
+                {{ nhsukIcon("tick") }} <span class="nhsuk-button__content">Marked as useful</span>
+            {% else %}
+                Mark as useful
+            {% endif %}
+        </button>
+
+    </div>
+{% endmacro %}

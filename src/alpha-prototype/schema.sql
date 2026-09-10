@@ -109,6 +109,15 @@ CREATE TABLE IF NOT EXISTS `users` (
   created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
   modified_at TEXT
 );
+
+CREATE TABLE IF NOT EXISTS "product_documents_useful" (
+	"product_id" INTEGER,
+	"document_id" INTEGER,
+	"user_id" INTEGER,
+	"date_marked_useful" TEXT,
+	PRIMARY KEY("product_id","document_id","user_id")
+);
+
 INSERT INTO "document_type" ("type_of_doc_id","type_of_doc_desc") VALUES (1,'ODEP assessment'),
  (2,'NJR report'),
  (3,'Business case'),
@@ -12938,3 +12947,24 @@ join org_type as b on o.org_type_id = b.org_type_id
 -- Seed user for beta app login
 INSERT INTO users (username, password_hash, given_name, last_name) VALUES
   ('test@example.com', '$argon2id$v=19$m=65536,p=4,t=3$FOt9ovCYjfa8MBG+0xhOiA$ql+3cvHd48lV8auNcHSU/Wjw3Lfr1IFRRroA32XFhKM', 'Johnny', 'Test');
+
+
+
+-- TEMP: Seed documentless evidence card
+-- TODO: Remove this once schema has been updated to allow for evidence cards without documents or contacts
+
+-- Dummy document type
+INSERT INTO document_type ("type_of_doc_id", "type_of_doc_desc")
+VALUES (-1, 'Evidence card');
+
+-- Dummy document
+INSERT INTO documents ("document_id", "type_of_doc_id", "organisation_id", "procured", "url_directory")
+VALUES (-1, -1, 3, 1, '');
+
+-- Test product
+INSERT INTO "search" ("PRODUCT_ID","DEVICE_ID","PRODUCT_NAME","MODEL","GMDN_NAME","TYPE","PRODUCT_CODE","MANUFACTURER","COUNTRY","UDI","GMDN_CODE") 
+VALUES (15200,15200,'Jacks product','Jacks model','Jacks GMDN','Magic device','15297-JCG','Jack Gilmore','Scotland',123456,123456);
+
+-- Link product to document
+INSERT INTO product_matches ("match_id", "product_id", "document_id")
+VALUES (42, 15200, -1);

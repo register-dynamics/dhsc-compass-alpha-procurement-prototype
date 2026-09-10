@@ -1,0 +1,33 @@
+{% from "includes/contact-peer-discussion.njk" import contactPeerDiscussion %}
+{% from "includes/mark-useful-button.njk" import mark_useful_button %}
+
+{% macro evidenceCardGeneric(document) %}
+    <div class="nhsuk-card">
+        <div class="nhsuk-card__content">
+
+            {% set procurementStatusLabels = {
+                '0': 'Not procured',
+                '1': 'Procured'
+            } %}
+            {% set procurementStatusClasses = {
+                '0': 'nhsuk-tag--yellow',
+                '1': 'nhsuk-tag--green'
+            } %}
+
+            {% set statusLabel = procurementStatusLabels[document.procured] %}
+            {% set statusClass = procurementStatusClasses[document.procured] %}
+
+            <div class="nhsuk-u-margin-bottom-3">
+                <strong class="nhsuk-tag {{ statusClass }}">{{ statusLabel }}</strong>
+            </div>
+
+            <h3 class="nhsuk-card__heading nhsuk-heading-m">
+                {{ document.organisationName }}
+            </h3>
+
+            {{ mark_useful_button(document.totalUsefulCount, document.productId, document.documentId, document.markedUseful) }}
+
+            {{ contactPeerDiscussion(document.contacts) }}
+        </div>
+    </div>
+{% endmacro %}

@@ -23,6 +23,9 @@ const app = express();
 // Parse URL-encoded bodies (as sent by HTML forms) - used by passport for login form submission
 app.use(bodyParser.urlencoded({ extended: false }));
 
+// Parse JSON bodies (as sent by API clients)
+app.use(bodyParser.json());
+
 // Configure session and authentication middleware
 const SQLiteStore = connectSqlite3(session);
 const sessionStore = new SQLiteStore({

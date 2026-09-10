@@ -5,7 +5,7 @@
   "scripts": {
     "dev:css": "sass --load-path=node_modules --watch assets/sass:public/css --style=expanded",
     "dev:js": "esbuild assets/js/nhsuk.ts --bundle --format=esm --minify --sourcemap --target=es2020 --tsconfig=tsconfig.json --outfile=public/javascripts/nhsuk-frontend.min.js --watch=forever",
-    "dev:ts": "tsx watch --include './views/**/*.html' --env-file-if-exists .env index.ts",
+    "dev:ts": "tsx watch --include './views/**/*.html' --include './views/**/*.njk' --env-file-if-exists .env index.ts",
     "dev": "npm-run-all --parallel dev:css dev:js dev:ts",
     "start": "node --env-file-if-exists .env dist/index.js",
     "build:css": "sass --load-path=node_modules assets/sass:public/css --style=compressed",
@@ -42,7 +42,8 @@
     "node-gyp": "^10.3.1",
     "nunjucks": "^3.2.4",
     "passport": "^0.7.0",
-    "passport-local": "^1.0.0"
+    "passport-local": "^1.0.0",
+    "zod": "^4.5.4"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

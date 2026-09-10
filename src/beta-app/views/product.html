@@ -8,7 +8,8 @@
 {% from "includes/evidence-card-evaluation.njk" import evidenceCardEvaluation %}
 {% from "includes/evidence-card-njr.njk" import evidenceCardNjr %}
 {% from "includes/evidence-card-odep.njk" import evidenceCardOdep %}
-
+{% from "includes/evidence-card-generic.njk" import evidenceCardGeneric %}
+{% from "nhsuk/macros/icon.njk" import nhsukIcon %}
 
 {# TODO: Set page name based on product content #}
 {% set pageName = "Product" %}
@@ -433,10 +434,9 @@
     <div class="nhsuk-grid-row">
         <div class="nhsuk-grid-column-two-thirds">
 
-            {# {{ documents | dump }} #}
-
             <!-- Trust Evaluation Cards - Loop through product documents -->
             {% for document in documents %}
+
                 {% if document.typeOfDocDesc == "ODEP assessment" %}
                     {{ evidenceCardOdep(document) }}
                 {% elif document.typeOfDocDesc == "NJR report" %}
@@ -447,6 +447,8 @@
                     {{ evidenceCardClinicalTrial(document) }}
                 {% elif document.typeOfDocDesc == "Evaluation" %}
                     {{ evidenceCardEvaluation(document) }}
+                {% else %}
+                    {{ evidenceCardGeneric(document) }}
                 {% endif %}
             {% endfor %}
         </div>
@@ -506,4 +508,109 @@
         </div>
     </div>
 
+{% endblock %}
+
+{% block bodyEnd %}
+    <script>
+        const tickHtml = `{{ nhsukIcon("tick") }}`;
+
+        document.addEventListener("DOMContentLoaded", function () {
+            document
+                .querySelectorAll('.mark-useful-button')
+                .forEach(button => {
+                    button.addEventListener('click', async (e) => {
+                        await markUseful(e);
+                    });
+                });
+        });
+
+        function updateButtonState(button, isMarked) {
+            button.setAttribute(
+                'aria-pressed', isMarked
+                ? 'true'
+                : 'false');
+            button.dataset.marked = isMarked
+                ? 'true'
+                : 'false';
+            button.innerHTML = isMarked
+                ? `${tickHtml} <span class="nhsuk-button__content">Marked as useful</span>`
+                : `Mark as useful`;
+        }
+
+        function refreshUsefulCount(documentId, usefulCount) {
+            const usefulCountElement = document.querySelector(`.useful-count[data-document-id="${documentId}"]`);
+            if (!usefulCountElement) {
+                return;
+            }
+
+            if (usefulCount === 0) {
+                usefulCountElement.innerHTML = '';
+                return;
+            }
+
+            const personText = usefulCount === 1
+                ? "person"
+                : "people";
+            usefulCountElement.innerHTML = `${tickHtml} <strong>${usefulCount} ${personText}</strong> found this useful`;
+        }
+
+        async function markUseful(e) {
+            const button = e.currentTarget;
+
+            const productId = button.dataset.productId;
+            const documentId = button.dataset.documentId;
+            const marked = button.dataset.marked;
+
+            if (marked === "true") {
+                const response = await fetch(`/product/unmark-useful`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({productId, documentId})
+                });
+
+                if (!response.ok) {
+                    console.error("Failed to unmark useful: ", response);
+                    return;
+                }
+
+                const responseData = await response.json();
+                const usefulCount = responseData.count;
+
+                if (usefulCount === undefined || usefulCount === null) {
+                    console.error("Failed to unmark useful: no useful count returned");
+                    return;
+                }
+
+                updateButtonState(button, false);
+                refreshUsefulCount(documentId, usefulCount);
+
+            } else {
+                const response = await fetch(`/product/mark-useful`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({productId, documentId})
+                });
+
+                if (!response.ok) {
+                    console.error("Failed to mark useful: ", response);
+                    return;
+                }
+
+                const responseData = await response.json();
+                const usefulCount = responseData.count;
+
+                if (usefulCount === undefined || usefulCount === null) {
+                    console.error("Failed to mark useful: no useful count returned");
+                    return;
+                }
+
+                updateButtonState(button, true);
+                refreshUsefulCount(documentId, usefulCount);
+            }
+        }
+    </script>
 {% endblock %}

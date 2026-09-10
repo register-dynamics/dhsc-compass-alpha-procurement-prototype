@@ -8,6 +8,7 @@ export interface Database {
   contacts: ContactTable;
   make_documents: DocumentTable;
   document_contacts: DocumentContactsTable;
+  product_documents_useful: ProductDocumentsUsefulTable;
   search: SearchTable;
   users: UserTable;
 }
@@ -45,6 +46,10 @@ export interface DocumentTable {
 
   // Utility prop for contacts
   contacts: DocumentContact[];
+
+  // Utility prop for usefulness
+  markedUseful: number;
+  totalUsefulCount: number;
 }
 
 export type DocumentContacts = Selectable<DocumentContactsTable>;
@@ -59,6 +64,15 @@ export interface DocumentContactsTable {
   discussBusinessCase: boolean;
   discussRealWorldUse: boolean;
   discussEhrIntegration: boolean;
+}
+
+export type ProductDocumentsUseful = Selectable<ProductDocumentsUsefulTable>;
+
+export interface ProductDocumentsUsefulTable {
+  productId: number;
+  documentId: number;
+  userId: number;
+  dateMarkedUseful: Date;
 }
 
 export type Search = Selectable<SearchTable>;
