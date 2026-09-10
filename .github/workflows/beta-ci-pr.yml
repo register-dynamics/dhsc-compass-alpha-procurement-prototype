@@ -44,6 +44,7 @@ jobs:
           vite-config-path: src/beta-app/vitest.config.ts
       - name: Install Chrome for Pa11y tests
         run: |
+          rm -rf /home/runner/.cache/puppeteer
           npx puppeteer browsers list
           npx puppeteer browsers install chrome
           npx puppeteer browsers list
