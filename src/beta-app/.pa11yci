@@ -1,0 +1,35 @@
+{
+  "standard": "WCAG2AA",
+  "defaults": {
+    "useIncognitoBrowserContext": false,
+    "reporters": [
+      "cli",
+      [
+        "json",
+        {
+          "fileName": "./reports/pa11y-results.json"
+        }
+      ]
+    ]
+  },
+  "urls": [
+    {
+      "__NOTE": "this should always be FIRST (if browser context is preserved)",
+      "url": "http://localhost:3001/sign-in",
+      "actions": [
+        "navigate to http://localhost:3001/sign-in",
+        "wait for element .nhsuk-width-container to be visible",
+        "set field #username to test@example.com",
+        "set field #password to northsouth",
+        "click element .nhsuk-button",
+        "wait for element .nice-hero to be visible"
+      ]
+    },
+    "http://localhost:3001/",
+    "http://localhost:3001/product/14236541",
+    "http://localhost:3001/search",
+    "http://localhost:3001/search-results?q=glucose",
+    "http://localhost:3001/sign-in",
+    "http://localhost:3001/sign-out"
+  ]
+}

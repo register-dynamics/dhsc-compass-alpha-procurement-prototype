@@ -119,3 +119,41 @@ Within `src/beta-app`, run the following commands to execute and watch tests or 
 - `npm run test:coverage` - run tests with coverage reporting
 
 Test files should be colocated with implementation using the `.test.ts` suffix (e.g., `index.test.ts` for `index.ts`).
+
+### Node scripts
+
+This is an explainer of all the `npm run` scripts available for the beta app:
+
+#### Local development
+
+- `npm run dev:css` - start the CSS watcher for development
+- `npm run dev:js` - start the JS watcher (frontend) for development
+- `npm run dev:ts` - start the TypeScript watcher (backend) for development
+- `npm run dev` - start the app in development mode with watch mode enabled for CSS, JS, and TypeScript changes
+
+
+### Production build
+
+- `npm run build:css` - build the CSS for production
+- `npm run build:js` - build the JS (frontend) for production
+- `npm run build` - build the app for production
+- `npm run start` - start the built app in production mode
+
+
+### Linting and Formatting
+
+- `npm run type-check` - run TypeScript type checking
+- `npm run lint` - run ESLint to check for code style and potential errors
+- `npm run format:check` - run Prettier to format the code according to the project's style guide
+- `npm run lint:fix` - run ESLint and automatically fix fixable issues
+- `npm run format` - run Prettier and automatically fix fixable formatting issues
+
+
+### Testing
+
+- `npm run test` - run all tests once
+- `npm run test:watch` - start Vitest in watch mode
+- `npm run test:coverage` - run tests with coverage reporting
+- `npm run test:pa11y` - run accessibility tests using Pa11y (assumes target test instance of app is running)
+- `npm run test:a11y` - run accessibility tests using Pa11y (launches local test instance of app)
+- `npm run generate:sitemap` - generate the sitemap for the app to be used with Pa11y
