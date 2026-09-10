@@ -55,7 +55,7 @@ jobs:
         run: node scripts/parse-pa11y-report.mjs > comment.md
       - uses: mshick/add-pr-comment@v3
         with:
-          file: comment.md
+          message-path: src/beta-app/comment.md
 
 
 
