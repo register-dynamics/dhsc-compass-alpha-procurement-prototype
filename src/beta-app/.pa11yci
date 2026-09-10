@@ -1,12 +1,12 @@
 {
   "standard": "WCAG2AA",
-  "chromeLaunchConfig": {
-    "args": [
-      "--no-sandbox",
-      "--headless=new"
-    ]
-  },
   "defaults": {
+    "chromeLaunchConfig": {
+      "args": [
+        "--no-sandbox",
+        "--headless=new"
+      ]
+    },
     "useIncognitoBrowserContext": false,
     "reporters": [
       "cli",
