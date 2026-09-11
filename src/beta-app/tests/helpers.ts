@@ -2,7 +2,7 @@ import request from "supertest";
 
 import app from "../app.js";
 
-const testUser = {
+export const testUser = {
   password: "northsouth",
   username: "test@example.com",
 };
