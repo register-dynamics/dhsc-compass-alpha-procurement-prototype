@@ -39,7 +39,7 @@ jobs:
         run: npm run test:coverage
       - name: Setup Chrome
         id: chrome
-        uses: browser-actions/setup-chrome@v1
+        uses: browser-actions/setup-chrome@v2
       - name: Generate sitemap for Pa11y tests
         run: npm run generate:sitemap
       - name: Run Pa11y accessibility tests
