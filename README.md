@@ -157,3 +157,5 @@ This is an explainer of all the `npm run` scripts available for the beta app:
 - `npm run test:pa11y` - run accessibility tests using Pa11y (assumes target test instance of app is running)
 - `npm run test:a11y` - run accessibility tests using Pa11y (launches local test instance of app)
 - `npm run generate:sitemap` - generate the sitemap for the app to be used with Pa11y
+- `npm run test:e2e` - run end-to-end tests using Playwright
+- `npm run test:e2e:ui` - run end-to-end tests using Playwright with a UI browser interface
