@@ -61,6 +61,8 @@ jobs:
         continue-on-error: true
         with:
           message-path: src/beta-app/comment.md
+      - name: Install playwright browsers for end-to-end tests
+        run: npx playwright install chromium --with-deps
       - name: Run end-to-end tests
         run: npm run test:e2e
         
