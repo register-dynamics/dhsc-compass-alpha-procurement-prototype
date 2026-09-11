@@ -2,6 +2,7 @@ import request from "supertest";
 import { describe, expect, it } from "vitest";
 
 import app from "../app.js";
+import { loginAndGetCookie } from "../tests/helpers.js";
 
 describe("Index controller", () => {
   it("GET / should return 200 and welcome message with content-type text/html", async () => {
@@ -17,5 +18,14 @@ describe("Index controller", () => {
 
     expect(response.status).toBe(302);
     expect(response.headers.location).toBe("/sign-in");
+  });
+
+  it("GET /dashboard should return the dashboard page with content-type text/html", async () => {
+    const cookies = await loginAndGetCookie();
+    const response = await request(app).get("/dashboard").set("Cookie", cookies);
+
+    expect(response.status).toBe(200);
+    expect(response.text).toContain("Dashboard");
+    expect(response.headers["content-type"]).toMatch(/html/);
   });
 });

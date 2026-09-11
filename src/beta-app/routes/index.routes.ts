@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-import { renderIndex } from "../controllers/index.controller.js";
+import { renderDashboard, renderIndex } from "../controllers/index.controller.js";
 import { registerRoutes, type RouteDefinition } from "./route-definitions.js";
 
 const router = Router();
@@ -12,6 +12,11 @@ const routeDefinitions: RouteDefinition[] = [
     method: "get",
     path: "/",
   },
+  {
+    handler: renderDashboard,
+    method: "get",
+    path: "/dashboard",
+  }
 ];
 
 registerRoutes(router, routeDefinitions);
