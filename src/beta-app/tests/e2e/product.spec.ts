@@ -34,10 +34,10 @@ test("user can search and access product details", async ({ page }) => {
   ).toBeVisible();
 
   await expect(
-    page.getByRole("paragraph").filter({ hasText: "Saccharine & Sons" })
+    page.getByRole("paragraph").filter({ hasText: "Saccharine & Sons" }),
   ).toBeVisible();
 
-  // TODO: Check more content here once it's not hardcoded  
+  // TODO: Check more content here once it's not hardcoded
 });
 
 test("user can mark an evidence card as useful", async ({ page }) => {
