@@ -2,9 +2,9 @@ import { NextFunction, Request, RequestHandler, Response } from "express";
 import passport from "passport";
 
 export const renderSignIn = (req: Request, res: Response) => {
-  // If the user is already authenticated, redirect them to the home page
+  // If the user is already authenticated, redirect them to the dashboard
   if (req.isAuthenticated()) {
-    res.redirect("/");
+    res.redirect("/dashboard");
     return;
   }
 
@@ -20,7 +20,7 @@ export const postSignIn = (req: Request, res: Response, next: NextFunction) => {
   const authenticate = passport.authenticate("local", {
     failureMessage: true,
     failureRedirect: "/sign-in",
-    successRedirect: "/",
+    successRedirect: "/dashboard",
   }) as RequestHandler;
 
   authenticate(req, res, next);

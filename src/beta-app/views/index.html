@@ -6,6 +6,19 @@
 
 {% set pageName = "Welcome" %}
 
+{% set navItems = [
+  { text: "About this service", href: "#" },
+  { text: "Latest news", href: "#" },
+  { text: "Data standards", href: "#" },
+  { text: "Case studies", href: "#" }
+] %}
+
+{% if currentUser %}
+
+  {% set navItems = [{ text: "Dashboard", href: "/dashboard" }].concat(navItems) %}
+
+{% endif %}
+
 {% block header %}
   {{ header({
     logo: {
@@ -17,12 +30,7 @@
       href: "/"
     },
     navigation: {
-      items: [
-        { text: "About this service", href: "#" },
-        { text: "Latest news", href: "#" },
-        { text: "Data standards", href: "#" },
-        { text: "Case studies", href: "#" }
-      ]
+      items: navItems
     },
     account: {
       items: accountItems
@@ -44,6 +52,7 @@
                 NHS trusts</p>
             {% endblock %}
             {% block heroActions %}
+              {% if currentUser == null %}
               <div class="nhsuk-button-group nhsuk-u-margin-bottom-0">
                 <a class="nhsuk-button nhsuk-button--reverse" data-module="nhsuk-button" href="/sign-in" draggable="false" role="button" data-nhsuk-button-init="">Log in</a >
 
@@ -52,6 +61,7 @@
                   <a href="#" class="nhsuk-link nhsuk-link--reverse nhsuk-u-font-weight-bold">Sign up</a >
                 </p>
               </div>
+              {% endif %}
             {% endblock %}
           </div>
         </div>
