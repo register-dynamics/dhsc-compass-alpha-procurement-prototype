@@ -1,9 +1,9 @@
 import bodyParser from "body-parser";
-import connectSqlite3 from "connect-sqlite3";
 import express from "express";
 import session from "express-session";
 import nunjucks from "nunjucks";
-
+import pgConnect from "connect-pg-simple";
+import { applyAllMigrations, pgPool } from "./database/client.js";
 import config from "./config.js";
 import { ensureAuthenticated, initializeAuth } from "./middleware/auth.js";
 import indexRoutes, { indexRouteDefinitions } from "./routes/index.routes.js";
@@ -18,6 +18,8 @@ import sessionRoutes, {
   sessionRouteDefinitions,
 } from "./routes/session.routes.js";
 
+await applyAllMigrations();
+
 const app = express();
 
 // Parse URL-encoded bodies (as sent by HTML forms) - used by passport for login form submission
@@ -27,11 +29,10 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 // Configure session and authentication middleware
-const SQLiteStore = connectSqlite3(session);
-const sessionStore = new SQLiteStore({
-  db: config.session.store.databaseFileName,
-  dir: config.session.store.directory,
-  table: "sessions",
+const sessionStore = new (pgConnect(session))({
+  pool: pgPool,
+  tableName: 'user_sessions',
+  createTableIfMissing: true
 }) as session.Store;
 
 const sessionOptions: session.SessionOptions = {

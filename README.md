@@ -95,7 +95,7 @@ The beta app belongs in `src/beta-app`. It is a separate app from the alpha prot
 
 #### Running the app
 
-Within `src/beta-app`, run `npm install` to install dependencies, then run `npm run dev` to start the app. It will be available at http://localhost:3001/.
+Run `./run-beta.sh` to run the beta app. It will be available at http://localhost:3001/.
 
 There is a test user seeded into the database for logging in to the beta app:
 
@@ -109,6 +109,22 @@ node scripts/generate-password-hash.js mypassword
 ```
 
 and then use that value in the `password_hash` column when adding a new user to the `users` table.
+
+#### Getting into the database
+
+To get a psql CLI prompt connected to the backend database:
+
+```bash
+docker exec -ti compass-beta-db-1 psql -U compass compass
+```
+
+#### Getting into the app container
+
+To get a bash shell in the app container:
+
+```bash
+docker exec -ti compass-beta-web-1 bash
+```
 
 ### Testing
 
