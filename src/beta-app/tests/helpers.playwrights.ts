@@ -10,5 +10,5 @@ export async function signIn(page: Page) {
 
   await page.getByRole("button", { name: "Sign in" }).click();
 
-  await expect(page).toHaveURL(/\/$/);
+  await expect(page).toHaveURL("/dashboard");
 }
