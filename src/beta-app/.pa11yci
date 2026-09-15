@@ -24,7 +24,7 @@
       "url": "http://localhost:3001/sign-in"
     },
     {
-      "__NOTE": "This should always be SECOND (if browser context is preserved)",
+      "__NOTE": "This should always be SECOND (if browser context is preserved) to authenticate the user",
       "url": "http://localhost:3001/sign-in",
       "actions": [
         "navigate to http://localhost:3001/sign-in",
