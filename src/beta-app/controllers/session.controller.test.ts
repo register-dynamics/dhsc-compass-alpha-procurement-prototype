@@ -12,13 +12,13 @@ describe("Session controller", () => {
     expect(response.text).toContain("Sign in");
   });
 
-  it("GET /sign-in while already signed in should redirect to root", async () => {
+  it("GET /sign-in while already signed in should redirect to dashboard", async () => {
     const cookies = await loginAndGetCookie();
 
     const response = await request(app).get("/sign-in").set("Cookie", cookies);
 
     expect(response.status).toBe(302);
-    expect(response.headers.location).toBe("/");
+    expect(response.headers.location).toBe("/dashboard");
   });
 
   it("POST /sign-in with invalid credentials should redirect to /sign-in with failure message", async () => {

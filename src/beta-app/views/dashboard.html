@@ -1,0 +1,57 @@
+{% extends "layouts/base.html" %}
+
+{% set pageName = "Dashboard" %}
+
+{% block content %}
+
+    <div class="nhsuk-grid-row nhsuk-u-margin-top-7">
+        <div class="nhsuk-grid-column-two-thirds">
+
+            <span class="nhsuk-hint">{{currentUser.givenName}} {{currentUser.lastName}}</span>
+
+            <h1 class='nhsuk-heading-l'>Welcome back</h1>
+
+            <p class="nhsuk-body nhsuk-body-l">
+                How will you shape procurement in your trust today?
+            </p>
+
+        </div>
+    </div>
+
+    <div class="nhsuk-grid-row nhsuk-u-margin-top-7">
+        <div class="nhsuk-grid-column-full">
+
+            <div class="nhsuk-grid-row">
+
+                <div class="nhsuk-grid-column-one-half">
+
+                    <div class="nhsuk-card nhsuk-card--clickable">
+                        <div class="nhsuk-card__content">
+                            <h3 class="nhsuk-card__heading">
+                                <a href="search">Search and compare medical technology</a>
+                            </h3>
+                            <p>Look up a specific device or browse categories to find relevant trust experience and peer contacts.</p>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="nhsuk-grid-column-one-half">
+
+                    {# <div class="nhsuk-card nhsuk-card--clickable">
+                        <div class="nhsuk-card__content">
+                            <h3 class="nhsuk-card__heading">
+                                <a href="evaluation-choice">Share your experience with medical technology</a>
+                            </h3>
+                            <p>Upload your own product trials, case studies, evaluation criteria or business cases.</p>
+                        </div>
+                    </div> #}
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+{% endblock %}
