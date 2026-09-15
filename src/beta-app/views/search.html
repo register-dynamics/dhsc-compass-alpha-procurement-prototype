@@ -15,7 +15,8 @@
           <div class="nhsuk-form-group">
             <form action="search-results" method="get" novalidate="">
               <div class="nhsuk-form-group nhsuk-u-margin-bottom-0">
-                <label class="nhsuk-label" for="q">
+                {# Example WCAG violation - no associated label for input #}
+                <label class="nhsuk-label" >
                   Search by product, category or supplier
                 </label>
                 <input class="nhsuk-input nhsuk-input--width-20" id="q" name="q" type="search" value="">
@@ -49,6 +50,9 @@
       <li><a href="#" class="nhsuk-tag nhsuk-tag--white">Surgical mesh</a></li>
       <li><a href="#" class="nhsuk-tag nhsuk-tag--white">Continuous glucose monitors</a></li>
     </ul>
+
+    {# Example WCAG violation - no alt text #}
+    <img src="https://placecats.com/300/300">
   </div>
 
   <!-- Your activity: right half -->
