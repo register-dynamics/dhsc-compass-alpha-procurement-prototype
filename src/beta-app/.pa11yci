@@ -28,10 +28,11 @@
         "set field #username to test@example.com",
         "set field #password to northsouth",
         "click element .nhsuk-button",
-        "wait for element .nice-hero to be visible"
+        "wait for path to be /dashboard"
       ]
     },
     "http://localhost:3001/",
+    "http://localhost:3001/dashboard",
     "http://localhost:3001/product/14236541",
     "http://localhost:3001/search",
     "http://localhost:3001/search-results?q=glucose",

@@ -28,7 +28,7 @@ const initialLoginUrl = {
     "set field #username to test@example.com",
     "set field #password to northsouth",
     "click element .nhsuk-button",
-    "wait for element .nice-hero to be visible",
+    "wait for path to be /dashboard",
   ],
 };
 
