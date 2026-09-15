@@ -20,12 +20,14 @@ const routesNeedingParams = [
 ];
 
 const signInUrlTest = {
-  __NOTE: "This should always be FIRST (to test the sign in page before actually signing in)",
+  __NOTE:
+    "This should always be FIRST (to test the sign in page before actually signing in)",
   url: `${BASE_URL}/sign-in`,
-}
+};
 
 const initialSignInUrl = {
-  __NOTE: "This should always be SECOND (if browser context is preserved) to authenticate the user",
+  __NOTE:
+    "This should always be SECOND (if browser context is preserved) to authenticate the user",
   url: `${BASE_URL}/sign-in`,
   actions: [
     `navigate to ${BASE_URL}/sign-in`,
@@ -38,10 +40,7 @@ const initialSignInUrl = {
 };
 
 // URLs that should be tested that the router doesn't find e.g. 404 and 500 handlers
-const additionalUrlsToTest = [
-  `${BASE_URL}/not-found`,
-  `${BASE_URL}/error`,
-];
+const additionalUrlsToTest = [`${BASE_URL}/not-found`, `${BASE_URL}/error`];
 
 // Extract the mounted path from an Express layer's regular expression
 function getMountedPath(layer) {

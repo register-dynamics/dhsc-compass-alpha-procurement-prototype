@@ -22,7 +22,9 @@ test("homepage loads and shows the main service heading", async ({ page }) => {
   );
 });
 
-test("navigating to non-existent page shows the 404 error page", async ({ page }) => {
+test("navigating to non-existent page shows the 404 error page", async ({
+  page,
+}) => {
   await page.goto("/non-existent-page");
 
   await expect(
@@ -32,7 +34,9 @@ test("navigating to non-existent page shows the 404 error page", async ({ page }
     }),
   ).toBeVisible();
 
-  await expect(page).toHaveTitle(/|We cannot find the page you're looking for/i);
+  await expect(page).toHaveTitle(
+    /|We cannot find the page you're looking for/i,
+  );
 });
 
 // NB: We can't test the 500 error page directly because it requires triggering a server-side error, which is not feasible in an end-to-end test environment (at the moment).

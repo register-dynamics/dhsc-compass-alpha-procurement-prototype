@@ -17,7 +17,9 @@ describe("Index controller", () => {
     const response = await request(app).get("/nonexistent");
 
     expect(response.status).toBe(404);
-    expect(response.text).toContain("We cannot find the page you're looking for");
+    expect(response.text).toContain(
+      "We cannot find the page you're looking for",
+    );
     expect(response.headers["content-type"]).toMatch(/html/);
   });
 
@@ -33,5 +35,4 @@ describe("Index controller", () => {
   });
 
   // NB: We can't test the 500 error page directly because it requires triggering a server-side error, which is not feasible in our unit test environment (at the moment).
-
 });
