@@ -154,3 +154,6 @@ Thumbs.db
 
 # Beta app local postgresql password
 /src/beta-app/postgres-passwd
+
+# pa11y and playwright reports
+/src/beta-app/reports/

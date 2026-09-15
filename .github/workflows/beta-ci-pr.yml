@@ -42,5 +42,30 @@ jobs:
           json-final-path: src/beta-app/coverage/coverage-final.json
           name: Beta app coverage
           vite-config-path: src/beta-app/vitest.config.ts
+      - name: Setup Chrome
+        id: chrome
+        uses: browser-actions/setup-chrome@v2
+      - name: Generate sitemap for Pa11y tests
+        continue-on-error: true
+        run: npm run generate:sitemap
+      - name: Run Pa11y accessibility tests
+        continue-on-error: true
+        env:
+          PUPPETEER_EXECUTABLE_PATH: ${{ steps.chrome.outputs.chrome-path }}
+        run: npm run test:a11y
+      - name: Parse Pa11y accessibility report
+        continue-on-error: true
+        run: node scripts/parse-pa11y-report.mjs > comment.md
+      - name: Add Accessibility Comment to PR
+        uses: mshick/add-pr-comment@v3
+        continue-on-error: true
+        with:
+          message-path: src/beta-app/comment.md
+      - name: Install playwright browsers for end-to-end tests
+        run: npx playwright install chromium --with-deps
+      - name: Run end-to-end tests
+        run: npm run test:e2e
+        
+
 
 

@@ -37,3 +37,16 @@ jobs:
         run: sqlite3 database.db < ../alpha-prototype/schema.sql
       - name: Run tests with coverage
         run: npm run test:coverage
+      - name: Setup Chrome
+        id: chrome
+        uses: browser-actions/setup-chrome@v2
+      - name: Generate sitemap for Pa11y tests
+        run: npm run generate:sitemap
+      - name: Run Pa11y accessibility tests
+        env:
+          PUPPETEER_EXECUTABLE_PATH: ${{ steps.chrome.outputs.chrome-path }}
+        run: npm run test:a11y
+      - name: Install playwright browsers for end-to-end tests
+        run: npx playwright install chromium --with-deps
+      - name: Run end-to-end tests
+        run: npm run test:e2e

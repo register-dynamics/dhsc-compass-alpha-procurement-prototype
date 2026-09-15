@@ -11,6 +11,8 @@ export default defineConfig({
         "public/**",
         "scripts/**",
         "**/*.d.ts",
+        "tests/**/*",
+        "reports/**",
       ],
       provider: "v8",
       reporter: ["text", "lcov", "cobertura", "json", "json-summary"],
