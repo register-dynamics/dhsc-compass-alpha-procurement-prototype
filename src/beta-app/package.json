@@ -7,7 +7,7 @@
     "dev:js": "esbuild assets/js/nhsuk.ts --bundle --format=esm --minify --sourcemap --target=es2020 --tsconfig=tsconfig.json --outfile=public/javascripts/nhsuk-frontend.min.js --watch=forever",
     "dev:ts": "tsx watch --include './views/**/*.html' --include './views/**/*.njk' --env-file-if-exists .env index.ts",
     "dev:db": "docker compose up --build db -d",
-    "dev": "npm-run-all --parallel dev:css dev:js dev:ts dev:db",
+    "dev": "npm-run-all --parallel dev:css dev:js dev:ts",
     "start": "node --env-file-if-exists .env dist/index.js",
     "build:css": "sass --load-path=node_modules assets/sass:public/css --style=compressed",
     "build:js": "esbuild assets/js/nhsuk.ts --bundle --format=esm --minify --sourcemap --target=es2020 --tsconfig=tsconfig.json --outfile=public/javascripts/nhsuk-frontend.min.js",
