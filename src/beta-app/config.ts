@@ -25,10 +25,12 @@ const config = {
       sameSite: "lax" as const,
     },
     secret: process.env.SESSION_SECRET ?? "default-secret",
-    store: {
-      databaseFileName: "session.db",
-      directory: process.env.SESSION_DB_DIR ?? ".",
-    },
+  },
+  database: {
+    database: process.env.DATABASE_NAME,
+    host: process.env.DATABASE_HOST,
+    user: process.env.DATABASE_USER,
+    password_file: process.env.DATABASE_PASSWORD_FILE,
   },
 };
 

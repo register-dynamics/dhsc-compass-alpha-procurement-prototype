@@ -20,6 +20,11 @@ services:
       - "3001:3001"
     secrets:
       - postgres-passwd
+    environment:
+      DATABASE_NAME: compass
+      DATABASE_USER: compass
+      DATABASE_HOST: db
+      DATABASE_PASSWORD_FILE: /run/secrets/postgres-passwd
     develop:
       watch:
         - action: sync
