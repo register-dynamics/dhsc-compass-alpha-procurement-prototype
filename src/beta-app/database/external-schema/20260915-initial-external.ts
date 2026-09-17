@@ -15,7 +15,7 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn('manufacturer_id','integer', (col) => col.primaryKey())
     .addColumn('man_organisation_name', 'varchar', (col) => col.notNull())
     .addColumn('man_country', 'varchar', (col) => col.notNull())
-    .addColumn('man_organisation_type', 'integer', (col) => col.notNull())
+    .addColumn('man_organisation_type', 'varchar', (col) => col.notNull())
     .execute()
 
   await db.schema
@@ -31,7 +31,7 @@ export async function up(db: Kysely<any>): Promise<void> {
   await db.schema
     .createTable('external.products')
     .addColumn('product_id', 'integer', (col) => col.primaryKey())
-    .addColumn('udi_number', 'integer', (col) => col.notNull())
+    .addColumn('udi_number', 'bigint', (col) => col.notNull())
     .addColumn('device_id', 'integer', (col) => col.references('external.device_type.device_id').notNull())
     .addColumn('is_model', 'integer', (col) => col.notNull()) // Is this really a boolean?
     .addColumn('brand_trade_name', 'varchar', (col) => col.notNull())

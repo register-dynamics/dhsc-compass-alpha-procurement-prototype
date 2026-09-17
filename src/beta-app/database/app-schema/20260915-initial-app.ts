@@ -22,11 +22,11 @@ export async function up(db: Kysely<any>): Promise<void> {
   await db.schema
     .createTable('app.contacts')
     .addColumn('contact_id','integer', (col) => col.primaryKey())
-    .addColumn('title','varchar', (col) => col.notNull())
+    .addColumn('title','varchar')
     .addColumn('given_name','varchar', (col) => col.notNull())
     .addColumn('surname','varchar', (col) => col.notNull())
-    .addColumn('email','varchar', (col) => col.notNull())
-    .addColumn('phone_no','varchar', (col) => col.notNull())
+    .addColumn('email','varchar')
+    .addColumn('phone_no','varchar')
     .addColumn('role','varchar', (col) => col.notNull())
     .execute()
 
@@ -50,11 +50,11 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn('rating_type','varchar')
     .addColumn('type_of_doc_id','integer', (col) => col.references('app.document_type.type_of_doc_id').notNull())
     .addColumn('organisation_id','integer', (col) => col.references('app.organisations.organisation_id').notNull())
-    .addColumn('procured','integer', (col) => col.notNull())
+    .addColumn('procured','boolean')
     .addColumn('scale','integer')
     .addColumn('ward_department','varchar')
     .addColumn('summary','varchar')
-    .addColumn('is_update','boolean', (col) => col.notNull())
+    .addColumn('is_update','boolean')
     .addColumn('parent_id','integer', (col) => col.references('app.documents.document_id'))
     .addColumn('url_directory','varchar')
     .execute()
@@ -69,7 +69,7 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn('discuss_pharmacy_integration','boolean', (col) => col.notNull())
     .addColumn('discuss_business_case','boolean', (col) => col.notNull())
     .addColumn('discuss_real_world_use','boolean', (col) => col.notNull())
-    .addColumn('discuss_EHR_integration','boolean', (col) => col.notNull())
+    .addColumn('discuss_ehr_integration','boolean', (col) => col.notNull())
     .execute()
 
   await db.schema
