@@ -7,8 +7,8 @@
     "dev:js": "esbuild assets/js/nhsuk.ts --bundle --format=esm --minify --sourcemap --target=es2020 --tsconfig=tsconfig.json --outfile=public/javascripts/nhsuk-frontend.min.js --watch=forever",
     "dev:ts": "tsx watch --include './views/**/*.html' --include './views/**/*.njk' --env-file-if-exists .env index.ts",
     "dev:db": "docker compose up --build db -d",
-    "dev": "npm-run-all --parallel dev:css dev:js dev:ts",
-    "start": "node --env-file-if-exists .env dist/index.js",
+    "dev": "npm run db:migrate && npm-run-all --parallel dev:css dev:js dev:ts",
+    "start": "npm run db:migrate && node --env-file-if-exists .env dist/index.js",
     "build:css": "sass --load-path=node_modules assets/sass:public/css --style=compressed",
     "build:js": "esbuild assets/js/nhsuk.ts --bundle --format=esm --minify --sourcemap --target=es2020 --tsconfig=tsconfig.json --outfile=public/javascripts/nhsuk-frontend.min.js",
     "build": "npm run build:css && npm run build:js && tsc",
@@ -24,7 +24,8 @@
     "test:e2e:ui": "playwright test --ui",
     "test:pa11y": "npm run generate:sitemap && pa11y-ci --config .pa11yci",
     "test:a11y": "npm-run-all --parallel --race dev test:pa11y",
-    "generate:sitemap": "npm run build && node scripts/generate-sitemap.mjs"
+    "generate:sitemap": "npm run build && node scripts/generate-sitemap.mjs",
+    "db:migrate": "tsx scripts/apply-database-migrations.ts"
   },
   "keywords": [
     "medtech",

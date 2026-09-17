@@ -3,3 +3,4 @@ dist
 coverage
 Dockerfile
 compose.yaml
+database/fake-data

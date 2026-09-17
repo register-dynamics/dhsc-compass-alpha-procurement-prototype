@@ -71,12 +71,12 @@ async function applyMigrations(schema, migrationsPath) {
 }
 
 export async function applyAllMigrations() {
-  // FIXME: Put a retry loop in in case the database is still starting up at this point
-  
   // We do external first, as app may reference things from the external schema.
   await pgPool.query("CREATE SCHEMA IF NOT EXISTS external")
   await applyMigrations('external','external-schema')
 
   await pgPool.query("CREATE SCHEMA IF NOT EXISTS app")
   await applyMigrations('app','app-schema')
+
+  console.log(`✅ database schema is up to date`)
 }
