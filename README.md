@@ -138,7 +138,16 @@ Test files should be colocated with implementation using the `.test.ts` suffix (
 
 ### Node scripts
 
-This is an explainer of all the `npm run` scripts available for the beta app:
+This is an explainer of all the `npm run` scripts available for the beta app.
+
+Those that are marked as needing database connnection details in the environment expect the following variables to be set:
+
+* `DATABASE_NAME`
+* `DATABASE_USER`
+* `DATABASE_HOST`
+* `DATABASE_PASSWORD_FILE`
+
+...pointing at the database name, login name, host, and the path to a file containing the password to access postgresql database.
 
 #### Local development
 
@@ -146,7 +155,7 @@ This is an explainer of all the `npm run` scripts available for the beta app:
 - `npm run dev:js` - start the JS watcher (frontend) for development
 - `npm run dev:ts` - start the TypeScript watcher (backend) for development
 - `npm run dev:db` - start the database container for development (in detached mode)
-- `npm run dev` - start the app in development mode with watch mode enabled for CSS, JS, and TypeScript changes
+- `npm run dev` - start the app in development mode with watch mode enabled for CSS, JS, and TypeScript changes. Needs database connection details in the environment.
 
 
 ### Production build
@@ -154,7 +163,7 @@ This is an explainer of all the `npm run` scripts available for the beta app:
 - `npm run build:css` - build the CSS for production
 - `npm run build:js` - build the JS (frontend) for production
 - `npm run build` - build the app for production
-- `npm run start` - start the built app in production mode
+- `npm run start` - start the built app in production mode. Needs database connection details in the environment.
 
 
 ### Linting and Formatting
@@ -176,3 +185,7 @@ This is an explainer of all the `npm run` scripts available for the beta app:
 - `npm run generate:sitemap` - generate the sitemap for the app to be used with Pa11y
 - `npm run test:e2e` - run end-to-end tests using Playwright
 - `npm run test:e2e:ui` - run end-to-end tests using Playwright with a UI browser interface
+
+### Database management
+
+- `npm run db:migrate` - apply pending database schema changes from `src/beta-app/database/external-schema` and `src/beta-app/database/app-schema`. Needs database connection details in the environment.

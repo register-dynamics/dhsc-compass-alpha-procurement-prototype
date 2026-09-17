@@ -3,7 +3,7 @@ import express from "express";
 import session from "express-session";
 import nunjucks from "nunjucks";
 import pgConnect from "connect-pg-simple";
-import { applyAllMigrations, pgPool } from "./database/client.js";
+import { pgPool } from "./database/client.js";
 import config from "./config.js";
 import { ensureAuthenticated, initializeAuth } from "./middleware/auth.js";
 import indexRoutes, { indexRouteDefinitions } from "./routes/index.routes.js";
@@ -17,8 +17,6 @@ import searchRoutes, {
 import sessionRoutes, {
   sessionRouteDefinitions,
 } from "./routes/session.routes.js";
-
-await applyAllMigrations();
 
 const app = express();
 
