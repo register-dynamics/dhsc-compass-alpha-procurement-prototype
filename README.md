@@ -87,7 +87,7 @@ In future we might make build.sh build two container images: one for prod use (w
 
 The beta app belongs in `src/beta-app`. It is a separate app from the alpha prototype, and will be built and deployed separately.
 
-### Running it locally (non-Docker for now)
+### Running it locally
 
 #### Pre-requisites
 
@@ -145,6 +145,7 @@ This is an explainer of all the `npm run` scripts available for the beta app:
 - `npm run dev:css` - start the CSS watcher for development
 - `npm run dev:js` - start the JS watcher (frontend) for development
 - `npm run dev:ts` - start the TypeScript watcher (backend) for development
+- `npm run dev:db` - start the database container for development (in detached mode)
 - `npm run dev` - start the app in development mode with watch mode enabled for CSS, JS, and TypeScript changes
 
 

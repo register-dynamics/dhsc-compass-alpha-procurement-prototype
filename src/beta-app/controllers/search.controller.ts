@@ -32,9 +32,10 @@ export const renderSearchResults = async (req: Request, res: Response) => {
 
   // Get the total count of search results for the given search term
   let searchResultsCountQuery = db
+    .withSchema("external")
     .selectFrom("search")
     .select(db.fn.count<number>("productId").as("count"))
-    .where("search", `match`, sanitisedSearchTerm);
+    .where("searchDoc", `@@`, sanitisedSearchTerm);
 
   if (queryCategories.length > 0) {
     searchResultsCountQuery = searchResultsCountQuery.where(
@@ -55,9 +56,10 @@ export const renderSearchResults = async (req: Request, res: Response) => {
 
   // Get the categories for the filter sidebar, along with the count of results for each category
   const categoriesInSearchResults = await db
+    .withSchema("external")
     .selectFrom("search")
     .select(["gmdnName", db.fn.count<number>("gmdnName").as("count")])
-    .where("search", `match`, sanitisedSearchTerm)
+    .where("searchDoc", `@@`, sanitisedSearchTerm)
     .groupBy("gmdnName")
     .orderBy("count", "desc")
     .execute()
@@ -71,9 +73,10 @@ export const renderSearchResults = async (req: Request, res: Response) => {
 
   // Perform the search query with pagination and render the results page
   let results = db
+    .withSchema("external")
     .selectFrom("search")
     .selectAll()
-    .where("search", `match`, sanitisedSearchTerm);
+    .where("searchDoc", `@@`, sanitisedSearchTerm);
 
   // Add in the category filter if any categories are selected
   if (queryCategories.length > 0) {

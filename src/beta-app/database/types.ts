@@ -82,6 +82,7 @@ export interface SearchTable {
   productName: string;
   model: string;
   productId: number;
+  searchDoc: string;
 
   // Temp hardcoded properties
   excluded: number;
