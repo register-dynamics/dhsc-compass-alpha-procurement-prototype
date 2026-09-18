@@ -36,7 +36,7 @@ export const renderSearchResults = async (req: Request, res: Response) => {
   const queryParams = {
     categories: JSON.stringify(queryCategories),
     limit: pageSize,
-    offset: pageSize * currentPage
+    offset: pageSize * currentPage,
   };
 
   // Get the total count of search results for the given search term

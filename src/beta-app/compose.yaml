@@ -21,7 +21,7 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
-    
+
   web:
     build:
       context: .
@@ -59,7 +59,6 @@ volumes:
 secrets:
   postgres-passwd:
     file: ./postgres-passwd
-
 
 networks:
   default:
