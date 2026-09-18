@@ -31,7 +31,7 @@ app.use(bodyParser.json());
 const sessionStore = new (pgConnect(session))({
   createTableIfMissing: true,
   pool: pgPool,
-  tableName: 'user_sessions'
+  tableName: "user_sessions",
 }) as session.Store;
 
 const sessionOptions: session.SessionOptions = {

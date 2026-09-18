@@ -1,3 +1,3 @@
-import { applyAllMigrations } from '../database/client.js'
+import { applyAllMigrations } from "../database/client.js";
 
-await applyAllMigrations()
+await applyAllMigrations();
