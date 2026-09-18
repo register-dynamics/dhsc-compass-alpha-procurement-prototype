@@ -35,18 +35,6 @@ services:
       DATABASE_USER: compass
       DATABASE_HOST: db
       DATABASE_PASSWORD_FILE: /run/secrets/postgres-passwd
-    develop:
-      watch:
-        - action: sync
-          path: .
-          target: /compass
-          initial_sync: true
-          ignore:
-            - node_modules
-            - dist
-            - coverage
-        - action: rebuild
-          path: package-lock.json
     networks:
       - default
     depends_on:
