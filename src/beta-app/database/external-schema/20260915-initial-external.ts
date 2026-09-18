@@ -48,7 +48,7 @@ export async function up(db: Kysely<any>): Promise<void> {
       db.selectFrom('external.products as p')
         .leftJoin('external.device_type as t', 'p.device_id', 't.device_id')
         .leftJoin('external.manufacturers as m', 'p.manufacturer_id', 'm.manufacturer_id')
-        .innerJoin('external.gmdn as g','t.gmdn_code','g.gmdn_code')
+        .innerJoin('external.gmdn as g', 't.gmdn_code', 'g.gmdn_code')
         .select('p.product_id as product_id')
         .select('t.device_id as device_id')
         .select('p.brand_trade_name as product_name')
@@ -61,17 +61,26 @@ export async function up(db: Kysely<any>): Promise<void> {
         .select('p.udi_number as udi')
         .select('t.gmdn_code as gmdn_code')
         // Join all the things we'd like free text searches to match on
-        .select(sql`to_tsvector('english',
-        p.product_id || ' ' ||
-        t.device_id || ' ' ||
-        p.brand_trade_name || ' ' ||
-        p.model || ' ' ||
-        g.gmdn_term_name || ' ' ||
-        t.device_type_name || ' ' ||
-        m.man_organisation_name || ' ' ||
-        m.man_country || ' ' ||
-        p.udi_number || ' ' ||
-        t.gmdn_code) as search_doc`)
+        .select(
+          sql<string>`
+            to_tsvector(
+              'english',
+              concat_ws(
+                ' ',
+                p.product_id,
+                t.device_id,
+                p.brand_trade_name,
+                p.model,
+                g.gmdn_term_name,
+                t.device_type_name,
+                m.man_organisation_name,
+                m.man_country,
+                p.udi_number,
+                t.gmdn_code
+              )
+            )
+          `.as('search_doc'),
+        ),
     )
     .execute()
 
