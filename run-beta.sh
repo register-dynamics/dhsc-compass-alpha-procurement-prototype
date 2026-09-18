@@ -10,12 +10,18 @@ if [ ! -d "$BETA_DIR" ]; then
     exit 1
 fi
 
+BACKGROUND=NO
+
 while [ "$#" -gt 0 ]
 do
     case "$1" in
+        --background)
+            BACKGROUND=YES
+            shift
+            ;;
         *)
             echo "Unknown option: $1"
-            echo "Usage: ./run-beta.sh"
+            echo "Usage: ./run-beta.sh [--background]"
             exit 1
             ;;
     esac
@@ -39,4 +45,9 @@ fi
 echo "RUNNING THE SITE ON http://localhost:3001/"
 echo "Press ctrl+c to stop it"
 
-docker compose up --watch
+if [ $BACKGROUND == YES ]
+then
+    docker compose up --detach
+else
+    docker compose up --watch
+fi
