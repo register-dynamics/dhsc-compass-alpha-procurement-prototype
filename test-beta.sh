@@ -58,6 +58,9 @@ fi
 # Start containers
 ./run-beta.sh --background
 
+# Ensure migrations have run (app container may still be starting up)
+docker exec $CONTAINER npm run db:migrate
+
 # Load fake data (OVERWRITES ANY EXISTING DATA IN DATABASE)
 ./load-fake-data.sh
 
