@@ -12,7 +12,7 @@ import { Database } from "./types.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-function readPasswordFile(path) {
+function readPasswordFile(path: string) {
   const raw = readFileSync(path, {encoding: 'utf8'});
   // Remove trailing \n or \r\n
   if (raw.at(-1) === '\n') {
@@ -20,6 +20,16 @@ function readPasswordFile(path) {
   } else {
     return raw;
   }
+}
+
+// Check here rather than in config.ts so it only errors if you actually try to connect
+// to the database, eg not when running unit tests etc
+if(!(config.database.database &&
+  config.database.user &&
+  config.database.password_file &&
+  config.database.host)) {
+  console.error("All of the DATABASE_NAME, DATABASE_HOST, DATABASE_USER and DATABASE_PASSWORD_FILE environment variables must be set")
+  process.exit(1)
 }
 
 const dbConfig = {
@@ -40,7 +50,7 @@ export const db = new Kysely<Database>({
   plugins: [new CamelCasePlugin({ upperCase: false })],
 });
 
-async function applyMigrations(schema, migrationsPath) {
+async function applyMigrations(schema: string, migrationsPath: string) {
   console.log("Checking for migrations in " + migrationsPath + ":")
 
   const migrator = new Migrator({
