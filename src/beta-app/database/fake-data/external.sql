@@ -12718,3 +12718,5 @@ INSERT INTO "external"."products" ("product_id","udi_number","device_id","is_mod
  (84123596,1523455265,4523,0,'Heart Rate Monitor','Heart Rate Monitor','2124-23-66',13455),
  (94621578,2184663215,6324,0,'Insulin Safety Syringe with Fixed Needle','Insulin Kit','7824526',33625),
  (96541235,4561231522,1258,0,'BetaPlex 4000 Static','BetaPlex 4000','RE-190',44622);
+
+REFRESH MATERIALIZED VIEW "external"."search";
