@@ -20,6 +20,7 @@ export const renderProduct = async (req: Request, res: Response) => {
   }
 
   const product = await db
+    .withSchema("external")
     .selectFrom("search")
     .selectAll()
     .where("productId", "=", productId)
@@ -31,6 +32,7 @@ export const renderProduct = async (req: Request, res: Response) => {
   }
 
   const documents = await db
+    .withSchema("app")
     .selectFrom("make_documents")
     .selectAll()
     .where("productId", "=", productId)
@@ -41,6 +43,7 @@ export const renderProduct = async (req: Request, res: Response) => {
     const documentIds = documents.map((doc) => doc.documentId);
 
     const contacts = await db
+      .withSchema("app")
       .selectFrom("document_contacts as dc")
       .innerJoin("contacts as c", "c.contactId", "dc.contactId")
       .select([
@@ -66,6 +69,7 @@ export const renderProduct = async (req: Request, res: Response) => {
     const userId = req.user?.id;
 
     const documentUsefulness = await db
+      .withSchema("app")
       .selectFrom("product_documents_useful")
       .select([
         "documentId",
@@ -131,6 +135,7 @@ export const postMarkUseful = async (req: Request, res: Response) => {
       .execute();
 
     const countUseful = await db
+      .withSchema("app")
       .selectFrom("product_documents_useful")
       .select(db.fn.count("documentId").as("count"))
       .where("documentId", "=", documentId)
@@ -164,6 +169,7 @@ export const postUnmarkUseful = async (req: Request, res: Response) => {
 
   try {
     await db
+      .withSchema("app")
       .deleteFrom("product_documents_useful")
       .where("documentId", "=", documentId)
       .where("productId", "=", productId)
@@ -171,6 +177,7 @@ export const postUnmarkUseful = async (req: Request, res: Response) => {
       .execute();
 
     const countUseful = await db
+      .withSchema("app")
       .selectFrom("product_documents_useful")
       .select(db.fn.count("documentId").as("count"))
       .where("documentId", "=", documentId)

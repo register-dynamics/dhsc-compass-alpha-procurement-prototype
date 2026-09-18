@@ -87,7 +87,7 @@ In future we might make build.sh build two container images: one for prod use (w
 
 The beta app belongs in `src/beta-app`. It is a separate app from the alpha prototype, and will be built and deployed separately.
 
-### Running it locally (non-Docker for now)
+### Running it locally
 
 #### Pre-requisites
 
@@ -95,7 +95,9 @@ The beta app belongs in `src/beta-app`. It is a separate app from the alpha prot
 
 #### Running the app
 
-Within `src/beta-app`, run `npm install` to install dependencies, then run `npm run dev` to start the app. It will be available at http://localhost:3001/.
+Run `./run-beta.sh` to run the beta app. It will be available at http://localhost:3001/.
+
+The first time you run it, it won't have any data - but while it's running (in a separateterminal window) you can run the `./load-fake-data.sh` script to load a bunch of fake data into the database. It will stay there when you restart, you don't need to do this every time (but see below for instructions to blank the database if you want to reload some new fake data).
 
 There is a test user seeded into the database for logging in to the beta app:
 
@@ -110,6 +112,28 @@ node scripts/generate-password-hash.js mypassword
 
 and then use that value in the `password_hash` column when adding a new user to the `users` table.
 
+#### Getting into the database
+
+To get a psql CLI prompt connected to the backend database:
+
+```bash
+docker exec -ti compass-beta-db-1 psql -U compass compass
+```
+
+To blank the database, causing it to be regenerated next time you run the beta, run this while the beta isn't running:
+
+```bash
+(cd src/beta-app ; docker compose down --volumes)
+```
+
+#### Getting into the app container
+
+To get a bash shell in the app container:
+
+```bash
+docker exec -ti compass-beta-web-1 bash
+```
+
 ### Testing
 
 Within `src/beta-app`, run the following commands to execute and watch tests or generate coverage:
@@ -122,14 +146,24 @@ Test files should be colocated with implementation using the `.test.ts` suffix (
 
 ### Node scripts
 
-This is an explainer of all the `npm run` scripts available for the beta app:
+This is an explainer of all the `npm run` scripts available for the beta app.
+
+Those that are marked as needing database connnection details in the environment expect the following variables to be set:
+
+* `DATABASE_NAME`
+* `DATABASE_USER`
+* `DATABASE_HOST`
+* `DATABASE_PASSWORD_FILE`
+
+...pointing at the database name, login name, host, and the path to a file containing the password to access postgresql database.
 
 #### Local development
 
 - `npm run dev:css` - start the CSS watcher for development
 - `npm run dev:js` - start the JS watcher (frontend) for development
 - `npm run dev:ts` - start the TypeScript watcher (backend) for development
-- `npm run dev` - start the app in development mode with watch mode enabled for CSS, JS, and TypeScript changes
+- `npm run dev:db` - start the database container for development (in detached mode)
+- `npm run dev` - start the app in development mode with watch mode enabled for CSS, JS, and TypeScript changes. Needs database connection details in the environment.
 
 
 ### Production build
@@ -137,7 +171,7 @@ This is an explainer of all the `npm run` scripts available for the beta app:
 - `npm run build:css` - build the CSS for production
 - `npm run build:js` - build the JS (frontend) for production
 - `npm run build` - build the app for production
-- `npm run start` - start the built app in production mode
+- `npm run start` - start the built app in production mode. Needs database connection details in the environment.
 
 
 ### Linting and Formatting
@@ -159,3 +193,7 @@ This is an explainer of all the `npm run` scripts available for the beta app:
 - `npm run generate:sitemap` - generate the sitemap for the app to be used with Pa11y
 - `npm run test:e2e` - run end-to-end tests using Playwright
 - `npm run test:e2e:ui` - run end-to-end tests using Playwright with a UI browser interface
+
+### Database management
+
+- `npm run db:migrate` - apply pending database schema changes from `src/beta-app/database/external-schema` and `src/beta-app/database/app-schema`. Needs database connection details in the environment.

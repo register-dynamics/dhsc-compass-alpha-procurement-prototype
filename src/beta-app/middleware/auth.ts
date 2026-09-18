@@ -22,6 +22,7 @@ passport.use(
 
     (async () => {
       const user = await db
+        .withSchema("app")
         .selectFrom("users")
         .selectAll()
         .where("users.username", "=", username)
@@ -56,7 +57,8 @@ passport.serializeUser((user, done) => {
 });
 
 passport.deserializeUser((id, done) => {
-  db.selectFrom("users")
+  db.withSchema("app")
+    .selectFrom("users")
     .selectAll()
     .where("id", "=", id as number)
     .executeTakeFirst()

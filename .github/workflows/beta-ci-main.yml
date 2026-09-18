@@ -33,20 +33,13 @@ jobs:
         run: npm run lint
       - name: Run format check
         run: npm run format:check
-      - name: Seed some test data
-        run: sqlite3 database.db < ../alpha-prototype/schema.sql
-      - name: Run tests with coverage
-        run: npm run test:coverage
-      - name: Setup Chrome
-        id: chrome
-        uses: browser-actions/setup-chrome@v2
-      - name: Generate sitemap for Pa11y tests
-        run: npm run generate:sitemap
-      - name: Run Pa11y accessibility tests
-        env:
-          PUPPETEER_EXECUTABLE_PATH: ${{ steps.chrome.outputs.chrome-path }}
-        run: npm run test:a11y
-      - name: Install playwright browsers for end-to-end tests
-        run: npx playwright install chromium --with-deps
-      - name: Run end-to-end tests
-        run: npm run test:e2e
+      - name: Run all the tests, with coverage
+        run: cd ../.. ; ./test-beta.sh --really-zap-my-database --coverage --accessability --e2e
+        continue-on-error: true
+      - name: Report coverage
+        uses: davelosert/vitest-coverage-report-action@v2
+        with:
+          json-summary-path: src/beta-app/coverage/coverage-summary.json
+          json-final-path: src/beta-app/coverage/coverage-final.json
+          name: Beta app coverage
+          vite-config-path: src/beta-app/vitest.config.ts

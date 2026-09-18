@@ -2,9 +2,6 @@
 
 set -e
 
-# Copy the schema from the alpha (TODO: This will be replaced by postgresql setup)
-cp ../alpha-prototype/schema.sql .
-
 # Build our app
 
 docker compose build
