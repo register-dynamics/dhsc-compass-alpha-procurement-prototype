@@ -46,11 +46,11 @@ export async function up(db: Kysely<any>): Promise<void> {
     .materialized()
     .as(
       db.selectFrom('external.products as p')
-        .innerJoin('external.device_type as t', 'p.device_id', 't.device_id')
+        .leftJoin('external.device_type as t', 'p.device_id', 't.device_id')
+        .leftJoin('external.manufacturers as m', 'p.manufacturer_id', 'm.manufacturer_id')
         .innerJoin('external.gmdn as g','t.gmdn_code','g.gmdn_code')
-        .innerJoin('external.manufacturers as m', 'p.manufacturer_id', 'm.manufacturer_id')
         .select('p.product_id as product_id')
-        .select('p.device_id as device_id')
+        .select('t.device_id as device_id')
         .select('p.brand_trade_name as product_name')
         .select('p.model as model')
         .select('g.gmdn_term_name as gmdn_name')
@@ -59,11 +59,11 @@ export async function up(db: Kysely<any>): Promise<void> {
         .select('m.man_organisation_name as manufacturer')
         .select('m.man_country as country')
         .select('p.udi_number as udi')
-        .select('g.gmdn_code as gmdn_code')
+        .select('t.gmdn_code as gmdn_code')
         // Join all the things we'd like free text searches to match on
         .select(sql`to_tsvector('english',
         p.product_id || ' ' ||
-        p.device_id || ' ' ||
+        t.device_id || ' ' ||
         p.brand_trade_name || ' ' ||
         p.model || ' ' ||
         g.gmdn_term_name || ' ' ||
@@ -71,7 +71,7 @@ export async function up(db: Kysely<any>): Promise<void> {
         m.man_organisation_name || ' ' ||
         m.man_country || ' ' ||
         p.udi_number || ' ' ||
-        g.gmdn_code) as search_doc`)
+        t.gmdn_code) as search_doc`)
     )
     .execute()
 

@@ -97,6 +97,8 @@ The beta app belongs in `src/beta-app`. It is a separate app from the alpha prot
 
 Run `./run-beta.sh` to run the beta app. It will be available at http://localhost:3001/.
 
+The first time you run it, it won't have any data - but while it's running (in a separateterminal window) you can run the `./load-fake-data.sh` script to load a bunch of fake data into the database. It will stay there when you restart, you don't need to do this every time (but see below for instructions to blank the database if you want to reload some new fake data).
+
 There is a test user seeded into the database for logging in to the beta app:
 
 - Username: `test@example.com`
@@ -116,6 +118,12 @@ To get a psql CLI prompt connected to the backend database:
 
 ```bash
 docker exec -ti compass-beta-db-1 psql -U compass compass
+```
+
+To blank the database, causing it to be regenerated next time you run the beta, run this while the beta isn't running:
+
+```bash
+(cd src/beta-app ; docker compose down --volumes)
 ```
 
 #### Getting into the app container
