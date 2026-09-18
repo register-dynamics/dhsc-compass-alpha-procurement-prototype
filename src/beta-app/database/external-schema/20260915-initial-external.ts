@@ -1,9 +1,15 @@
 import { Kysely, sql } from 'kysely'
 
-export async function up(db: Kysely<any>): Promise<void> {
-  // TODO: See if I've declared things NOT NULL that might be NULL, when we try to load the data
-  // TODO: FK relationships please!
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function down(db: Kysely<any>): Promise<void> {
+  await db.schema.dropTable('external.products').execute()
+  await db.schema.dropTable('external.manufacturers').execute()
+  await db.schema.dropTable('external.gmdn').execute()
+  await db.schema.dropTable('external.device_type').execute()
+}
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function up(db: Kysely<any>): Promise<void> {
   await db.schema
     .createTable('external.gmdn')
     .addColumn('gmdn_code','integer', (col) => col.primaryKey())
@@ -90,11 +96,4 @@ export async function up(db: Kysely<any>): Promise<void> {
     .using('GIN')
     .column('search_doc')
     .execute()
-}
-
-export async function down(db: Kysely<any>): Promise<void> {
-  await db.schema.dropTable('external.products').execute()
-  await db.schema.dropTable('external.manufacturers').execute()
-  await db.schema.dropTable('external.gmdn').execute()
-  await db.schema.dropTable('external.device_type').execute()
 }

@@ -14,6 +14,12 @@ const config = {
   app: {
     name: "Search and evaluate medical technologies",
   },
+  database: {
+    database: process.env.DATABASE_NAME,
+    host: process.env.DATABASE_HOST,
+    password_file: process.env.DATABASE_PASSWORD_FILE,
+    user: process.env.DATABASE_USER,
+  },
   env: process.env.NODE_ENV ?? "development",
   search: {
     pageSize: 25,
@@ -25,12 +31,6 @@ const config = {
       sameSite: "lax" as const,
     },
     secret: process.env.SESSION_SECRET ?? "default-secret",
-  },
-  database: {
-    database: process.env.DATABASE_NAME,
-    host: process.env.DATABASE_HOST,
-    user: process.env.DATABASE_USER,
-    password_file: process.env.DATABASE_PASSWORD_FILE,
   },
 };
 

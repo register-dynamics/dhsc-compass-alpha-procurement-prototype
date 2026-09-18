@@ -1,12 +1,12 @@
-import { Pool} from 'pg'
-import { CamelCasePlugin, Kysely, PostgresDialect } from "kysely";
-import * as path from 'path'
 import { promises as fs } from 'fs'
 import { readFileSync } from 'fs'
+import { CamelCasePlugin, Kysely, PostgresDialect } from "kysely";
 import { FileMigrationProvider, Migrator } from 'kysely/migration'
+import * as path from 'path'
+import { Pool} from 'pg'
 import { fileURLToPath } from 'url';
-import config from "../config.js";
 
+import config from "../config.js";
 import { Database } from "./types.js";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -34,9 +34,9 @@ if(!(config.database.database &&
 
 const dbConfig = {
   database: config.database.database,
-  user: config.database.user,
-  password: readPasswordFile(config.database.password_file),
   host: config.database.host,
+  password: readPasswordFile(config.database.password_file),
+  user: config.database.user,
 };
 
 export const pgPool = new Pool(dbConfig);
@@ -50,6 +50,17 @@ export const db = new Kysely<Database>({
   plugins: [new CamelCasePlugin({ upperCase: false })],
 });
 
+export async function applyAllMigrations() {
+  // We do external first, as app may reference things from the external schema.
+  await pgPool.query("CREATE SCHEMA IF NOT EXISTS external")
+  await applyMigrations('external','external-schema')
+
+  await pgPool.query("CREATE SCHEMA IF NOT EXISTS app")
+  await applyMigrations('app','app-schema')
+
+  console.log(`✅ database schema is up to date`)
+}
+
 async function applyMigrations(schema: string, migrationsPath: string) {
   console.log("Checking for migrations in " + migrationsPath + ":")
 
@@ -58,8 +69,8 @@ async function applyMigrations(schema: string, migrationsPath: string) {
     migrationTableSchema: schema,
     provider: new FileMigrationProvider({
       fs,
-      path,
       migrationFolder: path.join(__dirname, migrationsPath),
+      path,
     }),
   })
 
@@ -78,15 +89,4 @@ async function applyMigrations(schema: string, migrationsPath: string) {
     console.error(error)
     process.exit(1)
   }
-}
-
-export async function applyAllMigrations() {
-  // We do external first, as app may reference things from the external schema.
-  await pgPool.query("CREATE SCHEMA IF NOT EXISTS external")
-  await applyMigrations('external','external-schema')
-
-  await pgPool.query("CREATE SCHEMA IF NOT EXISTS app")
-  await applyMigrations('app','app-schema')
-
-  console.log(`✅ database schema is up to date`)
 }

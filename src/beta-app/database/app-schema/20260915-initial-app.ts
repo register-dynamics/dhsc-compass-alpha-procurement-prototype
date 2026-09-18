@@ -1,5 +1,21 @@
 import { Kysely, sql } from 'kysely'
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function down(db: Kysely<any>): Promise<void> {
+  await db.schema.withSchema('app').dropView('make_documents').execute()
+  await db.schema.dropTable('app.product_documents_useful').execute()
+  await db.schema.dropTable('app.users').execute()
+  await db.schema.dropTable('app.product_matches').execute()
+  await db.schema.dropTable('app.document_contacts').execute()
+  await db.schema.dropTable('app.documents').execute()
+  await db.schema.dropTable('app.organisations').execute()
+  await db.schema.dropTable('app.contacts').execute()
+  await db.schema.dropTable('app.org_category').execute()
+  await db.schema.dropTable('app.org_type').execute()
+  await db.schema.dropTable('app.document_type').execute()
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function up(db: Kysely<any>): Promise<void> {
   await db.schema
     .createTable('app.document_type')

@@ -1,10 +1,11 @@
 import bodyParser from "body-parser";
+import pgConnect from "connect-pg-simple";
 import express from "express";
 import session from "express-session";
 import nunjucks from "nunjucks";
-import pgConnect from "connect-pg-simple";
-import { pgPool } from "./database/client.js";
+
 import config from "./config.js";
+import { pgPool } from "./database/client.js";
 import { ensureAuthenticated, initializeAuth } from "./middleware/auth.js";
 import indexRoutes, { indexRouteDefinitions } from "./routes/index.routes.js";
 import productRoutes, {
@@ -28,9 +29,9 @@ app.use(bodyParser.json());
 
 // Configure session and authentication middleware
 const sessionStore = new (pgConnect(session))({
+  createTableIfMissing: true,
   pool: pgPool,
-  tableName: 'user_sessions',
-  createTableIfMissing: true
+  tableName: 'user_sessions'
 }) as session.Store;
 
 const sessionOptions: session.SessionOptions = {
