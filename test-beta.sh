@@ -47,7 +47,7 @@ do
     esac
 done
 
-if [ $CONFIRMED == NO ]
+if [ $CONFIRMED = NO ]
 then
     echo "This script will overwrite your database with standard test data in order to run the tests. If you're sure, please re-run it like so:"
     echo "$0 --really-zap-my-database"
@@ -65,7 +65,7 @@ fi
 RESULT=0
 
 # Run test suite, optionally in coverage mode?
-if [ $CORE == YES ]
+if [ $CORE = YES ]
 then
     if docker exec $CONTAINER npm run $TARGET
     then
@@ -75,7 +75,7 @@ then
         RESULT=1
     fi
 
-    if [ $TARGET == test:coverage ]
+    if [ $TARGET = test:coverage ]
     then
         # Rescue coverage report
         docker cp $CONTAINER:/compass/coverage src/beta-app
@@ -83,13 +83,13 @@ then
 fi
 
 # Do we need chrome installed?
-if [ $ACCESSABILITY == YES -o $E2E == YES ]
+if [ $ACCESSABILITY = YES -o $E2E = YES ]
 then
     # FIXME: Probably better to bake chromium into the container image than to do this every time, but it would be nice to NOT do that when we're not going to run tests - something to think about in future
     if docker exec $CONTAINER npx playwright install chromium --with-deps
     then
         # Run accessability tests?
-        if [ $ACCESSABILITY == YES ]
+        if [ $ACCESSABILITY = YES ]
         then
             if docker exec $CONTAINER npm run generate:sitemap
             then
@@ -111,7 +111,7 @@ then
         fi
 
         # Run e2e tests?
-        if [ $E2E == YES ]
+        if [ $E2E = YES ]
         then
             if docker exec $CONTAINER npm run test:e2e
             then

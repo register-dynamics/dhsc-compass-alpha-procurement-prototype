@@ -34,7 +34,7 @@ jobs:
       - name: Run format check
         run: npm run format:check
       - name: Run all the tests, with coverage
-        run: ../../test-beta.sh --really-zap-my-database --coverage --accessability --e2e
+        run: cd ../.. ; ./test-beta.sh --really-zap-my-database --coverage --accessability --e2e
       - name: Report coverage
         uses: davelosert/vitest-coverage-report-action@v2
         with:
