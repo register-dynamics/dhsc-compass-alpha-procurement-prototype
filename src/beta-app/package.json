@@ -23,7 +23,8 @@
     "test:e2e:ui": "playwright test --ui",
     "test:pa11y": "npm run generate:sitemap && pa11y-ci --config .pa11yci",
     "test:a11y": "npm-run-all --parallel --race dev test:pa11y",
-    "generate:sitemap": "npm run build && node scripts/generate-sitemap.mjs"
+    "generate:sitemap": "npm run build && node scripts/generate-sitemap.mjs",
+    "test:all": "npm-run-all test:a11y test:e2e test:coverage"
   },
   "keywords": [
     "medtech",

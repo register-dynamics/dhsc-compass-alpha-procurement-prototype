@@ -151,7 +151,7 @@ This is an explainer of all the `npm run` scripts available for the beta app:
 
 ### Testing
 
-- `npm run test` - run all tests once
+- `npm run test:all` - run all tests once
 - `npm run test:watch` - start Vitest in watch mode
 - `npm run test:coverage` - run tests with coverage reporting
 - `npm run test:pa11y` - run accessibility tests using Pa11y (assumes target test instance of app is running)

@@ -13,11 +13,14 @@ describe("Index controller", () => {
     expect(response.headers["content-type"]).toMatch(/html/);
   });
 
-  it("GET /nonexistent should redirect to /sign-in", async () => {
-    const response = await request(app).get("/nonexistent").redirects(0);
+  it("GET /nonexistent should render the not-found page", async () => {
+    const response = await request(app).get("/nonexistent");
 
-    expect(response.status).toBe(302);
-    expect(response.headers.location).toBe("/sign-in");
+    expect(response.status).toBe(404);
+    expect(response.text).toContain(
+      "We cannot find the page you're looking for",
+    );
+    expect(response.headers["content-type"]).toMatch(/html/);
   });
 
   it("GET /dashboard should return the dashboard page with content-type text/html", async () => {
@@ -30,4 +33,6 @@ describe("Index controller", () => {
     expect(response.text).toContain("Dashboard");
     expect(response.headers["content-type"]).toMatch(/html/);
   });
+
+  // NB: We can't test the 500 error page directly because it requires triggering a server-side error, which is not feasible in our unit test environment (at the moment).
 });
