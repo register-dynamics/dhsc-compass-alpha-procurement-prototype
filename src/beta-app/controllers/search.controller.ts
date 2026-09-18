@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { sql } from "kysely";
 
 import config from "../config.js";
 import { db } from "../database/client.js";
@@ -9,7 +10,16 @@ export const renderSearch = (req: Request, res: Response) => {
 
 export const renderSearchResults = async (req: Request, res: Response) => {
   const searchTerm = typeof req.query.q === "string" ? req.query.q : "";
-  const sanitisedSearchTerm = `"${searchTerm}"`;
+  // Sanitise the search term to prevent SQL injection and ensure proper full-text search behavior
+  // Where symbols are present, use websearch_to_tsquery for more flexible search
+  // Otherwise use to_tsquery for simple alphanumeric search terms
+  const sanitisedSearchTerm = sql<boolean>`
+    "search_doc" @@ CASE
+      WHEN ${searchTerm} ~ '^[[:alnum:]]+$'
+        THEN to_tsquery('english', ${searchTerm} || ':*')
+      ELSE websearch_to_tsquery('english', ${searchTerm})
+    END
+  `;
   const pageSize = config.search.pageSize;
   const currentPage = (parseInt(req.query.page as string) || 1) - 1;
   const searchPage = currentPage + 1;
@@ -26,8 +36,7 @@ export const renderSearchResults = async (req: Request, res: Response) => {
   const queryParams = {
     categories: JSON.stringify(queryCategories),
     limit: pageSize,
-    offset: pageSize * currentPage,
-    term: sanitisedSearchTerm,
+    offset: pageSize * currentPage
   };
 
   // Get the total count of search results for the given search term
@@ -35,7 +44,7 @@ export const renderSearchResults = async (req: Request, res: Response) => {
     .withSchema("external")
     .selectFrom("search")
     .select(db.fn.count<number>("productId").as("count"))
-    .where("searchDoc", `@@`, sanitisedSearchTerm);
+    .where(sanitisedSearchTerm);
 
   if (queryCategories.length > 0) {
     searchResultsCountQuery = searchResultsCountQuery.where(
@@ -59,7 +68,7 @@ export const renderSearchResults = async (req: Request, res: Response) => {
     .withSchema("external")
     .selectFrom("search")
     .select(["gmdnName", db.fn.count<number>("gmdnName").as("count")])
-    .where("searchDoc", `@@`, sanitisedSearchTerm)
+    .where(sanitisedSearchTerm)
     .groupBy("gmdnName")
     .orderBy("count", "desc")
     .execute()
@@ -76,7 +85,7 @@ export const renderSearchResults = async (req: Request, res: Response) => {
     .withSchema("external")
     .selectFrom("search")
     .selectAll()
-    .where("searchDoc", `@@`, sanitisedSearchTerm);
+    .where(sanitisedSearchTerm);
 
   // Add in the category filter if any categories are selected
   if (queryCategories.length > 0) {
