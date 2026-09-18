@@ -123,6 +123,7 @@ export const postMarkUseful = async (req: Request, res: Response) => {
 
   try {
     await db
+      .withSchema("app")
       .insertInto("product_documents_useful")
       .values({
         // @ts-expect-error: TypeScript may complain about the date format
@@ -142,7 +143,10 @@ export const postMarkUseful = async (req: Request, res: Response) => {
       .where("productId", "=", productId)
       .execute();
 
-    res.status(200).send({ count: countUseful[0].count });
+    // This gets type "string | number | bigint" for some reason
+    const count = Number(countUseful[0].count);
+
+    res.status(200).send({ count: count });
   } catch (error) {
     console.error("Failed to mark as useful", error);
     // TODO: Add proper error handling and logging here
@@ -184,7 +188,10 @@ export const postUnmarkUseful = async (req: Request, res: Response) => {
       .where("productId", "=", productId)
       .execute();
 
-    res.status(200).send({ count: countUseful[0].count });
+    // This gets type "string | number | bigint" for some reason
+    const count = Number(countUseful[0].count);
+
+    res.status(200).send({ count: count });
   } catch (error) {
     console.error("Failed to unmark as useful", error);
     // TODO: Add proper error handling and logging here

@@ -45,7 +45,7 @@ fi
 echo "RUNNING THE SITE ON http://localhost:3001/"
 echo "Press ctrl+c to stop it"
 
-if [ $BACKGROUND == YES ]
+if [ $BACKGROUND = YES ]
 then
     docker compose up --detach
 else

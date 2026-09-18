@@ -12,7 +12,7 @@ fi
 CONFIRMED=NO
 CORE=NO
 TARGET=test
-ACCESSABILITY=NO
+ACCESSIBILITY=NO
 E2E=NO
 
 while [ "$#" -gt 0 ]
@@ -31,8 +31,8 @@ do
             TARGET=test:coverage
             shift
             ;;
-        --accessability)
-            ACCESSABILITY=YES
+        --accessibility)
+            ACCESSIBILITY=YES
             shift
             ;;
         --e2e)
@@ -41,13 +41,13 @@ do
             ;;
         *)
             echo "Unknown option: $1"
-            echo "Usage: ./test-beta.sh [--really-zap-my-database] [--core] [--coverage] [--accessability] [--e2e]"
+            echo "Usage: ./test-beta.sh [--really-zap-my-database] [--core] [--coverage] [--accessibility] [--e2e]"
             exit 1
             ;;
     esac
 done
 
-if [ $CONFIRMED == NO ]
+if [ $CONFIRMED = NO ]
 then
     echo "This script will overwrite your database with standard test data in order to run the tests. If you're sure, please re-run it like so:"
     echo "$0 --really-zap-my-database"
@@ -58,24 +58,27 @@ fi
 # Start containers
 ./run-beta.sh --background
 
+# Ensure migrations have run (app container may still be starting up)
+docker exec $CONTAINER npm run db:migrate
+
 # Load fake data (OVERWRITES ANY EXISTING DATA IN DATABASE)
 ./load-fake-data.sh
 
 # Track overall test result
-RESULT=0
+FAILURES=""
 
 # Run test suite, optionally in coverage mode?
-if [ $CORE == YES ]
+if [ $CORE = YES ]
 then
     if docker exec $CONTAINER npm run $TARGET
     then
         echo OK
     else
         echo FAILED core tests
-        RESULT=1
+        FAILURES="$FAILURES core"
     fi
 
-    if [ $TARGET == test:coverage ]
+    if [ $TARGET = test:coverage ]
     then
         # Rescue coverage report
         docker cp $CONTAINER:/compass/coverage src/beta-app
@@ -83,13 +86,13 @@ then
 fi
 
 # Do we need chrome installed?
-if [ $ACCESSABILITY == YES -o $E2E == YES ]
+if [ $ACCESSIBILITY = YES -o $E2E = YES ]
 then
     # FIXME: Probably better to bake chromium into the container image than to do this every time, but it would be nice to NOT do that when we're not going to run tests - something to think about in future
     if docker exec $CONTAINER npx playwright install chromium --with-deps
     then
-        # Run accessability tests?
-        if [ $ACCESSABILITY == YES ]
+        # Run accessibility tests?
+        if [ $ACCESSIBILITY = YES ]
         then
             if docker exec $CONTAINER npm run generate:sitemap
             then
@@ -98,32 +101,32 @@ then
                 then
                     echo OK
                 else
-                    echo FAILED accessability tests
-                    RESULT=1
+                    echo FAILED accessibility tests
+                    FAILURES="$FAILURES accessibility"
                 fi
-                # Rescue accessability report
+                # Rescue accessibility report
                 mkdir -p src/beta-app/reports
                 docker cp $CONTAINER:/compass/reports/pa11y-results.json src/beta-app/reports/pa11y-results.json
             else
                 echo FAILED to generate sitemap
-                RESULT=1
+                FAILURES="$FAILURES generate:sitemap"
             fi
         fi
 
         # Run e2e tests?
-        if [ $E2E == YES ]
+        if [ $E2E = YES ]
         then
             if docker exec $CONTAINER npm run test:e2e
             then
                 echo OK
             else
                 echo FAILED e2e tests
-                RESULT=1
+                FAILURES="$FAILURES e2e"
             fi
         fi
     else
-        echo ERROR chromium didn't install, can't run accessability or e2e tests
-        RESULT=1
+        echo ERROR chromium didn't install, can't run accessibility or e2e tests
+        FAILURES="$FAILURES chromium-install"
     fi
 fi
 
@@ -131,4 +134,10 @@ fi
 (cd $BETA_DIR ; docker compose down)
 
 # Return saved result code for success/failure
-exit $RESULT
+if [ x$FAILURES = "x" ]
+then
+    echo "OK: All tests passed"
+else
+    echo "FAIL: Some tests failed: $FAILURES"
+    exit 1
+fi

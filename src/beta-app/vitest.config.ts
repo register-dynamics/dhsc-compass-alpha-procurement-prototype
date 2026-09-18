@@ -13,6 +13,8 @@ export default defineConfig({
         "**/*.d.ts",
         "tests/**/*",
         "reports/**",
+        "database/app-schema/*",
+        "database/external-schema/*",
       ],
       provider: "v8",
       reporter: ["text", "lcov", "cobertura", "json", "json-summary"],
