@@ -2,10 +2,12 @@ import bodyParser from "body-parser";
 import connectSqlite3 from "connect-sqlite3";
 import express from "express";
 import session from "express-session";
+import helmet from "helmet";
 import nunjucks from "nunjucks";
 
 import config from "./config.js";
 import { ensureAuthenticated, initializeAuth } from "./middleware/auth.js";
+import { helmetConfig } from "./middleware/helmetConfig.js";
 import indexRoutes, { indexRouteDefinitions } from "./routes/index.routes.js";
 import productRoutes, {
   productRouteDefinitions,
@@ -19,6 +21,9 @@ import sessionRoutes, {
 } from "./routes/session.routes.js";
 
 const app = express();
+
+// Apply security-related HTTP headers using Helmet
+app.use(helmet(helmetConfig));
 
 // Parse URL-encoded bodies (as sent by HTML forms) - used by passport for login form submission
 app.use(bodyParser.urlencoded({ extended: false }));
