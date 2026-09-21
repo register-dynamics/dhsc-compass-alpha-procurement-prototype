@@ -144,6 +144,8 @@ Within `src/beta-app`, run the following commands to execute and watch tests or 
 
 Test files should be colocated with implementation using the `.test.ts` suffix (e.g., `index.test.ts` for `index.ts`).
 
+Tests will need a database connection available (see the next section for details), but the `./test-beta.sh` script will start the dockerised beta and run the tests within it, providing its own postgresql server with fake data loaded. Run the `./test-beta.sh` script for instructions, it has a bunch of options and will do nothing but list them if run without any options!
+
 ### Node scripts
 
 This is an explainer of all the `npm run` scripts available for the beta app.
@@ -184,6 +186,8 @@ Those that are marked as needing database connnection details in the environment
 
 
 ### Testing
+
+These all require database connection details in the environment, apart from `generate:sitemap`.
 
 - `npm run test` - run all tests once
 - `npm run test:watch` - start Vitest in watch mode
