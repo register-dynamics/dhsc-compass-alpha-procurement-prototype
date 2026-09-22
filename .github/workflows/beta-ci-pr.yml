@@ -36,6 +36,8 @@ jobs:
         # We need a slightly newer version of Docker Compose to support watch features
       - name: Set up Docker Compose
         uses: docker/setup-compose-action@v2
+        with:
+          version: latest
       - name: Run all the tests, with coverage
         run: cd ../.. ; ./test-beta.sh --really-zap-my-database --coverage --accessibility --e2e
       - name: Report coverage
