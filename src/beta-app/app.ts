@@ -1,6 +1,6 @@
 import bodyParser from "body-parser";
-import express, { type ErrorRequestHandler } from "express";
 import pgConnect from "connect-pg-simple";
+import express, { type ErrorRequestHandler } from "express";
 import session from "express-session";
 import nunjucks from "nunjucks";
 
