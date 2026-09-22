@@ -1,4 +1,11 @@
 import { defineConfig } from "@playwright/test";
+import { loadEnvFile } from "node:process";
+
+try {
+  loadEnvFile(".env");
+} catch {
+  console.log(".env file not present. Ignoring.");
+}
 
 export default defineConfig({
   fullyParallel: true,

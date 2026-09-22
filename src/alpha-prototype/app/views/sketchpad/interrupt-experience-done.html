@@ -1,0 +1,77 @@
+{% extends 'sketchpad/layouts/layout-signed-in.html' %}
+{% from "panel/macro.njk" import panel %}
+{% from "card/macro.njk" import card %}
+{% set pageName = "Thank you" %}
+{% block beforeContent %}
+{{ backLink({ href: "/sketchpad", text: "Back" }) }}
+{% endblock %}
+{% block content %}
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+
+    {{ panel({
+      titleText: "Thank you",
+      headingLevel: 1,
+      text: "Your contact details now appear against these devices"
+    }) }}
+
+    <h2 class="nhsuk-heading-m nhsuk-u-margin-top-5">What you added</h2>
+
+    {% set summaryList %}
+    <dl class="nhsuk-summary-list">
+      <div class="nhsuk-summary-list__row">
+        <dt class="nhsuk-summary-list__key">Trust experience</dt>
+        <dd class="nhsuk-summary-list__value">Barts Health NHS Trust</dd>
+        <dd class="nhsuk-summary-list__actions"></dd>
+      </div>
+      <div class="nhsuk-summary-list__row">
+        <dt class="nhsuk-summary-list__key">Contact</dt>
+        <dd class="nhsuk-summary-list__value">Dr Tess Sawyer</dd>
+        <dd class="nhsuk-summary-list__actions"><a href="/sketchpad/experience-contact">Change<span class="nhsuk-u-visually-hidden"> contact</span></a></dd>
+      </div>
+      <div class="nhsuk-summary-list__row">
+        <dt class="nhsuk-summary-list__key">Acquisition</dt>
+        <dd class="nhsuk-summary-list__value">Not added</dd>
+        <dd class="nhsuk-summary-list__actions"><a href="/sketchpad/experience-acquisition">Add<span class="nhsuk-u-visually-hidden"> acquisition</span></a></dd>
+      </div>
+      <div class="nhsuk-summary-list__row">
+        <dt class="nhsuk-summary-list__key">Document</dt>
+        <dd class="nhsuk-summary-list__value">Not added</dd>
+        <dd class="nhsuk-summary-list__actions"><a href="/sketchpad/experience-document">Add<span class="nhsuk-u-visually-hidden"> document</span></a></dd>
+      </div>
+    </dl>
+    <p><a href="/sketchpad/experience-device-page">View the device</a></p>
+    {% endset %}
+
+    {% if "smartpump" in data.device %}
+      {{ card({
+        heading: "SmartPump 300 Infusion System",
+        headingLevel: 4,
+        description: summaryList,
+        clickable: false
+      }) }}
+    {% endif %}
+
+    {% if "medflow" in data.device %}
+      {{ card({
+        heading: "MedFlow Infusion System 3000",
+        headingLevel: 4,
+        description: summaryList,
+        clickable: false
+      }) }}
+    {% endif %}
+
+    {% if "ultrasound" in data.device %}
+      {{ card({
+        heading: "Acme Ultrasound System X200",
+        headingLevel: 4,
+        description: summaryList,
+        clickable: false
+      }) }}
+    {% endif %}
+
+    <p><a href="/current/dashboard">Continue to the dashboard</a></p>
+
+  </div>
+</div>
+{% endblock %}

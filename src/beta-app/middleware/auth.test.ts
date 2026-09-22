@@ -41,14 +41,6 @@ describe("Authentication middleware", () => {
         Array.isArray(setCookieHeaders) || typeof setCookieHeaders === "string",
       ).toBe(true);
     });
-
-    it("should write session records to session.db", async () => {
-      await request(app)
-        .post("/sign-in")
-        .send({ password: "northsouth", username: "test@example.com" });
-
-      expect(existsSync(resolve(process.cwd(), "session.db"))).toBe(true);
-    });
   });
 
   describe("Error normalization", () => {

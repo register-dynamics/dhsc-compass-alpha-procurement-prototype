@@ -1,10 +1,11 @@
 import bodyParser from "body-parser";
-import connectSqlite3 from "connect-sqlite3";
 import express, { type ErrorRequestHandler } from "express";
+import pgConnect from "connect-pg-simple";
 import session from "express-session";
 import nunjucks from "nunjucks";
 
 import config from "./config.js";
+import { pgPool } from "./database/client.js";
 import { ensureAuthenticated, initializeAuth } from "./middleware/auth.js";
 import indexRoutes, { indexRouteDefinitions } from "./routes/index.routes.js";
 import productRoutes, {
@@ -30,11 +31,10 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 // Configure session and authentication middleware
-const SQLiteStore = connectSqlite3(session);
-const sessionStore = new SQLiteStore({
-  db: config.session.store.databaseFileName,
-  dir: config.session.store.directory,
-  table: "sessions",
+const sessionStore = new (pgConnect(session))({
+  createTableIfMissing: true,
+  pool: pgPool,
+  tableName: "user_sessions",
 }) as session.Store;
 
 const sessionOptions: session.SessionOptions = {

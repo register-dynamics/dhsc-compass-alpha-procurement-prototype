@@ -1,0 +1,66 @@
+{% extends 'sketchpad/layouts/layout-signed-in.html' %}
+
+{% from "back-link/macro.njk" import backLink %}
+{% from "card/macro.njk" import card %}
+{% from "button/macro.njk" import button %}
+{% from "checkboxes/macro.njk" import checkboxes %}
+
+{% set pageName = "Are you happy to be contacted about these devices?" %}
+
+{% block beforeContent %}
+{{ backLink({ href: "/sketchpad", text: "Back" }) }}
+{% endblock %}
+
+{% block content %}
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+    <form action="/sketchpad/interrupt-experience-done" method="post" novalidate>
+      <h1 class="nhsuk-heading-l">{{ pageName }}</h1>
+      <p>Your trust has procured these products but no-one is listed as the contact for them. Adding your contact details helps other
+        trusts learn about them.</p>
+      <div class="nhsuk-hint" id="contactable-hint">
+      </div>
+
+      {{ checkboxes({
+        hint: {
+          text: "Other trusts see your name and email on the devices you choose. You can change this at any time."
+        },
+        idPrefix: "device",
+        name: "device",
+        items: [
+        {
+          text: "SmartPump 300 Infusion System",
+          hint: {
+            html: "Infusion pump from MedTech Innovations Ltd<br />Bought by your trust in July 2026"
+          },
+          checked: true,
+          value: "smartpump"
+        },
+        {
+          text: "MedFlow Infusion System 3000",
+          hint: {
+            html: "Infusion pump from MedFlow Healthcare<br />Bought by your trust in March 2026"
+          },
+          checked: true,
+          value: "medflow"
+        },
+        {
+          text: "Acme Ultrasound System X200",
+          hint: {
+              html: "General-purpose ultrasound imaging system from Acme Medical<br />Bought by your trust in September 2023"
+          },
+          checked: true,
+          value: "ultrasound"
+        }
+        ]
+      })}}
+
+      <div class="nhsuk-button-group">
+        {{ button({ text: "Save contact preferences", classes: "nhsuk-u-margin-bottom-0" }) }}
+        <a href="/current/dashboard">Skip this step</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endblock %}

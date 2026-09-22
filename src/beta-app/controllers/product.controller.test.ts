@@ -25,6 +25,7 @@ vi.mock("../database/client.js", () => ({
     },
     insertInto: insertIntoMock,
     selectFrom: selectFromMock,
+    withSchema: vi.fn().mockReturnThis(),
   },
 }));
 

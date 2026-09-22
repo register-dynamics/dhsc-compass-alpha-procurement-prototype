@@ -8,10 +8,20 @@ services:
       POSTGRES_USER: compass
       POSTGRES_DB: compass
       POSTGRES_PASSWORD_FILE: /run/secrets/postgres-passwd
+    ports:
+      - "5432:5432"
     volumes:
       - db-data:/var/lib/postgresql
     secrets:
       - postgres-passwd
+    networks:
+      - default
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U compass -d compass"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
   web:
     build:
       context: .
@@ -20,6 +30,11 @@ services:
       - "3001:3001"
     secrets:
       - postgres-passwd
+    environment:
+      DATABASE_NAME: compass
+      DATABASE_USER: compass
+      DATABASE_HOST: db
+      DATABASE_PASSWORD_FILE: /run/secrets/postgres-passwd
     develop:
       watch:
         - action: sync
@@ -32,6 +47,11 @@ services:
             - coverage
         - action: rebuild
           path: package-lock.json
+    networks:
+      - default
+    depends_on:
+      db:
+        condition: service_healthy
 
 volumes:
   db-data:
@@ -39,3 +59,7 @@ volumes:
 secrets:
   postgres-passwd:
     file: ./postgres-passwd
+
+networks:
+  default:
+    driver: bridge
