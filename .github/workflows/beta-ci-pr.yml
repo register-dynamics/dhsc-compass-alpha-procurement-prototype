@@ -37,7 +37,8 @@ jobs:
         with:
           version: latest
       - name: Run all the tests, with coverage
-        run: cd ../.. ; ./test-beta.sh --really-zap-my-database --coverage --accessibility --e2e
+        working-directory: $GITHUB_WORKSPACE
+        run: ./test-beta.sh --really-zap-my-database --coverage --accessibility --e2e
       - name: Report coverage
         uses: davelosert/vitest-coverage-report-action@v2
         with:
