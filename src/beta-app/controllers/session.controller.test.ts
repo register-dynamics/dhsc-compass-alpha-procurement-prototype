@@ -49,7 +49,9 @@ describe("Session controller", () => {
   });
 
   it("GET /sign-out handles logout errors by returning 500", () => {
-    const logoutError = new Error("logout failed");
+    const logoutError = new Error(
+      "logout failed (simulated error for testing, don't worry if you see this in the test logs!)",
+    );
     const req = {
       logout: vi.fn((cb) => cb(logoutError) as Error),
     } as never;
