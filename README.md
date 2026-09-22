@@ -97,7 +97,7 @@ The beta app belongs in `src/beta-app`. It is a separate app from the alpha prot
 
 Run `./run-beta.sh` to run the beta app. It will be available at http://localhost:3001/.
 
-The first time you run it, it won't have any data - but while it's running (in a separateterminal window) you can run the `./load-fake-data.sh` script to load a bunch of fake data into the database. It will stay there when you restart, you don't need to do this every time (but see below for instructions to blank the database if you want to reload some new fake data).
+The first time you run it, it won't have any data - but while it's running (in a separate terminal window) you can run the `./load-fake-data.sh` script to load a bunch of fake data into the database. It will stay there when you restart, you don't need to do this every time (but see below for instructions to blank the database if you want to reload some new fake data).
 
 There is a test user seeded into the database for logging in to the beta app:
 
@@ -125,6 +125,8 @@ To blank the database, causing it to be regenerated next time you run the beta, 
 ```bash
 (cd src/beta-app ; docker compose down --volumes)
 ```
+
+The database's port is also exposed on the host machine, meaning you can access it using a Postgres client of your choice using `postgresql://compass:password@localhost:5432/compass`.
 
 #### Getting into the app container
 
