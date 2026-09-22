@@ -31,8 +31,11 @@ jobs:
         run: npm run lint
       - name: Run format check
         run: npm run format:check
-      - name: Monkey patch the compose.yaml file
-        run: ./patch-for-ci.sh
+      # - name: Monkey patch the compose.yaml file
+      #   run: ./patch-for-ci.sh
+        # We need a slightly newer version of Docker Compose to support watch features
+      - name: Set up Docker Compose
+        uses: docker/compose-action@v2
       - name: Run all the tests, with coverage
         run: cd ../.. ; ./test-beta.sh --really-zap-my-database --coverage --accessibility --e2e
       - name: Report coverage
