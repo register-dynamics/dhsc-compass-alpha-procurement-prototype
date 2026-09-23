@@ -1,8 +1,14 @@
 import { Router } from "express";
 
 import {
+  postAddEvidence,
+  postAddEvidenceContact,
+  postAddEvidenceContactSelf,
   postMarkUseful,
   postUnmarkUseful,
+  renderAddEvidence,
+  renderAddEvidenceContact,
+  renderAddEvidenceContactSelf,
   renderProduct,
 } from "../controllers/product.controller.js";
 import { registerRoutes, type RouteDefinition } from "./route-definitions.js";
@@ -24,6 +30,36 @@ const routeDefinitions: RouteDefinition[] = [
     handler: postUnmarkUseful,
     method: "post",
     path: "/product/unmark-useful",
+  },
+  {
+    handler: renderAddEvidence,
+    method: "get",
+    path: "/product/:id/add-evidence",
+  },
+  {
+    handler: postAddEvidence,
+    method: "post",
+    path: "/product/:id/add-evidence",
+  },
+  {
+    handler: renderAddEvidenceContactSelf,
+    method: "get",
+    path: "/product/:productId/add-evidence-contact-self",
+  },
+  {
+    handler: postAddEvidenceContactSelf,
+    method: "post",
+    path: "/product/:productId/add-evidence-contact-self",
+  },
+  {
+    handler: renderAddEvidenceContact,
+    method: "get",
+    path: "/product/:productId/evidence/:evidenceId/add-contact",
+  },
+  {
+    handler: postAddEvidenceContact,
+    method: "post",
+    path: "/product/:productId/evidence/:evidenceId/add-contact",
   },
 ];
 

@@ -1,0 +1,35 @@
+{% extends "layouts/base.html" %}
+{% from "panel/macro.njk" import panel %}
+{% from "button/macro.njk" import button %}
+
+{# TODO: HARDCODED VALUES #}
+{% set productId = "PRODUCT_ID" %}
+{% set productName = "PRODUCT_NAME" %}
+{% set boardName = "BOARD_NAME" %}
+
+{% set pageName = "Your trust is now listed" %}
+
+{% block content %}
+<div class="nhsuk-grid-row nhsuk-u-margin-top-7">
+  <div class="nhsuk-grid-column-two-thirds">
+
+    {{ panel({
+      titleText: "Your trust is now listed",
+      headingLevel: 1,
+      text: boardName ~ " has experience with " ~ productName
+    }) }}
+
+    <p class="nhsuk-body nhsuk-u-margin-top-5">
+      There are 3 short things you can add. Each one takes about 20 seconds, and you can stop
+      at any point.
+    </p>
+
+    <form action="/sketchpad/experience-contact" method="get">
+      {{ button({ text: "Add contact details" }) }}
+    </form>
+
+    <p><a href="/product/{{ productId }}">Return to the device</a></p>
+
+  </div>
+</div>
+{% endblock %}

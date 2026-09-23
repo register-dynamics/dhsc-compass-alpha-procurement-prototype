@@ -1,0 +1,55 @@
+{% extends "layouts/base.html" %}
+{% from "back-link/macro.njk" import backLink %}
+{% from "button/macro.njk" import button %}
+
+{# TODO: HARDCODED VALUES #}
+{% set productId = "PRODUCT_ID" %}
+{% set evidenceId = "EVIDENCE_ID" %}
+{% set contactName = "CONTACT_NAME" %}
+{% set contactRole = "CONTACT_ROLE" %}
+{% set contactEmail = "CONTACT_EMAIL" %}
+{% set productName = "PRODUCT_NAME" %}
+{% set boardName = "BOARD_NAME" %}
+
+{% set returnLink = "/product/" ~ productId %}
+
+{% set pageName = "Add yourself as a contact for this device" %}
+
+{% block beforeContent %}
+  {{ backLink({ href: returnLink, text: "Back" }) }}
+{% endblock %}
+{% block content %}
+<div class="nhsuk-grid-row nhsuk-u-margin-top-7">
+  <div class="nhsuk-grid-column-two-thirds">
+
+    <h1 class="nhsuk-heading-l">{{ pageName }}</h1>
+
+    <dl class="nhsuk-summary-list nhsuk-u-margin-bottom-6">
+      <div class="nhsuk-summary-list__row">
+        <dt class="nhsuk-summary-list__key">Contact</dt>
+        <dd class="nhsuk-summary-list__value">{{ contactName }}, {{ contactRole }}<br>{{ contactEmail }}</dd>
+        <dd class="nhsuk-summary-list__actions"><a href="#">Change<span class="nhsuk-u-visually-hidden"> contact details</span></a></dd>
+      </div>
+      <div class="nhsuk-summary-list__row">
+        <dt class="nhsuk-summary-list__key">Device</dt>
+        <dd class="nhsuk-summary-list__value">{{ productName }}</dd>
+        <dd class="nhsuk-summary-list__actions"></dd>
+      </div>
+    </dl>
+
+    <p>Other NHS trusts will see your name and email on this device, and will be able to contact
+      you about it.</p>
+
+    <p>This also lists {{ boardName }} as having experience with the device.</p>
+
+    <p>You can change this later.</p>
+
+    <form action="/product/{{ productId }}/evidence/{{ evidenceId }}/add-contact" method="post" >
+      {{ button({ text: "Confirm and add me as a contact" }) }}
+    </form>
+
+    <p><a href="{{ returnLink }}">Cancel</a></p>
+
+  </div>
+</div>
+{% endblock %}

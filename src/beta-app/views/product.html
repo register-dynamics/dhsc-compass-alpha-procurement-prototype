@@ -1,6 +1,7 @@
 {% extends "layouts/base.html" %}
 
 {% from "breadcrumb/macro.njk" import breadcrumb %}
+{% from "button/macro.njk" import button %}
 {% from "contents-list/macro.njk" import contentsList %}
 {% from "card/macro.njk" import card %}
 {% from "includes/evidence-card-business-case.njk" import evidenceCardBusinessCase %}
@@ -82,6 +83,34 @@
                     } 
                 ]
             }) }}
+
+            {# TODO: Make this card conditional based on whether the trust has used the device #}
+            <div class="nhsuk-card nhsuk-u-margin-bottom-6">
+                <div class="nhsuk-card__content">
+                    <h2 class="nhsuk-card__heading nhsuk-heading-m">Has your trust used this device?</h2>
+                    <p class="nhsuk-body">
+                        {# TODO: Replace BOARD_NAME with dynamic trust name #}
+                        BOARD_NAME is not yet listed. Adding your trust takes one tap.
+                    </p>
+                    <p class="nhsuk-body">You can then, if you want to:</p>
+                    <ul class="nhsuk-list nhsuk-list--bullet">
+                        <li>add a contact other trusts can ask about it</li>
+                        <li>say what happened when your trust looked at it</li>
+                        <li>share a document, such as an evaluation or business case</li>
+                    </ul>
+                    <p class="nhsuk-body">Each part is optional and you can come back later.</p>
+                    
+                    {{ button({ 
+                        text: "Add your trust's experience",
+                        href: "/product/" ~ product.productId ~ "/add-evidence"
+                    }) }}
+                    
+
+                    <p class="nhsuk-body nhsuk-u-margin-bottom-0">
+                        <a href="/product/{{ product.productId }}/add-evidence-contact-self">Add me as a contact for this device</a>
+                    </p>
+                </div>
+            </div>
 
             {# Supplier Information Card #}
             <div class="nhsuk-card" id="supplier">

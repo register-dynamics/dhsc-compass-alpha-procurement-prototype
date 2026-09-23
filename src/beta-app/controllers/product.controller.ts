@@ -227,3 +227,54 @@ export const postUnmarkUseful = async (req: Request, res: Response) => {
     res.status(500).send("Failed to unmark as useful");
   }
 };
+
+export const renderAddEvidence = async (req: Request, res: Response) => {
+  let productId;
+
+  try {
+    productId = parseInt(req.params.id as string);
+  } catch {
+    // TODO: Send to better error handling page
+    return res.status(400).send("Invalid Product ID");
+  }
+
+  if (!productId) {
+    // TODO: Send to better error handling page
+    return res.status(400).send("Product ID is required");
+  }
+
+  // TODO: Implement
+  // Lookup the product to make sure it exists, then pull the product name
+  // Get user's organisation
+
+  res.render("product/add-evidence", { productId });
+};
+
+export const postAddEvidence = async (req: Request, res: Response) => {
+  // TODO: Implement the logic to add evidence for the product
+
+  res.render("product/add-evidence-success");
+};
+
+export const renderAddEvidenceContact = async (req: Request, res: Response) => {
+  res.render("product/add-evidence-contact-1");
+};
+
+export const renderAddEvidenceContactSelf = async (
+  req: Request,
+  res: Response,
+) => {
+  res.render("product/add-evidence-contact-self");
+};
+
+export const postAddEvidenceContactSelf = async (req: Request, res: Response) => {
+  // TODO: Implement the logic to add contact details for the evidence for self
+
+  res.render("product/add-evidence-contact-self-success");
+};
+
+export const postAddEvidenceContact = async (req: Request, res: Response) => {
+  // TODO: Implement the logic to add contact details for the evidence
+
+  res.render("product/add-evidence-contact-success");
+};
