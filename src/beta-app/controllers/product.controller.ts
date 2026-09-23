@@ -230,18 +230,11 @@ export const postUnmarkUseful = async (req: Request, res: Response) => {
 };
 
 export const renderAddEvidence = async (req: Request, res: Response) => {
-  let productId;
-
-  try {
-    productId = parseInt(req.params.id as string);
-  } catch {
-    // TODO: Send to better error handling page
-    return res.status(400).send("Invalid Product ID");
-  }
+  const productId = getProductIdFromParams(req);
 
   if (!productId) {
     // TODO: Send to better error handling page
-    return res.status(400).send("Product ID is required");
+    return res.status(400).send("Valid product ID is required");
   }
 
   // TODO: Implement
@@ -252,33 +245,93 @@ export const renderAddEvidence = async (req: Request, res: Response) => {
 };
 
 export const postAddEvidence = async (req: Request, res: Response) => {
+  const productId = getProductIdFromParams(req);
+
+  if (!productId) {
+    // TODO: Send to better error handling page
+    return res.status(400).send("Valid product ID is required");
+  }
+
   // TODO: Implement the logic to add evidence for the product
 
-  res.render("product/add-evidence-success");
+  res.render("product/add-evidence-success", { productId });
 };
 
-export const renderAddEvidenceContact = async (req: Request, res: Response) => {
-  res.render("product/add-evidence-contact-1");
+export const renderAddEvidenceContactExperience = async (req: Request, res: Response) => {
+        const productId = getProductIdFromParams(req);
+        
+        if (!productId) {
+          // TODO: Send to better error handling page
+          return res.status(400).send("Valid product ID is required");
+        }
+
+  res.render("product/add-evidence-contact-experience", { productId });
 };
 
-export const renderAddEvidenceContactSelf = async (
-  req: Request,
-  res: Response,
-) => {
-  res.render("product/add-evidence-contact-self");
+export const renderAddEvidenceContactAcquisition = async (req: Request, res: Response) => {
+  const productId = getProductIdFromParams(req);
+
+  if (!productId) {
+    // TODO: Send to better error handling page
+    return res.status(400).send("Valid product ID is required");
+  }
+
+  res.render("product/add-evidence-contact-acquisition", { productId });
 };
 
-export const postAddEvidenceContactSelf = async (
-  req: Request,
-  res: Response,
-) => {
-  // TODO: Implement the logic to add contact details for the evidence for self
+export const renderAddEvidenceContactDocument = async (req: Request, res: Response) => {
+  const productId = getProductIdFromParams(req);
 
-  res.render("product/add-evidence-contact-self-success");
+  if (!productId) {
+    // TODO: Send to better error handling page
+    return res.status(400).send("Valid product ID is required");
+  }
+
+  res.render("product/add-evidence-contact-document", { productId });
 };
 
-export const postAddEvidenceContact = async (req: Request, res: Response) => {
-  // TODO: Implement the logic to add contact details for the evidence
+export const postAddEvidenceContactDone = async (req: Request, res: Response) => {
+  const productId = getProductIdFromParams(req);
 
-  res.render("product/add-evidence-contact-success");
+  if (!productId) {
+    // TODO: Send to better error handling page
+    return res.status(400).send("Valid product ID is required");
+  }
+
+  // TODO: Implement the logic to handle the completion of adding evidence contact
+
+  res.render("product/add-evidence-contact-success", { productId });
 };
+
+export const renderAddEvidenceContactSelf = async (req: Request, res: Response) => {
+  const productId = getProductIdFromParams(req);
+
+  if (!productId) {
+    // TODO: Send to better error handling page
+    return res.status(400).send("Valid product ID is required");
+  }
+
+  res.render("product/add-evidence-contact-self", { productId });
+};
+
+export const postAddEvidenceContactSelf = async (req: Request, res: Response) => {
+  const productId = getProductIdFromParams(req);
+
+  if (!productId) {
+    // TODO: Send to better error handling page
+    return res.status(400).send("Valid product ID is required");
+  }
+
+  // TODO: Implement the logic to handle adding self as evidence contact
+
+  res.render("product/add-evidence-contact-success", { productId });
+};
+
+function getProductIdFromParams(req: Request): number | null {
+  try {
+    const productId = parseInt(req.params.productId as string);
+    return isNaN(productId) ? null : productId;
+  } catch {
+    return null;
+  }
+}

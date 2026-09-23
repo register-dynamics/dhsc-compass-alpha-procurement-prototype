@@ -3,8 +3,6 @@
 {% from "button/macro.njk" import button %}
 
 {# TODO: HARDCODED VALUES #}
-{% set productId = "PRODUCT_ID" %}
-{% set evidenceId = "EVIDENCE_ID" %}
 {% set contactName = "CONTACT_NAME" %}
 {% set contactRole = "CONTACT_ROLE" %}
 {% set contactEmail = "CONTACT_EMAIL" %}
@@ -44,7 +42,7 @@
 
     <p>You can change this later.</p>
 
-    <form action="/product/{{ productId }}/evidence/{{ evidenceId }}/add-contact" method="post" >
+    <form action="/product/{{ productId }}/evidence/add-evidence-contact-self" method="post" >
       {{ button({ text: "Confirm and add me as a contact" }) }}
     </form>
 

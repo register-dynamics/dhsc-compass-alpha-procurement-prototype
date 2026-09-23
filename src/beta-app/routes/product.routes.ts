@@ -2,12 +2,14 @@ import { Router } from "express";
 
 import {
   postAddEvidence,
-  postAddEvidenceContact,
+  postAddEvidenceContactDone,
   postAddEvidenceContactSelf,
   postMarkUseful,
   postUnmarkUseful,
   renderAddEvidence,
-  renderAddEvidenceContact,
+  renderAddEvidenceContactAcquisition,
+  renderAddEvidenceContactDocument,
+  renderAddEvidenceContactExperience,
   renderAddEvidenceContactSelf,
   renderProduct,
 } from "../controllers/product.controller.js";
@@ -34,33 +36,43 @@ const routeDefinitions: RouteDefinition[] = [
   {
     handler: renderAddEvidence,
     method: "get",
-    path: "/product/:id/add-evidence",
+    path: "/product/:productId/add-evidence",
   },
   {
     handler: postAddEvidence,
     method: "post",
-    path: "/product/:id/add-evidence",
+    path: "/product/:productId/add-evidence",
+  },
+  {
+    handler: renderAddEvidenceContactExperience,
+    method: "get",
+    path: "/product/:productId/evidence/:evidenceId/add-contact-experience",
+  },
+  {
+    handler: renderAddEvidenceContactAcquisition,
+    method: "get",
+    path: "/product/:productId/evidence/:evidenceId/add-contact-acquisition",
+  },
+  {
+    handler: renderAddEvidenceContactDocument,
+    method: "get",
+    path: "/product/:productId/evidence/:evidenceId/add-contact-document",
+  },
+  {
+    handler: postAddEvidenceContactDone,
+    method: "post",
+    path: "/product/:productId/evidence/:evidenceId/add-contact-done",
   },
   {
     handler: renderAddEvidenceContactSelf,
     method: "get",
-    path: "/product/:productId/add-evidence-contact-self",
+    path: "/product/:productId/evidence/add-evidence-contact-self",
   },
   {
     handler: postAddEvidenceContactSelf,
     method: "post",
-    path: "/product/:productId/add-evidence-contact-self",
-  },
-  {
-    handler: renderAddEvidenceContact,
-    method: "get",
-    path: "/product/:productId/evidence/:evidenceId/add-contact",
-  },
-  {
-    handler: postAddEvidenceContact,
-    method: "post",
-    path: "/product/:productId/evidence/:evidenceId/add-contact",
-  },
+    path: "/product/:productId/evidence/add-evidence-contact-self",
+  }
 ];
 
 registerRoutes(router, routeDefinitions);

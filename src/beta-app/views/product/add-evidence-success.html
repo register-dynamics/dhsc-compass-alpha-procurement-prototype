@@ -3,7 +3,6 @@
 {% from "button/macro.njk" import button %}
 
 {# TODO: HARDCODED VALUES #}
-{% set productId = "PRODUCT_ID" %}
 {% set productName = "PRODUCT_NAME" %}
 {% set boardName = "BOARD_NAME" %}
 
@@ -24,9 +23,10 @@
       at any point.
     </p>
 
-    <form action="/sketchpad/experience-contact" method="get">
-      {{ button({ text: "Add contact details" }) }}
-    </form>
+    {{ button({ 
+      text: "Add contact details",
+      href: "/product/" ~ productId ~ "/evidence/" ~ evidenceId ~ "/add-contact-experience"
+    }) }}
 
     <p><a href="/product/{{ productId }}">Return to the device</a></p>
 
