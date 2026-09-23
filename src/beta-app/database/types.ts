@@ -9,9 +9,10 @@ export interface Database {
   product_matches: ProductMatchesTable;
   evidence_type: EvidenceTypeTable;
   evidence: EvidenceTable;
+  document_type: DocumentTypeTable;
   documents: DocumentTable;
   organisation_details: OrganisationDetailsTable;
-  document_contacts: DocumentContactsTable;
+  evidence_contacts: EvidenceContactsTable;
   product_evidence_useful: ProductEvidenceUsefulTable;
   search: SearchTable;
   users: UserTable;
@@ -56,6 +57,7 @@ export interface EvidenceTable {
   procured: boolean;
   wardDepartment: string;
   summary: string;
+  typeOfEvidenceId: number;
 
   // Utility prop for documents
   documents: Document[];
@@ -63,6 +65,16 @@ export interface EvidenceTable {
   // Utility prop for usefulness
   markedUseful: number;
   totalUsefulCount: number;
+
+  // Utility prop for contacts
+  contacts: EvidenceContacts[];
+}
+
+export type DocumentType = Selectable<DocumentTypeTable>;
+
+export interface DocumentTypeTable {
+  typeOfDocId: number;
+  typeOfDocDesc: string;
 }
 
 export type Document = Selectable<DocumentTable>;
@@ -72,18 +84,15 @@ export interface DocumentTable {
   evidenceId: number;
   uploadDate: string;
   expiryDate: string;
-  typeOfDocDesc: string;
+  typeOfDocId: number;
   organisationId: number;
   urlDirectory: string;
-
-  // Utility prop for contacts
-  contacts: DocumentContact[];
 }
 
-export type DocumentContacts = Selectable<DocumentContactsTable>;
+export type EvidenceContacts = Selectable<EvidenceContactsTable>;
 
-export interface DocumentContactsTable {
-  documentId: number;
+export interface EvidenceContactsTable {
+  evidenceId: number;
   contactId: number;
   discussImplementation: boolean;
   discussTraining: boolean;

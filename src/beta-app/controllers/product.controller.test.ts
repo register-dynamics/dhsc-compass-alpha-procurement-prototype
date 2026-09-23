@@ -297,7 +297,7 @@ describe("Product controller", () => {
     });
   });
 
-  it("GET /product/mark-useful should mark a document as useful", async () => {
+  it("GET /product/mark-useful should mark evidence as useful", async () => {
     const insertQuery = {
       execute: vi.fn().mockResolvedValue(undefined),
       values: vi.fn().mockReturnThis(),
@@ -315,21 +315,21 @@ describe("Product controller", () => {
     const send = vi.fn();
     await postMarkUseful(
       {
-        body: { documentId: "12", productId: "34" },
+        body: { evidenceId: "12", productId: "34" },
         user: { id: 56 },
       } as unknown as Request,
       { send, status } as unknown as Response,
     );
 
-    expect(insertIntoMock).toHaveBeenCalledWith("product_documents_useful");
+    expect(insertIntoMock).toHaveBeenCalledWith("product_evidence_useful");
     expect(insertQuery.values).toHaveBeenCalledWith(
-      expect.objectContaining({ documentId: 12, productId: 34, userId: 56 }),
+      expect.objectContaining({ evidenceId: 12, productId: 34, userId: 56 }),
     );
     expect(status).toHaveBeenCalledWith(200);
     expect(send).toHaveBeenCalledWith({ count: 4 });
   });
 
-  it("GET /product/unmark-useful should unmark a document as useful", async () => {
+  it("GET /product/unmark-useful should unmark evidence as useful", async () => {
     const deleteQuery = {
       execute: vi.fn().mockResolvedValue(undefined),
       where: vi.fn().mockReturnThis(),
@@ -347,14 +347,14 @@ describe("Product controller", () => {
     const send = vi.fn();
     await postUnmarkUseful(
       {
-        body: { documentId: 12, productId: 34 },
+        body: { evidenceId: 12, productId: 34 },
         user: { id: 56 },
       } as unknown as Request,
       { send, status } as unknown as Response,
     );
 
-    expect(deleteFromMock).toHaveBeenCalledWith("product_documents_useful");
-    expect(deleteQuery.where).toHaveBeenNthCalledWith(1, "documentId", "=", 12);
+    expect(deleteFromMock).toHaveBeenCalledWith("product_evidence_useful");
+    expect(deleteQuery.where).toHaveBeenNthCalledWith(1, "evidenceId", "=", 12);
     expect(deleteQuery.where).toHaveBeenNthCalledWith(2, "productId", "=", 34);
     expect(deleteQuery.where).toHaveBeenNthCalledWith(3, "userId", "=", 56);
     expect(status).toHaveBeenCalledWith(200);
@@ -371,7 +371,7 @@ describe("Product controller", () => {
 
     expect(status).toHaveBeenCalledWith(400);
     expect(send).toHaveBeenCalledWith(
-      "Product ID and Document ID are required",
+      "Product ID and Evidence ID are required",
     );
   });
 
@@ -379,7 +379,7 @@ describe("Product controller", () => {
     const status = vi.fn().mockReturnThis();
     const send = vi.fn();
     await postMarkUseful(
-      { body: { documentId: 1, productId: 2 } } as unknown as Request,
+      { body: { evidenceId: 1, productId: 2 } } as unknown as Request,
       { send, status } as unknown as Response,
     );
 
@@ -400,7 +400,7 @@ describe("Product controller", () => {
 
     await postMarkUseful(
       {
-        body: { documentId: 1, productId: 2 },
+        body: { evidenceId: 1, productId: 2 },
         user: { id: 3 },
       } as unknown as Request,
       { send, status } as unknown as Response,
@@ -421,7 +421,7 @@ describe("Product controller", () => {
 
     expect(status).toHaveBeenCalledWith(400);
     expect(send).toHaveBeenCalledWith(
-      "Product ID and Document ID are required",
+      "Product ID and Evidence ID are required",
     );
   });
 
@@ -429,7 +429,7 @@ describe("Product controller", () => {
     const status = vi.fn().mockReturnThis();
     const send = vi.fn();
     await postUnmarkUseful(
-      { body: { documentId: 1, productId: 2 } } as unknown as Request,
+      { body: { evidenceId: 1, productId: 2 } } as unknown as Request,
       { send, status } as unknown as Response,
     );
 
@@ -450,7 +450,7 @@ describe("Product controller", () => {
 
     await postUnmarkUseful(
       {
-        body: { documentId: 1, productId: 2 },
+        body: { evidenceId: 1, productId: 2 },
         user: { id: 3 },
       } as unknown as Request,
       { send, status } as unknown as Response,

@@ -35,19 +35,19 @@ export const renderProduct = async (req: Request, res: Response) => {
     .withSchema("app")
     .selectFrom("evidence")
     .innerJoin(
-      "app.product_matches",
-      "product_matches.evidence_id",
-      "evidence.evidence_id",
+      "product_matches",
+      "product_matches.evidenceId",
+      "evidence.evidenceId",
     )
     .innerJoin(
-      "app.evidence_type",
-      "evidence_type.type_of_evidence_id",
-      "evidence.type_of_evidence_id",
+      "evidence_type",
+      "evidence_type.typeOfEvidenceId",
+      "evidence.typeOfEvidenceId",
     )
     .innerJoin(
-      "app.organisation_details",
-      "organisation_details.organisation_id",
-      "evidence.organisation_id",
+      "organisation_details",
+      "organisation_details.organisationId",
+      "evidence.organisationId",
     )
     .where("productId", "=", productId)
     .selectAll()
@@ -59,35 +59,11 @@ export const renderProduct = async (req: Request, res: Response) => {
     const documents = await db
       .withSchema("app")
       .selectFrom("documents")
+      .innerJoin("document_type", "document_type.typeOfDocId", "documents.typeOfDocId")
       .where("evidenceId", "in", evidenceIds)
       .selectAll()
       .execute();
 
-    const documentIds = documents.map((doc) => doc.documentId);
-
-    const contacts = await db
-      .withSchema("app")
-      .selectFrom("document_contacts as dc")
-      .innerJoin("contacts as c", "c.contactId", "dc.contactId")
-      .select([
-        "dc.documentId",
-        "dc.discussImplementation",
-        "dc.discussTraining",
-        "dc.discussOutcomes",
-        "dc.discussPharmacyIntegration",
-        "dc.discussBusinessCase",
-        "dc.discussRealWorldUse",
-        "dc.discussEhrIntegration",
-        "c.contactId",
-        "c.title",
-        "c.givenName",
-        "c.surname",
-        "c.email",
-        "c.phoneNo",
-        "c.role",
-      ])
-      .where("dc.documentId", "in", documentIds)
-      .execute();
     const userId = req.user?.id;
 
     const evidenceUsefulness = await db
@@ -105,15 +81,36 @@ export const renderProduct = async (req: Request, res: Response) => {
       .groupBy("evidenceId")
       .execute();
 
-    // Attach contacts to their respective documents
-    documents.forEach((doc) => {
-      doc.contacts = contacts.filter(
-        (contact) => contact.documentId === doc.documentId,
-      );
-    });
+    const contacts = await db
+      .withSchema("app")
+      .selectFrom("evidence_contacts as ec")
+      .innerJoin("contacts as c", "c.contactId", "ec.contactId")
+      .select([
+        "ec.evidenceId",
+        "ec.discussImplementation",
+        "ec.discussTraining",
+        "ec.discussOutcomes",
+        "ec.discussPharmacyIntegration",
+        "ec.discussBusinessCase",
+        "ec.discussRealWorldUse",
+        "ec.discussEhrIntegration",
+        "c.contactId",
+        "c.title",
+        "c.givenName",
+        "c.surname",
+        "c.email",
+        "c.phoneNo",
+        "c.role",
+      ])
+      .where("ec.evidenceId", "in", evidenceIds)
+      .execute();
 
-    // Attach documents and usefulness to their evidences
+    // Attach contacts, documents, and usefulness to their evidences
     evidences.forEach((ev) => {
+      ev.contacts = contacts.filter(
+        (contact) => contact.evidenceId === ev.evidenceId,
+      );
+
       ev.documents = documents.filter(
         (doc) => doc.evidenceId === ev.evidenceId,
       );
