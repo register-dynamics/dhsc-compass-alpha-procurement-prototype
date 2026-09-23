@@ -59,7 +59,11 @@ export const renderProduct = async (req: Request, res: Response) => {
     const documents = await db
       .withSchema("app")
       .selectFrom("documents")
-      .innerJoin("document_type", "document_type.typeOfDocId", "documents.typeOfDocId")
+      .innerJoin(
+        "document_type",
+        "document_type.typeOfDocId",
+        "documents.typeOfDocId",
+      )
       .where("evidenceId", "in", evidenceIds)
       .selectAll()
       .execute();
@@ -264,7 +268,10 @@ export const renderAddEvidenceContactSelf = async (
   res.render("product/add-evidence-contact-self");
 };
 
-export const postAddEvidenceContactSelf = async (req: Request, res: Response) => {
+export const postAddEvidenceContactSelf = async (
+  req: Request,
+  res: Response,
+) => {
   // TODO: Implement the logic to add contact details for the evidence for self
 
   res.render("product/add-evidence-contact-self-success");

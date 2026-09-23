@@ -2,7 +2,7 @@
 /* eslint-disable perfectionist/sort-interfaces */
 import { Generated, Selectable } from "kysely";
 
-import type { DocumentContact } from "../models/documentContact.js";
+import type { EvidenceContact } from "../models/evidenceContact.js";
 
 export interface Database {
   contacts: ContactTable;
@@ -67,7 +67,7 @@ export interface EvidenceTable {
   totalUsefulCount: number;
 
   // Utility prop for contacts
-  contacts: EvidenceContacts[];
+  contacts: EvidenceContact[];
 }
 
 export type DocumentType = Selectable<DocumentTypeTable>;
