@@ -1,7 +1,11 @@
-import { Kysely, sql } from "kysely";
+import { Kysely } from "kysely";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function down(db: Kysely<any>): Promise<void> {
+  await db
+    .withSchema("app")
+    .schema.dropView("organisation_details")
+    .execute()
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

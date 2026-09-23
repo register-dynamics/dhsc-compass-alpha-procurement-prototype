@@ -69,21 +69,15 @@ export async function up(db: Kysely<any>): Promise<void> {
     .createTable("app.evidence_type")
     .addColumn("type_of_evidence_id", "serial", (col) => col.primaryKey())
     .addColumn("type_of_evidence_desc", "varchar", (col) => col.notNull())
-    .execute()
+    .execute();
 
   await db
     .insertInto("app.evidence_type")
-    .columns([
-      "type_of_evidence_id",
-      "type_of_evidence_desc",
-    ])
+    .columns(["type_of_evidence_id", "type_of_evidence_desc"])
     .expression((eb) =>
       eb
         .selectFrom("app.document_type as dt")
-        .select([
-          "dt.type_of_doc_id",
-          "dt.type_of_doc_desc",
-        ]),
+        .select(["dt.type_of_doc_id", "dt.type_of_doc_desc"]),
     )
     .execute();
 
@@ -131,7 +125,7 @@ export async function up(db: Kysely<any>): Promise<void> {
         .selectFrom("app.documents as d")
         .select([
           "d.document_id",
-          sql<string>`now()`.as('created_at'),
+          sql<string>`now()`.as("created_at"),
           "d.assessment_date",
           "d.assessment_date_desc",
           "d.rating",

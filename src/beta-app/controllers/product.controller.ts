@@ -34,20 +34,33 @@ export const renderProduct = async (req: Request, res: Response) => {
   const evidences = await db
     .withSchema("app")
     .selectFrom("evidence")
-    .innerJoin("product_matches", "product_matches.evidence_id", "evidence.evidence_id")
-    .innerJoin("evidence_type", "evidence_type.type_of_evidence_id", "evidence.type_of_evidence_id")
-    .innerJoin("organisation_details", "organisation_details.organisation_id", "evidence.organisation_id")
-    .selectAll()
+    .innerJoin(
+      "app.product_matches",
+      "product_matches.evidence_id",
+      "evidence.evidence_id",
+    )
+    .innerJoin(
+      "app.evidence_type",
+      "evidence_type.type_of_evidence_id",
+      "evidence.type_of_evidence_id",
+    )
+    .innerJoin(
+      "app.organisation_details",
+      "organisation_details.organisation_id",
+      "evidence.organisation_id",
+    )
     .where("productId", "=", productId)
+    .selectAll()
     .execute();
 
   // Add documents to evidences if there are any
-  if(evidences.length > 0) {
+  if (evidences.length > 0) {
     const evidenceIds = evidences.map((ev) => ev.evidenceId);
     const documents = await db
       .withSchema("app")
       .selectFrom("documents")
       .where("evidenceId", "in", evidenceIds)
+      .selectAll()
       .execute();
 
     const documentIds = documents.map((doc) => doc.documentId);
@@ -127,7 +140,7 @@ export const postMarkUseful = async (req: Request, res: Response) => {
     return res.status(400).send("Product ID and Evidence ID are required");
   }
 
-  const { productId, evidenceId } = result.data;
+  const { evidenceId, productId } = result.data;
 
   // Get the user ID from the session or request context
   const userId = req.user?.id;
