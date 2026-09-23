@@ -102,15 +102,16 @@ describe("Product controller", () => {
       selectAll: vi.fn().mockReturnThis(),
       where: vi.fn().mockReturnThis(),
     };
-    const documentsQuery = {
+    const evidenceQuery = {
       execute: vi.fn().mockResolvedValue([]),
+      innerJoin: vi.fn().mockReturnThis(),
       selectAll: vi.fn().mockReturnThis(),
       where: vi.fn().mockReturnThis(),
     };
 
     selectFromMock
       .mockReturnValueOnce(productQuery)
-      .mockReturnValueOnce(documentsQuery);
+      .mockReturnValueOnce(evidenceQuery);
 
     const req = { params: { id: "7" } } as unknown as Request;
     const render = vi.fn();
@@ -119,18 +120,18 @@ describe("Product controller", () => {
     await renderProduct(req, res);
 
     expect(selectFromMock).toHaveBeenNthCalledWith(1, "search");
-    expect(selectFromMock).toHaveBeenNthCalledWith(2, "make_documents");
+    expect(selectFromMock).toHaveBeenNthCalledWith(2, "evidence");
     expect(render).toHaveBeenCalledWith("product", {
-      documents: [],
+      evidences: [],
       product,
     });
   });
 
-  it("GET /product/:id renders product page and attaches contacts to each document", async () => {
+  it("GET /product/:id renders product page and attaches contacts to each evidence", async () => {
     const product = { productId: 42, technologyName: "Pump" };
-    const documents = [
-      { documentId: 1001, title: "Implementation guide" },
-      { documentId: 1002, title: "Outcomes report" },
+    const evidences = [
+      { evidenceId: 1001, title: "Implementation guide" },
+      { evidenceId: 1002, title: "Outcomes report" },
     ];
     const contacts = [
       {
@@ -142,8 +143,8 @@ describe("Product controller", () => {
         discussPharmacyIntegration: 0,
         discussRealWorldUse: 0,
         discussTraining: 0,
-        documentId: 1001,
         email: "one@example.com",
+        evidenceId: 1001,
         givenName: "Alex",
         phoneNo: "123456",
         role: "Clinical Lead",
@@ -159,8 +160,8 @@ describe("Product controller", () => {
         discussPharmacyIntegration: 0,
         discussRealWorldUse: 1,
         discussTraining: 1,
-        documentId: 1002,
         email: "two@example.com",
+        evidenceId: 1002,
         givenName: "Sam",
         phoneNo: "654321",
         role: "Operations Lead",
@@ -174,8 +175,22 @@ describe("Product controller", () => {
       selectAll: vi.fn().mockReturnThis(),
       where: vi.fn().mockReturnThis(),
     };
+    const evidenceQuery = {
+      execute: vi.fn().mockResolvedValue(evidences),
+      innerJoin: vi.fn().mockReturnThis(),
+      selectAll: vi.fn().mockReturnThis(),
+      where: vi.fn().mockReturnThis(),
+    };
     const documentsQuery = {
-      execute: vi.fn().mockResolvedValue(documents),
+      execute: vi.fn().mockResolvedValue(contacts),
+      innerJoin: vi.fn().mockReturnThis(),
+      selectAll: vi.fn().mockReturnThis(),
+      where: vi.fn().mockReturnThis(),
+    };
+    const usefulQuery = {
+      execute: vi.fn().mockResolvedValue([]),
+      groupBy: vi.fn().mockReturnThis(),
+      select: vi.fn().mockReturnThis(),
       selectAll: vi.fn().mockReturnThis(),
       where: vi.fn().mockReturnThis(),
     };
@@ -185,19 +200,13 @@ describe("Product controller", () => {
       select: vi.fn().mockReturnThis(),
       where: vi.fn().mockReturnThis(),
     };
-    const usefulQuery = {
-      execute: vi.fn().mockResolvedValue([]),
-      groupBy: vi.fn().mockReturnThis(),
-      select: vi.fn().mockReturnThis(),
-      selectAll: vi.fn().mockReturnThis(),
-      where: vi.fn().mockReturnThis(),
-    };
 
     selectFromMock
       .mockReturnValueOnce(productQuery)
+      .mockReturnValueOnce(evidenceQuery)
       .mockReturnValueOnce(documentsQuery)
-      .mockReturnValueOnce(contactsQuery)
-      .mockReturnValueOnce(usefulQuery);
+      .mockReturnValueOnce(usefulQuery)
+      .mockReturnValueOnce(contactsQuery);
 
     const req = { params: { id: "42" } } as unknown as Request;
     const render = vi.fn();
@@ -206,40 +215,45 @@ describe("Product controller", () => {
     await renderProduct(req, res);
 
     expect(selectFromMock).toHaveBeenNthCalledWith(1, "search");
-    expect(selectFromMock).toHaveBeenNthCalledWith(2, "make_documents");
+    expect(selectFromMock).toHaveBeenNthCalledWith(2, "evidence");
+    expect(selectFromMock).toHaveBeenNthCalledWith(3, "documents");
     expect(selectFromMock).toHaveBeenNthCalledWith(
-      3,
-      "document_contacts as dc",
+      4,
+      "product_evidence_useful",
+    );
+    expect(selectFromMock).toHaveBeenNthCalledWith(
+      5,
+      "evidence_contacts as ec",
     );
     expect(contactsQuery.innerJoin).toHaveBeenCalledWith(
       "contacts as c",
       "c.contactId",
-      "dc.contactId",
+      "ec.contactId",
     );
     expect(contactsQuery.where).toHaveBeenCalledWith(
-      "dc.documentId",
+      "ec.evidenceId",
       "in",
       [1001, 1002],
     );
 
     expect(render).toHaveBeenCalledTimes(1);
     const renderPayload = render.mock.calls[0]?.[1] as {
-      documents: { contacts?: unknown[]; documentId: number }[];
+      evidences: { contacts?: unknown[]; evidenceId: number }[];
       product: unknown;
     };
     expect(renderPayload.product).toEqual(product);
-    expect(renderPayload.documents).toHaveLength(2);
-    expect(renderPayload.documents[0]?.contacts).toEqual([contacts[0]]);
-    expect(renderPayload.documents[1]?.contacts).toEqual([contacts[1]]);
+    expect(renderPayload.evidences).toHaveLength(2);
+    expect(renderPayload.evidences[0]?.contacts).toEqual([contacts[0]]);
+    expect(renderPayload.evidences[1]?.contacts).toEqual([contacts[1]]);
   });
 
   it("GET /product/:id should render the product page with a generic evidence card", async () => {
     const product = { productId: 7, productName: "Example device" };
-    const documents = [
+    const evidences = [
       {
-        documentId: 70,
+        evidenceId: 70,
         productId: 7,
-        typeOfDocDesc: "Generic evidence",
+        typeOfEvidenceDesc: "Generic evidence",
       },
     ];
     const productQuery = {
@@ -247,9 +261,26 @@ describe("Product controller", () => {
       selectAll: vi.fn().mockReturnThis(),
       where: vi.fn().mockReturnThis(),
     };
-    const documentsQuery = {
-      execute: vi.fn().mockResolvedValue(documents),
+    const evidenceQuery = {
+      execute: vi.fn().mockResolvedValue(evidences),
+      innerJoin: vi.fn().mockReturnThis(),
       selectAll: vi.fn().mockReturnThis(),
+      where: vi.fn().mockReturnThis(),
+    };
+    const documentsQuery = {
+      execute: vi.fn().mockResolvedValue([]),
+      innerJoin: vi.fn().mockReturnThis(),
+      selectAll: vi.fn().mockReturnThis(),
+      where: vi.fn().mockReturnThis(),
+    };
+    const usefulQuery = {
+      execute: vi
+        .fn()
+        .mockResolvedValue([
+          { evidenceId: 70, hasUserMarkedUseful: 1, totalUsefulCount: 3 },
+        ]),
+      groupBy: vi.fn().mockReturnThis(),
+      select: vi.fn().mockReturnThis(),
       where: vi.fn().mockReturnThis(),
     };
     const contactsQuery = {
@@ -258,22 +289,13 @@ describe("Product controller", () => {
       select: vi.fn().mockReturnThis(),
       where: vi.fn().mockReturnThis(),
     };
-    const usefulQuery = {
-      execute: vi
-        .fn()
-        .mockResolvedValue([
-          { documentId: 70, hasUserMarkedUseful: 1, totalUsefulCount: 3 },
-        ]),
-      groupBy: vi.fn().mockReturnThis(),
-      select: vi.fn().mockReturnThis(),
-      where: vi.fn().mockReturnThis(),
-    };
 
     selectFromMock
       .mockReturnValueOnce(productQuery)
+      .mockReturnValueOnce(evidenceQuery)
       .mockReturnValueOnce(documentsQuery)
-      .mockReturnValueOnce(contactsQuery)
-      .mockReturnValueOnce(usefulQuery);
+      .mockReturnValueOnce(usefulQuery)
+      .mockReturnValueOnce(contactsQuery);
 
     const render = vi.fn();
     await renderProduct(
@@ -285,12 +307,12 @@ describe("Product controller", () => {
     );
 
     expect(render).toHaveBeenCalledWith("product", {
-      documents: [
+      evidences: [
         expect.objectContaining({
           contacts: [],
           markedUseful: 1,
           totalUsefulCount: 3,
-          typeOfDocDesc: "Generic evidence",
+          typeOfEvidenceDesc: "Generic evidence",
         }),
       ],
       product,
