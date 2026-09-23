@@ -38,7 +38,8 @@ INSERT INTO "app"."evidence_type" ("type_of_evidence_id","type_of_evidence_desc"
  (4,'Clinical trial funded by supplier'),
  (5,'Clinical trial uploaded by supplier'),
  (6,'Clinical trial with supplier response'),
- (7,'Evaluation');
+ (7,'Evaluation'),
+ (8,'Generic');
 
 INSERT INTO "app"."document_type" ("type_of_doc_id","type_of_doc_desc") VALUES
  (1,'ODEP assessment'),
@@ -83,7 +84,8 @@ INSERT INTO "app"."evidence" (evidence_id, created_at, modified_at, assessment_d
        (7891, '2026-09-23 08:28:02.86937', NULL, 'Jan24-Jun24', NULL, NULL, NULL, 7, false, NULL, 'Ward 3, Northumbria Specialist Emergency Care', 'Trust clinical trial', 6),
        (8912, '2026-09-23 08:28:02.86937', NULL, 'Feb23-May24', NULL, NULL, NULL, 5, true, 50, 'Urology department, Guy''s Hospital', 'Trust clinical trial', 5),
        (9123, '2026-09-23 08:28:02.86937', NULL, 'Jan-23', NULL, NULL, NULL, 3, true, NULL, 'Dialysis Unit, St Bartholomew''s Hospital', 'Trust business case', 3),
-       (13456, '2026-09-23 08:28:02.86937', NULL, 'Mar23-Aug23', NULL, NULL, NULL, 6, true, NULL, 'Oncology Day Unit, Queen Elizabeth Hospital', 'Trust evaluation', 7);
+       (13456, '2026-09-23 08:28:02.86937', NULL, 'Mar23-Aug23', NULL, NULL, NULL, 6, true, NULL, 'Oncology Day Unit, Queen Elizabeth Hospital', 'Trust evaluation', 7),
+       (4321, '2026-09-23 08:28:02.86937', NULL, 'Mar23-Aug23', NULL, NULL, NULL, 6, true, NULL, NULL, 'Pre-Evaluation Research', 8);
 
 INSERT INTO "app"."documents" ("document_id","upload_date","expiry_date","revision_date","type_of_doc_id","organisation_id","summary","is_update","parent_id","url_directory","evidence_id") VALUES
        (1234, '2026-05-01 00:00:00', '2026-11-21 00:00:00', NULL, 2, 2, 'NJR report', NULL, NULL, 'NJR_report_1_FAKE.pdf', 1234),
@@ -103,7 +105,8 @@ INSERT INTO "app"."evidence_contacts" ("evidence_id","contact_id","discuss_imple
  (8912,7,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE),
  (8912,8,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE),
  (9123,9,FALSE,TRUE,FALSE,TRUE,FALSE,TRUE,FALSE),
- (13456,10,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE);
+ (13456,10,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE),
+ (4321,10,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE);
 
 
 INSERT INTO "app"."product_matches" ("match_id","product_id","evidence_id") VALUES
@@ -147,7 +150,9 @@ INSERT INTO "app"."product_matches" ("match_id","product_id","evidence_id") VALU
  (38,45236891,1234),
  (39,45236891,7891),
  (40,45236891,9123),
- (41,45236891,13456);
+ (41,45236891,13456),
+ (42,45236891,4321);
+ 
 
 -- Seed user for beta app login
 INSERT INTO app.users (username, password_hash, given_name, last_name) VALUES

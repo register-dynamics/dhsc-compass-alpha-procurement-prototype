@@ -475,7 +475,7 @@
                     {{ evidenceCardClinicalTrial(evidence) }}
                 {% elif evidence.typeOfEvidenceDesc == "Evaluation" %}
                     {{ evidenceCardEvaluation(evidence) }}
-                {% else %}
+                {% elif evidence.typeOfEvidenceDesc == "Generic" %}
                     {{ evidenceCardGeneric(evidence) }}
                 {% endif %}
             {% endfor %}
