@@ -1,25 +1,32 @@
+TRUNCATE TABLE "app"."evidence_type" CASCADE;
+-- NOTICE:  truncate cascades to table "evidence"
+-- NOTICE:  truncate cascades to table "documents"
+-- NOTICE:  truncate cascades to table "evidence_contacts"
+-- NOTICE:  truncate cascades to table "product_matches"
+-- NOTICE:  truncate cascades to table "product_evidence_useful"
+
 TRUNCATE TABLE "app"."document_type" CASCADE;
 -- NOTICE:  truncate cascades to table "documents"
--- NOTICE:  truncate cascades to table "document_contacts"
+-- NOTICE:  truncate cascades to table "evidence_contacts"
 -- NOTICE:  truncate cascades to table "product_documents_useful"
 
 TRUNCATE TABLE "app"."org_type" CASCADE;
 -- NOTICE:  truncate cascades to table "organisations"
 -- NOTICE:  truncate cascades to table "documents"
 -- NOTICE:  truncate cascades to table "evidence"
--- NOTICE:  truncate cascades to table "document_contacts"
+-- NOTICE:  truncate cascades to table "evidence_contacts"
 -- NOTICE:  truncate cascades to table "product_matches"
 -- NOTICE:  truncate cascades to table "product_documents_useful"
 
 TRUNCATE TABLE "app"."org_category" CASCADE;
 -- NOTICE:  truncate cascades to table "organisations"
 -- NOTICE:  truncate cascades to table "documents"
--- NOTICE:  truncate cascades to table "document_contacts"
+-- NOTICE:  truncate cascades to table "evidence_contacts"
 -- NOTICE:  truncate cascades to table "product_matches"
 -- NOTICE:  truncate cascades to table "product_documents_useful"
 
 TRUNCATE TABLE "app"."contacts" CASCADE;
--- NOTICE:  truncate cascades to table "document_contacts"
+-- NOTICE:  truncate cascades to table "evidence_contacts"
 
 TRUNCATE TABLE "app"."users" CASCADE;
 -- NOTICE:  truncate cascades to table "product_documents_useful"
@@ -86,7 +93,7 @@ INSERT INTO "app"."documents" ("document_id","upload_date","expiry_date","revisi
        (9123, '2026-07-01 00:00:00', NULL, NULL, 3, 3, 'Trust business case', NULL, NULL, 'Barts Health NHS Trust business case FAKE.pdf', 9123),
        (13456, '2026-07-01 00:00:00', NULL, NULL, 7, 6, 'Trust evaluation', NULL, NULL, 'University Hospitals Birmingham NHS Foundation Trust evaluation FAKE.pdf', 13456);
 
-INSERT INTO "app"."document_contacts" ("document_id","contact_id","discuss_implementation","discuss_training","discuss_outcomes","discuss_pharmacy_integration","discuss_business_case","discuss_real_world_use","discuss_ehr_integration") VALUES
+INSERT INTO "app"."evidence_contacts" ("evidence_id","contact_id","discuss_implementation","discuss_training","discuss_outcomes","discuss_pharmacy_integration","discuss_business_case","discuss_real_world_use","discuss_ehr_integration") VALUES
  (1234,1,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE),
  (1234,2,TRUE,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE),
  (4567,3,FALSE,TRUE,TRUE,FALSE,FALSE,FALSE,FALSE),
