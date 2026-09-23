@@ -1,12 +1,12 @@
 TRUNCATE TABLE "app"."document_type" CASCADE;
 -- NOTICE:  truncate cascades to table "documents"
 -- NOTICE:  truncate cascades to table "document_contacts"
--- NOTICE:  truncate cascades to table "product_matches"
 -- NOTICE:  truncate cascades to table "product_documents_useful"
 
 TRUNCATE TABLE "app"."org_type" CASCADE;
 -- NOTICE:  truncate cascades to table "organisations"
 -- NOTICE:  truncate cascades to table "documents"
+-- NOTICE:  truncate cascades to table "evidence"
 -- NOTICE:  truncate cascades to table "document_contacts"
 -- NOTICE:  truncate cascades to table "product_matches"
 -- NOTICE:  truncate cascades to table "product_documents_useful"
@@ -61,15 +61,21 @@ INSERT INTO "app"."contacts" ("contact_id","title","given_name","surname","email
  (9,NULL,'Mahalia','Immings',NULL,'6431047410','Software Engineer I, Software Development'),
  (10,NULL,'Jackelyn','Gricewood','jgricewood9@nhs.net',NULL,'Implant Specialist, Orthopaedic Surgery');
 
--- FIXME: Fix upload dates
+INSERT INTO "app"."evidence" (evidence_id, created_at, modified_at, assessment_date, assessment_date_desc, rating, rating_type, organisation_id, procured, scale, ward_department, summary) VALUES
+       (1234, '2026-09-23 08:28:02.86937', NULL, '21/11/2025', NULL, NULL, NULL, 2, NULL, NULL, NULL, 'NJR report'),
+       (4567, '2026-09-23 08:28:02.86937', NULL, '2019-2021', NULL, NULL, NULL, 4, true, 484, 'Gastroenterology Unit, Queen Alexandra Hospital', 'Trust clinical trial'),
+       (7891, '2026-09-23 08:28:02.86937', NULL, 'Jan24-Jun24', NULL, NULL, NULL, 7, false, NULL, 'Ward 3, Northumbria Specialist Emergency Care', 'Trust clinical trial'),
+       (8912, '2026-09-23 08:28:02.86937', NULL, 'Feb23-May24', NULL, NULL, NULL, 5, true, 50, 'Urology department, Guy''s Hospital', 'Trust clinical trial'),
+       (9123, '2026-09-23 08:28:02.86937', NULL, 'Jan-23', NULL, NULL, NULL, 3, true, NULL, 'Dialysis Unit, St Bartholomew''s Hospital', 'Trust business case'),
+       (13456, '2026-09-23 08:28:02.86937', NULL, 'Mar23-Aug23', NULL, NULL, NULL, 6, true, NULL, 'Oncology Day Unit, Queen Elizabeth Hospital', 'Trust evaluation');
 
-INSERT INTO "app"."documents" ("document_id","upload_date","expiry_date","assessment_date","assessment_date_desc","revision_date","rating","rating_type","type_of_doc_id","organisation_id","procured","scale","ward_department","summary","is_update","parent_id","url_directory") VALUES
- (1234,'01-May-26','21-Nov-2026','21/11/2025',NULL,NULL,NULL,NULL,2,2,NULL,NULL,NULL,'NJR report',NULL,NULL,'NJR_report_1_FAKE.pdf'),
- (4567,'01-Jul-26',NULL,'2019-2021',NULL,NULL,NULL,NULL,4,4,TRUE,484,'Gastroenterology Unit, Queen Alexandra Hospital','Trust clinical trial',NULL,NULL,'Portsmouth Hospitals University NHS Trust clinical trial FAKE.pdf'),
- (7891,'01-Jul-26',NULL,'Jan24-Jun24',NULL,NULL,NULL,NULL,6,7,FALSE,NULL,'Ward 3, Northumbria Specialist Emergency Care','Trust clinical trial',NULL,NULL,'Northumbria Healthcare NHS Foundation Trust clinical trial FAKE.pdf'),
- (8912,'01-Jul-26',NULL,'Feb23-May24',NULL,NULL,NULL,NULL,5,5,TRUE,50,'Urology department, Guy''s Hospital','Trust clinical trial',NULL,NULL,'Guys St Thomas NHS trist clinical trial FAKE.pdf'),
- (9123,'01-Jul-26',NULL,'Jan-23',NULL,NULL,NULL,NULL,3,3,TRUE,NULL,'Dialysis Unit, St Bartholomew''s Hospital','Trust business case',NULL,NULL,'Barts Health NHS Trust business case FAKE.pdf'),
- (13456,'01-Jul-26',NULL,'Mar23-Aug23',NULL,NULL,NULL,NULL,7,6,TRUE,NULL,'Oncology Day Unit, Queen Elizabeth Hospital','Trust evaluation',NULL,NULL,'University Hospitals Birmingham NHS Foundation Trust evaluation FAKE.pdf');
+INSERT INTO "app"."documents" ("document_id","upload_date","expiry_date","revision_date","type_of_doc_id","organisation_id","summary","is_update","parent_id","url_directory","evidence_id") VALUES
+       (1234, '2026-05-01 00:00:00', '2026-11-21 00:00:00', NULL, 2, 2, 'NJR report', NULL, NULL, 'NJR_report_1_FAKE.pdf', 1234),
+       (4567, '2026-07-01 00:00:00', NULL, NULL, 4, 4, 'Trust clinical trial', NULL, NULL, 'Portsmouth Hospitals University NHS Trust clinical trial FAKE.pdf', 4567),
+       (7891, '2026-07-01 00:00:00', NULL, NULL, 6, 7, 'Trust clinical trial', NULL, NULL, 'Northumbria Healthcare NHS Foundation Trust clinical trial FAKE.pdf', 7891),
+       (8912, '2026-07-01 00:00:00', NULL, NULL, 5, 5, 'Trust clinical trial', NULL, NULL, 'Guys St Thomas NHS trist clinical trial FAKE.pdf', 8912),
+       (9123, '2026-07-01 00:00:00', NULL, NULL, 3, 3, 'Trust business case', NULL, NULL, 'Barts Health NHS Trust business case FAKE.pdf', 9123),
+       (13456, '2026-07-01 00:00:00', NULL, NULL, 7, 6, 'Trust evaluation', NULL, NULL, 'University Hospitals Birmingham NHS Foundation Trust evaluation FAKE.pdf', 13456);
 
 INSERT INTO "app"."document_contacts" ("document_id","contact_id","discuss_implementation","discuss_training","discuss_outcomes","discuss_pharmacy_integration","discuss_business_case","discuss_real_world_use","discuss_ehr_integration") VALUES
  (1234,1,TRUE,FALSE,FALSE,FALSE,FALSE,FALSE,FALSE),
@@ -84,7 +90,7 @@ INSERT INTO "app"."document_contacts" ("document_id","contact_id","discuss_imple
  (13456,10,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE);
 
 
-INSERT INTO "app"."product_matches" ("match_id","product_id","document_id") VALUES
+INSERT INTO "app"."product_matches" ("match_id","product_id","evidence_id") VALUES
  (1,45236891,4567),
  (2,64782315,4567),
  (3,84123596,4567),
