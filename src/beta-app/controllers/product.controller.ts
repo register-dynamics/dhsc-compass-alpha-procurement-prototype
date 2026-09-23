@@ -31,15 +31,25 @@ export const renderProduct = async (req: Request, res: Response) => {
     return res.status(404).send("Product not found");
   }
 
-  const documents = await db
+  const evidences = await db
     .withSchema("app")
-    .selectFrom("make_documents")
+    .selectFrom("evidence")
+    .innerJoin("product_matches", "product_matches.evidence_id", "evidence.evidence_id")
+    .innerJoin("evidence_type", "evidence_type.type_of_evidence_id", "evidence.type_of_evidence_id")
+    .innerJoin("organisation_details", "organisation_details.organisation_id", "evidence.organisation_id")
     .selectAll()
     .where("productId", "=", productId)
     .execute();
 
-  // Add contacts to documents if there are any
-  if (documents.length > 0) {
+  // Add documents to evidences if there are any
+  if(evidences.length > 0) {
+    const evidenceIds = evidences.map((ev) => ev.evidenceId);
+    const documents = await db
+      .withSchema("app")
+      .selectFrom("documents")
+      .where("evidenceId", "in", evidenceIds)
+      .execute();
+
     const documentIds = documents.map((doc) => doc.documentId);
 
     const contacts = await db
@@ -65,22 +75,21 @@ export const renderProduct = async (req: Request, res: Response) => {
       ])
       .where("dc.documentId", "in", documentIds)
       .execute();
-
     const userId = req.user?.id;
 
-    const documentUsefulness = await db
+    const evidenceUsefulness = await db
       .withSchema("app")
-      .selectFrom("product_documents_useful")
+      .selectFrom("product_evidence_useful")
       .select([
-        "documentId",
+        "evidenceId",
         db.fn
           .max(sql`CASE WHEN "user_id" = ${userId} THEN 1 ELSE 0 END`)
           .as("hasUserMarkedUseful"),
-        db.fn.count("documentId").as("totalUsefulCount"),
+        db.fn.count("evidenceId").as("totalUsefulCount"),
       ])
       .where("productId", "=", productId)
-      .where("documentId", "in", documentIds)
-      .groupBy("documentId")
+      .where("evidenceId", "in", evidenceIds)
+      .groupBy("evidenceId")
       .execute();
 
     // Attach contacts to their respective documents
@@ -88,30 +97,37 @@ export const renderProduct = async (req: Request, res: Response) => {
       doc.contacts = contacts.filter(
         (contact) => contact.documentId === doc.documentId,
       );
+    });
 
-      doc.markedUseful = Number(
-        documentUsefulness.find((du) => du.documentId === doc.documentId)
+    // Attach documents and usefulness to their evidences
+    evidences.forEach((ev) => {
+      ev.documents = documents.filter(
+        (doc) => doc.evidenceId === ev.evidenceId,
+      );
+
+      ev.markedUseful = Number(
+        evidenceUsefulness.find((eu) => eu.evidenceId === ev.evidenceId)
           ?.hasUserMarkedUseful ?? 0,
       );
 
-      doc.totalUsefulCount = Number(
-        documentUsefulness.find((du) => du.documentId === doc.documentId)
+      ev.totalUsefulCount = Number(
+        evidenceUsefulness.find((eu) => eu.evidenceId === ev.evidenceId)
           ?.totalUsefulCount ?? 0,
       );
     });
   }
 
-  res.render("product", { documents, product });
+  res.render("product", { evidences, product });
 };
 
 export const postMarkUseful = async (req: Request, res: Response) => {
   const result = postMarkUsefulSchema.safeParse(req.body);
 
   if (!result.success) {
-    return res.status(400).send("Product ID and Document ID are required");
+    return res.status(400).send("Product ID and Evidence ID are required");
   }
 
-  const { documentId, productId } = result.data;
+  const { productId, evidenceId } = result.data;
 
   // Get the user ID from the session or request context
   const userId = req.user?.id;
@@ -124,12 +140,12 @@ export const postMarkUseful = async (req: Request, res: Response) => {
   try {
     await db
       .withSchema("app")
-      .insertInto("product_documents_useful")
+      .insertInto("product_evidence_useful")
       .values({
         // @ts-expect-error: TypeScript may complain about the date format
         // Should be fixed when we switch from SQLite to Postgres
         dateMarkedUseful: new Date().toUTCString(),
-        documentId: documentId,
+        evidenceId: evidenceId,
         productId: productId,
         userId,
       })
@@ -137,9 +153,9 @@ export const postMarkUseful = async (req: Request, res: Response) => {
 
     const countUseful = await db
       .withSchema("app")
-      .selectFrom("product_documents_useful")
-      .select(db.fn.count("documentId").as("count"))
-      .where("documentId", "=", documentId)
+      .selectFrom("product_evidence_useful")
+      .select(db.fn.count("evidenceId").as("count"))
+      .where("evidenceId", "=", evidenceId)
       .where("productId", "=", productId)
       .execute();
 
@@ -158,10 +174,10 @@ export const postUnmarkUseful = async (req: Request, res: Response) => {
   const result = postMarkUsefulSchema.safeParse(req.body);
 
   if (!result.success) {
-    return res.status(400).send("Product ID and Document ID are required");
+    return res.status(400).send("Product ID and Evidence ID are required");
   }
 
-  const { documentId, productId } = result.data;
+  const { evidenceId, productId } = result.data;
 
   // Get the user ID from the session or request context
   const userId = req.user?.id;
@@ -174,18 +190,18 @@ export const postUnmarkUseful = async (req: Request, res: Response) => {
   try {
     await db
       .withSchema("app")
-      .deleteFrom("product_documents_useful")
-      .where("documentId", "=", documentId)
+      .deleteFrom("product_evidence_useful")
+      .where("evidenceId", "=", evidenceId)
       .where("productId", "=", productId)
       .where("userId", "=", userId)
       .execute();
 
     const countUseful = await db
       .withSchema("app")
-      .selectFrom("product_documents_useful")
-      .select(db.fn.count("documentId").as("count"))
-      .where("documentId", "=", documentId)
+      .selectFrom("product_evidence_useful")
+      .select(db.fn.count("evidenceId").as("count"))
       .where("productId", "=", productId)
+      .where("evidenceId", "=", productId)
       .execute();
 
     // This gets type "string | number | bigint" for some reason

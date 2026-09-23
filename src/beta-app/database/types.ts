@@ -6,7 +6,11 @@ import type { DocumentContact } from "../models/documentContact.js";
 
 export interface Database {
   contacts: ContactTable;
-  make_documents: DocumentTable;
+  product_matches: ProductMatchesTable;
+  evidence_type: EvidenceTypeTable;
+  evidence: EvidenceTable;
+  documents: DocumentTable;
+  organisation_details: OrganisationDetailsTable;
   document_contacts: DocumentContactsTable;
   product_evidence_useful: ProductEvidenceUsefulTable;
   search: SearchTable;
@@ -25,31 +29,55 @@ export interface ContactTable {
   role: string;
 }
 
-export type Document = Selectable<DocumentTable>;
+export type ProductMatches = Selectable<ProductMatchesTable>;
 
-export interface DocumentTable {
+export interface ProductMatchesTable {
   productId: number;
-  documentId: number;
-  uploadDate: string;
-  expiryDate: string;
+  evidenceId: number;
+}
+
+export type EvidenceType = Selectable<EvidenceTypeTable>;
+
+export interface EvidenceTypeTable {
+  typeOfEvidenceId: number;
+  typeOfEvidenceDesc: string;
+}
+
+export type Evidence = Selectable<EvidenceTable>;
+
+export interface EvidenceTable {
+  evidenceId: number;
+  createdAt: Generated<Date>;
+  modifiedAt: Date;
   assessmentDate: string;
   rating: string;
   ratingType: string;
+  organisationId: number;
   procured: boolean;
   wardDepartment: string;
   summary: string;
-  typeOfDocDesc: string;
-  organisationName: string;
-  orgCategoryDesc: string;
-  orgTypeDesc: string;
-  urlDirectory: string;
 
-  // Utility prop for contacts
-  contacts: DocumentContact[];
+  // Utility prop for documents
+  documents: Document[];
 
   // Utility prop for usefulness
   markedUseful: number;
   totalUsefulCount: number;
+}
+
+export type Document = Selectable<DocumentTable>;
+
+export interface DocumentTable {
+  documentId: number;
+  evidenceId: number;
+  uploadDate: string;
+  expiryDate: string;
+  typeOfDocDesc: string;
+  organisationId: number;
+  urlDirectory: string;
+
+  // Utility prop for contacts
+  contacts: DocumentContact[];
 }
 
 export type DocumentContacts = Selectable<DocumentContactsTable>;
@@ -105,4 +133,13 @@ export interface UserTable {
   lastName: string;
   createdAt: Generated<Date>;
   modifiedAt: Date;
+}
+
+export type OrganisationDetails = Selectable<OrganisationDetailsTable>;
+
+export interface OrganisationDetailsTable {
+  organisationId: number;
+  organisationName: string;
+  organisationCategoryName: string;
+  organisationTypeName: string;
 }

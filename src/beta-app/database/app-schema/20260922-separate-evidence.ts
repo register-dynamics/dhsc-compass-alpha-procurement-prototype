@@ -4,8 +4,6 @@ import { Kysely, sql } from "kysely";
 export async function down(db: Kysely<any>): Promise<void> {
   await db.withSchema("app").schema.dropView("make_documents").execute();
 
-  await db.schema.dropTable("app.evidence").execute();
-
   await db.schema
     .alterTable("app.documents")
     .dropColumn("evidence_id")
@@ -17,6 +15,10 @@ export async function down(db: Kysely<any>): Promise<void> {
     .addColumn("scale", "integer")
     .addColumn("ward_department", "varchar")
     .execute();
+
+  await db.schema.dropTable("app.evidence").execute();
+
+  await db.schema.dropTable("app.evidence_type").execute();
 
   await db
     .withSchema("app")
@@ -64,6 +66,28 @@ export async function down(db: Kysely<any>): Promise<void> {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function up(db: Kysely<any>): Promise<void> {
   await db.schema
+    .createTable("app.evidence_type")
+    .addColumn("type_of_evidence_id", "serial", (col) => col.primaryKey())
+    .addColumn("type_of_evidence_desc", "varchar", (col) => col.notNull())
+    .execute()
+
+  await db
+    .insertInto("app.evidence_type")
+    .columns([
+      "type_of_evidence_id",
+      "type_of_evidence_desc",
+    ])
+    .expression((eb) =>
+      eb
+        .selectFrom("app.document_type as dt")
+        .select([
+          "dt.type_of_doc_id",
+          "dt.type_of_doc_desc",
+        ]),
+    )
+    .execute();
+
+  await db.schema
     .createTable("app.evidence")
     .addColumn("evidence_id", "serial", (col) => col.primaryKey())
     .addColumn("created_at", "timestamp", (col) =>
@@ -81,6 +105,9 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn("scale", "integer")
     .addColumn("ward_department", "varchar")
     .addColumn("summary", "varchar")
+    .addColumn("type_of_evidence_id", "integer", (col) =>
+      col.references("app.evidence_type.type_of_evidence_id").notNull(),
+    )
     .execute();
 
   await db
@@ -97,6 +124,7 @@ export async function up(db: Kysely<any>): Promise<void> {
       "scale",
       "ward_department",
       "summary",
+      "type_of_evidence_id",
     ])
     .expression((eb) =>
       eb
@@ -113,6 +141,7 @@ export async function up(db: Kysely<any>): Promise<void> {
           "d.scale",
           "d.ward_department",
           "d.summary",
+          "d.type_of_doc_id",
         ]),
     )
     .execute();

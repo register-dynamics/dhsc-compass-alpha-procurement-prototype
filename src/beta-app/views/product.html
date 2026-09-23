@@ -434,21 +434,20 @@
     <div class="nhsuk-grid-row">
         <div class="nhsuk-grid-column-two-thirds">
 
-            <!-- Trust Evaluation Cards - Loop through product documents -->
-            {% for document in documents %}
-
-                {% if document.typeOfDocDesc == "ODEP assessment" %}
-                    {{ evidenceCardOdep(document) }}
-                {% elif document.typeOfDocDesc == "NJR report" %}
-                    {{ evidenceCardNjr(document) }}
-                {% elif document.typeOfDocDesc == "Business case" %}
-                    {{ evidenceCardBusinessCase(document) }}
-                {% elif "Clinical trial" in document.typeOfDocDesc %}
-                    {{ evidenceCardClinicalTrial(document) }}
-                {% elif document.typeOfDocDesc == "Evaluation" %}
-                    {{ evidenceCardEvaluation(document) }}
+            <!-- Trust Evaluation Cards - Loop through product evidence -->
+            {% for evidence in evidences %}
+                {% if evidence.typeOfEvidenceDesc == "ODEP assessment" %}
+                    {{ evidenceCardOdep(evidence) }}
+                {% elif evidence.typeOfEvidenceDesc == "NJR report" %}
+                    {{ evidenceCardNjr(evidence) }}
+                {% elif evidence.typeOfEvidenceDesc == "Business case" %}
+                    {{ evidenceCardBusinessCase(evidence) }}
+                {% elif "Clinical trial" in evidence.typeOfEvidenceDesc %}
+                    {{ evidenceCardClinicalTrial(evidence) }}
+                {% elif evidence.typeOfEvidenceDesc == "Evaluation" %}
+                    {{ evidenceCardEvaluation(evidence) }}
                 {% else %}
-                    {{ evidenceCardGeneric(document) }}
+                    {{ evidenceCardGeneric(evidence) }}
                 {% endif %}
             {% endfor %}
         </div>
@@ -537,8 +536,9 @@
                 : `Mark as useful`;
         }
 
-        function refreshUsefulCount(documentId, usefulCount) {
-            const usefulCountElement = document.querySelector(`.useful-count[data-document-id="${documentId}"]`);
+        function refreshUsefulCount(evidenceId, usefulCount) {
+
+            const usefulCountElement = document.querySelector(`.useful-count[data-evidence-id="${evidenceId}"]`);
             if (!usefulCountElement) {
                 return;
             }
@@ -557,8 +557,8 @@
         async function markUseful(e) {
             const button = e.currentTarget;
 
+            const evidenceId = button.dataset.evidenceId;
             const productId = button.dataset.productId;
-            const documentId = button.dataset.documentId;
             const marked = button.dataset.marked;
 
             if (marked === "true") {
@@ -567,7 +567,7 @@
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({productId, documentId})
+                    body: JSON.stringify({evidenceId, productId})
                 });
 
                 if (!response.ok) {
@@ -584,7 +584,7 @@
                 }
 
                 updateButtonState(button, false);
-                refreshUsefulCount(documentId, usefulCount);
+                refreshUsefulCount(evidenceId, usefulCount);
 
             } else {
                 const response = await fetch(`/product/mark-useful`, {
@@ -592,7 +592,7 @@
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({productId, documentId})
+                    body: JSON.stringify({evidenceId, productId})
                 });
 
                 if (!response.ok) {
@@ -609,7 +609,7 @@
                 }
 
                 updateButtonState(button, true);
-                refreshUsefulCount(documentId, usefulCount);
+                refreshUsefulCount(evidenceId, usefulCount);
             }
         }
     </script>

@@ -24,6 +24,15 @@ TRUNCATE TABLE "app"."contacts" CASCADE;
 TRUNCATE TABLE "app"."users" CASCADE;
 -- NOTICE:  truncate cascades to table "product_documents_useful"
 
+INSERT INTO "app"."evidence_type" ("type_of_evidence_id","type_of_evidence_desc") VALUES
+ (1,'ODEP assessment'),
+ (2,'NJR report'),
+ (3,'Business case'),
+ (4,'Clinical trial funded by supplier'),
+ (5,'Clinical trial uploaded by supplier'),
+ (6,'Clinical trial with supplier response'),
+ (7,'Evaluation');
+
 INSERT INTO "app"."document_type" ("type_of_doc_id","type_of_doc_desc") VALUES
  (1,'ODEP assessment'),
  (2,'NJR report'),
@@ -61,13 +70,13 @@ INSERT INTO "app"."contacts" ("contact_id","title","given_name","surname","email
  (9,NULL,'Mahalia','Immings',NULL,'6431047410','Software Engineer I, Software Development'),
  (10,NULL,'Jackelyn','Gricewood','jgricewood9@nhs.net',NULL,'Implant Specialist, Orthopaedic Surgery');
 
-INSERT INTO "app"."evidence" (evidence_id, created_at, modified_at, assessment_date, assessment_date_desc, rating, rating_type, organisation_id, procured, scale, ward_department, summary) VALUES
-       (1234, '2026-09-23 08:28:02.86937', NULL, '21/11/2025', NULL, NULL, NULL, 2, NULL, NULL, NULL, 'NJR report'),
-       (4567, '2026-09-23 08:28:02.86937', NULL, '2019-2021', NULL, NULL, NULL, 4, true, 484, 'Gastroenterology Unit, Queen Alexandra Hospital', 'Trust clinical trial'),
-       (7891, '2026-09-23 08:28:02.86937', NULL, 'Jan24-Jun24', NULL, NULL, NULL, 7, false, NULL, 'Ward 3, Northumbria Specialist Emergency Care', 'Trust clinical trial'),
-       (8912, '2026-09-23 08:28:02.86937', NULL, 'Feb23-May24', NULL, NULL, NULL, 5, true, 50, 'Urology department, Guy''s Hospital', 'Trust clinical trial'),
-       (9123, '2026-09-23 08:28:02.86937', NULL, 'Jan-23', NULL, NULL, NULL, 3, true, NULL, 'Dialysis Unit, St Bartholomew''s Hospital', 'Trust business case'),
-       (13456, '2026-09-23 08:28:02.86937', NULL, 'Mar23-Aug23', NULL, NULL, NULL, 6, true, NULL, 'Oncology Day Unit, Queen Elizabeth Hospital', 'Trust evaluation');
+INSERT INTO "app"."evidence" (evidence_id, created_at, modified_at, assessment_date, assessment_date_desc, rating, rating_type, organisation_id, procured, scale, ward_department, summary, type_of_evidence_id) VALUES
+       (1234, '2026-09-23 08:28:02.86937', NULL, '21/11/2025', NULL, NULL, NULL, 2, NULL, NULL, NULL, 'NJR report', 2),
+       (4567, '2026-09-23 08:28:02.86937', NULL, '2019-2021', NULL, NULL, NULL, 4, true, 484, 'Gastroenterology Unit, Queen Alexandra Hospital', 'Trust clinical trial', 4),
+       (7891, '2026-09-23 08:28:02.86937', NULL, 'Jan24-Jun24', NULL, NULL, NULL, 7, false, NULL, 'Ward 3, Northumbria Specialist Emergency Care', 'Trust clinical trial', 6),
+       (8912, '2026-09-23 08:28:02.86937', NULL, 'Feb23-May24', NULL, NULL, NULL, 5, true, 50, 'Urology department, Guy''s Hospital', 'Trust clinical trial', 5),
+       (9123, '2026-09-23 08:28:02.86937', NULL, 'Jan-23', NULL, NULL, NULL, 3, true, NULL, 'Dialysis Unit, St Bartholomew''s Hospital', 'Trust business case', 3),
+       (13456, '2026-09-23 08:28:02.86937', NULL, 'Mar23-Aug23', NULL, NULL, NULL, 6, true, NULL, 'Oncology Day Unit, Queen Elizabeth Hospital', 'Trust evaluation', 7);
 
 INSERT INTO "app"."documents" ("document_id","upload_date","expiry_date","revision_date","type_of_doc_id","organisation_id","summary","is_update","parent_id","url_directory","evidence_id") VALUES
        (1234, '2026-05-01 00:00:00', '2026-11-21 00:00:00', NULL, 2, 2, 'NJR report', NULL, NULL, 'NJR_report_1_FAKE.pdf', 1234),
