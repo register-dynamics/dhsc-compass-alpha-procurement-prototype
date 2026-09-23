@@ -8,7 +8,7 @@ export interface Database {
   contacts: ContactTable;
   make_documents: DocumentTable;
   document_contacts: DocumentContactsTable;
-  product_documents_useful: ProductDocumentsUsefulTable;
+  product_evidence_useful: ProductEvidenceUsefulTable;
   search: SearchTable;
   users: UserTable;
 }
@@ -66,11 +66,11 @@ export interface DocumentContactsTable {
   discussEhrIntegration: boolean;
 }
 
-export type ProductDocumentsUseful = Selectable<ProductDocumentsUsefulTable>;
+export type ProductEvidenceUseful = Selectable<ProductEvidenceUsefulTable>;
 
-export interface ProductDocumentsUsefulTable {
+export interface ProductEvidenceUsefulTable {
   productId: number;
-  documentId: number;
+  evidenceId: number;
   userId: number;
   dateMarkedUseful: Date;
 }
