@@ -16,6 +16,8 @@ export interface Database {
   product_evidence_useful: ProductEvidenceUsefulTable;
   search: SearchTable;
   users: UserTable;
+  organisation_user: OrganisationUserTable;
+  organisation_contact: OrganisationContactTable;
 }
 
 export type Contact = Selectable<ContactTable>;
@@ -151,4 +153,18 @@ export interface OrganisationDetailsTable {
   organisationName: string;
   organisationCategoryName: string;
   organisationTypeName: string;
+}
+
+export type OrganisationUser = Selectable<OrganisationUserTable>;
+
+export interface OrganisationUserTable {
+  organisationId: number;
+  userId: number;
+}
+
+export type OrganisationContact = Selectable<OrganisationContactTable>;
+
+export interface OrganisationContactTable {
+  organisationId: number;
+  contactId: number;
 }
