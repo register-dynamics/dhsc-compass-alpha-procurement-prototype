@@ -147,7 +147,14 @@ export const renderProduct = async (req: Request, res: Response) => {
     return res.status(500).send("Unable to determine user organisation");
   }
 
-  res.render("product", { evidences, organisationName: userOrg.organisationName, product });
+  // Check if user's organisation has evidence for this product
+  const organisationEvidence = evidences.filter(
+    (ev) => ev.organisationId === userOrg.organisationId,
+  );
+
+  const hasEvidenceFromUsersOrg = organisationEvidence.length > 0;
+
+  res.render("product", { evidences, hasEvidenceFromUsersOrg, organisationName: userOrg.organisationName, product });
 };
 
 export const postMarkUseful = async (req: Request, res: Response) => {

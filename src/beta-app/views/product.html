@@ -24,7 +24,7 @@
             text: "Home"
             },
             {
-            href: "search-results?q=" + (searchTerm or ""),
+            href: "/search-results?q=" + (searchTerm or ""),
             text: "Search"
             }
         ],
@@ -84,7 +84,7 @@
                 ]
             }) }}
 
-            {# TODO: Make this card conditional based on whether the trust has used the device #}
+            {% if not hasEvidenceFromUsersOrg %}
             <div class="nhsuk-card nhsuk-u-margin-bottom-6">
                 <div class="nhsuk-card__content">
                     <h2 class="nhsuk-card__heading nhsuk-heading-m">Has your trust used this device?</h2>
@@ -110,6 +110,7 @@
                     </p>
                 </div>
             </div>
+            {% endif %}
 
             {# Supplier Information Card #}
             <div class="nhsuk-card" id="supplier">
