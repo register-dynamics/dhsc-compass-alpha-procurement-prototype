@@ -1,3 +1,4 @@
+import type { NextFunction, Request, Response } from "express";
 import type { HelmetOptions } from "helmet";
 
 export const helmetConfig: HelmetOptions = {
@@ -19,4 +20,17 @@ export const helmetConfig: HelmetOptions = {
   },
   // X-Frame-Options: Prevent the site from being framed to protect against clickjacking attacks
   xFrameOptions: { action: "deny" },
+};
+
+// Helmet.js does not include built-in support for the Permissions-Policy header, so we set it manually here.
+export const permissionsPolicy = (
+  _req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  res.setHeader(
+    "Permissions-Policy",
+    "accelerometer=(), ambient-light-sensor=(), autoplay=(), camera=(), encrypted-media=(), interest-cohort=(), fullscreen=self, geolocation=(), gyroscope=(), magnetometer=(), microphone=(), midi=(), payment=(), picture-in-picture=(), speaker=(), sync-xhr=self, usb=(), vr=()",
+  );
+  next();
 };

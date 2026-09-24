@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 
 import app from "../app.js";
 import { loginAndGetCookie } from "../tests/helpers.js";
+import { strict } from "assert/strict";
 
 describe("Index controller", () => {
   it("GET / should return 200 and welcome message with content-type text/html", async () => {
@@ -32,6 +33,24 @@ describe("Index controller", () => {
     expect(response.status).toBe(200);
     expect(response.text).toContain("Dashboard");
     expect(response.headers["content-type"]).toMatch(/html/);
+  });
+
+  it("GET / should include security headers", async () => {
+    const response = await request(app).get("/");
+
+    expect(response.headers["content-security-policy"]).toBeDefined();
+    expect(response.headers["cross-origin-opener-policy"]).toBeDefined();
+    expect(response.headers["cross-origin-resource-policy"]).toBeDefined();
+    expect(response.headers["origin-agent-cluster"]).toBeDefined();
+    expect(response.headers["permissions-policy"]).toBeDefined();
+    expect(response.headers["referrer-policy"]).toBeDefined();
+    expect(response.headers["strict-transport-security"]).toBeDefined();
+    expect(response.headers["x-content-type-options"]).toBeDefined();
+    expect(response.headers["x-dns-prefetch-control"]).toBeDefined();
+    expect(response.headers["x-download-options"]).toBeDefined();
+    expect(response.headers["x-frame-options"]).toBeDefined();
+    expect(response.headers["x-permitted-cross-domain-policies"]).toBeDefined();
+    expect(response.headers["x-xss-protection"]).toBeDefined();   
   });
 
   // NB: We can't test the 500 error page directly because it requires triggering a server-side error, which is not feasible in our unit test environment (at the moment).
