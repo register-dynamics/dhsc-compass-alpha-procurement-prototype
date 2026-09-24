@@ -18,6 +18,7 @@ export interface Database {
   users: UserTable;
   organisation_user: OrganisationUserTable;
   organisation_contact: OrganisationContactTable;
+  organisations: OrganisationsTable;
 }
 
 export type Contact = Selectable<ContactTable>;
@@ -49,27 +50,27 @@ export interface EvidenceTypeTable {
 export type Evidence = Selectable<EvidenceTable>;
 
 export interface EvidenceTable {
-  evidenceId: number;
-  createdAt: Generated<Date>;
-  modifiedAt: Date;
-  assessmentDate: string;
-  rating: string;
-  ratingType: string;
+  evidenceId: Generated<number>;
+  createdAt: Generated<Date> | null;
+  modifiedAt: Date | null;
+  assessmentDate: null | string;
+  rating: null | string;
+  ratingType: null | string;
   organisationId: number;
-  procured: boolean;
-  wardDepartment: string;
-  summary: string;
+  procured: boolean | null;
+  wardDepartment: null | string;
+  summary: null | string;
   typeOfEvidenceId: number;
 
   // Utility prop for documents
-  documents: Document[];
+  documents: Document[] | null;
 
   // Utility prop for usefulness
-  markedUseful: number;
-  totalUsefulCount: number;
+  markedUseful: null | number;
+  totalUsefulCount: null | number;
 
   // Utility prop for contacts
-  contacts: EvidenceContact[];
+  contacts: EvidenceContact[] | null;
 }
 
 export type DocumentType = Selectable<DocumentTypeTable>;
@@ -167,4 +168,11 @@ export type OrganisationContact = Selectable<OrganisationContactTable>;
 export interface OrganisationContactTable {
   organisationId: number;
   contactId: number;
+}
+
+export type Organisations = Selectable<OrganisationsTable>;
+
+export interface OrganisationsTable {
+  organisationId: number;
+  organisationName: string;
 }

@@ -3,12 +3,9 @@
 {% from "button/macro.njk" import button %}
 
 {# TODO: HARDCODED VALUES #}
-{% set productName = "PRODUCT_NAME" %}
-{% set boardName = "BOARD_NAME" %}
-
 {% set returnLink = "/product/" ~ productId %}
 
-{% set pageName = "Add " ~ boardName ~ " to this device" %}
+{% set pageName = "Add " ~ organisationName ~ " to this device" %}
 
 {% block beforeContent %}
     {{ backLink({ href: returnLink, text: "Back" }) }}

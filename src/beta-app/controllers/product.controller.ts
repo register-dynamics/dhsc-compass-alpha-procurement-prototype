@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { sql } from "kysely";
 
 import { db } from "../database/client.js";
+import { Organisations, Search } from "../database/types.js";
 import { postMarkUsefulSchema } from "../models/request-schemas/postMarkUsefulSchema.js";
 
 export const renderProduct = async (req: Request, res: Response) => {
@@ -131,7 +132,21 @@ export const renderProduct = async (req: Request, res: Response) => {
     });
   }
 
-  res.render("product", { evidences, product });
+  const userId = req.user?.id;
+
+  if (!userId) {
+    // TODO: Send to better error handling page
+    return res.status(500).send("Unable to determine user ID");
+  }
+
+  const userOrg = await getUserOrganisation(userId);
+
+  if (!userOrg) {
+    // TODO: Send to better error handling page
+    return res.status(500).send("Unable to determine user organisation");
+  }
+
+  res.render("product", { evidences, organisationName: userOrg.organisationName, product });
 };
 
 export const postMarkUseful = async (req: Request, res: Response) => {
@@ -237,11 +252,28 @@ export const renderAddEvidence = async (req: Request, res: Response) => {
     return res.status(400).send("Valid product ID is required");
   }
 
-  // TODO: Implement
-  // Lookup the product to make sure it exists, then pull the product name
-  // Get user's organisation
+  const product = await getProductWithId(productId);
 
-  res.render("product/add-evidence", { productId });
+  if (!product) {
+    // TODO: Send to better error handling page
+    return res.status(404).send("Product not found");
+  }
+
+  const userId = req.user?.id;
+
+  if (!userId) {
+    // TODO: Send to better error handling page
+    return res.status(500).send("Unable to determine user ID");
+  }
+
+  const organisation = await getUserOrganisation(userId);
+
+  if (!organisation) {
+    // TODO: Send to better error handling page
+    return res.status(500).send("Unable to determine user's organisation");
+  }
+
+  res.render("product/add-evidence", { organisationName: organisation.organisationName, productId, productName: product.productName });
 };
 
 export const postAddEvidence = async (req: Request, res: Response) => {
@@ -252,9 +284,30 @@ export const postAddEvidence = async (req: Request, res: Response) => {
     return res.status(400).send("Valid product ID is required");
   }
 
-  // TODO: Implement the logic to add evidence for the product
+  const product = await getProductWithId(productId);
 
-  res.render("product/add-evidence-success", { productId });
+  if (!product) {
+    // TODO: Send to better error handling page
+    return res.status(404).send("Product not found");
+  }
+
+  const userId = req.user?.id;
+
+  if (!userId) {
+    // TODO: Send to better error handling page
+    return res.status(500).send("Unable to determine user ID");
+  }
+
+  const organisation = await getUserOrganisation(userId);
+
+  if (!organisation) {
+    // TODO: Send to better error handling page
+    return res.status(500).send("Unable to determine user's organisation");
+  }
+
+  const evidenceId = await createEvidenceCardForOrganisation(organisation.organisationId, productId);
+
+  res.render("product/add-evidence-success", { evidenceId, organisationName: organisation.organisationName, productId, productName: product.productName });
 };
 
 export const renderAddEvidenceContactExperience = async (req: Request, res: Response) => {
@@ -327,11 +380,71 @@ export const postAddEvidenceContactSelf = async (req: Request, res: Response) =>
   res.render("product/add-evidence-contact-success", { productId });
 };
 
-function getProductIdFromParams(req: Request): number | null {
+async function createEvidenceCardForOrganisation(organisationId: number, productId: number): Promise<number> {
+  const genericEvidenceType = 8;
+  
+  const trx = await db.startTransaction().execute();
+
+  try {
+    const evidence = await trx
+      .withSchema("app")
+      .insertInto("evidence")
+      .values({
+        organisationId,
+        typeOfEvidenceId: genericEvidenceType,
+      })
+      .returning("evidenceId")
+      .executeTakeFirstOrThrow();
+
+    await trx
+      .withSchema("app")
+      .insertInto("product_matches")
+      .values({
+        evidenceId : evidence.evidenceId,
+        productId,
+      })
+      .executeTakeFirstOrThrow();
+
+    await trx.commit().execute();
+    return evidence.evidenceId;
+  } catch (error) {
+    await trx.rollback().execute();
+    throw error;
+  }
+}
+
+function getProductIdFromParams(req: Request): null | number {
   try {
     const productId = parseInt(req.params.productId as string);
     return isNaN(productId) ? null : productId;
   } catch {
     return null;
   }
+}
+
+async function getProductWithId(productId: number): Promise<null | Search> {
+  const product = await db
+    .withSchema("external")
+    .selectFrom("search")
+    .selectAll()
+    .where("productId", "=", productId)
+    .executeTakeFirst();
+  return product ?? null;
+}
+
+// NOTE: This assumes that the user only belongs to a single organisation
+// We know this probably won't hold true for all users, but it's a reasonable assumption for now that we can fix later
+async function getUserOrganisation(userId: number): Promise<null | Organisations> {
+  const organisation = await db
+    .withSchema("app")
+    .selectFrom("organisations")
+    .selectAll()
+    .innerJoin(
+      "organisation_user",
+      "organisations.organisationId",
+      "organisation_user.organisationId"
+    )
+    .where("organisation_user.userId", "=", userId)
+    .executeTakeFirst();
+  return organisation ?? null;
 }

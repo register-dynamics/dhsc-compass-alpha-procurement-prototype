@@ -2,10 +2,6 @@
 {% from "panel/macro.njk" import panel %}
 {% from "button/macro.njk" import button %}
 
-{# TODO: HARDCODED VALUES #}
-{% set productName = "PRODUCT_NAME" %}
-{% set boardName = "BOARD_NAME" %}
-
 {% set pageName = "Your trust is now listed" %}
 
 {% block content %}
@@ -15,7 +11,7 @@
     {{ panel({
       titleText: "Your trust is now listed",
       headingLevel: 1,
-      text: boardName ~ " has experience with " ~ productName
+      text: organisationName ~ " has experience with " ~ productName
     }) }}
 
     <p class="nhsuk-body nhsuk-u-margin-top-5">
