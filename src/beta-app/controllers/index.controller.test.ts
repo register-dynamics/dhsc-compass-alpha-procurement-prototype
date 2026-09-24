@@ -3,7 +3,6 @@ import { describe, expect, it } from "vitest";
 
 import app from "../app.js";
 import { loginAndGetCookie } from "../tests/helpers.js";
-import { strict } from "assert/strict";
 
 describe("Index controller", () => {
   it("GET / should return 200 and welcome message with content-type text/html", async () => {
@@ -50,7 +49,7 @@ describe("Index controller", () => {
     expect(response.headers["x-download-options"]).toBeDefined();
     expect(response.headers["x-frame-options"]).toBeDefined();
     expect(response.headers["x-permitted-cross-domain-policies"]).toBeDefined();
-    expect(response.headers["x-xss-protection"]).toBeDefined();   
+    expect(response.headers["x-xss-protection"]).toBeDefined();
   });
 
   // NB: We can't test the 500 error page directly because it requires triggering a server-side error, which is not feasible in our unit test environment (at the moment).
