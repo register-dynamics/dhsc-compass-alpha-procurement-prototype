@@ -24,6 +24,7 @@
     "test:e2e:ui": "playwright test --ui",
     "test:pa11y": "npm run generate:sitemap && pa11y-ci --config .pa11yci",
     "test:a11y": "npm-run-all --parallel --race dev test:pa11y",
+    "test:all": "npm-run-all test:a11y test:e2e test:coverage",
     "generate:sitemap": "npm run build && node --env-file-if-exists .env scripts/generate-sitemap.mjs",
     "db:migrate": "tsx --env-file-if-exists .env scripts/apply-database-migrations.ts"
   },

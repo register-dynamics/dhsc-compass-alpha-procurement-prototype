@@ -1,6 +1,6 @@
 import bodyParser from "body-parser";
 import pgConnect from "connect-pg-simple";
-import express from "express";
+import express, { type ErrorRequestHandler } from "express";
 import session from "express-session";
 import nunjucks from "nunjucks";
 
@@ -11,7 +11,10 @@ import indexRoutes, { indexRouteDefinitions } from "./routes/index.routes.js";
 import productRoutes, {
   productRouteDefinitions,
 } from "./routes/product.routes.js";
-import { buildPublicRouteMatcher } from "./routes/route-definitions.js";
+import {
+  buildPublicRouteMatcher,
+  buildRouteMatcher,
+} from "./routes/route-definitions.js";
 import searchRoutes, {
   searchRouteDefinitions,
 } from "./routes/search.routes.js";
@@ -114,11 +117,14 @@ const routeModules = [
 const isPublicRoute = buildPublicRouteMatcher(
   routeModules.flatMap(({ definitions }) => definitions),
 );
+const isKnownRoute = buildRouteMatcher(
+  routeModules.flatMap(({ definitions }) => definitions),
+);
 
 // TODO: Put this middleware in a better place
 // Middleware to determine if the current route is public and should bypass authentication
 app.use((req, res, next) => {
-  if (isPublicRoute(req)) {
+  if (!isKnownRoute(req) || isPublicRoute(req)) {
     next();
     return;
   }
@@ -130,5 +136,26 @@ app.use((req, res, next) => {
 for (const { mountPath, router } of routeModules) {
   app.use(mountPath, router);
 }
+
+// Handle requests that do not match any registered route.
+// This must be registered after all application routes.
+app.use((req, res) => {
+  res.status(404).render("not-found");
+});
+
+// Handle errors passed to next() and errors thrown by async route handlers.
+// Keep the error details out of the response so that internal information is not exposed to users.
+const globalErrorHandler: ErrorRequestHandler = (error, req, res, next) => {
+  console.error("Unhandled application error", error);
+
+  if (res.headersSent) {
+    next(error);
+    return;
+  }
+
+  res.status(500).render("error");
+};
+
+app.use(globalErrorHandler);
 
 export default app;

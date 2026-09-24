@@ -19,8 +19,15 @@ const routesNeedingParams = [
   },
 ];
 
-const initialLoginUrl = {
-  __NOTE: "this should always be FIRST (if browser context is preserved)",
+const signInUrlTest = {
+  __NOTE:
+    "This should always be FIRST (to test the sign in page before actually signing in)",
+  url: `${BASE_URL}/sign-in`,
+};
+
+const initialSignInUrl = {
+  __NOTE:
+    "This should always be SECOND (if browser context is preserved) to authenticate the user",
   url: `${BASE_URL}/sign-in`,
   actions: [
     `navigate to ${BASE_URL}/sign-in`,
@@ -31,6 +38,9 @@ const initialLoginUrl = {
     "wait for path to be /dashboard",
   ],
 };
+
+// URLs that should be tested that the router doesn't find e.g. 404 and 500 handlers
+const additionalUrlsToTest = [`${BASE_URL}/not-found`, `${BASE_URL}/error`];
 
 // Extract the mounted path from an Express layer's regular expression
 function getMountedPath(layer) {
@@ -108,7 +118,9 @@ const urls = finalRoutes.map((route) => `${BASE_URL}${route}`).sort();
 
 // Add the initial login URL to the start of the list of URLs
 // Needed to authenticate the user before accessing other routes
-urls.unshift(initialLoginUrl);
+urls.unshift(signInUrlTest, initialSignInUrl);
+
+urls.push(...additionalUrlsToTest);
 
 // Write the updated list of URLs to the pa11yci configuration file
 if (fs.existsSync(pa11yciFile)) {

@@ -20,7 +20,11 @@
   },
   "urls": [
     {
-      "__NOTE": "this should always be FIRST (if browser context is preserved)",
+      "__NOTE": "This should always be FIRST (to test the sign in page before actually signing in)",
+      "url": "http://localhost:3001/sign-in"
+    },
+    {
+      "__NOTE": "This should always be SECOND (if browser context is preserved) to authenticate the user",
       "url": "http://localhost:3001/sign-in",
       "actions": [
         "navigate to http://localhost:3001/sign-in",
@@ -37,6 +41,8 @@
     "http://localhost:3001/search",
     "http://localhost:3001/search-results?q=glucose",
     "http://localhost:3001/sign-in",
-    "http://localhost:3001/sign-out"
+    "http://localhost:3001/sign-out",
+    "http://localhost:3001/not-found",
+    "http://localhost:3001/error"
   ]
 }

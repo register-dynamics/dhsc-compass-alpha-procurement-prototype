@@ -191,6 +191,7 @@ Those that are marked as needing database connnection details in the environment
 
 These all require database connection details in the environment, apart from `generate:sitemap`.
 
+- `npm run test:all` - run all tests once
 - `npm run test` - run all tests once
 - `npm run test:watch` - start Vitest in watch mode
 - `npm run test:coverage` - run tests with coverage reporting
