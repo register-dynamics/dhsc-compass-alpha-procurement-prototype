@@ -1,8 +1,16 @@
 import { Router } from "express";
 
 import {
+  postAddEvidence,
+  postAddEvidenceContactDone,
+  postAddEvidenceContactSelf,
   postMarkUseful,
   postUnmarkUseful,
+  renderAddEvidence,
+  renderAddEvidenceContactAcquisition,
+  renderAddEvidenceContactDocument,
+  renderAddEvidenceContactExperience,
+  renderAddEvidenceContactSelf,
   renderProduct,
 } from "../controllers/product.controller.js";
 import { registerRoutes, type RouteDefinition } from "./route-definitions.js";
@@ -25,6 +33,46 @@ const routeDefinitions: RouteDefinition[] = [
     method: "post",
     path: "/product/unmark-useful",
   },
+  {
+    handler: renderAddEvidence,
+    method: "get",
+    path: "/product/:productId/add-evidence",
+  },
+  {
+    handler: postAddEvidence,
+    method: "post",
+    path: "/product/:productId/add-evidence",
+  },
+  {
+    handler: renderAddEvidenceContactExperience,
+    method: "get",
+    path: "/product/:productId/evidence/:evidenceId/add-contact-experience",
+  },
+  {
+    handler: renderAddEvidenceContactAcquisition,
+    method: "get",
+    path: "/product/:productId/evidence/:evidenceId/add-contact-acquisition",
+  },
+  {
+    handler: renderAddEvidenceContactDocument,
+    method: "get",
+    path: "/product/:productId/evidence/:evidenceId/add-contact-document",
+  },
+  {
+    handler: postAddEvidenceContactDone,
+    method: "post",
+    path: "/product/:productId/evidence/:evidenceId/add-contact-done",
+  },
+  {
+    handler: renderAddEvidenceContactSelf,
+    method: "get",
+    path: "/product/:productId/evidence/add-evidence-contact-self",
+  },
+  {
+    handler: postAddEvidenceContactSelf,
+    method: "post",
+    path: "/product/:productId/evidence/add-evidence-contact-self",
+  }
 ];
 
 registerRoutes(router, routeDefinitions);

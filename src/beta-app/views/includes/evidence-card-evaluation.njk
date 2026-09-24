@@ -1,20 +1,12 @@
 {% from "includes/contact-peer-discussion.njk" import contactPeerDiscussion %}
 {% from "includes/mark-useful-button.njk" import mark_useful_button %}
 
-{% macro evidenceCardEvaluation(document) %}
+{% macro evidenceCardEvaluation(evidence) %}
   <div class="nhsuk-card">
     <div class="nhsuk-card__content">
-      {% set procurementStatusLabels = {
-        '0': 'Not procured',
-        '1': 'Procured'
-      } %}
-      {% set procurementStatusClasses = {
-        '0': 'nhsuk-tag--yellow',
-        '1': 'nhsuk-tag--green'
-      } %}
 
-      {% set statusLabel = procurementStatusLabels[document.procured] %}
-      {% set statusClass = procurementStatusClasses[document.procured] %}
+      {% set statusLabel = "procured" if evidence.procured else 'Not procured' %}
+      {% set statusClass = 'nhsuk-tag--green' if evidence.procured else 'nhsuk-tag--yellow' %}
 
       <div class="nhsuk-u-margin-bottom-3">
         <strong class="nhsuk-tag {{ statusClass }}">{{ statusLabel }}</strong>
@@ -22,27 +14,27 @@
 
 
       <h3 class="nhsuk-card__heading nhsuk-heading-m">
-        {{ document.organisationName }}
+        {{ evidence.organisationName }}
       </h3>
 
-      {{ mark_useful_button(document.totalUsefulCount, document.productId, document.documentId, document.markedUseful) }}
+      {{ mark_useful_button(evidence.totalUsefulCount, evidence.productId, evidence.evidenceId, evidence.markedUseful) }}
 
       <dl class="nhsuk-summary-list nhsuk-summary-list--no-border">
         <div class="nhsuk-summary-list__row">
           <dt class="nhsuk-summary-list__key">
-            Document type
+            Evidence type
           </dt>
           <dd class="nhsuk-summary-list__value">
-            {{ document.typeOfDocDesc }}
+            {{ evidence.typeOfEvidenceDesc }}
           </dd>
         </div>
 
         <div class="nhsuk-summary-list__row">
           <dt class="nhsuk-summary-list__key">
-            Document period
+            Evidence period
           </dt>
           <dd class="nhsuk-summary-list__value">
-            {{ document.assessmentDate }}
+            {{ evidence.assessmentDate }}
           </dd>
         </div>
 
@@ -51,11 +43,12 @@
             Ward/Department
           </dt>
           <dd class="nhsuk-summary-list__value">
-            {{ document.wardDepartment }}
+            {{ evidence.wardDepartment }}
           </dd>
         </div>
       </dl>
 
+      {% for document in evidence.documents %}
       <p class="nhsuk-body nhsuk-u-margin-top-3">
         {% set documentUrl = document.urlDirectory %}
 
@@ -65,8 +58,9 @@
         
         <a href="{{ documentUrl }}">View {{ document.typeOfDocDesc }}</a>
       </p>
+      {% endfor %}
 
-      {{ contactPeerDiscussion(document.contacts) }}
+      {{ contactPeerDiscussion(evidence.contacts) }}
     </div>
   </div>
 {% endmacro %}

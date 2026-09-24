@@ -1,0 +1,47 @@
+{% extends "layouts/base.html" %}
+{% from "back-link/macro.njk" import backLink %}
+{% from "button/macro.njk" import button %}
+
+{% set returnLink = "/product/" ~ productId %}
+
+{% set pageName = "Add yourself as a contact for this device" %}
+
+{% block beforeContent %}
+  {{ backLink({ href: returnLink, text: "Back" }) }}
+{% endblock %}
+{% block content %}
+<div class="nhsuk-grid-row nhsuk-u-margin-top-7">
+  <div class="nhsuk-grid-column-two-thirds">
+
+    <h1 class="nhsuk-heading-l">{{ pageName }}</h1>
+
+    <dl class="nhsuk-summary-list nhsuk-u-margin-bottom-6">
+      <div class="nhsuk-summary-list__row">
+        <dt class="nhsuk-summary-list__key">Contact</dt>
+        <dd class="nhsuk-summary-list__value">{{ contact.givenName }} {{ contact.surname }}, {{ contact.role }}<br>{{ contact.email }}</dd>
+        {# <dd class="nhsuk-summary-list__actions"><a href="#">Change<span class="nhsuk-u-visually-hidden"> contact details</span></a></dd> #}
+      </div>
+      <div class="nhsuk-summary-list__row">
+        <dt class="nhsuk-summary-list__key">Device</dt>
+        <dd class="nhsuk-summary-list__value">{{ productName }}</dd>
+        <dd class="nhsuk-summary-list__actions"></dd>
+      </div>
+    </dl>
+
+    <p>Other NHS trusts will see your name and email on this device, and will be able to contact
+      you about it.</p>
+
+    <p>This also lists {{ organisationName }} as having experience with the device.</p>
+
+    <p>You can change this later.</p>
+
+    <form action="/product/{{ productId }}/evidence/add-evidence-contact-self" method="post" >
+      <input type="hidden" name="contactId" value="{{ contact.contactId }}">
+      {{ button({ text: "Confirm and add me as a contact" }) }}
+    </form>
+
+    <p><a href="{{ returnLink }}">Cancel</a></p>
+
+  </div>
+</div>
+{% endblock %}

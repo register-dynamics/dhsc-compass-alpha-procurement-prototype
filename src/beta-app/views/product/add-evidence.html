@@ -1,0 +1,37 @@
+{% extends "layouts/base.html" %}
+{% from "back-link/macro.njk" import backLink %}
+{% from "button/macro.njk" import button %}
+
+{# TODO: HARDCODED VALUES #}
+{% set returnLink = "/product/" ~ productId %}
+
+{% set pageName = "Add " ~ organisationName ~ " to this device" %}
+
+{% block beforeContent %}
+    {{ backLink({ href: returnLink, text: "Back" }) }}
+{% endblock %}
+{% block content %}
+    <div class="nhsuk-grid-row nhsuk-u-margin-top-7">
+        <div class="nhsuk-grid-column-two-thirds">
+
+            <h1 class="nhsuk-heading-l">{{ pageName }}</h1>
+
+            <p>Your trust will be listed on
+                {{ productName }}
+                as having experience with it.</p>
+
+            <p>Other NHS trusts will see your trust in that list. Nothing else is shared unless you choose to add it.</p>
+
+            <p>You can change this later.</p>
+
+            <form action="/product/{{ productId }}/add-evidence" method="post">
+                {{ button({ text: "Confirm and add my trust" }) }}
+            </form>
+
+            <p>
+                <a href="{{returnLink}}">Cancel</a>
+            </p>
+
+        </div>
+    </div>
+{% endblock %}
