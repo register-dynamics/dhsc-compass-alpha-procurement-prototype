@@ -9,6 +9,7 @@ import config from "./config.js";
 import { pgPool } from "./database/client.js";
 import { ensureAuthenticated, initializeAuth } from "./middleware/auth.js";
 import { helmetConfig } from "./middleware/helmetConfig.js";
+import { permissionsPolicy } from "./middleware/helmetConfig.js";
 import indexRoutes, { indexRouteDefinitions } from "./routes/index.routes.js";
 import productRoutes, {
   productRouteDefinitions,
@@ -28,6 +29,9 @@ const app = express();
 
 // Apply security-related HTTP headers using Helmet
 app.use(helmet(helmetConfig));
+
+// Apply Permissions-Policy header that Helmet does not provide built-in support for
+app.use(permissionsPolicy);
 
 // Parse URL-encoded bodies (as sent by HTML forms) - used by passport for login form submission
 app.use(bodyParser.urlencoded({ extended: false }));
