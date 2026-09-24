@@ -30,7 +30,10 @@ export const permissionsPolicy = (
 ) => {
   res.setHeader(
     "Permissions-Policy",
-    "accelerometer=(), ambient-light-sensor=(), autoplay=(), camera=(), encrypted-media=(), interest-cohort=(), fullscreen=self, geolocation=(), gyroscope=(), magnetometer=(), microphone=(), midi=(), payment=(), picture-in-picture=(), speaker=(), sync-xhr=self, usb=(), vr=()",
+    // Based off https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Permissions-Policy#directives
+    // Allows fullscreen mode for the current origin - lets users full-screen content
+    // Allows sync-xhr for the current origin - enables synchronous XMLHttpRequests
+    "accelerometer()', 'ambient-light-sensor()', 'aria-notify()', 'attribution-reporting()', 'autoplay()', 'bluetooth()', 'browsing-topics()', 'camera()', 'captured-surface-control()', 'ch-ua-high-entropy-values()', 'compute-pressure()', 'cross-origin-isolated()', 'deferred-fetch()', 'deferred-fetch-minimal()', 'display-capture()', 'encrypted-media()', 'fullscreen(self)', 'gamepad()', 'geolocation()', 'gyroscope()', 'hid()', 'identity-credentials-get()', 'idle-detection()', 'language-detector()', 'language-model()', 'local-fonts()', 'local-network()', 'local-network-access()', 'loopback-network()', 'magnetometer()', 'microphone()', 'midi()', 'on-device-speech-recognition()', 'otp-credentials()', 'payment()', 'picture-in-picture()', 'private-state-token-issuance()', 'private-state-token-redemption()', 'publickey-credentials-create()', 'publickey-credentials-get()', 'screen-wake-lock()', 'serial()', 'speaker-selection()', 'storage-access()', 'translator()', 'summarizer()', 'unload()', 'usb()', 'web-share()', 'window-management()', 'xr-spatial-tracking(), sync-xhr(self)",
   );
   next();
 };
