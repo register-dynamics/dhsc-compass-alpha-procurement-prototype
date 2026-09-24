@@ -1,0 +1,15 @@
+{% extends "layouts/base.html" %}
+
+{% set pageName = "We cannot find the page you're looking for" %}
+
+{% block content %}
+  <div class="nhsuk-grid-row nhsuk-u-margin-top-7">
+    <div class="nhsuk-grid-column-two-thirds">
+      <h1 class="nhsuk-heading-xl">We cannot find the page you're looking for</h1>
+      <p>Please check the web address to make sure it was correct.</p>
+      {# TODO: Support link #}
+      <p>If you think this link is broken, please contact support.</p>
+      <p class="nhsuk-body"><a href="/" class="nhsuk-link">Go to the homepage</a></p>
+    </div>
+  </div>
+{% endblock %}

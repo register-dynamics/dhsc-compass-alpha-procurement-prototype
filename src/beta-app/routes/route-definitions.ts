@@ -13,6 +13,31 @@ const buildRouteKey = (method: string, path: string) => {
   return `${method.toUpperCase()} ${path}`;
 };
 
+export const buildRouteMatcher = (
+  definitions: RouteDefinition[],
+): ((req: Pick<Request, "method" | "path">) => boolean) => {
+  return (req: Pick<Request, "method" | "path">) =>
+    definitions.some((definition) => {
+      if (definition.method.toUpperCase() !== req.method.toUpperCase()) {
+        return false;
+      }
+
+      const pathPattern =
+        definition.path === "/"
+          ? "/"
+          : definition.path
+              .split("/")
+              .map((segment) =>
+                segment.startsWith(":")
+                  ? "[^/]+"
+                  : segment.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
+              )
+              .join("/");
+
+      return new RegExp(`^${pathPattern}/?$`).test(req.path);
+    });
+};
+
 export const registerRoutes = (
   router: Router,
   definitions: RouteDefinition[],
@@ -22,14 +47,12 @@ export const registerRoutes = (
   }
 };
 
-export const buildPublicRouteMatcher = (definitions: RouteDefinition[]) => {
-  const publicRouteKeys = new Set(
-    definitions
-      .filter((definition) => definition.auth === false)
-      .map((definition) => buildRouteKey(definition.method, definition.path)),
+export const buildPublicRouteMatcher = (
+  definitions: RouteDefinition[],
+): ((req: Pick<Request, "method" | "path">) => boolean) => {
+  return buildRouteMatcher(
+    definitions.filter((definition) => definition.auth === false),
   );
-
-  return (req: Pick<Request, "method" | "path">) => {
-    return publicRouteKeys.has(buildRouteKey(req.method, req.path));
-  };
 };
+
+export { buildRouteKey };
