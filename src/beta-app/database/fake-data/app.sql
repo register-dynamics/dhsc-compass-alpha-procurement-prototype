@@ -160,3 +160,10 @@ INSERT INTO app.users (id, username, password_hash, given_name, last_name) VALUE
 -- Seed user organisation association
 INSERT INTO app.organisation_user (organisation_id, user_id) VALUES
   (3, 1);
+
+-- Update sequences for tables that were missing identity columns
+SELECT setval(pg_get_serial_sequence('"app"."contacts"', 'contact_id'), COALESCE((SELECT MAX("contact_id") FROM "app"."contacts"), 1));
+SELECT setval(pg_get_serial_sequence('"app"."document_type"', 'type_of_doc_id'), COALESCE((SELECT MAX("type_of_doc_id") FROM "app"."document_type"), 1));
+SELECT setval(pg_get_serial_sequence('"app"."org_category"', 'org_category_id'), COALESCE((SELECT MAX("org_category_id") FROM "app"."org_category"), 1));
+SELECT setval(pg_get_serial_sequence('"app"."org_type"', 'org_type_id'), COALESCE((SELECT MAX("org_type_id") FROM "app"."org_type"), 1));
+SELECT setval(pg_get_serial_sequence('"app"."organisations"', 'organisation_id'), COALESCE((SELECT MAX("organisation_id") FROM "app"."organisations"), 1));

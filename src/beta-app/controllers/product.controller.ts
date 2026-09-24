@@ -2,7 +2,8 @@ import { Request, Response } from "express";
 import { sql } from "kysely";
 
 import { db } from "../database/client.js";
-import { Organisations, Search } from "../database/types.js";
+import { Contact, Organisations, Search } from "../database/types.js";
+import { postAddEvidenceContactSelfSchema } from "../models/request-schemas/postAddEvidenceContactSelfSchema.js";
 import { postMarkUsefulSchema } from "../models/request-schemas/postMarkUsefulSchema.js";
 
 export const renderProduct = async (req: Request, res: Response) => {
@@ -364,10 +365,47 @@ export const renderAddEvidenceContactSelf = async (req: Request, res: Response) 
     return res.status(400).send("Valid product ID is required");
   }
 
-  res.render("product/add-evidence-contact-self", { productId });
+  const product = await getProductWithId(productId);
+
+  if (!product) {
+    // TODO: Send to better error handling page
+    return res.status(404).send("Product not found");
+  }
+
+  const userId = req.user?.id;
+
+  if (!userId) {
+    // TODO: Send to better error handling page
+    return res.status(500).send("Unable to determine user ID");
+  }
+
+  const organisation = await getUserOrganisation(userId);
+
+  if (!organisation) {
+    // TODO: Send to better error handling page
+    return res.status(500).send("Unable to determine organisation for user");
+  }
+
+  const contact = await getOrCreateContactForUser(userId);
+
+  if (!contact) {
+    // TODO: Send to better error handling page
+    return res.status(500).send("Unable to determine contact for user");
+  }
+
+  res.render("product/add-evidence-contact-self", { contact, organisationName: organisation.organisationName, productId, productName: product.productName });
 };
 
 export const postAddEvidenceContactSelf = async (req: Request, res: Response) => {
+  const result = postAddEvidenceContactSelfSchema.safeParse(req.body);
+
+  if (!result.success) {
+    // TODO: Send to better error handling page
+    return res.status(400).send("Invalid request body");
+  }
+
+  const contactId = result.data.contactId
+
   const productId = getProductIdFromParams(req);
 
   if (!productId) {
@@ -375,9 +413,51 @@ export const postAddEvidenceContactSelf = async (req: Request, res: Response) =>
     return res.status(400).send("Valid product ID is required");
   }
 
-  // TODO: Implement the logic to handle adding self as evidence contact
+  const product = await getProductWithId(productId);
 
-  res.render("product/add-evidence-contact-success", { productId });
+  if (!product) {
+    // TODO: Send to better error handling page
+    return res.status(404).send("Product not found");
+  }
+
+  const userId = req.user?.id;
+
+  if (!userId) {
+    // TODO: Send to better error handling page
+    return res.status(500).send("Unable to determine user ID");
+  }
+
+  const organisation = await getUserOrganisation(userId);
+
+  if (!organisation) {
+    // TODO: Send to better error handling page
+    return res.status(500).send("Unable to determine organisation for user");
+  }
+
+  const evidenceCardId = await createEvidenceCardForOrganisation(organisation.organisationId, productId);
+
+  if (!evidenceCardId) {
+    // TODO: Send to better error handling page
+    return res.status(500).send("Unable to create evidence card for organisation");
+  }
+
+  if (!contactId) {
+    // TODO: Send to better error handling page
+    return res.status(400).send("Valid contact ID is required");
+  }
+
+  const contact = await getContactForUser(userId);
+
+  if (!contact) {
+    // TODO: Send to better error handling page
+    return res.status(500).send("Unable to determine contact for user");
+  }
+
+  const contactName = `${contact.title ?? ""} ${contact.givenName} ${contact.surname}`.trim();
+
+  await linkContactToEvidence(contactId, evidenceCardId);
+
+  res.render("product/add-evidence-contact-success", { contactName: contactName, organisationName: organisation.organisationName, productId, productName: product.productName });
 };
 
 async function createEvidenceCardForOrganisation(organisationId: number, productId: number): Promise<number> {
@@ -411,6 +491,52 @@ async function createEvidenceCardForOrganisation(organisationId: number, product
     await trx.rollback().execute();
     throw error;
   }
+}
+
+async function getContactForUser(userId: number): Promise<Contact | null> {
+  const contact = await db
+    .withSchema("app")
+    .selectFrom("contacts")
+    .selectAll()
+    .where("userId", "=", userId)
+    .executeTakeFirst();
+  return contact ?? null;
+}
+
+async function getOrCreateContactForUser(userId: number): Promise<Contact | null> {
+  const contact = await getContactForUser(userId);
+
+  if (!contact) {
+    const user = await db
+      .withSchema("app")
+      .selectFrom("users")
+      .selectAll()
+      .where("id", "=", userId)
+      .executeTakeFirst();
+
+    if (!user) {
+      throw new Error("Unable to determine user for creating contact");
+    }
+
+    const newContact = await db
+      .withSchema("app")
+      .insertInto("contacts")
+      .values({
+        email: user.username,
+        givenName: user.givenName,
+        phoneNo: null,
+        role: "TODO: Role",
+        surname: user.lastName,
+        title: null,
+        userId: userId,
+      })
+      .returningAll()
+      .executeTakeFirstOrThrow();
+
+    return newContact;
+  }
+
+  return contact;
 }
 
 function getProductIdFromParams(req: Request): null | number {
@@ -447,4 +573,22 @@ async function getUserOrganisation(userId: number): Promise<null | Organisations
     .where("organisation_user.userId", "=", userId)
     .executeTakeFirst();
   return organisation ?? null;
+}
+
+async function linkContactToEvidence(contactId: number, evidenceId: number): Promise<void> {
+  await db
+    .withSchema("app")
+    .insertInto("evidence_contacts")
+    .values({
+      contactId,
+      discussBusinessCase: false,
+      discussEhrIntegration: false,
+      discussImplementation: false,
+      discussOutcomes: false,
+      discussPharmacyIntegration: false,
+      discussRealWorldUse: false,
+      discussTraining: false,
+      evidenceId,
+    })
+    .executeTakeFirstOrThrow();
 }

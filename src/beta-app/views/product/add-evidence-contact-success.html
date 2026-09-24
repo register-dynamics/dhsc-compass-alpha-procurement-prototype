@@ -2,12 +2,6 @@
 {% from "panel/macro.njk" import panel %}
 {% from "card/macro.njk" import card %}
 
-{# TODO: HARDCODED VALUES #}
-{% set evidenceId = "EVIDENCE_ID" %}
-{% set contactName = "CONTACT_NAME" %}
-{% set productName = "PRODUCT_NAME" %}
-{% set boardName = "BOARD_NAME" %}
-
 {% set pageName = "Thank you" %}
 
 {% block content %}
@@ -24,7 +18,7 @@
     <dl class="nhsuk-summary-list">
       <div class="nhsuk-summary-list__row">
         <dt class="nhsuk-summary-list__key">Trust experience</dt>
-        <dd class="nhsuk-summary-list__value">{{ boardName }}</dd>
+        <dd class="nhsuk-summary-list__value">{{ organisationName }}</dd>
         <dd class="nhsuk-summary-list__actions"></dd>
       </div>
       <div class="nhsuk-summary-list__row">

@@ -24,13 +24,14 @@ export interface Database {
 export type Contact = Selectable<ContactTable>;
 
 export interface ContactTable {
-  contactId: number;
-  title: string;
+  contactId: Generated<number>;
+  title: null | string;
   givenName: string;
   surname: string;
-  email: string;
-  phoneNo: string;
+  email: null | string;
+  phoneNo: null | string;
   role: string;
+  userId: null | number;
 }
 
 export type ProductMatches = Selectable<ProductMatchesTable>;
