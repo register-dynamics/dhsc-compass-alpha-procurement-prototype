@@ -155,5 +155,9 @@ INSERT INTO "app"."product_matches" ("match_id","product_id","evidence_id") VALU
  
 
 -- Seed user for beta app login
-INSERT INTO app.users (username, password_hash, given_name, last_name) VALUES
-  ('test@example.com', '$argon2id$v=19$m=65536,p=4,t=3$FOt9ovCYjfa8MBG+0xhOiA$ql+3cvHd48lV8auNcHSU/Wjw3Lfr1IFRRroA32XFhKM', 'Johnny', 'Test');
+INSERT INTO app.users (id, username, password_hash, given_name, last_name) VALUES
+  (1, 'test@example.com', '$argon2id$v=19$m=65536,p=4,t=3$FOt9ovCYjfa8MBG+0xhOiA$ql+3cvHd48lV8auNcHSU/Wjw3Lfr1IFRRroA32XFhKM', 'Johnny', 'Test');
+
+-- Seed user organisation association
+INSERT INTO app.organisation_user (organisation_id, user_id) VALUES
+  (3, 1);
