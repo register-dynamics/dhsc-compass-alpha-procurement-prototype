@@ -1,0 +1,70 @@
+{#
+  Sketch 1d: Internal spinal fixation systems.
+
+  Layer 3 of the Device function tree, reached from Bone/Joint fixation
+  implants. The end of this branch: GMDN has no children here, so the
+  template leaves out the subcategories section. Content only. Layout and the
+  reasoning behind it are in _category-level.html.
+
+  ── Content ─────────────────────────────────────────────────────────────
+
+  Name and terms are GMDN, from the page Dylan pasted, reproduced exactly.
+  No definition: removed on 28 September 2026, as on the other category
+  pages. The 8 rows are every non-obsolete term in the category, A to Z, so
+  the list, the total and the filter count are real. Only supplier numbers
+  are invented.
+
+  One page, so the template leaves out filters, sort and pagination. The
+  filter data is still set, in case the list grows: only Featured Attributes >
+  Complete system configuration (6 of 8) would narrow it, since every term is
+  Orthopaedic devices, Surgical invasive, Implantable, Single use, Non-active
+  and Implantable inorganic material.
+#}
+
+{% extends "identify-alternatives/_category-level.html" %}
+
+{% set category = {
+  name: "Internal spinal fixation systems",
+  caption: "Bone/Joint fixation implants"
+} %}
+
+{% set breadcrumbs = [
+  { href: "/identify-alternatives/search-and-browse", text: "Search and browse" },
+  { href: "/identify-alternatives/device-function", text: "Device function" },
+  { href: "/identify-alternatives/tissue-reparation-devices", text: "Tissue reparation devices" },
+  { href: "/identify-alternatives/bone-joint-fixation-implants", text: "Bone/Joint fixation implants" }
+] %}
+
+{% set subcategories = [] %}
+
+{# The other subcategories of Bone/Joint fixation implants, for the side
+   navigation. Copied from bone-joint-fixation-implants.html. #}
+{% set siblings = [
+  { name: "Implantable bone fixation pins", href: "#", count: "18" },
+  { name: "Implantable bone screws", href: "#", count: "54" },
+  { name: "Implantable fixation plates", href: "#", count: "41" },
+  { name: "Internal spinal fixation systems", href: "/identify-alternatives/internal-spinal-fixation-systems", count: "8" },
+  { name: "Intramedullary bone nails", href: "#", count: "22" },
+  { name: "Orthopaedic fixation systems", href: "#", count: "29" },
+  { name: "Sacroiliac joint fixation/arthrodesis implants", href: "#", count: "6" }
+] %}
+
+{% set filters = [
+  { name: "attributes", legend: "Featured Attributes", items: [
+    { value: "complete-system", text: "Complete system configuration", count: "6" }
+  ] }
+] %}
+
+{% set total = "8" %}
+{% set pages = 1 %}
+
+{% set rows = [
+  { name: "Bone-screw internal spinal fixation system, non-sterile", href: "/identify-alternatives/bone-screw-internal-spinal-fixation-system-non-sterile", suppliers: "7" },
+  { name: "Bone-screw internal spinal fixation system, sterile", href: "#", suppliers: "14" },
+  { name: "Implantable cervical facet joint distractor", href: "#", suppliers: "3" },
+  { name: "Interspinous spinal fixation implant", href: "#", suppliers: "5" },
+  { name: "Intervertebral-body internal spinal fixation system", href: "#", suppliers: "4" },
+  { name: "Spinal dynamic-stabilization system", href: "#", suppliers: "4" },
+  { name: "Trans-facet-screw internal spinal fixation system, non-sterile", href: "#", suppliers: "2" },
+  { name: "Trans-facet-screw internal spinal fixation system, sterile", href: "#", suppliers: "3" }
+] %}

@@ -1,0 +1,47 @@
+// Search suggestions, for the identify-alternatives Search2 sketch.
+//
+// Sits on top of accessible-autocomplete's own stylesheet (loaded from the CDN
+// on the page), swapping its GOV.UK styles for NHS ones. The input also gets
+// the nhsuk-input class, but the library's stylesheet loads after ours, so
+// the rules that clash are repeated here with a more specific selector.
+
+// Match nhsuk-input (nhsuk-frontend components/input)
+.app-search-suggestions .autocomplete__input,
+.app-search-suggestions .autocomplete__hint {
+  height: nhsuk-px-to-rem(40px);
+  padding: nhsuk-spacing(1);
+  border: $nhsuk-border-width-form-element solid $nhsuk-input-border-colour;
+  @include nhsuk-font($size: 19);
+}
+
+.app-search-suggestions .autocomplete__menu {
+  max-height: 60vh;
+  border-color: $nhsuk-input-border-colour;
+}
+
+// No zebra stripes: the borders already separate the options
+.app-search-suggestions .autocomplete__option--odd {
+  background-color: nhsuk-colour("white");
+}
+
+.app-search-suggestions .autocomplete__input:focus,
+.app-search-suggestions .autocomplete__input--focused {
+  @include nhsuk-focused-input;
+}
+
+.app-search-suggestions .autocomplete__option--focused,
+.app-search-suggestions .autocomplete__option:hover {
+  background-color: $nhsuk-link-colour;
+  border-color: $nhsuk-link-colour;
+  color: nhsuk-colour("white");
+}
+
+// The type ("Category") and the detail ("Nuvasive") in each suggestion
+.app-search-suggestions__meta {
+  color: $nhsuk-secondary-text-colour;
+}
+
+.app-search-suggestions .autocomplete__option--focused .app-search-suggestions__meta,
+.app-search-suggestions .autocomplete__option:hover .app-search-suggestions__meta {
+  color: inherit;
+}

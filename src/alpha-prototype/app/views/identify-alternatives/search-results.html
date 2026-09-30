@@ -1,0 +1,171 @@
+{#
+  Sketch 1g: Search results.
+
+  What someone sees after searching from Search and browse. Dylan's flow has
+  three kinds of page a search can land on, so all three show up here as
+  results: categories (the category view pages), device types (the device
+  type page) and branded devices and systems (the branded pages). A mockup: nothing is
+  wired, the search term is fixed and the form does not submit.
+
+  ── Layout ────────────────────────────────────────────────────────────────
+
+  Results are grouped by kind, each under its own h2, rather than mixed in one
+  list. Headings give screen reader users a way to jump between groups
+  (Accessibility/design.md, "Define page structure"), and each kind needs
+  different columns. Groups run down the tree: categories, then device types,
+  then branded devices and systems. A short list of counts at the top links to each
+  group, so nobody has to scroll past one kind to reach another.
+
+  Each group is a table, as on the pages it links to (Components/table.md),
+  with a visually hidden caption and numbers right-aligned. Every group says
+  how it is ordered, per the team convention.
+
+  The search form is the one from Search and browse (role="search" and an
+  accessible name give the search landmark), with the term filled in and
+  "Search again" in the label, as on current/search-results. It is not a hero
+  here, since this is a results page.
+
+  Category paths are laid out like breadcrumbs, as on the device type page,
+  with the ">" separators hidden from screen readers. The path sits in grey
+  under each category name rather than in its own column: a column needs a
+  noun heading, and none fitted. A visually hidden "Parent categories:" label
+  tells screen reader users what the path is.
+
+  Two thirds wide, like the other pages in this sketch. B2B, so the tables
+  are dense.
+
+  ── Content ───────────────────────────────────────────────────────────────
+
+  The search is "spinal fixation". Categories, device types and their places
+  in the tree are GMDN, as reproduced on the other pages. Every GMDN name
+  containing both words is listed. The Nuvasive system is the real one from
+  the system page. The single device, and all counts other than those already
+  on other pages, are invented.
+
+  "Branded devices and systems" is Jill's wording (28 September 2026). It
+  replaces "Systems and devices", which avoided "branded" because Dylan had
+  heard users do not think in it; worth checking in research. Supplier comes
+  first, since Jill expects people to scan for the brand. The "Supplied as"
+  column says which is which, as the system page does.
+
+  Only results with a page in this sketch link anywhere. The rest go to "#".
+#}
+
+{% extends "identify-alternatives/_layout.html" %}
+
+{% from "tables/macro.njk" import table %}
+
+{% set searchTerm = "spinal fixation" %}
+{% set pageName = "Search results for " + searchTerm %}
+{% set mainClasses = "nhsuk-main-wrapper--s" %}
+
+{% set sep = ' <span aria-hidden="true">&gt;</span> ' %}
+
+{% block beforeContent %}
+
+{{ breadcrumb({
+  items: [
+    { href: "/identify-alternatives/search-and-browse", text: "Search and browse" }
+  ]
+}) }}
+
+{% endblock %}
+
+{% block content %}
+
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+
+    <h1 class="nhsuk-heading-l nhsuk-u-margin-bottom-4">Search results</h1>
+
+    <form role="search" aria-label="Search for a device" onsubmit="return false;" novalidate>
+      <div class="nhsuk-form-group">
+        <label class="nhsuk-label" for="q">
+          Search again by device, category or supplier
+        </label>
+        <input class="nhsuk-input nhsuk-input--width-20" id="q" name="q" type="search" autocomplete="off" value="{{ searchTerm }}">
+        <button class="nhsuk-button nhsuk-button--secondary nhsuk-u-margin-left-2 app-button--small nhsuk-u-margin-bottom-0" data-module="nhsuk-button" type="submit">
+          Search
+        </button>
+      </div>
+    </form>
+
+    <p class="nhsuk-u-margin-bottom-2">13 results for <strong>{{ searchTerm }}</strong>:</p>
+    <ul class="nhsuk-list nhsuk-list--bullet">
+      <li><a href="#categories">3 categories</a></li>
+      <li><a href="#device-types">8 device types</a></li>
+      <li><a href="#systems-and-devices">2 branded devices and systems</a></li>
+    </ul>
+
+    <h2 class="nhsuk-heading-m nhsuk-u-margin-top-5 nhsuk-u-margin-bottom-2" id="categories" tabindex="-1">Categories</h2>
+    <p class="nhsuk-body-s">These categories come from the Global Medical Device Nomenclature (GMDN). They are listed A to Z.</p>
+
+    {{ table({
+      caption: "Categories matching " + searchTerm,
+      captionClasses: "nhsuk-u-visually-hidden",
+      head: [
+        { text: "Category" },
+        { text: "Device types", format: "numeric" }
+      ],
+      rows: [
+        [
+          { html: '<a href="#">External spinal/orthopaedic fixation systems</a><br><span class="nhsuk-body-s nhsuk-u-secondary-text-colour"><span class="nhsuk-u-visually-hidden">Parent categories: </span>' + 'Device Function' + sep + 'Tissue reparation devices' + '</span>' },
+          { text: "58", format: "numeric" }
+        ],
+        [
+          { html: '<a href="/identify-alternatives/internal-spinal-fixation-systems">Internal spinal fixation systems</a><br><span class="nhsuk-body-s nhsuk-u-secondary-text-colour"><span class="nhsuk-u-visually-hidden">Parent categories: </span>' + 'Device Function' + sep + 'Tissue reparation devices' + sep + 'Bone/Joint fixation implants' + '</span>' },
+          { text: "8", format: "numeric" }
+        ],
+        [
+          { html: '<a href="#">Spinal fixation systems</a><br><span class="nhsuk-body-s nhsuk-u-secondary-text-colour"><span class="nhsuk-u-visually-hidden">Parent categories: </span>' + 'Anatomical Specialty' + sep + 'Orthopaedic devices' + sep + 'Spinal fixation systems and associated devices' + '</span>' },
+          { text: "14", format: "numeric" }
+        ]
+      ]
+    }) }}
+
+    <h2 class="nhsuk-heading-m nhsuk-u-margin-top-5 nhsuk-u-margin-bottom-2" id="device-types" tabindex="-1">Device types</h2>
+    <p class="nhsuk-body-s">Device types are listed A to Z.</p>
+
+    {{ table({
+      caption: "Device types matching " + searchTerm,
+      captionClasses: "nhsuk-u-visually-hidden",
+      head: [
+        { text: "Device type" },
+        { text: "Category" },
+        { text: "Suppliers", format: "numeric" }
+      ],
+      rows: [
+        [ { html: '<a href="/identify-alternatives/bone-screw-internal-spinal-fixation-system-non-sterile">Bone-screw internal spinal fixation system, non-sterile</a>' }, { text: "Internal spinal fixation systems" }, { text: "7", format: "numeric" } ],
+        [ { html: '<a href="#">Bone-screw internal spinal fixation system, sterile</a>' }, { text: "Internal spinal fixation systems" }, { text: "14", format: "numeric" } ],
+        [ { html: '<a href="#">Internal spinal fixation system cable</a>' }, { text: "Bone/Joint fixation implants" }, { text: "4", format: "numeric" } ],
+        [ { html: '<a href="#">Internal spinal fixation system cable crimp</a>' }, { text: "Bone/Joint fixation implants" }, { text: "4", format: "numeric" } ],
+        [ { html: '<a href="#">Interspinous spinal fixation implant</a>' }, { text: "Internal spinal fixation systems" }, { text: "5", format: "numeric" } ],
+        [ { html: '<a href="#">Intervertebral-body internal spinal fixation system</a>' }, { text: "Internal spinal fixation systems" }, { text: "4", format: "numeric" } ],
+        [ { html: '<a href="#">Trans-facet-screw internal spinal fixation system, non-sterile</a>' }, { text: "Internal spinal fixation systems" }, { text: "2", format: "numeric" } ],
+        [ { html: '<a href="#">Trans-facet-screw internal spinal fixation system, sterile</a>' }, { text: "Internal spinal fixation systems" }, { text: "3", format: "numeric" } ]
+      ]
+    }) }}
+
+    {# Jill: "Branded devices and systems", with the supplier first, since
+       people looking through branded devices scan for the brand first. #}
+    <h2 class="nhsuk-heading-m nhsuk-u-margin-top-5 nhsuk-u-margin-bottom-2" id="systems-and-devices" tabindex="-1">Branded devices and systems</h2>
+    <p class="nhsuk-body-s">Branded devices and systems are listed A to Z by supplier.</p>
+
+    {{ table({
+      caption: "Branded devices and systems matching " + searchTerm,
+      captionClasses: "nhsuk-u-visually-hidden",
+      head: [
+        { text: "Supplier" },
+        { text: "Branded device or system" },
+        { text: "Supplied as" }
+      ],
+      rows: [
+        [ { html: '<a href="/identify-alternatives/supplier-nuvasive">Nuvasive</a>' }, { html: '<a href="/identify-alternatives/nuvasive-bone-screw-internal-spinal-fixation-system">Bone-screw internal spinal fixation system</a>' }, { text: "A system of 9 components" } ],
+        [ { html: '<a href="#">OmegaAM Solutions</a>' }, { html: '<a href="#">Omega spinal fixation cable</a>' }, { text: "A single device" } ]
+      ]
+    }) }}
+
+  </div>
+</div>
+
+{% endblock %}
