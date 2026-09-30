@@ -1,0 +1,345 @@
+{#
+  Shared template for every level of the Device function tree below
+  device-function itself. Each level is a short page that sets its content
+  and extends this one, so every level behaves the same way. Not a page in
+  its own right.
+
+  Each page sets:
+    category       { name, caption, description }  description optional
+    breadcrumbs    [ { href, text } ]  up to and including the parent
+    subcategories  [ { name, href, count } ]  empty at the end of a branch
+    siblings       optional, [ { name, href, count } ]  at the end of a branch,
+                   this category and the others under the same parent
+    subcategoryGroups  optional, [ { heading, items: [ ...as above ] } ]
+                   used instead of subcategories when the list is long
+    filters        [ { name, legend, items: [ { value, text, count } ] } ]
+    total          device types beneath this level, as display text
+    pages          number of pages at 25 per page
+    rows           [ { name, href, suppliers } ]  page 1, A to Z
+    hideDevices    optional, true to show subcategories only (no filters or
+                   device list), for broad levels where people are still
+                   narrowing down
+
+  ── Nomenclature (Dylan, 24 September 2026) ─────────────────────────────
+
+  Device type = GMDN term. A device type holds either branded device systems
+  (made of components, each with variants) or branded devices (single
+  devices, with variants). Documents attach at the branded level. These
+  pages list device types; the device type page lists the branded ones.
+
+  ── Layout ──────────────────────────────────────────────────────────────────
+
+  Two layouts, one per mode.
+
+  Listing device types (the usual case), aligned with RS Components and eBay:
+  - The h1 gives the count and the category: "212 device types in
+    Bone/Joint fixation implants". It sits over the results it describes.
+    The results column comes first in the source, floated right, so the h1
+    is still the first heading screen readers meet.
+  - A one-third sidebar, as on current/search-results. First, category
+    navigation styled after the NHS digital service manual's sidebar: this
+    category's subcategories, or at the end of a branch, this category among
+    its siblings. It replaces the separate Subcategories block. Then the
+    filters, below a
+    section break. Components/checkboxes.md names "a page of search results
+    where users need to see and change search filters" as a place for small
+    checkboxes.
+  - Results on the right, two-thirds wide.
+  The list holds every GMDN term beneath this level, not only those filed
+  directly at it, so someone can find a device type without knowing the
+  right subcategory. The tree and the filters are two ways to narrow it.
+
+  Subcategories only (hideDevices, for broad levels where people are still
+  narrowing down): heading, then the subcategories in two columns, as before.
+  Over 6, a page can chunk them under headings (Content/formatting.md: lists
+  of no more than 6 items where possible). Group names are ours, not GMDN's,
+  and need a clinical check.
+
+  Subcategories are A to Z, since GMDN's order is not explained anywhere, so
+  people cannot predict where an item will be. By analogy with checkboxes.md
+  and radios.md: "If in doubt, order alphabetically".
+
+  Results are a 2-column table, device and number of suppliers, per
+  Components/table.md. Trust and evidence data belong at the branded-device
+  level, where they are connected.
+
+  Page size is 25, matching current/ (pageSize in current/routes.js).
+  Components/pagination.md leaves the page size to the service, asks for the
+  page number in the <title>, and says not to show pagination for 1 page.
+
+  The sort control needs its own button. Submitting on change would move
+  people without warning (WCAG 3.2.2).
+
+  ── Filters ───────────────────────────────────────────────────────────────
+
+  One group per GMDN root node, from the "Also in categories" lists in
+  Dylan's samples. Group names and options are GMDN wording, reproduced
+  exactly, first level only so each group stays short enough to scan.
+
+  Ordered by how much each group is likely to narrow the list: clinical area
+  and invasiveness first, then attributes. Power comes last, since almost
+  every term in Tissue reparation devices is Non-active.
+
+  Left out on purpose:
+  - Device Function is the tree these pages sit in, shown as subcategories.
+  - Names Index groups terms by device family (Bandages, Binders, Sutures),
+    which repeats the subcategories in other words.
+  - GMDN has no "non-invasive" node in the samples, so there is no option for
+    terms outside the Invasiveness/Implantability options. Not invented.
+
+  Each level lists only the options that have results, and leaves out a group
+  when every device type beneath shares the same option, since it cannot
+  narrow anything. Deeper levels have fewer groups as a result.
+
+  Unwired: nothing filters or sorts.
+#}
+
+{% extends "identify-alternatives/_layout.html" %}
+
+{% from "checkboxes/macro.njk" import checkboxes %}
+{% from "select/macro.njk" import select %}
+{% from "tables/macro.njk" import table %}
+{% from "pagination/macro.njk" import pagination %}
+
+{% set pageName = category.name + " (page 1 of " + pages + ")" if pages > 1 and not hideDevices else category.name %}
+{% set shown = rows | length %}
+
+{% set mainClasses = "nhsuk-main-wrapper--s" %}
+
+{% block beforeContent %}
+
+{{ breadcrumb({
+  items: breadcrumbs
+}) }}
+
+{% endblock %}
+
+{% block content %}
+
+{# Nunjucks loops do not leak set variables, so count by pushing into a list. #}
+{% set allSubs = [] %}
+{% for group in subcategoryGroups or [] %}{% for sub in group.items %}{% set _ = allSubs.push(sub) %}{% endfor %}{% endfor %}
+{% for sub in subcategories or [] %}{% set _ = allSubs.push(sub) %}{% endfor %}
+{% set subCount = allSubs | length %}
+
+{% macro subList(items, classes) %}
+<ul class="nhsuk-list nhsuk-list--border {{ classes }}">
+  {% for sub in items %}
+  <li><a href="{{ sub.href }}">{{ sub.name }}</a> ({{ sub.count }})</li>
+  {% endfor %}
+</ul>
+{% endmacro %}
+
+{% if hideDevices %}
+
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+    <h1 class="nhsuk-heading-l nhsuk-u-margin-bottom-2">
+      <span class="nhsuk-caption-l">{{ category.caption }}</span>
+      {{ category.name }}
+    </h1>
+    {% if category.description %}<p>{{ category.description }}</p>{% endif %}
+  </div>
+</div>
+
+{% if subCount %}
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+    <h2 class="nhsuk-heading-m nhsuk-u-margin-bottom-2">Subcategories</h2>
+    {% if subcategoryGroups %}
+    <p class="nhsuk-body-s">From GMDN, grouped by what the devices do. Numbers show how many device types each one contains.</p>
+    {% else %}
+    <p class="nhsuk-body-s">From GMDN, A to Z. Numbers show how many device types each one contains.</p>
+    {% endif %}
+  </div>
+</div>
+
+{% if subcategoryGroups %}
+{# Two columns, as on device-function: B2B, so dense is fine. Groups read down
+   the left then the right, so order survives the screen reader and the mobile
+   stack. One float per column, not one per group, so uneven heights don't
+   snag. The first half of the groups (rounded up) go on the left. #}
+{% set leftCount = ((subcategoryGroups | length) / 2) | round(0, "ceil") %}
+<div class="nhsuk-grid-row">
+  {% for column in [subcategoryGroups.slice(0, leftCount), subcategoryGroups.slice(leftCount)] %}
+  <div class="nhsuk-grid-column-one-half">
+    {% for group in column %}
+    <h3 class="nhsuk-heading-s nhsuk-u-margin-bottom-2">{{ group.heading }}</h3>
+    {{ subList(group.items, "nhsuk-u-margin-bottom-5") }}
+    {% endfor %}
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+{% set leftCount = ((subcategories | length) / 2) | round(0, "ceil") %}
+<div class="nhsuk-grid-row">
+  {% for column in [subcategories.slice(0, leftCount), subcategories.slice(leftCount)] %}
+  <div class="nhsuk-grid-column-one-half">
+    {{ subList(column) }}
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+{% endif %}
+
+{% else %}
+
+{% set listTools = pages > 1 %}
+
+<div class="nhsuk-grid-row">
+
+  {# Results first in the source, floated right (components/_side-nav.scss),
+     so the heading sits over the list it describes, as on RS Components and
+     eBay, and is still the first heading screen readers meet. It says what
+     the list holds and how many ("7355 Products found for screws"). The
+     trade-off: keyboard and screen reader users reach the results before
+     the sidebar, and on mobile the sidebar stacks below the results. #}
+  <div class="app-grid-column-two-thirds-right">
+
+    <h1 class="nhsuk-heading-l nhsuk-u-margin-bottom-2" id="device-types">{{ total }} device types in {{ category.name }}</h1>
+    {% if category.description %}<p>{{ category.description }}</p>{% endif %}
+
+    {% if listTools %}
+    <p class="nhsuk-body-s">Showing 1 to {{ shown }} of {{ total }}, ordered A to Z.</p>
+
+    <form method="get" novalidate>
+      {{ select({
+        id: "sort",
+        name: "sort",
+        label: {
+          text: "Sort by"
+        },
+        items: [
+          { value: "name", text: "Device type (A to Z)", selected: true },
+          { value: "suppliers", text: "Number of suppliers (most first)" }
+        ],
+        formGroup: {
+          classes: "nhsuk-u-margin-bottom-2"
+        }
+      }) }}
+      <button class="nhsuk-button nhsuk-button--secondary app-button--small" data-module="nhsuk-button" type="submit">
+        Sort
+      </button>
+    </form>
+    {% else %}
+    <p class="nhsuk-body-s">Ordered A to Z.</p>
+    {% endif %}
+
+    {% set tableRows = [] %}
+    {% for row in rows %}
+      {% set _ = tableRows.push([
+        { html: '<a href="' + row.href + '">' + row.name + '</a>' },
+        { text: row.suppliers, format: "numeric" }
+      ]) %}
+    {% endfor %}
+
+    {# Components/table.md asks for a caption on every table. Visually hidden,
+       since the h1 already says it on screen. #}
+    {{ table({
+      caption: "Device types in " + category.name,
+      captionClasses: "nhsuk-u-visually-hidden",
+      head: [
+        { text: "Device type" },
+        { text: "Suppliers", format: "numeric" }
+      ],
+      rows: tableRows
+    }) }}
+
+    {% if pages > 1 %}
+      {% set pageItems = [
+        { number: 1, href: "#", current: true },
+        { number: 2, href: "#" }
+      ] %}
+      {% if pages > 2 %}
+        {% set _ = pageItems.push({ number: 3, href: "#" }) %}
+      {% endif %}
+      {% if pages > 4 %}
+        {% set _ = pageItems.push({ ellipsis: true }) %}
+      {% endif %}
+      {% if pages > 3 %}
+        {% set _ = pageItems.push({ number: pages, href: "#" }) %}
+      {% endif %}
+
+      {{ pagination({
+        next: { href: "#" },
+        items: pageItems
+      }) }}
+    {% endif %}
+
+  </div>
+
+  <div class="nhsuk-grid-column-one-third">
+
+    {# The category tree, styled after the NHS digital service manual's own
+       sidebar (components/_side-nav.scss): a grey heading, then links, the
+       current page in bold with a bar. Not a design system component.
+
+       With subcategories, the heading is this category and the list is its
+       subcategories. At the end of a branch, the heading is the parent and
+       the list is this category and its siblings, with this one marked, so
+       people can step sideways. The path up is in the breadcrumbs. #}
+    {% set parent = breadcrumbs | last %}
+    {% set navHeading = category.name if subCount else parent.text %}
+    {% set navItems = allSubs if subCount else (siblings or []) %}
+    {% if navItems | length %}
+    <nav aria-labelledby="category-nav-heading">
+      <h2 class="app-side-nav__heading nhsuk-heading-s nhsuk-u-margin-bottom-3" id="category-nav-heading">{{ navHeading }}</h2>
+      <ul class="app-side-nav__list">
+        {% for item in navItems %}
+          {% if item.name == category.name %}
+          <li class="app-side-nav__item app-side-nav__item--current">
+            <a class="app-side-nav__link" href="{{ item.href }}" aria-current="page">{{ item.name }}</a>
+            <span class="app-side-nav__count">({{ item.count }})</span>
+          </li>
+          {% else %}
+          <li class="app-side-nav__item">
+            <a class="app-side-nav__link" href="{{ item.href }}">{{ item.name }}</a>
+            <span class="app-side-nav__count">({{ item.count }})</span>
+          </li>
+          {% endif %}
+        {% endfor %}
+      </ul>
+    </nav>
+    {% endif %}
+
+    {# The end of a branch fits on one page, so filters and sort are left out:
+       a handful of rows can be scanned, and Design-Principles/index.md (8)
+       says not to push complexity onto users. #}
+    {% if listTools %}
+    <hr class="nhsuk-section-break nhsuk-section-break--m nhsuk-section-break--visible">
+
+    <form method="get" novalidate>
+      <h2 class="nhsuk-heading-s nhsuk-u-margin-bottom-3">Filter device types</h2>
+
+      {% for group in filters %}
+        {% set items = [] %}
+        {% for item in group.items %}
+          {% set _ = items.push({ value: item.value, text: item.text + " (" + item.count + ")" }) %}
+        {% endfor %}
+
+        {{ checkboxes({
+          name: group.name,
+          idPrefix: group.name,
+          fieldset: {
+            legend: {
+              text: group.legend,
+              classes: "nhsuk-fieldset__legend--s"
+            }
+          },
+          items: items,
+          classes: "nhsuk-checkboxes--small"
+        }) }}
+      {% endfor %}
+
+      <button class="nhsuk-button nhsuk-button--secondary app-button--small nhsuk-u-margin-bottom-0" data-module="nhsuk-button" type="submit">
+        Update results
+      </button>
+    </form>
+    {% endif %}
+
+  </div>
+
+</div>
+{% endif %}
+
+{% endblock %}

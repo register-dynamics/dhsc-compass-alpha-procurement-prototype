@@ -1,0 +1,208 @@
+{#
+  Sketch 1h: Component page.
+
+  Reached from MAS PLIF on the Nuvasive system page. One component and its
+  variants. The end of the line: variants have no page of their own, so the
+  rows are not links.
+
+  ── Built to scale ────────────────────────────────────────────────────────
+
+  MAS PLIF has 27 variants, but a component in this system has 1,072
+  (RELINE). The page is built for the long case and holds up for the short
+  one:
+  - 25 per page with numbered pagination, matching the device type lists and
+    current/ (Components/pagination.md: page number in the <title>).
+  - Filters, in the same one-third sidebar as the category pages, shown only
+    because the list runs past 1 page (the rule in _category-level.html).
+    Each option shows its count (Components/checkboxes.md: small checkboxes
+    for search filters).
+  - A text box to find a variant by name or size, for people who arrive
+    with a catalogue line or a size in mind. At 1,072 rows, ticking through
+    filters would be slower than typing.
+  - Part, diameter and length get their own columns, so rows can be compared
+    down a column instead of read one name at a time. Sizes are
+    right-aligned with the numbers (Components/table.md).
+
+  The filter groups and columns come from the pattern in the variant names
+  ("Shank, 4.5x25mm"), which is our reading of them. Another component would
+  have different attributes, so the groups would be built from that
+  component's data. Legends and headings are drafts for Jill.
+
+  Measurements have no space before the unit, per
+  Content/numbers-measurements-dates-time.md.
+
+  ── Content ───────────────────────────────────────────────────────────────
+
+  Variant names are real market data Dylan supplied, reproduced exactly.
+  Page 1 shows 25 of the 27, A to Z. Filter counts are real, from those 27.
+  Unwired: nothing filters, searches or pages.
+#}
+
+{% extends "identify-alternatives/_layout.html" %}
+
+{% from "checkboxes/macro.njk" import checkboxes %}
+{% from "input/macro.njk" import input %}
+{% from "tables/macro.njk" import table %}
+{% from "pagination/macro.njk" import pagination %}
+{% from "summary-list/macro.njk" import summaryList %}
+
+{% set component = "MAS PLIF" %}
+{% set pageName = component + " (page 1 of 2)" %}
+{% set mainClasses = "nhsuk-main-wrapper--s" %}
+
+{% block beforeContent %}
+
+{{ breadcrumb({
+  items: [
+    { href: "/identify-alternatives/search-and-browse", text: "Search and browse" },
+    { href: "/identify-alternatives/device-function", text: "Device function" },
+    { href: "/identify-alternatives/tissue-reparation-devices", text: "Tissue reparation devices" },
+    { href: "/identify-alternatives/bone-joint-fixation-implants", text: "Bone/Joint fixation implants" },
+    { href: "/identify-alternatives/internal-spinal-fixation-systems", text: "Internal spinal fixation systems" },
+    { href: "/identify-alternatives/bone-screw-internal-spinal-fixation-system-non-sterile", text: "Bone-screw internal spinal fixation system, non-sterile" },
+    { href: "/identify-alternatives/nuvasive-bone-screw-internal-spinal-fixation-system", text: "Nuvasive" }
+  ]
+}) }}
+
+{% endblock %}
+
+{% block content %}
+
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+    <h1 class="nhsuk-heading-l nhsuk-u-margin-bottom-4">
+      <span class="nhsuk-caption-l">Nuvasive</span>
+      {{ component }}
+    </h1>
+
+    {{ summaryList({
+      rows: [
+        { key: { text: "Part of" }, value: { html: '<a href="/identify-alternatives/nuvasive-bone-screw-internal-spinal-fixation-system">Bone-screw internal spinal fixation system</a>' } },
+        { key: { text: "Variants" }, value: { text: "27" } }
+      ]
+    }) }}
+  </div>
+</div>
+
+<div class="nhsuk-grid-row">
+
+  <div class="nhsuk-grid-column-one-third">
+    <div class="nhsuk-card nhsuk-card--feature nhsuk-u-margin-top-5">
+      <div class="nhsuk-card__content nhsuk-card__content--feature">
+        <h2 class="nhsuk-card__heading nhsuk-card__heading--feature">Filter variants</h2>
+
+        <form method="get" novalidate>
+
+          {{ input({
+            id: "variant-name",
+            name: "name",
+            label: { text: "Name or size", classes: "nhsuk-label--s" },
+            hint: { text: "For example, 5.0x35mm" },
+            type: "search",
+            autocomplete: "off"
+          }) }}
+
+          {{ checkboxes({
+            name: "part",
+            idPrefix: "part",
+            fieldset: { legend: { text: "Part", classes: "nhsuk-fieldset__legend--s" } },
+            items: [
+              { value: "Screw", text: "Screw (11)" },
+              { value: "Shank", text: "Shank (16)" }
+            ],
+            classes: "nhsuk-checkboxes--small"
+          }) }}
+
+          {{ checkboxes({
+            name: "diameter",
+            idPrefix: "diameter",
+            fieldset: { legend: { text: "Diameter", classes: "nhsuk-fieldset__legend--s" } },
+            items: [
+              { value: "4.5", text: "4.5mm (8)" },
+              { value: "5.0", text: "5.0mm (8)" },
+              { value: "5.5", text: "5.5mm (7)" },
+              { value: "6.5", text: "6.5mm (4)" }
+            ],
+            classes: "nhsuk-checkboxes--small"
+          }) }}
+
+          {{ checkboxes({
+            name: "length",
+            idPrefix: "length",
+            fieldset: { legend: { text: "Length", classes: "nhsuk-fieldset__legend--s" } },
+            items: [
+              { value: "25", text: "25mm (5)" },
+              { value: "30", text: "30mm (7)" },
+              { value: "35", text: "35mm (5)" },
+              { value: "40", text: "40mm (6)" },
+              { value: "45", text: "45mm (2)" },
+              { value: "50", text: "50mm (2)" }
+            ],
+            classes: "nhsuk-checkboxes--small"
+          }) }}
+
+          <button class="nhsuk-button nhsuk-button--secondary app-button--small nhsuk-u-margin-bottom-0" data-module="nhsuk-button" type="submit">
+            Update results
+          </button>
+
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="nhsuk-grid-column-two-thirds">
+
+    <h2 class="nhsuk-heading-m nhsuk-u-margin-top-5 nhsuk-u-margin-bottom-2" id="variants" tabindex="-1">Variants</h2>
+    <p class="nhsuk-body-s">Showing 1 to 25 of 27 variants, listed A to Z.</p>
+
+    {{ table({
+      caption: "Variants of " + component,
+      captionClasses: "nhsuk-u-visually-hidden",
+      head: [
+        { text: "Variant" },
+        { text: "Part" },
+        { text: "Diameter", format: "numeric" },
+        { text: "Length", format: "numeric" }
+      ],
+      rows: [
+        [ { text: "MAS PLIF Screw, 4.5x25mm Polyaxial 3Z" }, { text: "Screw" }, { text: "4.5mm", format: "numeric" }, { text: "25mm", format: "numeric" } ],
+        [ { text: "MAS PLIF Screw, 4.5x30mm Polyaxial 3Z" }, { text: "Screw" }, { text: "4.5mm", format: "numeric" }, { text: "30mm", format: "numeric" } ],
+        [ { text: "MAS PLIF Screw, 4.5x35mm Polyaxial 3Z" }, { text: "Screw" }, { text: "4.5mm", format: "numeric" }, { text: "35mm", format: "numeric" } ],
+        [ { text: "MAS PLIF Screw, 4.5x40mm Polyaxial 3Z" }, { text: "Screw" }, { text: "4.5mm", format: "numeric" }, { text: "40mm", format: "numeric" } ],
+        [ { text: "MAS PLIF Screw, 5.0x25mm Polyaxial 3Z" }, { text: "Screw" }, { text: "5.0mm", format: "numeric" }, { text: "25mm", format: "numeric" } ],
+        [ { text: "MAS PLIF Screw, 5.0x30mm Polyaxial 3Z" }, { text: "Screw" }, { text: "5.0mm", format: "numeric" }, { text: "30mm", format: "numeric" } ],
+        [ { text: "MAS PLIF Screw, 5.0x35mm Polyaxial 3Z" }, { text: "Screw" }, { text: "5.0mm", format: "numeric" }, { text: "35mm", format: "numeric" } ],
+        [ { text: "MAS PLIF Screw, 5.0x40mm Polyaxial 3Z" }, { text: "Screw" }, { text: "5.0mm", format: "numeric" }, { text: "40mm", format: "numeric" } ],
+        [ { text: "MAS PLIF Screw, 5.5x30mm Polyaxial 3Z" }, { text: "Screw" }, { text: "5.5mm", format: "numeric" }, { text: "30mm", format: "numeric" } ],
+        [ { text: "MAS PLIF Screw, 5.5x35mm Polyaxial 3Z" }, { text: "Screw" }, { text: "5.5mm", format: "numeric" }, { text: "35mm", format: "numeric" } ],
+        [ { text: "MAS PLIF Screw, 5.5x40mm Polyaxial 3Z" }, { text: "Screw" }, { text: "5.5mm", format: "numeric" }, { text: "40mm", format: "numeric" } ],
+        [ { text: "MAS PLIF Shank, 4.5x25mm 3Z" }, { text: "Shank" }, { text: "4.5mm", format: "numeric" }, { text: "25mm", format: "numeric" } ],
+        [ { text: "MAS PLIF Shank, 4.5x30mm 3Z" }, { text: "Shank" }, { text: "4.5mm", format: "numeric" }, { text: "30mm", format: "numeric" } ],
+        [ { text: "MAS PLIF Shank, 4.5x35mm 3Z" }, { text: "Shank" }, { text: "4.5mm", format: "numeric" }, { text: "35mm", format: "numeric" } ],
+        [ { text: "MAS PLIF Shank, 4.5x40mm 3Z" }, { text: "Shank" }, { text: "4.5mm", format: "numeric" }, { text: "40mm", format: "numeric" } ],
+        [ { text: "MAS PLIF Shank, 5.0x25mm 3Z" }, { text: "Shank" }, { text: "5.0mm", format: "numeric" }, { text: "25mm", format: "numeric" } ],
+        [ { text: "MAS PLIF Shank, 5.0x30mm 3Z" }, { text: "Shank" }, { text: "5.0mm", format: "numeric" }, { text: "30mm", format: "numeric" } ],
+        [ { text: "MAS PLIF Shank, 5.0x35mm 3Z" }, { text: "Shank" }, { text: "5.0mm", format: "numeric" }, { text: "35mm", format: "numeric" } ],
+        [ { text: "MAS PLIF Shank, 5.0x40mm 3Z" }, { text: "Shank" }, { text: "5.0mm", format: "numeric" }, { text: "40mm", format: "numeric" } ],
+        [ { text: "MAS PLIF Shank, 5.5x25mm 3Z" }, { text: "Shank" }, { text: "5.5mm", format: "numeric" }, { text: "25mm", format: "numeric" } ],
+        [ { text: "MAS PLIF Shank, 5.5x30mm 3Z" }, { text: "Shank" }, { text: "5.5mm", format: "numeric" }, { text: "30mm", format: "numeric" } ],
+        [ { text: "MAS PLIF Shank, 5.5x45mm 3Z" }, { text: "Shank" }, { text: "5.5mm", format: "numeric" }, { text: "45mm", format: "numeric" } ],
+        [ { text: "MAS PLIF Shank, 5.5x50mm 3Z" }, { text: "Shank" }, { text: "5.5mm", format: "numeric" }, { text: "50mm", format: "numeric" } ],
+        [ { text: "MAS PLIF Shank, 6.5x30mm 3Z" }, { text: "Shank" }, { text: "6.5mm", format: "numeric" }, { text: "30mm", format: "numeric" } ],
+        [ { text: "MAS PLIF Shank, 6.5x40mm 3Z" }, { text: "Shank" }, { text: "6.5mm", format: "numeric" }, { text: "40mm", format: "numeric" } ]
+      ]
+    }) }}
+
+    {{ pagination({
+      next: { href: "#" },
+      items: [
+        { number: 1, href: "#", current: true },
+        { number: 2, href: "#" }
+      ]
+    }) }}
+
+  </div>
+
+</div>
+
+{% endblock %}

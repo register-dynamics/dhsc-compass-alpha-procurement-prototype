@@ -1,0 +1,126 @@
+{#
+  Sketch 1e: Device type page.
+
+  Reached from Internal spinal fixation systems. One device type (GMDN term)
+  and the branded device systems of that type. Built from Dylan's mockup and
+  nomenclature, resolved against the knowledge base:
+
+  - Nomenclature: device type = GMDN term. A device type holds either branded
+    device systems (components, each with variants) or branded devices
+    (single devices, with variants). This one holds systems: GMDN gives it
+    Featured Attributes > Complete system configuration, so the page can
+    derive that rather than ask.
+  - Heading: the GMDN term exactly, including ", non-sterile", since GMDN has
+    a separate sterile term. "Device type" sits in the caption rather than a
+    "GMDN Term:" prefix.
+  - No definition. Dylan removed the GMDN definition on 28 September 2026,
+    as with the category descriptions, so the page goes straight to the
+    suppliers.
+  - At this level there are only suppliers, with their components and
+    documents (Dylan). Each supplier row leads to that supplier's system for
+    this device type, so the system name first appears on the next page. The
+    heading keeps Dylan's wording, "7 suppliers". Table per Components/table.md,
+    numbers right-aligned, with a caption. The order and source lines are
+    full sentences. GMDN is no longer spelled out (see the note by "Also in
+    these categories").
+    (Content/formatting.md: abbreviations). Column headings drop "No of", as abbreviations go against the
+    content guide.
+  - Other categories: a summary list (Components/summary-list.md), since each
+    row is a key (the GMDN root node) and a value (the path to the term).
+    Device Function, Anatomical Specialty and Names Index only (see the note
+    beside it). Keeps GMDN's wording rather than the mockup's paraphrases.
+
+  Nuvasive and its 9 components are real (Dylan). The other suppliers come
+  from the prototype's dummy database, with invented counts. Every row links
+  to the one system page built so far (Nuvasive), so any click works.
+#}
+
+{% extends "identify-alternatives/_layout.html" %}
+
+{% from "tables/macro.njk" import table %}
+{% from "summary-list/macro.njk" import summaryList %}
+
+{% set term = "Bone-screw internal spinal fixation system, non-sterile" %}
+{% set pageName = term %}
+{% set mainClasses = "nhsuk-main-wrapper--s" %}
+
+{% block beforeContent %}
+
+{{ breadcrumb({
+  items: [
+    { href: "/identify-alternatives/search-and-browse", text: "Search and browse" },
+    { href: "/identify-alternatives/device-function", text: "Device function" },
+    { href: "/identify-alternatives/tissue-reparation-devices", text: "Tissue reparation devices" },
+    { href: "/identify-alternatives/bone-joint-fixation-implants", text: "Bone/Joint fixation implants" },
+    { href: "/identify-alternatives/internal-spinal-fixation-systems", text: "Internal spinal fixation systems" }
+  ]
+}) }}
+
+{% endblock %}
+
+{% block content %}
+
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+
+    <h1 class="nhsuk-heading-l nhsuk-u-margin-bottom-2">
+      <span class="nhsuk-caption-l">Device type</span>
+      {{ term }}
+    </h1>
+
+    <h2 class="nhsuk-heading-m nhsuk-u-margin-top-5 nhsuk-u-margin-bottom-2">7 suppliers</h2>
+    <p class="nhsuk-body-s">Suppliers are listed A to Z.</p>
+
+    {{ table({
+      caption: "Suppliers of this device type",
+      captionClasses: "nhsuk-u-visually-hidden",
+      head: [
+        { text: "Supplier" },
+        { text: "Components", format: "numeric" },
+        { text: "Documents", format: "numeric" }
+      ],
+      rows: [
+        [ { html: '<a href="/identify-alternatives/nuvasive-bone-screw-internal-spinal-fixation-system">ArcTech Ltd</a>' }, { text: "2", format: "numeric" }, { text: "1", format: "numeric" } ],
+        [ { html: '<a href="/identify-alternatives/nuvasive-bone-screw-internal-spinal-fixation-system">Beta Healthcare Solutions</a>' }, { text: "10", format: "numeric" }, { text: "7", format: "numeric" } ],
+        [ { html: '<a href="/identify-alternatives/nuvasive-bone-screw-internal-spinal-fixation-system">Ferrus Technology Solutions</a>' }, { text: "4", format: "numeric" }, { text: "3", format: "numeric" } ],
+        [ { html: '<a href="/identify-alternatives/nuvasive-bone-screw-internal-spinal-fixation-system">Nuvasive</a>' }, { text: "9", format: "numeric" }, { text: "4", format: "numeric" } ],
+        [ { html: '<a href="/identify-alternatives/nuvasive-bone-screw-internal-spinal-fixation-system">OmegaAM Solutions</a>' }, { text: "2", format: "numeric" }, { text: "5", format: "numeric" } ],
+        [ { html: '<a href="/identify-alternatives/nuvasive-bone-screw-internal-spinal-fixation-system">Seinar Systems Ltd</a>' }, { text: "1", format: "numeric" }, { text: "2", format: "numeric" } ],
+        [ { html: '<a href="/identify-alternatives/nuvasive-bone-screw-internal-spinal-fixation-system">Upper Norfolk Implant Technologies</a>' }, { text: "1", format: "numeric" }, { text: "1", format: "numeric" } ]
+      ]
+    }) }}
+
+    <h2 class="nhsuk-heading-m nhsuk-u-margin-top-5 nhsuk-u-margin-bottom-2">Also in these categories</h2>
+    {# Jill: key renamed "GMDN names index", so no line about GMDN is needed.
+       Flag for Jill: that line was the only place the page spelled out
+       "Global Medical Device Nomenclature", and Content/formatting.md asks
+       for abbreviations to be spelled out on first use. #}
+
+    {# Only Device Function, Anatomical Specialty and Names Index, per Dylan:
+       they are the most human-language, properly sized groupings to browse
+       by. The other root nodes are attributes, already used as filters.
+       Every level is a link, like a breadcrumb, but not the Breadcrumbs
+       component: breadcrumbs.md gives a page one trail, in the header, and
+       collapses it to a single back link on mobile. The ">" separators are
+       hidden from screen readers, which would read them as "greater than". #}
+    {{ summaryList({
+      rows: [
+        {
+          key: { text: "Device Function" },
+          value: { html: '<a href="/identify-alternatives/tissue-reparation-devices">Tissue reparation devices</a> <span aria-hidden="true">&gt;</span> <a href="/identify-alternatives/bone-joint-fixation-implants">Bone/Joint fixation implants</a> <span aria-hidden="true">&gt;</span> <a href="/identify-alternatives/internal-spinal-fixation-systems">Internal spinal fixation systems</a>' }
+        },
+        {
+          key: { text: "Anatomical Specialty" },
+          value: { html: '<a href="#">Orthopaedic devices</a> <span aria-hidden="true">&gt;</span> <a href="#">Spinal fixation systems and associated devices</a> <span aria-hidden="true">&gt;</span> <a href="#">Spinal fixation systems</a> <span aria-hidden="true">&gt;</span> <a href="#">Internal spinal fixation systems</a>' }
+        },
+        {
+          key: { text: "GMDN names index" },
+          value: { html: '<a href="#">Screws and associated devices</a>' }
+        }
+      ]
+    }) }}
+
+  </div>
+</div>
+
+{% endblock %}

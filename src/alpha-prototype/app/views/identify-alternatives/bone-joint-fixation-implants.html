@@ -1,0 +1,103 @@
+{#
+  Sketch 1c: Bone/Joint fixation implants.
+
+  Layer 2 of the Device function tree, reached from Tissue reparation devices.
+  Content only. Layout and the reasoning behind it are in _category-level.html.
+
+  ── Content ─────────────────────────────────────────────────────────────
+
+  Name and the 7 subcategories are GMDN, from Dylan's screenshot,
+  reproduced exactly. Subcategories A to Z. No definition: Dylan removed it
+  on 28 September 2026, as RS Components and eBay go straight to the list.
+
+  Rows are the 21 non-obsolete terms from GMDN's "Terms in this category"
+  list for Bone/Joint fixation implants, which Dylan pasted, plus the
+  Bone-screw spinal system from Dylan's screenshot: 22, A to Z. The paste was cut
+  off, so there are 22 rather than 25. It is a mockup, so pagination is kept
+  to show how the full list of 212 would behave.
+
+  GMDN leaves the current category out of a term's "Also in categories", so
+  terms such as Orthopaedic bone bolt belong here even though their list only
+  shows Tissue reparation devices.
+
+  Filters thinned for this level, per the rule in the template:
+  - Kept: Anatomical Specialty (Orthopaedic or Dental/Maxillofacial), Featured
+    Attributes and Use Frequency (external fixation systems are reusable).
+  - Left out: Invasiveness/Implantability, Materials/Drug-Device Combination
+    and Power. Every term in the sample is Surgical invasive, Implantable,
+    Implantable inorganic material and Non-active, so none of them narrows.
+  - Featured Attributes drops Surgical for the same reason, and gains
+    Complete system configuration, Traction and Orthodontics, which are GMDN
+    options that matter here.
+
+  Still invented: all counts and supplier numbers, except Internal spinal
+  fixation systems (8), which is its real number of current terms.
+#}
+
+{% extends "identify-alternatives/_category-level.html" %}
+
+{% set category = {
+  name: "Bone/Joint fixation implants",
+  caption: "Tissue reparation devices"
+} %}
+
+{% set breadcrumbs = [
+  { href: "/identify-alternatives/search-and-browse", text: "Search and browse" },
+  { href: "/identify-alternatives/device-function", text: "Device function" },
+  { href: "/identify-alternatives/tissue-reparation-devices", text: "Tissue reparation devices" }
+] %}
+
+{% set subcategories = [
+  { name: "Implantable bone fixation pins", href: "#", count: "18" },
+  { name: "Implantable bone screws", href: "#", count: "54" },
+  { name: "Implantable fixation plates", href: "#", count: "41" },
+  { name: "Internal spinal fixation systems", href: "/identify-alternatives/internal-spinal-fixation-systems", count: "8" },
+  { name: "Intramedullary bone nails", href: "#", count: "22" },
+  { name: "Orthopaedic fixation systems", href: "#", count: "29" },
+  { name: "Sacroiliac joint fixation/arthrodesis implants", href: "#", count: "6" }
+] %}
+
+{% set filters = [
+  { name: "specialty", legend: "Anatomical Specialty", items: [
+    { value: "dental-maxillofacial", text: "Dental/Maxillofacial devices", count: "31" },
+    { value: "orthopaedic", text: "Orthopaedic devices", count: "188" }
+  ] },
+  { name: "attributes", legend: "Featured Attributes", items: [
+    { value: "complete-system", text: "Complete system configuration", count: "46" },
+    { value: "bioabsorbable", text: "Bioabsorbable/Biodegradable", count: "34" },
+    { value: "traction", text: "Traction", count: "9" },
+    { value: "orthodontics", text: "Orthodontics", count: "6" }
+  ] },
+  { name: "frequency", legend: "Use Frequency", items: [
+    { value: "reusable", text: "Reusable", count: "16" },
+    { value: "single-use", text: "Single use", count: "196" }
+  ] }
+] %}
+
+{% set total = "212" %}
+{% set pages = 9 %}
+
+{% set rows = [
+  { name: "Arthrodesis nail, fixed-length", href: "#", suppliers: "5" },
+  { name: "Bioabsorbable orthopaedic bone screw", href: "#", suppliers: "4" },
+  { name: "Bone nail end-cap", href: "#", suppliers: "7" },
+  { name: "Bone-screw internal spinal fixation system, non-sterile", href: "#", suppliers: "7" },
+  { name: "Cervical spine immobilization head ring", href: "#", suppliers: "3" },
+  { name: "Craniofacial bone screw, bioabsorbable", href: "#", suppliers: "3" },
+  { name: "External orthopaedic fixation system, reusable", href: "#", suppliers: "6" },
+  { name: "Femur nail", href: "#", suppliers: "8" },
+  { name: "Humerus nail", href: "#", suppliers: "7" },
+  { name: "Internal spinal fixation system cable", href: "#", suppliers: "4" },
+  { name: "Internal spinal fixation system cable crimp", href: "#", suppliers: "4" },
+  { name: "Intervertebral-body internal spinal fixation system", href: "#", suppliers: "4" },
+  { name: "Maxillofacial bone wire/bar", href: "#", suppliers: "5" },
+  { name: "Orthodontic anchoring screw", href: "#", suppliers: "5" },
+  { name: "Orthopaedic bone bolt", href: "#", suppliers: "6" },
+  { name: "Orthopaedic bone nut", href: "#", suppliers: "6" },
+  { name: "Orthopaedic bone pin, bioabsorbable", href: "#", suppliers: "3" },
+  { name: "Orthopaedic bone pin, non-bioabsorbable", href: "#", suppliers: "9" },
+  { name: "Orthopaedic fixation plate, bioabsorbable", href: "#", suppliers: "4" },
+  { name: "Sternal fixation device", href: "#", suppliers: "6" },
+  { name: "Tibia nail", href: "#", suppliers: "8" },
+  { name: "Trans-facet-screw internal spinal fixation system, sterile", href: "#", suppliers: "3" }
+] %}

@@ -112,6 +112,7 @@ router.post('/redirect-test', function(request, response) {
 router.use('/current', require('./views/current/routes'))
 router.use('/UR', require('./views/UR/routes'))
 router.use('/sketchpad', require('./views/sketchpad/routes'))
+router.use('/identify-alternatives', require('./views/identify-alternatives/routes'))
 
 
 

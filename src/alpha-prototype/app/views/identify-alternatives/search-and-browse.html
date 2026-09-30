@@ -1,0 +1,120 @@
+{#
+  Sketch 1: Search and browse.
+
+  A mockup. Nothing on it is wired: the search form does not submit and both
+  category cards link to "#".
+
+  The search bar is the one from current/search, which lives in
+  current/layouts/layout-search-sticky.html rather than in that page's body.
+  Copied here rather than inherited by extending that layout, because the
+  layout hardcodes the hero heading as "Search", wires the form to
+  /current/search-results, and current/ is dev-owned.
+
+  Differences from the original, all noted in the audit:
+  - built with the hero() macro rather than hand-written markup
+  - the hero heading is this page's name instead of "Search"
+  - the <h3> service name under it is dropped: it repeated the service name
+    already in the header, and sat directly under an <h1> with no <h2> between
+  - the form carries a search landmark
+#}
+
+{% extends "identify-alternatives/_layout.html" %}
+
+{% set pageName = "Search and browse" %}
+
+{#
+  The hero goes in the header block, after the layout's own header via super(),
+  so it runs full width as it does on current/search. In beforeContent it would
+  sit inside the page's width container and the macro would nest a second one.
+#}
+{% block header %}
+{{ super() }}
+
+{% call hero({
+  heading: pageName,
+  headingClasses: "nhsuk-heading-xl nhsuk-u-margin-bottom-3"
+}) %}
+  {#
+    Hand-written rather than the searchInput macro: the service manual's search
+    input component is not in nhsuk-frontend 10.1.0, which is what is installed
+    here. Worth swapping in when the kit is upgraded.
+
+    role="search" and a name on the form give the search landmark that
+    Accessibility/design.md asks for under "Define page structure".
+  #}
+  <form role="search" aria-label="Search for a device" onsubmit="return false;" novalidate>
+    <div class="nhsuk-form-group nhsuk-u-margin-bottom-0">
+      <label class="nhsuk-label" for="q">
+        Search by device, category or supplier
+      </label>
+      <input class="nhsuk-input nhsuk-input--width-20" id="q" name="q" type="search" autocomplete="off">
+      <button class="nhsuk-button nhsuk-button--reverse nhsuk-u-margin-left-2 app-button--small nhsuk-u-margin-bottom-0" data-module="nhsuk-button" type="submit">
+        Search
+      </button>
+    </div>
+  </form>
+{% endcall %}
+
+{% endblock %}
+
+{#
+  No breadcrumb. Its only item was a link back to the sketch list, which is
+  scaffolding around the mockup rather than part of it. The sketch list is
+  still reachable from the prototype homepage.
+#}
+{% block beforeContent %}
+{% endblock %}
+
+{% block content %}
+
+{#
+  Browse by category. Two top-tier categories, so clickable primary cards with
+  chevrons, per the "grouping cards" section of Components/card.md, which
+  points at the hub page pattern for exactly this shape.
+
+  Cards rather than radios and a Continue button: this is navigation into a
+  browse route, not a form question, and one affordance per interaction.
+
+  Card headings are h3 because they sit under the "Browse by category" h2, per
+  the heading level guidance in Components/card.md.
+
+  Heading size is set with headingClasses, not the headingSize option the
+  service manual documents. The installed card macro only reads headingClasses,
+  and headingSize renders nothing.
+#}
+
+<h2 class="nhsuk-heading-l">Browse by category</h2>
+
+{# Jill: make clear these are 2 different ways of organising that both include
+   the same devices. This line is our draft for Jill to approve. Supporting
+   text, so a paragraph between the heading and the cards, not a heading. #}
+<p>2 ways to group the same devices.</p>
+
+<ul class="nhsuk-grid-row nhsuk-card-group">
+  <li class="nhsuk-grid-column-one-half nhsuk-card-group__item">
+    {{ card({
+      primary: true,
+      clickable: true,
+      href: "/identify-alternatives/device-function",
+      heading: "Device function",
+      headingLevel: "3",
+      headingClasses: "nhsuk-heading-m",
+      description: "See devices grouped by clinical functionality or paraclinical context, like radiological devices, bariatric therapy devices or laboratory instruments and equipment"
+    }) }}
+  </li>
+  <li class="nhsuk-grid-column-one-half nhsuk-card-group__item">
+    {# Description is a draft for Jill to approve, written to match her Device
+       function line. The examples are the ones this card already used. #}
+    {{ card({
+      primary: true,
+      clickable: true,
+      href: "#",
+      heading: "Anatomical specialty",
+      headingLevel: "3",
+      headingClasses: "nhsuk-heading-m",
+      description: "See devices grouped by the part of the body or clinical specialty they're used for, like cardiovascular devices, pulmonary devices or gastro-urological devices"
+    }) }}
+  </li>
+</ul>
+
+{% endblock %}

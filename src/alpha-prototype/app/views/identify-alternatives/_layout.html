@@ -1,0 +1,111 @@
+{#
+  Layout for the identify-alternatives sketch. The same as
+  current/layouts/layout-signed-in.html, except the header navigation links
+  to every page in the sketch, in the order of the sketches index, so people can move round it
+  in a review. The header moves links that do not fit into its "More" menu.
+  The page you are on is marked as current (currentPath is set in routes.js).
+  current/ is dev-owned, so the header is overridden here rather than
+  changed there.
+#}
+
+{% extends prototypeVersion + '/layouts/layout-signed-in.html' %}
+
+{% block header %}
+{% from 'header/macro.njk' import header %}
+
+{{ header({
+  logo: {
+    href: "/"
+  },
+  service: {
+    text: "Search and evaluate medical technology",
+    href: "/"
+  },
+  account: {
+    items: [
+      {
+        text: "Kelvin Simpson (Regional Manager)",
+        icon: true
+      },
+      {
+        text: "Log out",
+        href: "sign-in-nhs"
+      }
+    ]
+  },
+  navigation: {
+    items: [
+      {
+        text: "Search and browse",
+        href: "/identify-alternatives/search-and-browse",
+        current: currentPath == "/search-and-browse"
+      },
+      {
+        text: "Search results",
+        href: "/identify-alternatives/search-results",
+        current: currentPath == "/search-results"
+      },
+      {
+        text: "Device function",
+        href: "/identify-alternatives/device-function",
+        current: currentPath == "/device-function"
+      },
+      {
+        text: "Tissue reparation devices",
+        href: "/identify-alternatives/tissue-reparation-devices",
+        current: currentPath == "/tissue-reparation-devices"
+      },
+      {
+        text: "Bone/Joint fixation implants",
+        href: "/identify-alternatives/bone-joint-fixation-implants",
+        current: currentPath == "/bone-joint-fixation-implants"
+      },
+      {
+        text: "Internal spinal fixation systems",
+        href: "/identify-alternatives/internal-spinal-fixation-systems",
+        current: currentPath == "/internal-spinal-fixation-systems"
+      },
+      {
+        text: "Device type",
+        href: "/identify-alternatives/bone-screw-internal-spinal-fixation-system-non-sterile",
+        current: currentPath == "/bone-screw-internal-spinal-fixation-system-non-sterile"
+      },
+      {
+        text: "System",
+        href: "/identify-alternatives/nuvasive-bone-screw-internal-spinal-fixation-system",
+        current: currentPath == "/nuvasive-bone-screw-internal-spinal-fixation-system"
+      },
+      {
+        text: "Component",
+        href: "/identify-alternatives/mas-plif",
+        current: currentPath == "/mas-plif"
+      },
+      {
+        text: "Search2",
+        href: "/identify-alternatives/search2",
+        current: currentPath == "/search2"
+      },
+      {
+        text: "Device results",
+        href: "/identify-alternatives/device-results",
+        current: currentPath == "/device-results"
+      },
+      {
+        text: "Supplier result",
+        href: "/identify-alternatives/supplier-nuvasive",
+        current: currentPath == "/supplier-nuvasive"
+      },
+      {
+        text: "All devices",
+        href: "/identify-alternatives/all-devices",
+        current: currentPath == "/all-devices"
+      },
+      {
+        text: "GMDN categories",
+        href: "/identify-alternatives/gmdn-categories",
+        current: currentPath == "/gmdn-categories"
+      }
+    ]
+  }
+}) }}
+{% endblock %}
