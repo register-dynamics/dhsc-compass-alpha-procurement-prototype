@@ -1,0 +1,172 @@
+{#
+  Sketch 1b: Tissue reparation devices.
+
+  Layer 1 of the Device function tree, reached from device-function. One
+  category holding a very long list of device types, so the page is built to
+  help people make that list smaller. Content only. Layout and the reasoning
+  behind it are in _category-level.html.
+
+  ── Brief (set with Dylan, 23 September 2026) ───────────────────────────
+
+  For a team and stakeholder review, so it stays static. People arrive from
+  procurement, clinical and evaluation roles, about half with a device in mind
+  and half with a need. Rows are GMDN terms (device types), never supplier
+  products, with the number of suppliers only.
+
+  Open questions for the review:
+  - Do people need a description of each category? Jill thinks the category
+    name is descriptive enough, but wants to hear what users say. Removed
+    for now, as on Bone/Joint fixation implants.
+  - The filters are unvalidated and need testing.
+  - Someone who knows a brand (Vicryl) but not its GMDN term has no way in
+    from this page yet.
+  - Obsolete GMDN terms are left out of the list. Nobody can buy against them,
+    but a trust's old records may still use them.
+
+  ── Content ─────────────────────────────────────────────────────────────
+
+  Subcategories are the full first level of GMDN collective terms under
+  Tissue reparation devices, from Dylan's screenshot, grouped under our own
+  headings (see the note on subcategoryGroups). Device terms come from a
+  small sample Dylan supplied. Both are reproduced exactly (including US
+  spellings such as "immobilizer"). The rows are the sample's non-obsolete
+  terms, A to Z. Page 1 of a real A to Z list would stop far earlier in the
+  alphabet.
+
+  Still invented: every count and every supplier number. 1,284 is kept as
+  the category size. Counts add up to it where options are exclusive
+  (frequency, power). Subcategory and other filter counts can overlap, since
+  a term can sit in more than one.
+
+  Only Bone/Joint fixation implants links onward. Everything else goes to "#".
+#}
+
+{% extends "identify-alternatives/_category-level.html" %}
+
+{% set category = {
+  name: "Tissue reparation devices",
+  caption: "Device function"
+} %}
+
+{% set breadcrumbs = [
+  { href: "/identify-alternatives/search-and-browse", text: "Search and browse" },
+  { href: "/identify-alternatives/device-function", text: "Device function" }
+] %}
+
+{# Chunked, as device-function is. GROUP NAMES ARE OURS, not GMDN's, and need a
+   clinical check. Within each group, categories keep GMDN's order, and the
+   ones from GMDN's unordered A to Z tail go at the end of the group they fit.
+   Wound closure and dressings has 7, one over the 6 Content/formatting.md
+   suggests, rather than a heading over a single item. #}
+{# Subcategories only. At this level people are still narrowing down, so the
+   filters and device list start one level below. Agreed with Dylan,
+   24 September 2026. #}
+{% set hideDevices = true %}
+
+{% set subcategoryGroups = [
+  { heading: "Grafts, meshes and soft-tissue repair", items: [
+    { name: "Grafting/Prosthetic implants", href: "#", count: "196" },
+    { name: "Surgical meshes", href: "#", count: "41" },
+    { name: "Nerve guides", href: "#", count: "5" },
+    { name: "Lift threads", href: "#", count: "7" },
+    { name: "Soft-tissue reconstructive materials", href: "#", count: "42" }
+  ] },
+  { heading: "Bone and joint fixation", items: [
+    { name: "Bone/Joint fixation implants", href: "/identify-alternatives/bone-joint-fixation-implants", count: "212" },
+    { name: "External spinal/orthopaedic fixation systems", href: "#", count: "58" },
+    { name: "Implantable orthopaedic distractors", href: "#", count: "11" }
+  ] },
+  { heading: "Blood vessels", items: [
+    { name: "Stents", href: "#", count: "97" },
+    { name: "Anastomosis couplers", href: "#", count: "6" },
+    { name: "Embolization implants", href: "#", count: "34" },
+    { name: "Vascular closure/compression devices", href: "#", count: "22" }
+  ] },
+  { heading: "Dental, head and neck", items: [
+    { name: "Dental reparative/restorative devices", href: "#", count: "148" },
+    { name: "Tracheoesophageal speech valves", href: "#", count: "8" },
+    { name: "Vocal cord medialization implants", href: "#", count: "4" }
+  ] },
+  { heading: "Wound closure and dressings", items: [
+    { name: "Tissue dressing/stabilization devices", href: "#", count: "236" },
+    { name: "Sutures", href: "#", count: "118" },
+    { name: "Staples", href: "#", count: "38" },
+    { name: "Surgical anchors", href: "#", count: "29" },
+    { name: "Tacks", href: "#", count: "9" },
+    { name: "Tissue clips", href: "#", count: "31" },
+    { name: "Tissue adhesives/sealants", href: "#", count: "24" }
+  ] }
+] %}
+
+{% set filters = [
+  { name: "specialty", legend: "Anatomical Specialty", items: [
+    { value: "dental-maxillofacial", text: "Dental/Maxillofacial devices", count: "236" },
+    { value: "dermatological", text: "Dermatological and soft-tissue reconstructive/cosmetic devices", count: "402" },
+    { value: "ent", text: "Ear/Nose/Throat (ENT) devices", count: "41" },
+    { value: "gastro-urological", text: "Gastro-urological devices", count: "63" },
+    { value: "obstetrical-gynaecological", text: "Obstetrical/Gynaecological devices", count: "37" },
+    { value: "ophthalmic", text: "Ophthalmic devices", count: "52" },
+    { value: "orthopaedic", text: "Orthopaedic devices", count: "318" }
+  ] },
+  { name: "invasiveness", legend: "Invasiveness/Implantability", items: [
+    { value: "surgical-invasive", text: "Surgical invasive", count: "447" },
+    { value: "non-surgical-invasive", text: "Non-surgical invasive", count: "171" },
+    { value: "implantable", text: "Implantable", count: "389" }
+  ] },
+  { name: "attributes", legend: "Featured Attributes", items: [
+    { value: "surgical", text: "Surgical", count: "604" },
+    { value: "home-use", text: "Home-use patient/layperson", count: "287" },
+    { value: "bioabsorbable", text: "Bioabsorbable/Biodegradable", count: "143" },
+    { value: "custom-made", text: "Custom-made/Customized", count: "76" },
+    { value: "podiatry", text: "Podiatry/Chiropody", count: "24" }
+  ] },
+  { name: "material", legend: "Materials/Drug-Device Combination", items: [
+    { value: "pharmaceutical-antimicrobial", text: "Pharmaceutical/Antimicrobial", count: "96" },
+    { value: "human-derived", text: "Human-derived", count: "38" },
+    { value: "animal-derived", text: "Animal-derived", count: "211" },
+    { value: "microbe-derived", text: "Microbe-derived", count: "17" },
+    { value: "implantable-inorganic", text: "Implantable inorganic material", count: "164" },
+    { value: "wax", text: "Wax materials", count: "9" },
+    { value: "high-volume-latex", text: "High volume Latex", count: "12" }
+  ] },
+  { name: "frequency", legend: "Use Frequency", items: [
+    { value: "reusable", text: "Reusable", count: "278" },
+    { value: "single-use", text: "Single use", count: "1,006" }
+  ] },
+  { name: "power", legend: "Power", items: [
+    { value: "active", text: "Active", count: "142" },
+    { value: "non-active", text: "Non-active", count: "1,098" },
+    { value: "undefined", text: "Active/Non-active undefined", count: "44" }
+  ] }
+] %}
+
+{% set total = "1,284" %}
+{% set pages = 52 %}
+
+{% set rows = [
+  { name: "Abdominal binder, single-use", href: "#", suppliers: "9" },
+  { name: "Ankle binder, single-use", href: "#", suppliers: "7" },
+  { name: "Bandage scissors, reusable", href: "#", suppliers: "12" },
+  { name: "Breast binder, single-use", href: "#", suppliers: "5" },
+  { name: "Bunion shield", href: "#", suppliers: "4" },
+  { name: "Burn kit, non-medicated", href: "#", suppliers: "6" },
+  { name: "Catgut suture, plain", href: "#", suppliers: "3" },
+  { name: "Cotton suture", href: "#", suppliers: "2" },
+  { name: "Dental restorative gold", href: "#", suppliers: "2" },
+  { name: "Denture repair kit, professional", href: "#", suppliers: "4" },
+  { name: "Elbow immobilizer", href: "#", suppliers: "6" },
+  { name: "Eye pad", href: "#", suppliers: "11" },
+  { name: "Insect bite/sting kit", href: "#", suppliers: "3" },
+  { name: "Knee immobilizer", href: "#", suppliers: "10" },
+  { name: "Knee sling", href: "#", suppliers: "3" },
+  { name: "Leg sling", href: "#", suppliers: "2" },
+  { name: "Linen suture", href: "#", suppliers: "2" },
+  { name: "Moleskin", href: "#", suppliers: "5" },
+  { name: "Nasal haemostatic balloon", href: "#", suppliers: "4" },
+  { name: "Nipple pad/ring, single-use", href: "#", suppliers: "6" },
+  { name: "Nose clip, single-use", href: "#", suppliers: "8" },
+  { name: "Preformed complete denture", href: "#", suppliers: "3" },
+  { name: "Pressure bandage, non-latex, single-use", href: "#", suppliers: "14" },
+  { name: "Scultetus bandage", href: "#", suppliers: "2" },
+  { name: "Shoulder immobilizer/orthosis, reusable", href: "#", suppliers: "9" }
+] %}

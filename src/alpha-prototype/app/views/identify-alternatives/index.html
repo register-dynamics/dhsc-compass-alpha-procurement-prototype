@@ -1,0 +1,119 @@
+{% extends 'layout.html' %}
+
+{% from "back-link/macro.njk" import backLink %}
+
+{% set pageName = "Identify comparable alternatives" %}
+
+{#
+  Landing page for the "identify comparable alternatives" concept.
+
+  Sketches go in the list below as they are made, one link per sketch, with a
+  line saying how each differs from the ones beside it. Keep the differences
+  in the list rather than on the sketches themselves, so a participant
+  choosing from this page is not steered towards one.
+
+  Every page made for this concept is listed here, including pages reached by
+  clicking through a sketch rather than starting from it. Those are nested
+  under the sketch they belong to, so the list shows the shape of each journey
+  and nothing is reachable only by knowing its URL.
+#}
+
+{% block beforeContent %}
+  {{ backLink({
+    href: "/",
+    text: "Back"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+
+    <h1 class="nhsuk-heading-l">{{ pageName }}</h1>
+
+    <p class="nhsuk-body-l">Sketches exploring how someone looking at one device finds the devices they could buy instead.</p>
+
+    <h2 class="nhsuk-heading-m">Sketches</h2>
+
+    <ul class="nhsuk-list">
+      <li>
+        <a href="/identify-alternatives/search-and-browse">1. Search and browse</a>
+        <br><span class="nhsuk-hint">Search across the catalogue, or browse into one of the two top-tier category trees</span>
+
+        <ul class="nhsuk-list nhsuk-u-margin-left-4 nhsuk-u-margin-top-2">
+          <li>
+            <a href="/identify-alternatives/search-results">Search results</a>
+            <br><span class="nhsuk-hint">Reached by searching. A search for "spinal fixation", with results grouped as categories, device types, and systems and devices</span>
+          </li>
+          <li>
+            <a href="/identify-alternatives/device-function">Device function</a>
+            <br><span class="nhsuk-hint">Reached from the Device function card. The 22 GMDN categories under that root node</span>
+            <ul class="nhsuk-list nhsuk-u-margin-left-4 nhsuk-u-margin-top-2">
+              <li>
+                <a href="/identify-alternatives/tissue-reparation-devices">Tissue reparation devices</a>
+                <br><span class="nhsuk-hint">Reached from Tissue reparation devices. One category's GMDN terms, with subcategories and filters to narrow them</span>
+                <ul class="nhsuk-list nhsuk-u-margin-left-4 nhsuk-u-margin-top-2">
+                  <li>
+                    <a href="/identify-alternatives/bone-joint-fixation-implants">Bone/Joint fixation implants</a>
+                    <br><span class="nhsuk-hint">Reached from Bone/Joint fixation implants. The same template one level down, with fewer filters</span>
+                    <ul class="nhsuk-list nhsuk-u-margin-left-4 nhsuk-u-margin-top-2">
+                      <li>
+                        <a href="/identify-alternatives/internal-spinal-fixation-systems">Internal spinal fixation systems</a>
+                        <br><span class="nhsuk-hint">Reached from Internal spinal fixation systems. The end of the branch: no subcategories, 8 device types on 1 page</span>
+                        <ul class="nhsuk-list nhsuk-u-margin-left-4 nhsuk-u-margin-top-2">
+                          <li>
+                            <a href="/identify-alternatives/bone-screw-internal-spinal-fixation-system-non-sterile">Bone-screw internal spinal fixation system, non-sterile</a>
+                            <br><span class="nhsuk-hint">Reached from the device list. One device type: its definition, branded device systems, and the other GMDN categories it sits in</span>
+                            <ul class="nhsuk-list nhsuk-u-margin-left-4 nhsuk-u-margin-top-2">
+                              <li>
+                                <a href="/identify-alternatives/nuvasive-bone-screw-internal-spinal-fixation-system">Nuvasive bone-screw internal spinal fixation system</a>
+                                <br><span class="nhsuk-hint">Reached from the device type page. One branded device system: its components and documents</span>
+                                <ul class="nhsuk-list nhsuk-u-margin-left-4 nhsuk-u-margin-top-2">
+                                  <li>
+                                    <a href="/identify-alternatives/mas-plif">MAS PLIF</a>
+                                    <br><span class="nhsuk-hint">Reached from the system page. One component's variants, built to scale to over 1,000</span>
+                                  </li>
+                                </ul>
+                              </li>
+                            </ul>
+                          </li>
+                        </ul>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <a href="/identify-alternatives/search2">2. Search2</a>
+        <br><span class="nhsuk-hint">A second version of search, modelled on RS Components. Suggestions as you type go straight to a device, device type, category or supplier</span>
+
+        <ul class="nhsuk-list nhsuk-u-margin-left-4 nhsuk-u-margin-top-2">
+          <li>
+            <a href="/identify-alternatives/device-results">Device results</a>
+            <br><span class="nhsuk-hint">Reached by searching, when the search does not exactly match a page. Branded devices and systems only, with categories and filters to narrow them</span>
+          </li>
+          <li>
+            <a href="/identify-alternatives/supplier-nuvasive">Supplier result</a>
+            <br><span class="nhsuk-hint">Reached by searching for a supplier's name, or from a supplier link. One supplier's branded devices and systems, in the category page layout</span>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <a href="/identify-alternatives/all-devices">All devices</a>
+        <br><span class="nhsuk-hint">The search results page showing the whole catalogue instead of a result set, ordered by category then supplier</span>
+      </li>
+      <li>
+        <a href="/identify-alternatives/gmdn-categories">GMDN categories</a>
+        <br><span class="nhsuk-hint">A copy of the search page, as a starting point for browsing by category</span>
+      </li>
+    </ul>
+
+  </div>
+</div>
+
+{% endblock %}

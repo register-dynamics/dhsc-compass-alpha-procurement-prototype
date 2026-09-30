@@ -1,0 +1,248 @@
+{#
+  Sketch: Device results.
+
+  Where a search lands when it does not exactly match a category, device
+  type, supplier or device name (those go straight to their own page, as on
+  RS Components). Results are only ever branded devices, the smallest unit
+  that makes sense to compare. Categories and suppliers are ways to narrow
+  the list, not rows in it, so nobody scrolls past categories and device
+  types to reach a device. Linked from "Device results" in the header.
+
+  ── Layout ────────────────────────────────────────────────────────────────
+
+  The category and supplier page layout:
+  - The search box first, full width, with the term filled in, as RS keeps
+    its search bar over the results. Markup and label from Search results.
+  - The h1 gives the count and the term ("31 branded devices and systems
+    found for spinal fixation", Jill's wording, after RS's "7355 Products found for screws"), over the list
+    it describes. Results column first in the source, floated right, so the
+    h1 comes before the sidebar's headings.
+  - Sidebar: the categories the results sit in, in the side navigation
+    styled after the NHS digital service manual. Choosing one narrows the
+    results. Then filters: supplier and what the device is supplied as, as
+    small checkboxes with counts (Components/checkboxes.md: search filters),
+    with their own button (WCAG 3.2.2).
+  - Sort has its own button for the same reason. Best match first, as a
+    search, rather than A to Z.
+  - Supplier first, then the branded device or system (Jill, 28 September
+    2026: people looking through branded devices scan for the brand first).
+    The supplier links to the supplier page, so people can get from a device
+    to who supplies it, as eBay and Amazon link to the seller. Device type
+    is the GMDN term, so rows can be compared like for like.
+  - 25 per page, as on the category pages and current/.
+
+  ── Content ───────────────────────────────────────────────────────────────
+
+  The search is "spinal fixation". Nuvasive's bone-screw system is real
+  (Dylan). The other device names, component counts, the total of 31 and
+  every count are invented. Suppliers are the ones on the device type page,
+  and Nuvasive's 8 match the supplier page. Device types and categories are
+  GMDN. Heading, sort and filter wording are drafts for Jill.
+
+  Unwired: the form does not search, and nothing filters, sorts or pages.
+#}
+
+{% extends "identify-alternatives/_layout.html" %}
+
+{% from "tables/macro.njk" import table %}
+{% from "checkboxes/macro.njk" import checkboxes %}
+{% from "select/macro.njk" import select %}
+{% from "pagination/macro.njk" import pagination %}
+
+{% set searchTerm = "spinal fixation" %}
+{% set total = 31 %}
+{% set pageName = "Search results for " + searchTerm + " (page 1 of 2)" %}
+{% set mainClasses = "nhsuk-main-wrapper--s" %}
+
+{% set bsNonSterile = "Bone-screw internal spinal fixation system, non-sterile" %}
+{% set bsSterile = "Bone-screw internal spinal fixation system, sterile" %}
+{% set tfNonSterile = "Trans-facet-screw internal spinal fixation system, non-sterile" %}
+{% set tfSterile = "Trans-facet-screw internal spinal fixation system, sterile" %}
+{% set intervertebral = "Intervertebral-body internal spinal fixation system" %}
+{% set interspinous = "Interspinous spinal fixation implant" %}
+{% set dynamic = "Spinal dynamic-stabilization system" %}
+{% set cable = "Internal spinal fixation system cable" %}
+{% set crimp = "Internal spinal fixation system cable crimp" %}
+
+{% set devices = [
+  { name: "Bone-screw internal spinal fixation system", href: "/identify-alternatives/nuvasive-bone-screw-internal-spinal-fixation-system", supplier: "Nuvasive", type: bsNonSterile, suppliedAs: "A system of 9 components" },
+  { name: "Spinal fixation cable", supplier: "Nuvasive", type: cable, suppliedAs: "A single device" },
+  { name: "Omega spinal fixation cable", supplier: "OmegaAM Solutions", type: cable, suppliedAs: "A single device" },
+  { name: "Beta spinal fixation system", supplier: "Beta Healthcare Solutions", type: bsNonSterile, suppliedAs: "A system of 10 components" },
+  { name: "Seinar spinal fixation system", supplier: "Seinar Systems Ltd", type: bsNonSterile, suppliedAs: "A system of 1 component" },
+  { name: "ArcTech pedicle screw system", supplier: "ArcTech Ltd", type: bsNonSterile, suppliedAs: "A system of 2 components" },
+  { name: "Ferrus pedicle screw system", supplier: "Ferrus Technology Solutions", type: bsNonSterile, suppliedAs: "A system of 4 components" },
+  { name: "Omega pedicle screw system", supplier: "OmegaAM Solutions", type: bsNonSterile, suppliedAs: "A system of 2 components" },
+  { name: "Norfolk pedicle screw system", supplier: "Upper Norfolk Implant Technologies", type: bsNonSterile, suppliedAs: "A system of 1 component" },
+  { name: "Sterile bone-screw spinal system", supplier: "Nuvasive", type: bsSterile, suppliedAs: "A system of 6 components" },
+  { name: "Beta sterile pedicle screw system", supplier: "Beta Healthcare Solutions", type: bsSterile, suppliedAs: "A system of 6 components" },
+  { name: "ArcTech sterile pedicle screw system", supplier: "ArcTech Ltd", type: bsSterile, suppliedAs: "A system of 3 components" },
+  { name: "Trans-facet screw system", supplier: "Nuvasive", type: tfSterile, suppliedAs: "A system of 2 components" },
+  { name: "Seinar trans-facet screw system", supplier: "Seinar Systems Ltd", type: tfSterile, suppliedAs: "A system of 2 components" },
+  { name: "Ferrus trans-facet screw system", supplier: "Ferrus Technology Solutions", type: tfNonSterile, suppliedAs: "A system of 3 components" },
+  { name: "Intervertebral cage system", supplier: "Nuvasive", type: intervertebral, suppliedAs: "A system of 3 components" },
+  { name: "ArcTech intervertebral cage system", supplier: "ArcTech Ltd", type: intervertebral, suppliedAs: "A system of 3 components" },
+  { name: "Beta intervertebral body system", supplier: "Beta Healthcare Solutions", type: intervertebral, suppliedAs: "A system of 5 components" },
+  { name: "Interspinous spacer", supplier: "Nuvasive", type: interspinous, suppliedAs: "A single device" },
+  { name: "Beta interspinous spacer", supplier: "Beta Healthcare Solutions", type: interspinous, suppliedAs: "A single device" },
+  { name: "Norfolk interspinous implant", supplier: "Upper Norfolk Implant Technologies", type: interspinous, suppliedAs: "A single device" },
+  { name: "Dynamic stabilisation system", supplier: "Nuvasive", type: dynamic, suppliedAs: "A system of 4 components" },
+  { name: "Omega dynamic stabilisation system", supplier: "OmegaAM Solutions", type: dynamic, suppliedAs: "A system of 3 components" },
+  { name: "Ferrus cable crimp", supplier: "Ferrus Technology Solutions", type: crimp, suppliedAs: "A single device" },
+  { name: "Seinar spinal cable crimp", supplier: "Seinar Systems Ltd", type: crimp, suppliedAs: "A single device" }
+] %}
+
+{% set categories = [
+  { name: "Internal spinal fixation systems", href: "#", count: "26" },
+  { name: "Bone/Joint fixation implants", href: "#", count: "5" }
+] %}
+
+{% set filters = [
+  { name: "supplier", legend: "Supplier", items: [
+    { value: "arctech", text: "ArcTech Ltd", count: "4" },
+    { value: "beta", text: "Beta Healthcare Solutions", count: "5" },
+    { value: "ferrus", text: "Ferrus Technology Solutions", count: "4" },
+    { value: "nuvasive", text: "Nuvasive", count: "8" },
+    { value: "omegaam", text: "OmegaAM Solutions", count: "4" },
+    { value: "seinar", text: "Seinar Systems Ltd", count: "4" },
+    { value: "upper-norfolk", text: "Upper Norfolk Implant Technologies", count: "2" }
+  ] },
+  { name: "supplied-as", legend: "Supplied as", items: [
+    { value: "system", text: "A system of components", count: "22" },
+    { value: "single", text: "A single device", count: "9" }
+  ] }
+] %}
+
+{% block beforeContent %}
+
+{{ breadcrumb({
+  items: [
+    { href: "/identify-alternatives/search-and-browse", text: "Search and browse" }
+  ]
+}) }}
+
+{% endblock %}
+
+{% block content %}
+
+<form role="search" aria-label="Search for a device" onsubmit="return false;" novalidate>
+  <div class="nhsuk-form-group">
+    <label class="nhsuk-label" for="q">
+      Search again by device, category or supplier
+    </label>
+    <input class="nhsuk-input nhsuk-input--width-20" id="q" name="q" type="search" autocomplete="off" value="{{ searchTerm }}">
+    <button class="nhsuk-button nhsuk-button--secondary nhsuk-u-margin-left-2 app-button--small nhsuk-u-margin-bottom-0" data-module="nhsuk-button" type="submit">
+      Search
+    </button>
+  </div>
+</form>
+
+<div class="nhsuk-grid-row">
+
+  <div class="app-grid-column-two-thirds-right">
+
+    <h1 class="nhsuk-heading-l nhsuk-u-margin-bottom-2">{{ total }} branded devices and systems found for {{ searchTerm }}</h1>
+    <p class="nhsuk-body-s">Showing 1 to {{ devices | length }} of {{ total }}, best match first.</p>
+
+    <form method="get" novalidate>
+      {{ select({
+        id: "sort",
+        name: "sort",
+        label: {
+          text: "Sort by"
+        },
+        items: [
+          { value: "match", text: "Best match", selected: true },
+          { value: "supplier", text: "Supplier (A to Z)" },
+          { value: "device", text: "Branded device or system (A to Z)" }
+        ],
+        formGroup: {
+          classes: "nhsuk-u-margin-bottom-2"
+        }
+      }) }}
+      <button class="nhsuk-button nhsuk-button--secondary app-button--small" data-module="nhsuk-button" type="submit">
+        Sort
+      </button>
+    </form>
+
+    {% set tableRows = [] %}
+    {% for d in devices %}
+      {% set _ = tableRows.push([
+        { html: '<a href="' + ("/identify-alternatives/supplier-nuvasive" if d.supplier == "Nuvasive" else "#") + '">' + d.supplier + '</a>' },
+        { html: '<a href="' + (d.href or "#") + '">' + d.name + '</a>' },
+        { text: d.type },
+        { text: d.suppliedAs }
+      ]) %}
+    {% endfor %}
+
+    {{ table({
+      caption: "Branded devices and systems found for " + searchTerm,
+      captionClasses: "nhsuk-u-visually-hidden",
+      head: [
+        { text: "Supplier" },
+        { text: "Branded device or system" },
+        { text: "Device type" },
+        { text: "Supplied as" }
+      ],
+      rows: tableRows
+    }) }}
+
+    {{ pagination({
+      next: { href: "#" },
+      items: [
+        { number: 1, href: "#", current: true },
+        { number: 2, href: "#" }
+      ]
+    }) }}
+
+  </div>
+
+  <div class="nhsuk-grid-column-one-third">
+
+    <nav aria-labelledby="category-nav-heading">
+      <h2 class="app-side-nav__heading nhsuk-heading-s nhsuk-u-margin-bottom-3" id="category-nav-heading">Categories</h2>
+      <ul class="app-side-nav__list">
+        {% for c in categories %}
+        <li class="app-side-nav__item">
+          <a class="app-side-nav__link" href="{{ c.href }}">{{ c.name }}</a>
+          <span class="app-side-nav__count">({{ c.count }})</span>
+        </li>
+        {% endfor %}
+      </ul>
+    </nav>
+
+    <hr class="nhsuk-section-break nhsuk-section-break--m nhsuk-section-break--visible">
+
+    <form method="get" novalidate>
+      <h2 class="nhsuk-heading-s nhsuk-u-margin-bottom-3">Filter devices</h2>
+
+      {% for group in filters %}
+        {% set items = [] %}
+        {% for item in group.items %}
+          {% set _ = items.push({ value: item.value, text: item.text + " (" + item.count + ")" }) %}
+        {% endfor %}
+
+        {{ checkboxes({
+          name: group.name,
+          idPrefix: group.name,
+          fieldset: {
+            legend: {
+              text: group.legend,
+              classes: "nhsuk-fieldset__legend--s"
+            }
+          },
+          items: items,
+          classes: "nhsuk-checkboxes--small"
+        }) }}
+      {% endfor %}
+
+      <button class="nhsuk-button nhsuk-button--secondary app-button--small nhsuk-u-margin-bottom-0" data-module="nhsuk-button" type="submit">
+        Update results
+      </button>
+    </form>
+
+  </div>
+
+</div>
+
+{% endblock %}

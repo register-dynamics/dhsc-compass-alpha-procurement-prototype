@@ -1,0 +1,126 @@
+{#
+  Sketch 1f: Branded device system page.
+
+  Reached from a row on the device type page (Bone-screw internal spinal
+  fixation system, non-sterile). One branded device system: its components
+  and its documents. Built from Dylan's wireframe and nomenclature, resolved
+  against the knowledge base:
+
+  - "Branded device system" is our internal model, not users' language
+    (Dylan). It shapes the page but never appears on it.
+  - Heading: the system, with the supplier in the caption, so the title
+    carries both. The <title> reads "system by supplier". The system name
+    follows Dylan's wireframe heading; the real brand name is still to come.
+  - "Supplied as" says plainly that this is a system, since users do not see
+    our "branded device system" label. A single-device version of this page
+    will come later, where the components list becomes a single link to its
+    variants. Wording is a draft for Jill.
+  - Device type sits in a summary list under the heading
+    (Components/summary-list.md: key and value pairs). Known from the record,
+    so shown rather than asked, and it links back up.
+  - Components and documents are tables (Components/table.md), with captions
+    and numbers right-aligned. The section headings keep Dylan's wording
+    ("Made of 9 components", "4 documents"). Numerals throughout, with
+    thousands separators.
+  - The wireframe's ">" beside the components heading is left out. Each
+    component name links to its variants instead, so there is one affordance
+    per interaction.
+  - Orders are stated, per the team convention.
+
+  Content: supplier, component names and variant counts are real market
+  data Dylan supplied, names exactly as given. RELINE appears twice with
+  different counts, which users cannot tell apart. Document names are
+  invented, trusts are from current/trusts.js. Document types are
+  "Evaluation" and "Business case", as in current/. Every link below the
+  summary list goes to "#", except MAS PLIF, which opens its component
+  page.
+#}
+
+{% extends "identify-alternatives/_layout.html" %}
+
+{% from "tables/macro.njk" import table %}
+{% from "summary-list/macro.njk" import summaryList %}
+
+{% set brand = "Bone-screw internal spinal fixation system" %}
+{% set supplier = "Nuvasive" %}
+{% set pageName = brand + " by " + supplier %}
+{% set mainClasses = "nhsuk-main-wrapper--s" %}
+
+{% block beforeContent %}
+
+{{ breadcrumb({
+  items: [
+    { href: "/identify-alternatives/search-and-browse", text: "Search and browse" },
+    { href: "/identify-alternatives/device-function", text: "Device function" },
+    { href: "/identify-alternatives/tissue-reparation-devices", text: "Tissue reparation devices" },
+    { href: "/identify-alternatives/bone-joint-fixation-implants", text: "Bone/Joint fixation implants" },
+    { href: "/identify-alternatives/internal-spinal-fixation-systems", text: "Internal spinal fixation systems" },
+    { href: "/identify-alternatives/bone-screw-internal-spinal-fixation-system-non-sterile", text: "Bone-screw internal spinal fixation system, non-sterile" }
+  ]
+}) }}
+
+{% endblock %}
+
+{% block content %}
+
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+
+    <h1 class="nhsuk-heading-l nhsuk-u-margin-bottom-4">
+      <span class="nhsuk-caption-l">{{ supplier }}</span>
+      {{ brand }}
+    </h1>
+
+    {{ summaryList({
+      rows: [
+        { key: { text: "Supplied as" }, value: { text: "A system of 9 components" } },
+        { key: { text: "Device type" }, value: { html: '<a href="/identify-alternatives/bone-screw-internal-spinal-fixation-system-non-sterile">Bone-screw internal spinal fixation system, non-sterile</a>' } }
+      ]
+    }) }}
+
+    <h2 class="nhsuk-heading-m nhsuk-u-margin-top-5 nhsuk-u-margin-bottom-2">Made of 9 components</h2>
+    <p class="nhsuk-body-s">A to Z.</p>
+
+    {{ table({
+      caption: "Components of " + brand,
+      captionClasses: "nhsuk-u-visually-hidden",
+      head: [
+        { text: "Component" },
+        { text: "Variants", format: "numeric" }
+      ],
+      rows: [
+        [ { html: '<a href="#">ARMADA</a>' }, { text: "390", format: "numeric" } ],
+        [ { html: '<a href="/identify-alternatives/mas-plif">MAS PLIF</a>' }, { text: "27", format: "numeric" } ],
+        [ { html: '<a href="#">MAS Plif Fixation</a>' }, { text: "6", format: "numeric" } ],
+        [ { html: '<a href="#">PRECEPT</a>' }, { text: "194", format: "numeric" } ],
+        [ { html: '<a href="#">RELINE</a>' }, { text: "1", format: "numeric" } ],
+        [ { html: '<a href="#">RELINE</a>' }, { text: "1,072", format: "numeric" } ],
+        [ { html: '<a href="#">RELINE System Implants</a>' }, { text: "1", format: "numeric" } ],
+        [ { html: '<a href="#">VuePoint</a>' }, { text: "261", format: "numeric" } ],
+        [ { html: '<a href="#">VuePoint OCT/II System Implants</a>' }, { text: "2", format: "numeric" } ]
+      ]
+    }) }}
+
+    <h2 class="nhsuk-heading-m nhsuk-u-margin-top-5 nhsuk-u-margin-bottom-2">4 documents</h2>
+    <p class="nhsuk-body-s">Shared by trusts, A to Z by trust.</p>
+
+    {{ table({
+      caption: "Documents about " + brand,
+      captionClasses: "nhsuk-u-visually-hidden",
+      head: [
+        { text: "Document" },
+        { text: "Type" },
+        { text: "Trust" }
+      ],
+      rows: [
+        [ { html: '<a href="#">Pedicle screw system business case</a>' }, { text: "Business case" }, { text: "Airedale NHS Foundation Trust" } ],
+        [ { html: '<a href="#">Lumbar fusion implant evaluation</a>' }, { text: "Evaluation" }, { text: "Barnsley Hospital NHS Foundation Trust" } ],
+        [ { html: '<a href="#">Posterior spinal fixation evaluation</a>' }, { text: "Evaluation" }, { text: "Barts Health NHS Trust" } ],
+        [ { html: '<a href="#">Spinal implants business case</a>' }, { text: "Business case" }, { text: "Bedfordshire Hospitals NHS Foundation Trust" } ]
+      ]
+    }) }}
+
+  </div>
+</div>
+
+{% endblock %}

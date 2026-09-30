@@ -1,0 +1,142 @@
+{#
+  Sketch 1a: Device function.
+
+  Where the "Device function" card on search-and-browse leads. The 22 child
+  categories GMDN holds under this root node, each of which browses lower.
+
+  ── Scannability ──────────────────────────────────────────────────────────
+
+  Chunked into 6 groups of 6 or fewer. Content/formatting.md asks for lists of
+  no more than 6 items where possible; a flat run of 22 unfamiliar clinical
+  terms is the thing that guidance is warning about.
+
+  The order is NOT changed. GMDN's own sequence already clusters these, moving
+  from implants and surgery through monitoring to laboratory and software. The
+  groups make that existing structure visible instead of imposing a new one, so
+  every category still sits exactly where GMDN puts it.
+
+  The GROUP NAMES are ours, not GMDN's. They are a sketch and need a clinical
+  eye before they go in front of anyone. The category names inside them are
+  GMDN terms, reproduced exactly.
+
+  Two columns, reading down the left then the right, so GMDN's order survives
+  the screen reader and the mobile stack. The NHS grid floats at desktop, so
+  each column is one float holding three groups rather than six floated groups,
+  which would snag on uneven heights.
+
+  B2B density, within the design system scale: h1 at nhsuk-heading-l, which
+  Design-System/styles/typography.md gives as the transactional size, group
+  headings at nhsuk-heading-s, and nhsuk-main-wrapper--s, which
+  Design-System/styles/layout.md recommends for transactional services. No
+  off-scale type and no ad-hoc styles.
+
+  Group headings also give screen reader users something to navigate by, which
+  is what Accessibility/design.md is after when it asks for a way past a long
+  run of links.
+
+  Kept: "Disability-living products" keeps "products" against the house rule of
+  saying "device", because it is the published GMDN term rather than our
+  wording. "Catheterization" likewise keeps the US spelling.
+
+  Unwired: every category links to "#" except Tissue reparation devices.
+#}
+
+{% extends "identify-alternatives/_layout.html" %}
+
+{% set pageName = "Device function" %}
+
+{# Tighter vertical padding on <main>, which layout.md recommends for
+   transactional services. #}
+{% set mainClasses = "nhsuk-main-wrapper--s" %}
+
+{% block beforeContent %}
+
+{{ breadcrumb({
+  items: [
+    {
+      href: "/identify-alternatives/search-and-browse",
+      text: "Search and browse"
+    }
+  ]
+}) }}
+
+{% endblock %}
+
+{% block content %}
+
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+    <h1 class="nhsuk-heading-l nhsuk-u-margin-bottom-2">{{ pageName }}</h1>
+    <p>Categories that group medical devices by clinical functionality or paraclinical context.</p>
+  </div>
+</div>
+
+<div class="nhsuk-grid-row">
+
+  <div class="nhsuk-grid-column-one-half">
+
+    <h2 class="nhsuk-heading-s nhsuk-u-margin-bottom-2">Implants, surgery and endoscopy</h2>
+    <ul class="nhsuk-list nhsuk-list--border nhsuk-u-margin-bottom-5">
+      <li><a href="#">Active implant devices/ancillaries</a></li>
+      <li><a href="/identify-alternatives/tissue-reparation-devices">Tissue reparation devices</a></li>
+      <li><a href="#">Surgical/Invasive procedure instrumentation</a></li>
+      <li><a href="#">Endoscopic devices</a></li>
+      <li><a href="#">Catheterization/Cannulation/Fluid path devices</a></li>
+      <li><a href="#">Tissue/Fluid collection and preservation devices</a></li>
+    </ul>
+
+    <h2 class="nhsuk-heading-s nhsuk-u-margin-bottom-2">Anaesthesia, circulation and blood</h2>
+    <ul class="nhsuk-list nhsuk-list--border nhsuk-u-margin-bottom-5">
+      <li><a href="#">Anaesthesia and ventilation devices</a></li>
+      <li><a href="#">Circulatory assistive/bypass devices</a></li>
+      <li><a href="#">Autologous blood processing devices</a></li>
+    </ul>
+
+    <h2 class="nhsuk-heading-s nhsuk-u-margin-bottom-2">Imaging and energy-based therapy</h2>
+    <ul class="nhsuk-list nhsuk-list--border nhsuk-u-margin-bottom-5">
+      <li><a href="#">Radiological devices</a></li>
+      <li><a href="#">Energy-based therapy equipment (non-radiological/non-surgical)</a></li>
+    </ul>
+
+  </div>
+
+  <div class="nhsuk-grid-column-one-half">
+
+    <h2 class="nhsuk-heading-s nhsuk-u-margin-bottom-2">Monitoring and examination</h2>
+    <ul class="nhsuk-list nhsuk-list--border nhsuk-u-margin-bottom-5">
+      <li><a href="#">Physiological monitoring/measuring devices</a></li>
+      <li><a href="#">Physical examination equipment</a></li>
+    </ul>
+
+    <h2 class="nhsuk-heading-s nhsuk-u-margin-bottom-2">Therapy, rehabilitation and everyday care</h2>
+    <ul class="nhsuk-list nhsuk-list--border nhsuk-u-margin-bottom-5">
+      <li><a href="#">Biomechanical rehabilitation equipment</a></li>
+      <li><a href="#">Bariatric therapy devices</a></li>
+      <li><a href="#">General hospital devices</a></li>
+      <li><a href="#">Disability-living products</a></li>
+      <li><a href="#">Complementary therapy devices</a></li>
+      <li><a href="#">Sexual-activity/Contraceptive/Home-conception devices</a></li>
+    </ul>
+
+    <h2 class="nhsuk-heading-s nhsuk-u-margin-bottom-2">Laboratory, diagnostics and software</h2>
+    <ul class="nhsuk-list nhsuk-list--border nhsuk-u-margin-bottom-5">
+      <li><a href="#">Laboratory instruments and equipment</a></li>
+      <li><a href="#">In vitro diagnostic medical devices (IVDs)</a></li>
+      <li><a href="#">Software</a></li>
+    </ul>
+
+  </div>
+
+</div>
+
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+    {#
+      The raw GMDN page offers a route sideways to the other root node. Kept,
+      as someone who picked the wrong branch should not have to go back twice.
+    #}
+    <p><a href="/identify-alternatives/search-and-browse">Browse by anatomical specialty instead</a></p>
+  </div>
+</div>
+
+{% endblock %}

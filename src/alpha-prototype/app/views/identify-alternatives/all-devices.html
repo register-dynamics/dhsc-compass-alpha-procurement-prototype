@@ -1,0 +1,375 @@
+{#
+  Sketch: the search results page showing the whole catalogue instead of a
+  result set, as a starting point for the "identify comparable alternatives"
+  work.
+
+  Duplicated from current/search-results.html on 9 September 2026. Kept as
+  close to it as possible so changes sketched here read as changes to the real
+  page. Differences: no search term, no paging, and the results are ordered by
+  category then supplier so devices that might be alternatives sit together.
+
+  Data comes from the database via identify-alternatives/routes.js. The trust
+  and document numbers are generated, as they are on the real search page.
+#}
+
+{% extends "identify-alternatives/_layout.html" %}
+
+{% set pageName = "All devices" %}
+
+{% block beforeContent %}
+{% from "breadcrumb/macro.njk" import breadcrumb %}
+{% from "checkboxes/macro.njk" import checkboxes %}
+
+{{ breadcrumb({
+  items: [
+    {
+      href: "/identify-alternatives/index",
+      text: "Identify comparable alternatives"
+    }
+  ]
+}) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-full">
+
+    <h1 class="nhsuk-heading-l">All devices</h1>
+
+    {# Search bar #}
+  <div class="app-filters nhsuk-u-margin-top-5 nhsuk-u-margin-bottom-5">
+      <div class="app-filters-container">
+        <form method="get" novalidate="">
+          <div class="nhsuk-form-group nhsuk-u-margin-bottom-0">
+            <label class="nhsuk-label" for="q">
+              Search again by device, category or supplier
+            </label>
+            <input class="nhsuk-input nhsuk-input--width-20" id="q" name="q" type="search" value="{{ searchTerm }}">
+            {# Carry the ticked categories through, so searching again does not silently drop them #}
+            {% for category in selectedCategories %}
+            <input type="hidden" name="category" value="{{ category }}">
+            {% endfor %}
+
+
+
+<button class="nhsuk-button nhsuk-button--secondary nhsuk-u-margin-left-2 app-button--small nhsuk-u-margin-bottom-0" data-module="nhsuk-button" type="submit" data-nhsuk-button-init="">
+  Search
+</button>
+
+
+
+          </div>
+        </form>
+      </div>
+
+  </div>
+</div>
+</div>{# closes the grid row opened above; unclosed in current/search-results.html #}
+
+<div class="nhsuk-grid-row">
+
+    {# Filters Sidebar #}
+  <div class="app-grid-column-filters">
+
+    <div class="nhsuk-card nhsuk-card--feature app-filters">
+      <div class="nhsuk-card__content nhsuk-card__content--feature">
+        <form method="get">
+        <input type="hidden" name="q" value="{{ searchTerm }}" style="display: none;">
+        <h3 class="nhsuk-card__heading nhsuk-card__heading--feature">
+          Filter results
+        </h3>
+
+        {# Category Filter #}
+        <div class="nhsuk-form-group">
+          <fieldset class="nhsuk-fieldset">
+            <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--s">
+              Category (GMDN)
+            </legend>
+
+            <div id="category-items" style="max-height: 30em; overflow-y: scroll; overflow-x: visible; border-bottom: 1px solid #4c6272" class="nhsuk-checkboxes nhsuk-checkboxes--small" data-module="nhsuk-checkboxes" data-nhsuk-checkboxes-init="">
+            {% for category in searchResultCategories | sort(true, true, "selected") %}
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="category-{{ loop.index }}" name="category" type="checkbox" value="{{ category.name }}" {% if category.selected %}checked{% endif %}>
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="category-{{ loop.index }}">
+                  {% if category.name %}{{ category.name }}{% else %}No category{% endif %} ({{ category.count }})
+                </label>
+              </div>
+            {% endfor %}
+            </div>
+          </fieldset>
+        </div>
+
+        {# NEW: Trust Similarity Filter #}
+        {# Kept as-is from current/search-results.html. Nothing in the catalogue
+           sits behind these three groups, so ticking them changes nothing yet.
+           Left in place deliberately: this page is a starting point to sketch
+           on, not a tidied one. #}
+        <div class="nhsuk-form-group">
+          <fieldset class="nhsuk-fieldset">
+            <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--s">
+              Documents from trusts like mine
+            </legend>
+            <div class="nhsuk-hint" id="trust-hint">
+              Show devices evaluated by trusts similar in size, type, or region
+            </div>
+
+            <div id="trust-items" class="nhsuk-checkboxes nhsuk-checkboxes--small" data-module="nhsuk-checkboxes" data-nhsuk-checkboxes-init="">
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="trust-similar" name="[trust]" type="checkbox" value="similar">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="trust-similar">
+                  Similar size to my trust
+                </label>
+              </div>
+
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="trust-teaching" name="[trust]" type="checkbox" value="teaching">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="trust-teaching">
+                  Teaching hospitals
+                </label>
+              </div>
+
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="trust-region" name="[trust]" type="checkbox" value="region">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="trust-region">
+                  In my region
+                </label>
+              </div>
+
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="trust-specialist" name="[trust]" type="checkbox" value="specialist">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="trust-specialist">
+                  Specialist trusts
+                </label>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+
+        {# Supplier Size Filter #}
+        <div class="nhsuk-form-group">
+        {{ checkboxes({
+          name: "size",
+          fieldset: {
+            legend: {
+              text: "Supplier size",
+              classes: "nhsuk-fieldset__legend--s"
+            }
+          },
+          items: [
+            { value: "micro", text: "Micro (1-10 employees)"},
+            { value: "small", text: "Small (11-50 employees)"},
+            { value: "medium", text: "Medium (51-250 employees)"},
+            { value: "large", text: "Large (251+ employees)"}
+          ],
+          classes: "nhsuk-checkboxes--small"
+        })}}
+        </div>
+
+         {# Supplier Maturity Filter #}
+        <div class="nhsuk-form-group">
+          <fieldset class="nhsuk-fieldset">
+            <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--s">
+              Supplier maturity
+            </legend>
+
+            <div id="supplier-items" class="nhsuk-checkboxes nhsuk-checkboxes--small" data-module="nhsuk-checkboxes" data-nhsuk-checkboxes-init="">
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="supplier-sme" name="[supplier]" type="checkbox" value="sme">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="supplier-sme">
+                  1-2 years old
+                </label>
+              </div>
+
+
+            </div>
+             <div id="supplier-items" class="nhsuk-checkboxes nhsuk-checkboxes--small" data-module="nhsuk-checkboxes" data-nhsuk-checkboxes-init="">
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="supplier-sme" name="[supplier]" type="checkbox" value="sme">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="supplier-sme">
+                  3-5 years old
+                </label>
+              </div>
+
+
+            </div>
+
+             <div id="supplier-items" class="nhsuk-checkboxes nhsuk-checkboxes--small" data-module="nhsuk-checkboxes" data-nhsuk-checkboxes-init="">
+              <div class="nhsuk-checkboxes__item">
+                <input class="nhsuk-checkboxes__input" id="supplier-sme" name="[supplier]" type="checkbox" value="sme">
+                <label class="nhsuk-label nhsuk-checkboxes__label" for="supplier-sme">
+                  5+ years old
+                </label>
+              </div>
+
+
+            </div>
+
+          </fieldset>
+        </div>
+
+        <div class="nhsuk-button-group">
+          <button class="nhsuk-button nhsuk-button--secondary app-button--small" data-module="nhsuk-button" formmethod="get" type="submit" data-nhsuk-button-init="">
+            Update results
+          </button>
+        </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  {# Results Column #}
+  <div class="app-grid-column-results">
+
+    <h3 class="nhsuk-heading-m nhsuk-u-margin-bottom-2">Medical devices</h3>
+    {% if filtersActive %}
+    <p class="nhsuk-body-s nhsuk-u-margin-bottom-2">
+      Showing <b>{{ searchResultsCount }}</b> of <b>{{ catalogueTotal }}</b> devices{% if searchTerm %} matching &ldquo;{{ searchTerm }}&rdquo;{% endif %}{% if selectedCategories | length %} in {{ selectedCategories | length }} categor{{ "y" if selectedCategories | length == 1 else "ies" }}{% endif %}.
+    </p>
+    <p class="nhsuk-body-s nhsuk-u-margin-bottom-4">
+      <a href="/identify-alternatives/all-devices">Clear search and filters</a>
+    </p>
+    {% else %}
+    <p class="nhsuk-body-s nhsuk-u-margin-bottom-4">
+      All <b>{{ catalogueTotal }}</b> devices in the catalogue, grouped by category then supplier.
+    </p>
+    {% endif %}
+
+    {% if searchResultsCount == 0 %}
+    <div class="nhsuk-card app-card--compact">
+      <div class="nhsuk-card__content">
+        <h4 class="nhsuk-card__heading nhsuk-heading-s">No devices match</h4>
+        <p class="nhsuk-body-s">Nothing in the catalogue matches{% if searchTerm %} &ldquo;{{ searchTerm }}&rdquo;{% endif %}{% if selectedCategories | length %} in the categories you picked{% endif %}.</p>
+        <p class="nhsuk-body-s nhsuk-u-margin-bottom-0">
+          <a href="/identify-alternatives/all-devices">Clear search and filters</a> to see all {{ catalogueTotal }} devices.
+        </p>
+      </div>
+    </div>
+    {% endif %}
+
+    {# Result 1 - ENHANCED #}
+    {% for result in searchResults %}
+    <div class="nhsuk-card nhsuk-card--clickable app-card--compact">
+      <div class="nhsuk-card__content">
+        <h4 class="nhsuk-card__heading nhsuk-heading-s">
+          <a class="nhsuk-card__link" href="/current/product-page?make={{ result.make_id }}">
+            {{ result.make }} – {{ result.model }}
+          </a>
+        </h4>
+        <p class="nhsuk-body-s nhsuk-u-secondary-text-color nhsuk-u-margin-bottom-2">
+          {{ result.manufacturer }}
+        </p>
+
+
+        <dl class="nhsuk-summary-list">
+          <div class="nhsuk-summary-list__row">
+            <dt class="nhsuk-summary-list__key">
+              Category (GMDN)
+            </dt>
+            <dd class="nhsuk-summary-list__value">
+              {{ result.category }}
+            </dd>
+          </div>
+
+          <div class="nhsuk-summary-list__row">
+            <dt class="nhsuk-summary-list__key">
+              Type
+            </dt>
+            <dd class="nhsuk-summary-list__value">
+              {{ result.type }}
+            </dd>
+          </div>
+
+          {# NEW: Show which trusts are using #}
+          <div class="nhsuk-summary-list__row">
+            <dt class="nhsuk-summary-list__key">
+              Trusts using this
+            </dt>
+            <dd class="nhsuk-summary-list__value">
+              {{ result.trusts if result.trusts > 0 else "No" }} trust{{ "s" if result.trusts !== 1 }}
+            </dd>
+          </div>
+
+          {# ENHANCED: Show evaluation variety and recency #}
+          <div class="nhsuk-summary-list__row">
+            <dt class="nhsuk-summary-list__key">
+              Shared documents
+            </dt>
+            <dd class="nhsuk-summary-list__value">
+              {{ result.documents if result.documents > 0 else "No" }} document{{ "s" if result.documents !== 1 }}
+              <br>
+              {% if result.documents > 0 %}
+              <span class="nhsuk-body-s nhsuk-u-secondary-text-color">
+                Including {{ result.document_types | join(", ") | lower }}
+              </span>
+              {% endif %}
+            </dd>
+          </div>
+
+          {# NEW: Show procurement outcomes #}
+          <div class="nhsuk-summary-list__row">
+            <dt class="nhsuk-summary-list__key">
+              Procurement outcomes
+            </dt>
+            <dd class="nhsuk-summary-list__value">
+              {% if result.procured > 0 %}
+              <strong class="nhsuk-tag nhsuk-tag--green">Procured: {{ result.procured }} trust{{ "s" if result.procured !== 1 }}</strong>
+              {% endif %}
+              {% if result.under_review > 0 %}
+              <strong class="nhsuk-tag nhsuk-tag--blue">Under review: {{ result.under_review }} trust{{ "s" if result.under_review !== 1 }}</strong>
+              {% endif %}
+              {% if result.excluded > 0 %}
+              <strong class="nhsuk-tag nhsuk-tag--yellow">Not procured: {{ result.excluded }} trust{{ "s" if result.excluded !== 1 }}</strong>
+              {% endif %}
+            </dd>
+          </div>
+
+           {# NEW: Show country of manufacture #}
+          <div class="nhsuk-summary-list__row">
+            <dt class="nhsuk-summary-list__key">
+              Country of manufacture
+            </dt>
+            <dd class="nhsuk-summary-list__value">
+              {{ result.country }}
+            </dd>
+          </div>
+
+        </dl>
+
+
+      </div>
+    </div>
+    {% endfor %}
+
+    {# Pagination #}
+    <nav class="nhsuk-pagination nhsuk-pagination--numbered" role="navigation" aria-label="Pagination">
+      <ul class="nhsuk-pagination__list">
+        {% set min_page = (1 if searchPage <= 2 else searchPage - 2) %}
+        {% set max_page = (searchMaxPages if searchPage + 2 >= searchMaxPages else searchPage + 2) %}
+        {% for page in range(min_page, max_page+1) %}
+        <li class="nhsuk-pagination__item {{'nhsuk-pagination__item--current' if page == searchPage else ''}}">
+          <a class="nhsuk-pagination__link" href="?q={{searchTerm}}&page={{page}}{{categoriesQueryString | default('')}}" aria-label="Page {{ page }}" {{'aria-current="page"' if page == searchPage else ''}}>
+            {{ page }}
+          </a>
+        </li>
+        {% endfor %}
+      </ul>
+
+      {% if searchPage < searchMaxPages %}
+      <a href="?q={{searchTerm}}&page={{searchPage + 1}}{{categoriesQueryString | default('')}}" class="nhsuk-pagination__next" rel="next">
+        <span class="nhsuk-pagination__title">
+          Next<span class="nhsuk-u-visually-hidden"> page</span>
+        </span>
+        <svg class="nhsuk-icon nhsuk-icon--arrow-right" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" focusable="false" aria-hidden="true">
+          <path d="m14.7 6.3 5 5c.2.2.3.4.3.7 0 .3-.1.5-.3.7l-5 5a1 1 0 0 1-1.4-1.4l3.3-3.3H5a1 1 0 0 1 0-2h11.6l-3.3-3.3a1 1 0 1 1 1.4-1.4Z"></path>
+        </svg>
+      </a>
+      {% endif %}
+    </nav>
+
+
+  </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,211 @@
+{#
+  Search2: a second version of search, reached from "Search2" in the header.
+
+  Modelled on RS Components. Search results only ever list devices, and
+  categories, device types and suppliers are ways in. As someone types,
+  suggestions offer each kind of page, so someone after a branded device goes
+  straight to it rather than scrolling past categories and device types.
+
+  ── How it works ──────────────────────────────────────────────────────────
+
+  Without JavaScript this is a plain search form: Enter goes to the results
+  page. The suggestions are accessible-autocomplete (GOV.UK's tested
+  combobox) added on top, so the search still works if the script fails.
+
+  - The first suggestion is always "Search for [what you typed]", and it is
+    highlighted, so Enter searches the typed text, as it would without the
+    dropdown. Picking any other suggestion goes straight to its page.
+  - Each suggestion starts with its type ("Device type", "Category"). Group
+    headings inside the list are announced unreliably by screen readers, so
+    the type goes in every option instead.
+  - At most 3 of each type, in this order: devices, device types, categories,
+    suppliers. Devices first, since they are what the search is for.
+  - Suggestions appear from 2 characters. Words can come in any order, and
+    each matching word is bold.
+  - confirmOnBlur is off, so tabbing away never takes someone to a page they
+    did not choose.
+  - accessible-autocomplete 3.0.2, the latest, rather than the 2.0.4 the rest
+    of the prototype uses. Its input gets the nhsuk-input class, and
+    components/_search-suggestions.scss swaps its GOV.UK styles for NHS ones.
+
+  ── Not covered by NHS guidance ───────────────────────────────────────────
+
+  The NHS Design System has no search suggestions component, pattern or
+  guidance. The search input component covers only the box. This follows the
+  NHS website's header search, which does suggest as you type, and GOV.UK's
+  accessible-autocomplete, which sits outside the GOV.UK Design System too.
+
+  Components/select.md says some users, "especially people who use a
+  keyboard to navigate and people with motor difficulties", struggle with
+  dropdowns. So the dropdown is only ever a shortcut: the search works
+  without it.
+
+  Needs testing with assistive technology before anyone relies on it:
+  VoiceOver, NVDA and JAWS (announcements, and choosing a suggestion changes
+  page rather than filling the box), screen magnifiers (the list may fall
+  outside the magnified area) and speech control. Share findings on the
+  NHS service manual community backlog.
+
+  ── Content ───────────────────────────────────────────────────────────────
+
+  The suggestions are the dummy data from Search results and the other
+  sketch pages. Pages that do not exist yet link to "#". Search results is
+  the existing mockup, fixed on "spinal fixation", so it ignores the term.
+  The label wording is from Search and browse.
+#}
+
+{% extends "identify-alternatives/_layout.html" %}
+
+{% set pageName = "Search" %}
+
+{% block content %}
+
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+
+    <form role="search" aria-label="Search for a device" action="/identify-alternatives/search-results" method="get" novalidate id="search-form">
+      <div class="nhsuk-form-group">
+        <h1 class="nhsuk-label-wrapper">
+          <label class="nhsuk-label nhsuk-label--l" for="q">
+            Search by device, category or supplier
+          </label>
+        </h1>
+        <div class="app-search-suggestions" id="q-container">
+          <input class="nhsuk-input" id="q" name="q" type="search" autocomplete="off">
+        </div>
+        <button class="nhsuk-button app-button--small nhsuk-u-margin-top-3 nhsuk-u-margin-bottom-0" data-module="nhsuk-button" type="submit">
+          Search
+        </button>
+      </div>
+    </form>
+
+  </div>
+</div>
+
+{% endblock %}
+
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/accessible-autocomplete@3.0.2/dist/accessible-autocomplete.min.css">
+{% endblock %}
+
+{% block pageScripts %}
+<script src="https://cdn.jsdelivr.net/npm/accessible-autocomplete@3.0.2/dist/accessible-autocomplete.min.js"></script>
+<script>
+  (function () {
+    var suggestions = [
+      // Devices. Detail is the supplier.
+      { type: 'Device', name: 'Bone-screw internal spinal fixation system', detail: 'Nuvasive', href: '/identify-alternatives/nuvasive-bone-screw-internal-spinal-fixation-system' },
+      { type: 'Device', name: 'MAS PLIF', detail: 'Nuvasive', href: '/identify-alternatives/mas-plif' },
+      { type: 'Device', name: 'Omega spinal fixation cable', detail: 'OmegaAM Solutions', href: '#' },
+
+      // Device types (GMDN terms)
+      { type: 'Device type', name: 'Bone-screw internal spinal fixation system, non-sterile', href: '/identify-alternatives/bone-screw-internal-spinal-fixation-system-non-sterile' },
+      { type: 'Device type', name: 'Bone-screw internal spinal fixation system, sterile', href: '#' },
+      { type: 'Device type', name: 'Internal spinal fixation system cable', href: '#' },
+      { type: 'Device type', name: 'Internal spinal fixation system cable crimp', href: '#' },
+      { type: 'Device type', name: 'Interspinous spinal fixation implant', href: '#' },
+      { type: 'Device type', name: 'Intervertebral-body internal spinal fixation system', href: '#' },
+      { type: 'Device type', name: 'Trans-facet-screw internal spinal fixation system, non-sterile', href: '#' },
+      { type: 'Device type', name: 'Trans-facet-screw internal spinal fixation system, sterile', href: '#' },
+
+      // Categories (GMDN). Detail is the parent category.
+      { type: 'Category', name: 'Tissue reparation devices', detail: 'Device Function', href: '/identify-alternatives/tissue-reparation-devices' },
+      { type: 'Category', name: 'Bone/Joint fixation implants', detail: 'Tissue reparation devices', href: '/identify-alternatives/bone-joint-fixation-implants' },
+      { type: 'Category', name: 'Internal spinal fixation systems', detail: 'Bone/Joint fixation implants', href: '/identify-alternatives/internal-spinal-fixation-systems' },
+      { type: 'Category', name: 'External spinal/orthopaedic fixation systems', detail: 'Tissue reparation devices', href: '#' },
+      { type: 'Category', name: 'Spinal fixation systems', detail: 'Spinal fixation systems and associated devices', href: '#' },
+
+      // Suppliers
+      { type: 'Supplier', name: 'Nuvasive', href: '#' },
+      { type: 'Supplier', name: 'OmegaAM Solutions', href: '#' }
+    ]
+
+    var typeOrder = ['Device', 'Device type', 'Category', 'Supplier']
+    var perType = 3
+
+    var form = document.getElementById('search-form')
+    var container = document.getElementById('q-container')
+
+    function escapeHtml (text) {
+      return text.replace(/[&<>"']/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
+      })
+    }
+
+    function words (query) {
+      return query.toLowerCase().split(/\s+/).filter(Boolean)
+    }
+
+    // Bold every word of the query where it appears in the text
+    function highlight (text, query) {
+      var pattern = words(query)
+        .map(function (w) { return w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') })
+        .join('|')
+      var html = escapeHtml(text)
+      if (!pattern) return html
+      return html.replace(new RegExp('(' + escapeHtml(pattern) + ')', 'gi'), '<strong>$1</strong>')
+    }
+
+    // Each type's matches, capped, in type order, after the search option
+    function source (query, populate) {
+      var queryWords = words(query)
+      var matches = suggestions.filter(function (s) {
+        var haystack = (s.name + ' ' + (s.type === 'Device' ? s.detail : '')).toLowerCase()
+        return queryWords.every(function (w) { return haystack.indexOf(w) !== -1 })
+      })
+      var results = [{ type: 'Search', name: query }]
+      typeOrder.forEach(function (type) {
+        results = results.concat(matches.filter(function (s) { return s.type === type }).slice(0, perType))
+      })
+      populate(results)
+    }
+
+    var currentQuery = ''
+
+    function suggestionHtml (s) {
+      if (!s) return ''
+      if (s.type === 'Search') {
+        return 'Search for <strong>' + escapeHtml(s.name) + '</strong>'
+      }
+      var meta = s.type
+      if (s.type === 'Device' && s.detail) meta += ', supplied by ' + s.detail
+      if (s.type === 'Category' && s.detail) meta += ' in ' + s.detail
+      return '<span class="app-search-suggestions__meta nhsuk-u-font-size-16">' + escapeHtml(meta) +
+        '<span class="nhsuk-u-visually-hidden">:</span></span><br>' +
+        highlight(s.name, currentQuery)
+    }
+
+    function goTo (s) {
+      if (!s) return
+      if (s.type === 'Search') {
+        window.location.href = form.action + '?q=' + encodeURIComponent(s.name)
+      } else {
+        window.location.href = s.href
+      }
+    }
+
+    // Swap the plain input for the autocomplete one, keeping its id and name
+    container.innerHTML = ''
+    accessibleAutocomplete({
+      element: container,
+      id: 'q',
+      name: 'q',
+      minLength: 2,
+      autoselect: true,
+      confirmOnBlur: false,
+      displayMenu: 'overlay',
+      inputClasses: 'nhsuk-input',
+      source: function (query, populate) {
+        currentQuery = query
+        source(query, populate)
+      },
+      templates: {
+        inputValue: function (s) { return s ? s.name : '' },
+        suggestion: suggestionHtml
+      },
+      onConfirm: goTo
+    })
+  })()
+</script>
+{% endblock %}

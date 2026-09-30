@@ -1,0 +1,55 @@
+// Side navigation, after the NHS digital service manual's own sidebar
+// (service-manual.nhs.uk). Not a design system component. Used for the
+// category tree on the identify-alternatives category pages.
+
+.app-side-nav__heading {
+  color: $nhsuk-secondary-text-colour;
+}
+
+.app-side-nav__list {
+  margin: 0 0 nhsuk-spacing(4);
+  padding: 0;
+  list-style: none;
+}
+
+.app-side-nav__item {
+  position: relative;
+  margin-bottom: nhsuk-spacing(2);
+  @include nhsuk-font($size: 16);
+}
+
+.app-side-nav__link {
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+// Bold, with a bar down the left, as the service manual marks the current page
+.app-side-nav__item--current {
+  font-weight: $nhsuk-font-bold;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -(nhsuk-spacing(3));
+    width: 4px;
+    background-color: $nhsuk-link-colour;
+  }
+}
+
+.app-side-nav__count {
+  color: $nhsuk-secondary-text-colour;
+  font-weight: $nhsuk-font-normal;
+}
+
+// Results column for a page with side navigation. Floated right so it can
+// come first in the source (heading, then results) while sitting to the
+// right of the sidebar, as on RS Components and eBay. The float option is
+// part of nhsuk-frontend's grid mixin.
+.app-grid-column-two-thirds-right {
+  @include nhsuk-grid-column(two-thirds, $float: right);
+}
