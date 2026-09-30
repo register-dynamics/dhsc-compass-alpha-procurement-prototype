@@ -1,22 +1,22 @@
 {% from "includes/contact-peer-discussion.njk" import contactPeerDiscussion %}
 {% from "includes/mark-useful-button.njk" import mark_useful_button %}
 
-{% macro evidenceCardNjr(document) %}
+{% macro evidenceCardNjr(evidence) %}
   <div class="nhsuk-card">
     <div class="nhsuk-card__content">
       <h3 class="nhsuk-card__heading nhsuk-heading-m">
-        {{ document.organisationName }}
+        {{ evidence.organisationName }}
       </h3>
 
-      {{ mark_useful_button(document.totalUsefulCount, document.productId, document.documentId, document.markedUseful) }}
+      {{ mark_useful_button(evidence.totalUsefulCount, evidence.productId, evidence.evidenceId, evidence.markedUseful) }}
 
       <dl class="nhsuk-summary-list nhsuk-summary-list--no-border">
         <div class="nhsuk-summary-list__row">
           <dt class="nhsuk-summary-list__key">
-            Document type
+            Evidence type
           </dt>
           <dd class="nhsuk-summary-list__value">
-            {{ document.typeOfDocDesc }}
+            {{ evidence.typeOfEvidenceDesc }}
           </dd>
         </div>
 
@@ -25,7 +25,7 @@
             Assessment date
           </dt>
           <dd class="nhsuk-summary-list__value">
-            {{ document.assessmentDate }}
+            {{ evidence.assessmentDate }}
           </dd>
         </div>
 
@@ -34,7 +34,7 @@
             Renewal date
           </dt>
           <dd class="nhsuk-summary-list__value">
-            {{ document.expiryDate }}
+            {{ evidence.expiryDate }}
           </dd>
         </div>
 
@@ -43,7 +43,7 @@
             Organisation type
           </dt>
           <dd class="nhsuk-summary-list__value">
-            {{ document.orgTypeDesc }}
+            {{ evidence.organisationTypeName }}
           </dd>
         </div>
 
@@ -52,21 +52,23 @@
             Organisation category
           </dt>
           <dd class="nhsuk-summary-list__value">
-            {{ document.orgCategoryDesc }}
+            {{ evidence.organisationCategoryName }}
           </dd>
         </div>
       </dl>
 
         <h4 class="nhsuk-heading-s nhsuk-u-margin-top-4">Report summary</h4>
-        <p class="nhsuk-body nhsuk-u-margin-top-3">
-          {% set documentUrl = document.urlDirectory %}
+      {% for document in evidence.documents %}
+      <p class="nhsuk-body nhsuk-u-margin-top-3">
+        {% set documentUrl = document.urlDirectory %}
 
-          {% if "http" not in documentUrl %}
-            {% set documentUrl = "/pdf/" + documentUrl %}
-          {% endif %}
-          
-          <a href="{{ documentUrl }}">View {{ document.typeOfDocDesc }}</a>
-        </p>
+        {% if "http" not in documentUrl %}
+          {% set documentUrl = "/pdf/" + documentUrl %}
+        {% endif %}
+        
+        <a href="{{ documentUrl }}">View {{ document.typeOfDocDesc }}</a>
+      </p>
+      {% endfor %}
 
         {{ contactPeerDiscussion(document.contacts) }}
     </div>
