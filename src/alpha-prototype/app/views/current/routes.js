@@ -72,6 +72,21 @@ function formatFtsTerm(term) {
   return `"${term.replaceAll('"', '""')}"`
 }
 
+const useFakeDataKey = "fake-data"
+
+router.use((req, res, next) => {
+  const queryParams = { ...req.query };
+  if ('test' in queryParams) {
+    req.session.data[useFakeDataKey] = (queryParams.test === "1")
+    console.info(`Fake data mode: ${req.session.data[useFakeDataKey]}`)
+
+    delete queryParams.test
+    res.redirect(301, `${req.baseUrl}${req.path}?${new URLSearchParams(queryParams).toString()}`)
+  } else {
+    next()
+  }
+})
+
 router.get(/search-/, (req, res, next) => {
   const term = req.query.q?.toString()
   const page = parseInt(req.query.page || "1") - 1
@@ -380,7 +395,7 @@ router.get(/product-page/, (req, res, next) => {
     type: result.TYPE,
     country: result.COUNTRY,
     trusts: random.trusts,
-    documents: documents,
+    documents: (req.session.data[useFakeDataKey] ? random.documents : documents),
     document_types: Array.from(new Set(random.documents)).toSorted(),
     procured: random.procured,
     under_review: random.underReview,
