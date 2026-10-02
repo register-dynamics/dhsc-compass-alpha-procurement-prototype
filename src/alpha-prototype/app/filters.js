@@ -4,6 +4,16 @@
 module.exports = function (env) {
   const filters = {}
 
+  filters.unique = function(array) {
+    if (!Array.isArray(array)) return array;
+    return [...new Set(array)];
+  }
+
+  filters.map = function(array) {
+    if (!Array.isArray(array)) return array;
+    return array.map(item => item[property]);
+  }
+
   /* ------------------------------------------------------------------
     add your methods to the filters obj below this comment block:
     @example:
