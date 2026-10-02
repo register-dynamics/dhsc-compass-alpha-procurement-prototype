@@ -185,7 +185,7 @@
         {% endif %}
 
         <p class="nhsuk-body nhsuk-u-margin-top-3">
-          <strong>3 trusts</strong> have shared contact details for peer discussions
+          <strong>{{ product.documents | length }} trusts</strong> have shared contact details for peer discussions
         </p>
       </div>
     </div>
@@ -504,7 +504,7 @@
   <div class="nhsuk-grid-column-two-thirds" id="information">
     <h2 class="nhsuk-heading-l">Information shared by trusted organisations</h2>
     <p class="nhsuk-body">
-      12 NHS organisations have shared information about this product.  Documents shared may include full clinical trials, pilot studies, business cases or quick desk reviews. Contact details are included for those willing to discuss their experience.
+      {{ product.documents | length }} NHS organisations have shared information about this product.  Documents shared may include full clinical trials, pilot studies, business cases or quick desk reviews. Contact details are included for those willing to discuss their experience.
     </p>
   </div>
 </div>
@@ -520,7 +520,7 @@
       {{ evidenceCardNjr(document) }}
     {% elif document.type_of_doc_desc == "Business case" %}
       {{ evidenceCardBusinessCase(document) }}
-    {% elif "Clinical trial" in document.type_of_doc_desc %}
+    {% elif document.type_of_doc_desc == "Product trial" %}
       {{ evidenceCardClinicalTrial(document) }}
     {% elif document.type_of_doc_desc == "Evaluation" %}
       {{ evidenceCardEvaluation(document) }}

@@ -258,7 +258,7 @@
               <br>
               {% if result.documents > 0 %}
               <span class="nhsuk-body-s nhsuk-u-secondary-text-color">
-                Including {{ result.document_types | join(", ") | lower }}
+                Including {{ result.document_types | join("s, ") | lower }}s
               </span>
               {% endif %}
             </dd>

@@ -14,13 +14,96 @@ router.use((req, res, next) => {
   next()
 })
 
+const fakeContacts = [
+  {
+    "title": "Dr.",
+    "given_name": "Sarah",
+    "surname": "Jenkins",
+    "email": "sarah.jenkins@nhs.example.com",
+    "phone_no": "+44 7700 900077",
+    "role": "Consultant Cardiologist"
+  },
+  {
+    "title": "Mr.",
+    "given_name": "James",
+    "surname": "Wilson",
+    "email": "james.wilson@nhs.example.com",
+    "phone_no": "+44 7700 900123",
+    "role": "Orthopaedic Surgeon"
+  },
+  {
+    "title": "Dr.",
+    "given_name": "Amina",
+    "surname": "Patel",
+    "email": "amina.patel@nhs.example.com",
+    "phone_no": "+44 7700 900456",
+    "role": "General Practitioner"
+  },
+  {
+    "title": "Prof.",
+    "given_name": "David",
+    "surname": "Smith",
+    "email": "david.smith@nhs.example.com",
+    "phone_no": "+44 7700 900789",
+    "role": "Head of Neurology"
+  },
+  {
+    "title": "Ms.",
+    "given_name": "Emma",
+    "surname": "Taylor",
+    "email": "emma.taylor@nhs.example.com",
+    "phone_no": "+44 7700 900321",
+    "role": "Lead Nurse Practitioner"
+  },
+  {
+    "title": "Dr.",
+    "given_name": "Liam",
+    "surname": "O'Connor",
+    "email": "liam.oconnor@nhs.example.com",
+    "phone_no": "+44 7700 900654",
+    "role": "Paediatrician"
+  },
+  {
+    "title": "Dr.",
+    "given_name": "Chloe",
+    "surname": "Brown",
+    "email": "chloe.brown@nhs.example.com",
+    "phone_no": "+44 7700 900987",
+    "role": "Consultant Anaesthetist"
+  },
+  {
+    "title": "Mr.",
+    "given_name": "Tariq",
+    "surname": "Ahmed",
+    "email": "tariq.ahmed@nhs.example.com",
+    "phone_no": "+44 7700 900147",
+    "role": "Urological Surgeon"
+  },
+  {
+    "title": "Dr.",
+    "given_name": "Fiona",
+    "surname": "MacDonald",
+    "email": "fiona.macdonald@nhs.example.com",
+    "phone_no": "+44 7700 900258",
+    "role": "Consultant Oncologist"
+  },
+  {
+    "title": "Dr.",
+    "given_name": "Raj",
+    "surname": "Kumar",
+    "email": "raj.kumar@nhs.example.com",
+    "phone_no": "+44 7700 900369",
+    "role": "Emergency Medicine Consultant"
+  }
+]
 
 // A moderate quality PNRG: https://gist.github.com/blixt/f17b47c62508be59987b?permalink_comment_id=2682175#gistcomment-2682175
 const mb32=a=>(t)=>(a=a+1831565813|0,t=Math.imul(a^a>>>15,1|a),t=t+Math.imul(t^t>>>7,61|t)^t,(t^t>>>14)>>>0)/2**32;
-const clamp_percent=(r,min,max)=>min+Math.round(max * r)
+const clamp_percent=(r,min,max)=>min+Math.round((max-min) * r)
 
 function randomEvidence(model_id) {
   const rand = mb32(model_id)
+  const choose=(arr)=>arr[clamp_percent(rand(), 0, arr.length)]
 
   const numTrusts = clamp_percent(rand(), 0, 24)
   const procured = new Set()
@@ -44,16 +127,49 @@ function randomEvidence(model_id) {
     underReview.add(elem)
   }
 
-  const documentTypes = ["Product trials", "Business cases", "Case studies"]
-  const numDocuments = clamp_percent(rand(), 0, Math.min(numTrusts * 3, 9))
+  const trusts = new Set(procured).union(underReview).union(excluded)
+  const documentTypes = ["Product trial", "Business case"]
+  const wardDepartments = [ "Accident and Emergency (A&E)", "Cardiology", "Dermatology", "Endocrinology", "Gastroenterology", "Haematology", "Neurology", "Oncology", "Paediatrics", "Radiology", "Renal Medicine (Nephrology)", "Trauma and Orthopaedics" ];
+
+  const numDocuments = clamp_percent(rand(), 0, Math.max(numTrusts-3, 1))
   const documents = new Array()
   while (documents.length < numDocuments) {
-    documents.push(documentTypes[(clamp_percent(rand(), 0, documentTypes.length - 1))])
+    const documentsQuery = db.prepare("SELECT document_id, organisation_name, type_of_doc_desc, rating, procured, scale, ward_department, assessment_date, expiry_date, org_category_desc, org_type_desc, url_directory FROM make_documents WHERE product_id = ?")
+    const year = clamp_percent(rand(), 21, 26) + 2000
+    const month = clamp_percent(rand(), 0, 11)
+
+    const contacts = []
+    const numContacts = clamp_percent(rand(), 0, 2)
+    while (contacts.length < numContacts) {
+      const contact = choose(fakeContacts)
+      contacts.push({
+        ...contact,
+        discuss_implementation: choose([false, true]),
+        discuss_training: choose([false, true]),
+        discuss_outcomes: choose([false, true]),
+        discuss_pharmacy_integration: choose([false, true]),
+        discuss_business_case: choose([false, true]),
+        discuss_real_world_use: choose([false, true]),
+        discuss_EHR_integration: choose([false, true]),
+      })
+    }
+
+    const trust_name = Array.from(trusts)[clamp_percent(rand(), 0, trusts.size - 1)]
+    documents.push({
+      organisation_name: trust_name,
+      type_of_doc_desc: documentTypes[(clamp_percent(rand(), 0, documentTypes.length - 1))],
+      procured: procured.has(trust_name) ? 1 : 0,
+      scale: clamp_percent(rand(), 6, 50),
+      assessment_date: new Date(year, month, 1).toLocaleString('default', { month: 'long', year: 'numeric' }),
+      ward_department: wardDepartments[(clamp_percent(rand(), 0, wardDepartments.length - 1))],
+      url_directory: "https://example.com/",
+      contacts: contacts,
+    })
   }
 
 
   return {
-    trusts: new Set(procured).union(underReview).union(excluded),
+    trusts: trusts,
     procured: procured,
     underReview: underReview,
     excluded: excluded,
@@ -130,7 +246,7 @@ router.get(/search-/, (req, res, next) => {
       country: result.COUNTRY,
       trusts: random.trusts.size,
       documents: random.documents.length,
-      document_types: Array.from(new Set(random.documents)).toSorted(),
+      document_types: Array.from(new Set(random.documents.map(d => d.type_of_doc_desc))).toSorted(),
       procured: random.procured.size,
       under_review: random.underReview.size,
       excluded: random.excluded.size
