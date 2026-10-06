@@ -1018,7 +1018,11 @@ describe("Product controller", () => {
     );
 
     const payload = render.mock.calls[0]?.[1] as {
-      evidences: { evidenceId: number; markedUseful: number, totalUsefulCount: number }[];
+      evidences: {
+        evidenceId: number;
+        markedUseful: number;
+        totalUsefulCount: number;
+      }[];
       hasEvidenceFromUsersOrg: boolean;
     };
 
