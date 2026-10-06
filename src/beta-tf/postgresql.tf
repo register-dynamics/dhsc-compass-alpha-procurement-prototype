@@ -3,14 +3,15 @@ resource "random_password" "pg_admin_pass" {
 }
 
 resource "azurerm_postgresql_flexible_server" "db_server" {
-  name                   = "${var.deployment_name}-db-server"
-  resource_group_name    = azurerm_resource_group.rg.name
-  location               = var.location
-  version                = "18"
-  delegated_subnet_id    = azurerm_subnet.sn.id
-  private_dns_zone_id    = azurerm_private_dns_zone.pdns.id
-  administrator_login    = "psql"
-  administrator_password = random_password.pg_admin_pass.result
+  name                          = "${var.deployment_name}-db-server"
+  resource_group_name           = azurerm_resource_group.rg.name
+  location                      = var.location
+  version                       = "18"
+  delegated_subnet_id           = azurerm_subnet.sn-fs.id
+  private_dns_zone_id           = azurerm_private_dns_zone.pdns.id
+  public_network_access_enabled = false
+  administrator_login           = "psql"
+  administrator_password        = random_password.pg_admin_pass.result
 
   # TODO make these configurable:
   zone                  = "1"

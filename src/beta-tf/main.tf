@@ -28,8 +28,8 @@ resource "azurerm_network_security_group" "nsg" {
   }
 }
 
-resource "azurerm_subnet" "sn" {
-  name                 = "${var.deployment_name}-sn"
+resource "azurerm_subnet" "sn-fs" {
+  name                 = "${var.deployment_name}-sn-fs"
   virtual_network_name = azurerm_virtual_network.net.name
   resource_group_name  = azurerm_resource_group.rg.name
   address_prefixes     = ["10.0.2.0/24"]
@@ -48,13 +48,33 @@ resource "azurerm_subnet" "sn" {
   }
 }
 
+resource "azurerm_subnet" "sn-app" {
+  name                 = "${var.deployment_name}-sn-app"
+  virtual_network_name = azurerm_virtual_network.net.name
+  resource_group_name  = azurerm_resource_group.rg.name
+  address_prefixes     = ["10.0.3.0/24"]
+  service_endpoints    = ["Microsoft.Storage"]
+
+  delegation {
+    name = "app"
+
+    service_delegation {
+      name = "Microsoft.App/environments"
+
+      actions = [
+        "Microsoft.Network/virtualNetworks/subnets/join/action",
+      ]
+    }
+  }
+}
+
 resource "azurerm_subnet_network_security_group_association" "sg_assoc" {
-  subnet_id                 = azurerm_subnet.sn.id
-  network_security_group_id = azurerm_network_security_group.sg.id
+  subnet_id                 = azurerm_subnet.sn-fs.id
+  network_security_group_id = azurerm_network_security_group.nsg.id
 }
 
 resource "azurerm_private_dns_zone" "pdns" {
-  name                = "${var.deployment_name}.compass.local"
+  name                = "privatelink.postgres.database.azure.com"
   resource_group_name = azurerm_resource_group.rg.name
 
   depends_on = [azurerm_subnet_network_security_group_association.sg_assoc]
