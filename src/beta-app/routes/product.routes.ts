@@ -68,7 +68,7 @@ const routeDefinitions: RouteDefinition[] = [
     handler: postAddEvidenceContactSelf,
     method: "post",
     path: "/product/:productId/evidence/add-evidence-contact-self",
-  }
+  },
 ];
 
 registerRoutes(router, routeDefinitions);

@@ -226,7 +226,10 @@ describe("Product controller", () => {
       .mockReturnValueOnce(contactsQuery)
       .mockReturnValueOnce(organisationQuery);
 
-    const req = { params: { id: "42" }, user: { id: 99 } } as unknown as Request;
+    const req = {
+      params: { id: "42" },
+      user: { id: 99 },
+    } as unknown as Request;
     const render = vi.fn();
     const res = { render } as unknown as Response;
 
@@ -263,9 +266,9 @@ describe("Product controller", () => {
     expect(renderPayload.evidences).toHaveLength(2);
     expect(renderPayload.evidences[0]?.contacts).toEqual([contacts[0]]);
     expect(renderPayload.evidences[1]?.contacts).toEqual([contacts[1]]);
-    expect((renderPayload as { organisationName: string }).organisationName).toBe(
-      "Test Trust",
-    );
+    expect(
+      (renderPayload as { organisationName: string }).organisationName,
+    ).toBe("Test Trust");
   });
 
   it("GET /product/:id should render the product page with a generic evidence card", async () => {

@@ -286,7 +286,11 @@ export const renderAddEvidence = async (req: Request, res: Response) => {
     return res.status(500).send("Unable to determine user's organisation");
   }
 
-  res.render("product/add-evidence", { organisationName: organisation.organisationName, productId, productName: product.productName });
+  res.render("product/add-evidence", {
+    organisationName: organisation.organisationName,
+    productId,
+    productName: product.productName,
+  });
 };
 
 export const postAddEvidence = async (req: Request, res: Response) => {
@@ -318,14 +322,22 @@ export const postAddEvidence = async (req: Request, res: Response) => {
     return res.status(500).send("Unable to determine user's organisation");
   }
 
-  const evidenceId = await createEvidenceCardForOrganisation(organisation.organisationId, productId);
+  const evidenceId = await createEvidenceCardForOrganisation(
+    organisation.organisationId,
+    productId,
+  );
 
-  res.render("product/add-evidence-success", { evidenceId, organisationName: organisation.organisationName, productId, productName: product.productName });
+  res.render("product/add-evidence-success", {
+    evidenceId,
+    organisationName: organisation.organisationName,
+    productId,
+    productName: product.productName,
+  });
 };
 
 // export const renderAddEvidenceContactExperience = async (req: Request, res: Response) => {
 //         const productId = getProductIdFromParams(req);
-        
+
 //         if (!productId) {
 //           // TODO: Send to better error handling page
 //           return res.status(400).send("Valid product ID is required");
@@ -369,7 +381,10 @@ export const postAddEvidence = async (req: Request, res: Response) => {
 //   res.render("product/add-evidence-contact-success", { productId });
 // };
 
-export const renderAddEvidenceContactSelf = async (req: Request, res: Response) => {
+export const renderAddEvidenceContactSelf = async (
+  req: Request,
+  res: Response,
+) => {
   const productId = getProductIdFromParams(req);
 
   if (!productId) {
@@ -405,10 +420,18 @@ export const renderAddEvidenceContactSelf = async (req: Request, res: Response) 
     return res.status(500).send("Unable to determine contact for user");
   }
 
-  res.render("product/add-evidence-contact-self", { contact, organisationName: organisation.organisationName, productId, productName: product.productName });
+  res.render("product/add-evidence-contact-self", {
+    contact,
+    organisationName: organisation.organisationName,
+    productId,
+    productName: product.productName,
+  });
 };
 
-export const postAddEvidenceContactSelf = async (req: Request, res: Response) => {
+export const postAddEvidenceContactSelf = async (
+  req: Request,
+  res: Response,
+) => {
   const result = postAddEvidenceContactSelfSchema.safeParse(req.body);
 
   if (!result.success) {
@@ -416,7 +439,7 @@ export const postAddEvidenceContactSelf = async (req: Request, res: Response) =>
     return res.status(400).send("Invalid request body");
   }
 
-  const contactId = result.data.contactId
+  const contactId = result.data.contactId;
 
   const productId = getProductIdFromParams(req);
 
@@ -446,11 +469,16 @@ export const postAddEvidenceContactSelf = async (req: Request, res: Response) =>
     return res.status(500).send("Unable to determine organisation for user");
   }
 
-  const evidenceCardId = await createEvidenceCardForOrganisation(organisation.organisationId, productId);
+  const evidenceCardId = await createEvidenceCardForOrganisation(
+    organisation.organisationId,
+    productId,
+  );
 
   if (!evidenceCardId) {
     // TODO: Send to better error handling page
-    return res.status(500).send("Unable to create evidence card for organisation");
+    return res
+      .status(500)
+      .send("Unable to create evidence card for organisation");
   }
 
   if (!contactId) {
@@ -465,16 +493,25 @@ export const postAddEvidenceContactSelf = async (req: Request, res: Response) =>
     return res.status(500).send("Unable to determine contact for user");
   }
 
-  const contactName = `${contact.title ?? ""} ${contact.givenName} ${contact.surname}`.trim();
+  const contactName =
+    `${contact.title ?? ""} ${contact.givenName} ${contact.surname}`.trim();
 
   await linkContactToEvidence(contactId, evidenceCardId);
 
-  res.render("product/add-evidence-contact-success", { contactName: contactName, organisationName: organisation.organisationName, productId, productName: product.productName });
+  res.render("product/add-evidence-contact-success", {
+    contactName: contactName,
+    organisationName: organisation.organisationName,
+    productId,
+    productName: product.productName,
+  });
 };
 
-async function createEvidenceCardForOrganisation(organisationId: number, productId: number): Promise<number> {
+async function createEvidenceCardForOrganisation(
+  organisationId: number,
+  productId: number,
+): Promise<number> {
   const genericEvidenceType = 8;
-  
+
   const trx = await db.startTransaction().execute();
 
   try {
@@ -492,7 +529,7 @@ async function createEvidenceCardForOrganisation(organisationId: number, product
       .withSchema("app")
       .insertInto("product_matches")
       .values({
-        evidenceId : evidence.evidenceId,
+        evidenceId: evidence.evidenceId,
         productId,
       })
       .executeTakeFirstOrThrow();
@@ -515,7 +552,9 @@ async function getContactForUser(userId: number): Promise<Contact | null> {
   return contact ?? null;
 }
 
-async function getOrCreateContactForUser(userId: number): Promise<Contact | null> {
+async function getOrCreateContactForUser(
+  userId: number,
+): Promise<Contact | null> {
   const contact = await getContactForUser(userId);
 
   if (!contact) {
@@ -572,7 +611,9 @@ async function getProductWithId(productId: number): Promise<null | Search> {
 
 // NOTE: This assumes that the user only belongs to a single organisation
 // We know this probably won't hold true for all users, but it's a reasonable assumption for now that we can fix later
-async function getUserOrganisation(userId: number): Promise<null | Organisations> {
+async function getUserOrganisation(
+  userId: number,
+): Promise<null | Organisations> {
   const organisation = await db
     .withSchema("app")
     .selectFrom("organisations")
@@ -587,7 +628,10 @@ async function getUserOrganisation(userId: number): Promise<null | Organisations
   return organisation ?? null;
 }
 
-async function linkContactToEvidence(contactId: number, evidenceId: number): Promise<void> {
+async function linkContactToEvidence(
+  contactId: number,
+  evidenceId: number,
+): Promise<void> {
   await db
     .withSchema("app")
     .insertInto("evidence_contacts")
