@@ -265,32 +265,37 @@ export const renderAddEvidence = async (req: Request, res: Response) => {
     return res.status(400).send("Valid product ID is required");
   }
 
-  const product = await getProductWithId(productId);
+  try {
+    const product = await getProductWithId(productId);
 
-  if (!product) {
-    // TODO: Send to better error handling page
-    return res.status(404).send("Product not found");
+    if (!product) {
+      // TODO: Send to better error handling page
+      return res.status(404).send("Product not found");
+    }
+
+    const userId = req.user?.id;
+
+    if (!userId) {
+      // TODO: Send to better error handling page
+      return res.status(500).send("Unable to determine user ID");
+    }
+
+    const organisation = await getUserOrganisation(userId);
+
+    if (!organisation) {
+      // TODO: Send to better error handling page
+      return res.status(500).send("Unable to determine user's organisation");
+    }
+
+    res.render("product/add-evidence", {
+      organisationName: organisation.organisationName,
+      productId,
+      productName: product.productName,
+    });
+  } catch (error) {
+    console.error("Failed to render add evidence form", error);
+    res.status(500).send("Failed to render add evidence form");
   }
-
-  const userId = req.user?.id;
-
-  if (!userId) {
-    // TODO: Send to better error handling page
-    return res.status(500).send("Unable to determine user ID");
-  }
-
-  const organisation = await getUserOrganisation(userId);
-
-  if (!organisation) {
-    // TODO: Send to better error handling page
-    return res.status(500).send("Unable to determine user's organisation");
-  }
-
-  res.render("product/add-evidence", {
-    organisationName: organisation.organisationName,
-    productId,
-    productName: product.productName,
-  });
 };
 
 export const postAddEvidence = async (req: Request, res: Response) => {
@@ -301,38 +306,43 @@ export const postAddEvidence = async (req: Request, res: Response) => {
     return res.status(400).send("Valid product ID is required");
   }
 
-  const product = await getProductWithId(productId);
+  try {
+    const product = await getProductWithId(productId);
 
-  if (!product) {
-    // TODO: Send to better error handling page
-    return res.status(404).send("Product not found");
+    if (!product) {
+      // TODO: Send to better error handling page
+      return res.status(404).send("Product not found");
+    }
+
+    const userId = req.user?.id;
+
+    if (!userId) {
+      // TODO: Send to better error handling page
+      return res.status(500).send("Unable to determine user ID");
+    }
+
+    const organisation = await getUserOrganisation(userId);
+
+    if (!organisation) {
+      // TODO: Send to better error handling page
+      return res.status(500).send("Unable to determine user's organisation");
+    }
+
+    const evidenceId = await createEvidenceCardForOrganisation(
+      organisation.organisationId,
+      productId,
+    );
+
+    res.render("product/add-evidence-success", {
+      evidenceId,
+      organisationName: organisation.organisationName,
+      productId,
+      productName: product.productName,
+    });
+  } catch (error) {
+    console.error("Failed to add evidence", error);
+    res.status(500).send("Failed to add evidence");
   }
-
-  const userId = req.user?.id;
-
-  if (!userId) {
-    // TODO: Send to better error handling page
-    return res.status(500).send("Unable to determine user ID");
-  }
-
-  const organisation = await getUserOrganisation(userId);
-
-  if (!organisation) {
-    // TODO: Send to better error handling page
-    return res.status(500).send("Unable to determine user's organisation");
-  }
-
-  const evidenceId = await createEvidenceCardForOrganisation(
-    organisation.organisationId,
-    productId,
-  );
-
-  res.render("product/add-evidence-success", {
-    evidenceId,
-    organisationName: organisation.organisationName,
-    productId,
-    productName: product.productName,
-  });
 };
 
 // export const renderAddEvidenceContactExperience = async (req: Request, res: Response) => {
@@ -392,40 +402,45 @@ export const renderAddEvidenceContactSelf = async (
     return res.status(400).send("Valid product ID is required");
   }
 
-  const product = await getProductWithId(productId);
+  try {
+    const product = await getProductWithId(productId);
 
-  if (!product) {
-    // TODO: Send to better error handling page
-    return res.status(404).send("Product not found");
+    if (!product) {
+      // TODO: Send to better error handling page
+      return res.status(404).send("Product not found");
+    }
+
+    const userId = req.user?.id;
+
+    if (!userId) {
+      // TODO: Send to better error handling page
+      return res.status(500).send("Unable to determine user ID");
+    }
+
+    const organisation = await getUserOrganisation(userId);
+
+    if (!organisation) {
+      // TODO: Send to better error handling page
+      return res.status(500).send("Unable to determine organisation for user");
+    }
+
+    const contact = await getOrCreateContactForUser(userId);
+
+    if (!contact) {
+      // TODO: Send to better error handling page
+      return res.status(500).send("Unable to determine contact for user");
+    }
+
+    res.render("product/add-evidence-contact-self", {
+      contact,
+      organisationName: organisation.organisationName,
+      productId,
+      productName: product.productName,
+    });
+  } catch (error) {
+    console.error("Failed to render add evidence contact form", error);
+    res.status(500).send("Failed to render add evidence contact form");
   }
-
-  const userId = req.user?.id;
-
-  if (!userId) {
-    // TODO: Send to better error handling page
-    return res.status(500).send("Unable to determine user ID");
-  }
-
-  const organisation = await getUserOrganisation(userId);
-
-  if (!organisation) {
-    // TODO: Send to better error handling page
-    return res.status(500).send("Unable to determine organisation for user");
-  }
-
-  const contact = await getOrCreateContactForUser(userId);
-
-  if (!contact) {
-    // TODO: Send to better error handling page
-    return res.status(500).send("Unable to determine contact for user");
-  }
-
-  res.render("product/add-evidence-contact-self", {
-    contact,
-    organisationName: organisation.organisationName,
-    productId,
-    productName: product.productName,
-  });
 };
 
 export const postAddEvidenceContactSelf = async (
@@ -448,62 +463,67 @@ export const postAddEvidenceContactSelf = async (
     return res.status(400).send("Valid product ID is required");
   }
 
-  const product = await getProductWithId(productId);
+  try {
+    const product = await getProductWithId(productId);
 
-  if (!product) {
-    // TODO: Send to better error handling page
-    return res.status(404).send("Product not found");
+    if (!product) {
+      // TODO: Send to better error handling page
+      return res.status(404).send("Product not found");
+    }
+
+    const userId = req.user?.id;
+
+    if (!userId) {
+      // TODO: Send to better error handling page
+      return res.status(500).send("Unable to determine user ID");
+    }
+
+    const organisation = await getUserOrganisation(userId);
+
+    if (!organisation) {
+      // TODO: Send to better error handling page
+      return res.status(500).send("Unable to determine organisation for user");
+    }
+
+    const evidenceCardId = await createEvidenceCardForOrganisation(
+      organisation.organisationId,
+      productId,
+    );
+
+    if (!evidenceCardId) {
+      // TODO: Send to better error handling page
+      return res
+        .status(500)
+        .send("Unable to create evidence card for organisation");
+    }
+
+    if (!contactId) {
+      // TODO: Send to better error handling page
+      return res.status(400).send("Valid contact ID is required");
+    }
+
+    const contact = await getContactForUser(userId);
+
+    if (!contact) {
+      // TODO: Send to better error handling page
+      return res.status(500).send("Unable to determine contact for user");
+    }
+
+    const contactName =
+      `${contact.title ?? ""} ${contact.givenName} ${contact.surname}`.trim();
+
+    await linkContactToEvidence(contactId, evidenceCardId);
+
+    res.render("product/add-evidence-contact-success", {
+      contactName: contactName,
+      organisationName: organisation.organisationName,
+      productId,
+      productName: product.productName,
+    });
+  } catch (error) {
+    console.error("Failed to add evidence contact", error);
+    res.status(500).send("Failed to add evidence contact");
   }
-
-  const userId = req.user?.id;
-
-  if (!userId) {
-    // TODO: Send to better error handling page
-    return res.status(500).send("Unable to determine user ID");
-  }
-
-  const organisation = await getUserOrganisation(userId);
-
-  if (!organisation) {
-    // TODO: Send to better error handling page
-    return res.status(500).send("Unable to determine organisation for user");
-  }
-
-  const evidenceCardId = await createEvidenceCardForOrganisation(
-    organisation.organisationId,
-    productId,
-  );
-
-  if (!evidenceCardId) {
-    // TODO: Send to better error handling page
-    return res
-      .status(500)
-      .send("Unable to create evidence card for organisation");
-  }
-
-  if (!contactId) {
-    // TODO: Send to better error handling page
-    return res.status(400).send("Valid contact ID is required");
-  }
-
-  const contact = await getContactForUser(userId);
-
-  if (!contact) {
-    // TODO: Send to better error handling page
-    return res.status(500).send("Unable to determine contact for user");
-  }
-
-  const contactName =
-    `${contact.title ?? ""} ${contact.givenName} ${contact.surname}`.trim();
-
-  await linkContactToEvidence(contactId, evidenceCardId);
-
-  res.render("product/add-evidence-contact-success", {
-    contactName: contactName,
-    organisationName: organisation.organisationName,
-    productId,
-    productName: product.productName,
-  });
 };
 
 async function createEvidenceCardForOrganisation(

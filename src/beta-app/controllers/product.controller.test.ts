@@ -2,19 +2,30 @@ import { Request, Response } from "express";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import {
+  postAddEvidence,
+  postAddEvidenceContactSelf,
   postMarkUseful,
   postUnmarkUseful,
+  renderAddEvidence,
+  renderAddEvidenceContactSelf,
   renderProduct,
 } from "./product.controller.js";
 
-const { countMock, deleteFromMock, insertIntoMock, maxMock, selectFromMock } =
-  vi.hoisted(() => ({
-    countMock: vi.fn(),
-    deleteFromMock: vi.fn(),
-    insertIntoMock: vi.fn(),
-    maxMock: vi.fn(),
-    selectFromMock: vi.fn(),
-  }));
+const {
+  countMock,
+  deleteFromMock,
+  insertIntoMock,
+  maxMock,
+  selectFromMock,
+  startTransactionMock,
+} = vi.hoisted(() => ({
+  countMock: vi.fn(),
+  deleteFromMock: vi.fn(),
+  insertIntoMock: vi.fn(),
+  maxMock: vi.fn(),
+  selectFromMock: vi.fn(),
+  startTransactionMock: vi.fn(),
+}));
 
 vi.mock("../database/client.js", () => ({
   db: {
@@ -25,6 +36,7 @@ vi.mock("../database/client.js", () => ({
     },
     insertInto: insertIntoMock,
     selectFrom: selectFromMock,
+    startTransaction: startTransactionMock,
     withSchema: vi.fn().mockReturnThis(),
   },
 }));
@@ -36,6 +48,7 @@ describe("Product controller", () => {
     insertIntoMock.mockReset();
     maxMock.mockReset();
     selectFromMock.mockReset();
+    startTransactionMock.mockReset();
 
     countMock.mockReturnValue({
       as: vi.fn().mockReturnValue("totalUsefulCount"),
@@ -516,5 +529,544 @@ describe("Product controller", () => {
     expect(status).toHaveBeenCalledWith(500);
     expect(send).toHaveBeenCalledWith("Failed to unmark as useful");
     consoleError.mockRestore();
+  });
+
+  it("GET /product/:productId/add-evidence should return 200", async () => {
+    const product = { productId: 42, productName: "Pump" };
+    const userOrg = { organisationId: 1, organisationName: "Test Trust" };
+    const productQuery = {
+      executeTakeFirst: vi.fn().mockResolvedValue(product),
+      selectAll: vi.fn().mockReturnThis(),
+      where: vi.fn().mockReturnThis(),
+    };
+    const organisationQuery = {
+      executeTakeFirst: vi.fn().mockResolvedValue(userOrg),
+      innerJoin: vi.fn().mockReturnThis(),
+      selectAll: vi.fn().mockReturnThis(),
+      where: vi.fn().mockReturnThis(),
+    };
+
+    selectFromMock
+      .mockReturnValueOnce(productQuery)
+      .mockReturnValueOnce(organisationQuery);
+
+    const render = vi.fn();
+    await renderAddEvidence(
+      {
+        params: { productId: "42" },
+        user: { id: 99 },
+      } as unknown as Request,
+      { render } as unknown as Response,
+    );
+
+    expect(selectFromMock).toHaveBeenNthCalledWith(1, "search");
+    expect(render).toHaveBeenCalledWith("product/add-evidence", {
+      organisationName: "Test Trust",
+      productId: 42,
+      productName: "Pump",
+    });
+  });
+
+  it("GET /product/:productId/add-evidence should return 500 if the database operation fails", async () => {
+    selectFromMock.mockReturnValue({
+      executeTakeFirst: vi.fn().mockRejectedValue(new Error("db failed")),
+      selectAll: vi.fn().mockReturnThis(),
+      where: vi.fn().mockReturnThis(),
+    });
+
+    const status = vi.fn().mockReturnThis();
+    const send = vi.fn();
+    const consoleError = vi
+      .spyOn(console, "error")
+      .mockImplementation(() => undefined);
+
+    await renderAddEvidence(
+      {
+        params: { productId: "42" },
+        user: { id: 99 },
+      } as unknown as Request,
+      { send, status } as unknown as Response,
+    );
+
+    expect(status).toHaveBeenCalledWith(500);
+    expect(send).toHaveBeenCalledWith("Failed to render add evidence form");
+    consoleError.mockRestore();
+  });
+
+  it("POST /product/:productId/add-evidence should return 200", async () => {
+    const product = { productId: 42, productName: "Pump" };
+    const userOrg = { organisationId: 1, organisationName: "Test Trust" };
+    const productQuery = {
+      executeTakeFirst: vi.fn().mockResolvedValue(product),
+      selectAll: vi.fn().mockReturnThis(),
+      where: vi.fn().mockReturnThis(),
+    };
+    const organisationQuery = {
+      executeTakeFirst: vi.fn().mockResolvedValue(userOrg),
+      innerJoin: vi.fn().mockReturnThis(),
+      selectAll: vi.fn().mockReturnThis(),
+      where: vi.fn().mockReturnThis(),
+    };
+
+    const transaction = {
+      commit: vi.fn().mockReturnValue({
+        execute: vi.fn().mockResolvedValue(undefined),
+      }),
+      insertInto: vi
+        .fn()
+        .mockReturnValueOnce({
+          executeTakeFirstOrThrow: vi
+            .fn()
+            .mockResolvedValue({ evidenceId: 42 }),
+          returning: vi.fn().mockReturnThis(),
+          values: vi.fn().mockReturnThis(),
+        })
+        .mockReturnValueOnce({
+          executeTakeFirstOrThrow: vi.fn().mockResolvedValue(undefined),
+          values: vi.fn().mockReturnThis(),
+        }),
+      rollback: vi.fn().mockReturnValue({
+        execute: vi.fn().mockResolvedValue(undefined),
+      }),
+      withSchema: vi.fn().mockReturnThis(),
+    };
+
+    selectFromMock
+      .mockReturnValueOnce(productQuery)
+      .mockReturnValueOnce(organisationQuery);
+    startTransactionMock.mockReturnValue({
+      execute: vi.fn().mockResolvedValue(transaction),
+    });
+
+    const render = vi.fn();
+    await postAddEvidence(
+      {
+        params: { productId: "42" },
+        user: { id: 99 },
+      } as unknown as Request,
+      { render } as unknown as Response,
+    );
+
+    expect(startTransactionMock).toHaveBeenCalledTimes(1);
+    expect(render).toHaveBeenCalledWith("product/add-evidence-success", {
+      evidenceId: 42,
+      organisationName: "Test Trust",
+      productId: 42,
+      productName: "Pump",
+    });
+  });
+
+  it("POST /product/:productId/add-evidence should return 500 if the database operation fails", async () => {
+    const product = { productId: 42, productName: "Pump" };
+    const userOrg = { organisationId: 1, organisationName: "Test Trust" };
+    const productQuery = {
+      executeTakeFirst: vi.fn().mockResolvedValue(product),
+      selectAll: vi.fn().mockReturnThis(),
+      where: vi.fn().mockReturnThis(),
+    };
+    const organisationQuery = {
+      executeTakeFirst: vi.fn().mockResolvedValue(userOrg),
+      innerJoin: vi.fn().mockReturnThis(),
+      selectAll: vi.fn().mockReturnThis(),
+      where: vi.fn().mockReturnThis(),
+    };
+
+    selectFromMock
+      .mockReturnValueOnce(productQuery)
+      .mockReturnValueOnce(organisationQuery);
+    startTransactionMock.mockReturnValue({
+      execute: vi.fn().mockRejectedValue(new Error("insert failed")),
+    });
+
+    const status = vi.fn().mockReturnThis();
+    const send = vi.fn();
+    const consoleError = vi
+      .spyOn(console, "error")
+      .mockImplementation(() => undefined);
+
+    await postAddEvidence(
+      {
+        params: { productId: "42" },
+        user: { id: 99 },
+      } as unknown as Request,
+      { send, status } as unknown as Response,
+    );
+
+    expect(status).toHaveBeenCalledWith(500);
+    expect(send).toHaveBeenCalledWith("Failed to add evidence");
+    consoleError.mockRestore();
+  });
+
+  it("GET /product/:productId/evidence/add-evidence-contact-self should return 200", async () => {
+    const product = { productId: 42, productName: "Pump" };
+    const userOrg = { organisationId: 1, organisationName: "Test Trust" };
+    const contact = {
+      contactId: 7,
+      email: "alex@example.com",
+      givenName: "Alex",
+      phoneNo: "123456",
+      role: "Clinical Lead",
+      surname: "One",
+      title: "Dr",
+      userId: 99,
+    };
+    const productQuery = {
+      executeTakeFirst: vi.fn().mockResolvedValue(product),
+      selectAll: vi.fn().mockReturnThis(),
+      where: vi.fn().mockReturnThis(),
+    };
+    const organisationQuery = {
+      executeTakeFirst: vi.fn().mockResolvedValue(userOrg),
+      innerJoin: vi.fn().mockReturnThis(),
+      selectAll: vi.fn().mockReturnThis(),
+      where: vi.fn().mockReturnThis(),
+    };
+    const contactQuery = {
+      executeTakeFirst: vi.fn().mockResolvedValue(contact),
+      selectAll: vi.fn().mockReturnThis(),
+      where: vi.fn().mockReturnThis(),
+    };
+
+    selectFromMock
+      .mockReturnValueOnce(productQuery)
+      .mockReturnValueOnce(organisationQuery)
+      .mockReturnValueOnce(contactQuery);
+
+    const render = vi.fn();
+    await renderAddEvidenceContactSelf(
+      {
+        params: { productId: "42" },
+        user: { id: 99 },
+      } as unknown as Request,
+      { render } as unknown as Response,
+    );
+
+    expect(render).toHaveBeenCalledWith("product/add-evidence-contact-self", {
+      contact,
+      organisationName: "Test Trust",
+      productId: 42,
+      productName: "Pump",
+    });
+  });
+
+  it("GET /product/:productId/evidence/add-evidence-contact-self should return 500 if the database operation fails", async () => {
+    selectFromMock.mockReturnValue({
+      executeTakeFirst: vi.fn().mockRejectedValue(new Error("db failed")),
+      selectAll: vi.fn().mockReturnThis(),
+      where: vi.fn().mockReturnThis(),
+    });
+
+    const status = vi.fn().mockReturnThis();
+    const send = vi.fn();
+    const consoleError = vi
+      .spyOn(console, "error")
+      .mockImplementation(() => undefined);
+
+    await renderAddEvidenceContactSelf(
+      {
+        params: { productId: "42" },
+        user: { id: 99 },
+      } as unknown as Request,
+      { send, status } as unknown as Response,
+    );
+
+    expect(status).toHaveBeenCalledWith(500);
+    expect(send).toHaveBeenCalledWith(
+      "Failed to render add evidence contact form",
+    );
+    consoleError.mockRestore();
+  });
+
+  it("POST /product/:productId/evidence/add-evidence-contact-self should return 200", async () => {
+    const product = { productId: 42, productName: "Pump" };
+    const userOrg = { organisationId: 1, organisationName: "Test Trust" };
+    const contact = {
+      contactId: 7,
+      email: "alex@example.com",
+      givenName: "Alex",
+      phoneNo: "123456",
+      role: "Clinical Lead",
+      surname: "One",
+      title: "Dr",
+      userId: 99,
+    };
+    const productQuery = {
+      executeTakeFirst: vi.fn().mockResolvedValue(product),
+      selectAll: vi.fn().mockReturnThis(),
+      where: vi.fn().mockReturnThis(),
+    };
+    const organisationQuery = {
+      executeTakeFirst: vi.fn().mockResolvedValue(userOrg),
+      innerJoin: vi.fn().mockReturnThis(),
+      selectAll: vi.fn().mockReturnThis(),
+      where: vi.fn().mockReturnThis(),
+    };
+    const contactQuery = {
+      executeTakeFirst: vi.fn().mockResolvedValue(contact),
+      selectAll: vi.fn().mockReturnThis(),
+      where: vi.fn().mockReturnThis(),
+    };
+    const transaction = {
+      commit: vi.fn().mockReturnValue({
+        execute: vi.fn().mockResolvedValue(undefined),
+      }),
+      insertInto: vi
+        .fn()
+        .mockReturnValueOnce({
+          executeTakeFirstOrThrow: vi
+            .fn()
+            .mockResolvedValue({ evidenceId: 42 }),
+          returning: vi.fn().mockReturnThis(),
+          values: vi.fn().mockReturnThis(),
+        })
+        .mockReturnValueOnce({
+          executeTakeFirstOrThrow: vi.fn().mockResolvedValue(undefined),
+          values: vi.fn().mockReturnThis(),
+        }),
+      rollback: vi.fn().mockReturnValue({
+        execute: vi.fn().mockResolvedValue(undefined),
+      }),
+      withSchema: vi.fn().mockReturnThis(),
+    };
+
+    selectFromMock
+      .mockReturnValueOnce(productQuery)
+      .mockReturnValueOnce(organisationQuery)
+      .mockReturnValueOnce(contactQuery);
+    insertIntoMock.mockReturnValue({
+      executeTakeFirstOrThrow: vi.fn().mockResolvedValue(undefined),
+      values: vi.fn().mockReturnThis(),
+    });
+    startTransactionMock.mockReturnValue({
+      execute: vi.fn().mockResolvedValue(transaction),
+    });
+
+    const render = vi.fn();
+    await postAddEvidenceContactSelf(
+      {
+        body: { contactId: 7 },
+        params: { productId: "42" },
+        user: { id: 99 },
+      } as unknown as Request,
+      { render } as unknown as Response,
+    );
+
+    expect(insertIntoMock).toHaveBeenCalledWith("evidence_contacts");
+    expect(render).toHaveBeenCalledWith(
+      "product/add-evidence-contact-success",
+      {
+        contactName: "Dr Alex One",
+        organisationName: "Test Trust",
+        productId: 42,
+        productName: "Pump",
+      },
+    );
+  });
+
+  it("POST /product/:productId/evidence/add-evidence-contact-self should return 500 if the database operation fails", async () => {
+    const product = { productId: 42, productName: "Pump" };
+    const userOrg = { organisationId: 1, organisationName: "Test Trust" };
+    const productQuery = {
+      executeTakeFirst: vi.fn().mockResolvedValue(product),
+      selectAll: vi.fn().mockReturnThis(),
+      where: vi.fn().mockReturnThis(),
+    };
+    const organisationQuery = {
+      executeTakeFirst: vi.fn().mockResolvedValue(userOrg),
+      innerJoin: vi.fn().mockReturnThis(),
+      selectAll: vi.fn().mockReturnThis(),
+      where: vi.fn().mockReturnThis(),
+    };
+    const contactQuery = {
+      executeTakeFirst: vi.fn().mockResolvedValue({
+        contactId: 7,
+        givenName: "Alex",
+        surname: "One",
+        title: "Dr",
+      }),
+      selectAll: vi.fn().mockReturnThis(),
+      where: vi.fn().mockReturnThis(),
+    };
+
+    selectFromMock
+      .mockReturnValueOnce(productQuery)
+      .mockReturnValueOnce(organisationQuery)
+      .mockReturnValueOnce(contactQuery);
+    startTransactionMock.mockReturnValue({
+      execute: vi.fn().mockRejectedValue(new Error("insert failed")),
+    });
+
+    const status = vi.fn().mockReturnThis();
+    const send = vi.fn();
+    const consoleError = vi
+      .spyOn(console, "error")
+      .mockImplementation(() => undefined);
+
+    await postAddEvidenceContactSelf(
+      {
+        body: { contactId: 7 },
+        params: { productId: "42" },
+        user: { id: 99 },
+      } as unknown as Request,
+      { send, status } as unknown as Response,
+    );
+
+    expect(status).toHaveBeenCalledWith(500);
+    expect(send).toHaveBeenCalledWith("Failed to add evidence contact");
+    consoleError.mockRestore();
+  });
+
+  it("GET /product/:id returns 500 when the user organisation cannot be determined", async () => {
+    const product = { productId: 7, technologyName: "Example device" };
+    const productQuery = {
+      executeTakeFirst: vi.fn().mockResolvedValue(product),
+      selectAll: vi.fn().mockReturnThis(),
+      where: vi.fn().mockReturnThis(),
+    };
+    const evidenceQuery = {
+      execute: vi.fn().mockResolvedValue([]),
+      innerJoin: vi.fn().mockReturnThis(),
+      selectAll: vi.fn().mockReturnThis(),
+      where: vi.fn().mockReturnThis(),
+    };
+    const organisationQuery = {
+      executeTakeFirst: vi.fn().mockResolvedValue(null),
+      innerJoin: vi.fn().mockReturnThis(),
+      selectAll: vi.fn().mockReturnThis(),
+      where: vi.fn().mockReturnThis(),
+    };
+
+    selectFromMock
+      .mockReturnValueOnce(productQuery)
+      .mockReturnValueOnce(evidenceQuery)
+      .mockReturnValueOnce(organisationQuery);
+
+    const status = vi.fn().mockReturnThis();
+    const send = vi.fn();
+
+    await renderProduct(
+      { params: { id: "7" }, user: { id: 99 } } as unknown as Request,
+      { send, status } as unknown as Response,
+    );
+
+    expect(status).toHaveBeenCalledWith(500);
+    expect(send).toHaveBeenCalledWith("Unable to determine user organisation");
+  });
+
+  it("GET /product/:id marks user evidence as from the same organisation", async () => {
+    const product = { productId: 7, technologyName: "Example device" };
+    const userOrg = { organisationId: 1, organisationName: "Test Trust" };
+    const evidence = {
+      evidenceId: 50,
+      organisationId: 1,
+      title: "Implementation guide",
+    };
+    const productQuery = {
+      executeTakeFirst: vi.fn().mockResolvedValue(product),
+      selectAll: vi.fn().mockReturnThis(),
+      where: vi.fn().mockReturnThis(),
+    };
+    const evidenceQuery = {
+      execute: vi.fn().mockResolvedValue([evidence]),
+      innerJoin: vi.fn().mockReturnThis(),
+      selectAll: vi.fn().mockReturnThis(),
+      where: vi.fn().mockReturnThis(),
+    };
+    const documentsQuery = {
+      execute: vi.fn().mockResolvedValue([]),
+      innerJoin: vi.fn().mockReturnThis(),
+      selectAll: vi.fn().mockReturnThis(),
+      where: vi.fn().mockReturnThis(),
+    };
+    const usefulQuery = {
+      execute: vi
+        .fn()
+        .mockResolvedValue([
+          { evidenceId: 50, hasUserMarkedUseful: 1, totalUsefulCount: 4 },
+        ]),
+      groupBy: vi.fn().mockReturnThis(),
+      select: vi.fn().mockReturnThis(),
+      selectAll: vi.fn().mockReturnThis(),
+      where: vi.fn().mockReturnThis(),
+    };
+    const contactsQuery = {
+      execute: vi.fn().mockResolvedValue([]),
+      innerJoin: vi.fn().mockReturnThis(),
+      select: vi.fn().mockReturnThis(),
+      where: vi.fn().mockReturnThis(),
+    };
+    const organisationQuery = {
+      executeTakeFirst: vi.fn().mockResolvedValue(userOrg),
+      innerJoin: vi.fn().mockReturnThis(),
+      selectAll: vi.fn().mockReturnThis(),
+      where: vi.fn().mockReturnThis(),
+    };
+
+    selectFromMock
+      .mockReturnValueOnce(productQuery)
+      .mockReturnValueOnce(evidenceQuery)
+      .mockReturnValueOnce(documentsQuery)
+      .mockReturnValueOnce(usefulQuery)
+      .mockReturnValueOnce(contactsQuery)
+      .mockReturnValueOnce(organisationQuery);
+
+    const render = vi.fn();
+
+    await renderProduct(
+      { params: { id: "7" }, user: { id: 99 } } as unknown as Request,
+      { render } as unknown as Response,
+    );
+
+    const payload = render.mock.calls[0]?.[1] as {
+      evidences: { evidenceId: number; markedUseful: number, totalUsefulCount: number }[];
+      hasEvidenceFromUsersOrg: boolean;
+    };
+
+    expect(payload.hasEvidenceFromUsersOrg).toBe(true);
+    expect(payload.evidences[0]?.markedUseful).toBe(1);
+    expect(payload.evidences[0]?.totalUsefulCount).toBe(4);
+  });
+
+  it("GET /product/:productId/add-evidence should return 400 if the product ID is invalid", async () => {
+    const status = vi.fn().mockReturnThis();
+    const send = vi.fn();
+
+    await renderAddEvidence(
+      { params: { productId: "abc" }, user: { id: 99 } } as unknown as Request,
+      { send, status } as unknown as Response,
+    );
+
+    expect(status).toHaveBeenCalledWith(400);
+    expect(send).toHaveBeenCalledWith("Valid product ID is required");
+  });
+
+  it("POST /product/:productId/add-evidence should return 400 if the product ID is invalid", async () => {
+    const status = vi.fn().mockReturnThis();
+    const send = vi.fn();
+
+    await postAddEvidence(
+      { params: { productId: "abc" }, user: { id: 99 } } as unknown as Request,
+      { send, status } as unknown as Response,
+    );
+
+    expect(status).toHaveBeenCalledWith(400);
+    expect(send).toHaveBeenCalledWith("Valid product ID is required");
+  });
+
+  it("POST /product/:productId/evidence/add-evidence-contact-self should return 400 if the request body is invalid", async () => {
+    const status = vi.fn().mockReturnThis();
+    const send = vi.fn();
+
+    await postAddEvidenceContactSelf(
+      {
+        body: {},
+        params: { productId: "42" },
+        user: { id: 99 },
+      } as unknown as Request,
+      { send, status } as unknown as Response,
+    );
+
+    expect(status).toHaveBeenCalledWith(400);
+    expect(send).toHaveBeenCalledWith("Invalid request body");
   });
 });
