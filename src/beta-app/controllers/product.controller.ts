@@ -154,7 +154,12 @@ export const renderProduct = async (req: Request, res: Response) => {
 
   const hasEvidenceFromUsersOrg = organisationEvidence.length > 0;
 
-  res.render("product", { evidences, hasEvidenceFromUsersOrg, organisationName: userOrg.organisationName, product });
+  res.render("product", {
+    evidences,
+    hasEvidenceFromUsersOrg,
+    organisationName: userOrg.organisationName,
+    product,
+  });
 };
 
 export const postMarkUseful = async (req: Request, res: Response) => {
@@ -238,7 +243,7 @@ export const postUnmarkUseful = async (req: Request, res: Response) => {
       .selectFrom("product_evidence_useful")
       .select(db.fn.count("evidenceId").as("count"))
       .where("productId", "=", productId)
-      .where("evidenceId", "=", productId)
+      .where("evidenceId", "=", evidenceId)
       .execute();
 
     // This gets type "string | number | bigint" for some reason
@@ -575,7 +580,7 @@ async function getUserOrganisation(userId: number): Promise<null | Organisations
     .innerJoin(
       "organisation_user",
       "organisations.organisationId",
-      "organisation_user.organisationId"
+      "organisation_user.organisationId",
     )
     .where("organisation_user.userId", "=", userId)
     .executeTakeFirst();

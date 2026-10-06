@@ -97,6 +97,7 @@ describe("Product controller", () => {
 
   it("GET /product/:id renders product page with no documents", async () => {
     const product = { productId: 7, technologyName: "Example device" };
+    const userOrg = { organisationId: 1, organisationName: "Test Trust" };
     const productQuery = {
       executeTakeFirst: vi.fn().mockResolvedValue(product),
       selectAll: vi.fn().mockReturnThis(),
@@ -108,12 +109,19 @@ describe("Product controller", () => {
       selectAll: vi.fn().mockReturnThis(),
       where: vi.fn().mockReturnThis(),
     };
+    const organisationQuery = {
+      executeTakeFirst: vi.fn().mockResolvedValue(userOrg),
+      innerJoin: vi.fn().mockReturnThis(),
+      selectAll: vi.fn().mockReturnThis(),
+      where: vi.fn().mockReturnThis(),
+    };
 
     selectFromMock
       .mockReturnValueOnce(productQuery)
-      .mockReturnValueOnce(evidenceQuery);
+      .mockReturnValueOnce(evidenceQuery)
+      .mockReturnValueOnce(organisationQuery);
 
-    const req = { params: { id: "7" } } as unknown as Request;
+    const req = { params: { id: "7" }, user: { id: 99 } } as unknown as Request;
     const render = vi.fn();
     const res = { render } as unknown as Response;
 
@@ -123,12 +131,15 @@ describe("Product controller", () => {
     expect(selectFromMock).toHaveBeenNthCalledWith(2, "evidence");
     expect(render).toHaveBeenCalledWith("product", {
       evidences: [],
+      hasEvidenceFromUsersOrg: false,
+      organisationName: "Test Trust",
       product,
     });
   });
 
   it("GET /product/:id renders product page and attaches contacts to each evidence", async () => {
     const product = { productId: 42, technologyName: "Pump" };
+    const userOrg = { organisationId: 1, organisationName: "Test Trust" };
     const evidences = [
       { evidenceId: 1001, title: "Implementation guide" },
       { evidenceId: 1002, title: "Outcomes report" },
@@ -200,15 +211,22 @@ describe("Product controller", () => {
       select: vi.fn().mockReturnThis(),
       where: vi.fn().mockReturnThis(),
     };
+    const organisationQuery = {
+      executeTakeFirst: vi.fn().mockResolvedValue(userOrg),
+      innerJoin: vi.fn().mockReturnThis(),
+      selectAll: vi.fn().mockReturnThis(),
+      where: vi.fn().mockReturnThis(),
+    };
 
     selectFromMock
       .mockReturnValueOnce(productQuery)
       .mockReturnValueOnce(evidenceQuery)
       .mockReturnValueOnce(documentsQuery)
       .mockReturnValueOnce(usefulQuery)
-      .mockReturnValueOnce(contactsQuery);
+      .mockReturnValueOnce(contactsQuery)
+      .mockReturnValueOnce(organisationQuery);
 
-    const req = { params: { id: "42" } } as unknown as Request;
+    const req = { params: { id: "42" }, user: { id: 99 } } as unknown as Request;
     const render = vi.fn();
     const res = { render } as unknown as Response;
 
@@ -245,10 +263,14 @@ describe("Product controller", () => {
     expect(renderPayload.evidences).toHaveLength(2);
     expect(renderPayload.evidences[0]?.contacts).toEqual([contacts[0]]);
     expect(renderPayload.evidences[1]?.contacts).toEqual([contacts[1]]);
+    expect((renderPayload as { organisationName: string }).organisationName).toBe(
+      "Test Trust",
+    );
   });
 
   it("GET /product/:id should render the product page with a generic evidence card", async () => {
     const product = { productId: 7, productName: "Example device" };
+    const userOrg = { organisationId: 1, organisationName: "Test Trust" };
     const evidences = [
       {
         evidenceId: 70,
@@ -289,13 +311,20 @@ describe("Product controller", () => {
       select: vi.fn().mockReturnThis(),
       where: vi.fn().mockReturnThis(),
     };
+    const organisationQuery = {
+      executeTakeFirst: vi.fn().mockResolvedValue(userOrg),
+      innerJoin: vi.fn().mockReturnThis(),
+      selectAll: vi.fn().mockReturnThis(),
+      where: vi.fn().mockReturnThis(),
+    };
 
     selectFromMock
       .mockReturnValueOnce(productQuery)
       .mockReturnValueOnce(evidenceQuery)
       .mockReturnValueOnce(documentsQuery)
       .mockReturnValueOnce(usefulQuery)
-      .mockReturnValueOnce(contactsQuery);
+      .mockReturnValueOnce(contactsQuery)
+      .mockReturnValueOnce(organisationQuery);
 
     const render = vi.fn();
     await renderProduct(
@@ -315,6 +344,8 @@ describe("Product controller", () => {
           typeOfEvidenceDesc: "Generic evidence",
         }),
       ],
+      hasEvidenceFromUsersOrg: false,
+      organisationName: "Test Trust",
       product,
     });
   });
