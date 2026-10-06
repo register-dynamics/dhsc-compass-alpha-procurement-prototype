@@ -2,7 +2,7 @@
 {% from "includes/mark-useful-button.njk" import mark_useful_button %}
 
 {% macro evidenceCardGeneric(evidence) %}
-    <div class="nhsuk-card">
+    <div class="nhsuk-card" data-evidence-id="{{ evidence.evidenceId }}">
         <div class="nhsuk-card__content">
             {% set statusLabel = "procured" if evidence.procured else 'Not procured' %}
             {% set statusClass = 'nhsuk-tag--green' if evidence.procured else 'nhsuk-tag--yellow' %}

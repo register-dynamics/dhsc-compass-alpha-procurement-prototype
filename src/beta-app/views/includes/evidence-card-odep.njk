@@ -2,7 +2,7 @@
 {% from "includes/mark-useful-button.njk" import mark_useful_button %}  
 
 {% macro evidenceCardOdep(evidence) %}
-  <div class="nhsuk-card">
+  <div class="nhsuk-card" data-evidence-id="{{ evidence.evidenceId }}">
     <div class="nhsuk-card__content">
       <h3 class="nhsuk-card__heading nhsuk-heading-m">
         {{ evidence.organisationName }}
