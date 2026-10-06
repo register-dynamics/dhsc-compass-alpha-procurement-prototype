@@ -7,11 +7,11 @@ export interface EvidenceContact {
   discussPharmacyIntegration: boolean;
   discussRealWorldUse: boolean;
   discussTraining: boolean;
-  email: string;
+  email: null | string;
   evidenceId: number;
   givenName: string;
-  phoneNo: string;
+  phoneNo: null | string;
   role: string;
   surname: string;
-  title: string;
+  title: null | string;
 }

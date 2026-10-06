@@ -260,6 +260,7 @@ describe("Product controller", () => {
     expect(render).toHaveBeenCalledTimes(1);
     const renderPayload = render.mock.calls[0]?.[1] as {
       evidences: { contacts?: unknown[]; evidenceId: number }[];
+      organisationName: string;
       product: unknown;
     };
     expect(renderPayload.product).toEqual(product);
