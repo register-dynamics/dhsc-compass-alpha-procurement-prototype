@@ -3,6 +3,7 @@ resource "azurerm_container_app_environment" "app_env" {
   location                   = var.location
   resource_group_name        = azurerm_resource_group.rg.name
   log_analytics_workspace_id = azurerm_log_analytics_workspace.law.id
+  infrastructure_subnet_id   = azurerm_subnet.sn-app.id
 }
 
 resource "azurerm_container_app" "app" {
@@ -26,5 +27,3 @@ resource "azurerm_container_app" "app" {
     }
   }
 }
-
-# FIXME: How do we grant the container access to virtual network / subnet so it can connect to postgres?
