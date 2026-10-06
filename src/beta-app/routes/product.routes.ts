@@ -2,14 +2,10 @@ import { Router } from "express";
 
 import {
   postAddEvidence,
-  postAddEvidenceContactDone,
   postAddEvidenceContactSelf,
   postMarkUseful,
   postUnmarkUseful,
   renderAddEvidence,
-  renderAddEvidenceContactAcquisition,
-  renderAddEvidenceContactDocument,
-  renderAddEvidenceContactExperience,
   renderAddEvidenceContactSelf,
   renderProduct,
 } from "../controllers/product.controller.js";
@@ -43,26 +39,26 @@ const routeDefinitions: RouteDefinition[] = [
     method: "post",
     path: "/product/:productId/add-evidence",
   },
-  {
-    handler: renderAddEvidenceContactExperience,
-    method: "get",
-    path: "/product/:productId/evidence/:evidenceId/add-contact-experience",
-  },
-  {
-    handler: renderAddEvidenceContactAcquisition,
-    method: "get",
-    path: "/product/:productId/evidence/:evidenceId/add-contact-acquisition",
-  },
-  {
-    handler: renderAddEvidenceContactDocument,
-    method: "get",
-    path: "/product/:productId/evidence/:evidenceId/add-contact-document",
-  },
-  {
-    handler: postAddEvidenceContactDone,
-    method: "post",
-    path: "/product/:productId/evidence/:evidenceId/add-contact-done",
-  },
+  // {
+  //   handler: renderAddEvidenceContactExperience,
+  //   method: "get",
+  //   path: "/product/:productId/evidence/:evidenceId/add-contact-experience",
+  // },
+  // {
+  //   handler: renderAddEvidenceContactAcquisition,
+  //   method: "get",
+  //   path: "/product/:productId/evidence/:evidenceId/add-contact-acquisition",
+  // },
+  // {
+  //   handler: renderAddEvidenceContactDocument,
+  //   method: "get",
+  //   path: "/product/:productId/evidence/:evidenceId/add-contact-document",
+  // },
+  // {
+  //   handler: postAddEvidenceContactDone,
+  //   method: "post",
+  //   path: "/product/:productId/evidence/:evidenceId/add-contact-done",
+  // },
   {
     handler: renderAddEvidenceContactSelf,
     method: "get",

@@ -318,51 +318,51 @@ export const postAddEvidence = async (req: Request, res: Response) => {
   res.render("product/add-evidence-success", { evidenceId, organisationName: organisation.organisationName, productId, productName: product.productName });
 };
 
-export const renderAddEvidenceContactExperience = async (req: Request, res: Response) => {
-        const productId = getProductIdFromParams(req);
+// export const renderAddEvidenceContactExperience = async (req: Request, res: Response) => {
+//         const productId = getProductIdFromParams(req);
         
-        if (!productId) {
-          // TODO: Send to better error handling page
-          return res.status(400).send("Valid product ID is required");
-        }
+//         if (!productId) {
+//           // TODO: Send to better error handling page
+//           return res.status(400).send("Valid product ID is required");
+//         }
 
-  res.render("product/add-evidence-contact-experience", { productId });
-};
+//   res.render("product/add-evidence-contact-experience", { productId });
+// };
 
-export const renderAddEvidenceContactAcquisition = async (req: Request, res: Response) => {
-  const productId = getProductIdFromParams(req);
+// export const renderAddEvidenceContactAcquisition = async (req: Request, res: Response) => {
+//   const productId = getProductIdFromParams(req);
 
-  if (!productId) {
-    // TODO: Send to better error handling page
-    return res.status(400).send("Valid product ID is required");
-  }
+//   if (!productId) {
+//     // TODO: Send to better error handling page
+//     return res.status(400).send("Valid product ID is required");
+//   }
 
-  res.render("product/add-evidence-contact-acquisition", { productId });
-};
+//   res.render("product/add-evidence-contact-acquisition", { productId });
+// };
 
-export const renderAddEvidenceContactDocument = async (req: Request, res: Response) => {
-  const productId = getProductIdFromParams(req);
+// export const renderAddEvidenceContactDocument = async (req: Request, res: Response) => {
+//   const productId = getProductIdFromParams(req);
 
-  if (!productId) {
-    // TODO: Send to better error handling page
-    return res.status(400).send("Valid product ID is required");
-  }
+//   if (!productId) {
+//     // TODO: Send to better error handling page
+//     return res.status(400).send("Valid product ID is required");
+//   }
 
-  res.render("product/add-evidence-contact-document", { productId });
-};
+//   res.render("product/add-evidence-contact-document", { productId });
+// };
 
-export const postAddEvidenceContactDone = async (req: Request, res: Response) => {
-  const productId = getProductIdFromParams(req);
+// export const postAddEvidenceContactDone = async (req: Request, res: Response) => {
+//   const productId = getProductIdFromParams(req);
 
-  if (!productId) {
-    // TODO: Send to better error handling page
-    return res.status(400).send("Valid product ID is required");
-  }
+//   if (!productId) {
+//     // TODO: Send to better error handling page
+//     return res.status(400).send("Valid product ID is required");
+//   }
 
-  // TODO: Implement the logic to handle the completion of adding evidence contact
+//   // TODO: Implement the logic to handle the completion of adding evidence contact
 
-  res.render("product/add-evidence-contact-success", { productId });
-};
+//   res.render("product/add-evidence-contact-success", { productId });
+// };
 
 export const renderAddEvidenceContactSelf = async (req: Request, res: Response) => {
   const productId = getProductIdFromParams(req);
