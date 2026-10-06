@@ -26,7 +26,7 @@ const routesNeedingParams = [
     path: "/product/:productId/evidence/add-evidence-contact-self",
     replace: "/product/:productId/evidence/add-evidence-contact-self",
     with: "/product/14236541/evidence/add-evidence-contact-self",
-  }
+  },
 ];
 
 const initialLoginUrl = {
