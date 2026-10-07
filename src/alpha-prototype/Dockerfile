@@ -1,5 +1,5 @@
 # Core setup
-FROM node:24
+FROM node:25
 ARG BUILD_DB=0
 EXPOSE 3000/tcp
 WORKDIR /compass
