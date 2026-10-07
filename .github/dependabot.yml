@@ -3,12 +3,44 @@ updates:
   - package-ecosystem: 'github-actions'
     directory: '/'
     schedule:
-      interval: 'daily'
+      interval: 'weekly'
+
   - package-ecosystem: 'npm'
-    directory: '/src/alpha-procurement-prototype'
+    directory: '/src/alpha-prototype'
     schedule:
-      interval: 'daily'
+      interval: 'weekly'      
     ignore:
       # SASS updates will be done manually in sync with
       # NHS Frontend to avoid deprecation warnings.
       - dependency-name: 'sass-embedded'
+
+  - package-ecosystem: 'npm'
+    directory: '/src/beta-app'
+    schedule:
+      interval: 'weekly'
+    groups:
+      major:
+        patterns:
+          - '*'
+        update-types:
+          - 'major'
+      minor:
+        patterns:
+          - '*'
+        update-types:
+          - 'minor'
+      patch:
+        patterns:
+          - '*'
+        update-types:
+          - 'patch'
+
+  - package-ecosystem: 'docker'
+    directory: '/src'
+    schedule:
+      interval: 'weekly'
+
+  - package-ecosystem: 'docker-compose'
+    directory: '/src/beta-app'
+    schedule:
+      interval: 'weekly'
