@@ -36,7 +36,8 @@ updates:
           - 'patch'
 
   - package-ecosystem: 'docker'
-    directories: '/src/**/'
+    directories: 
+      - '/src/**/'
     schedule:
       interval: 'weekly'
 
