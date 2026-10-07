@@ -24,6 +24,22 @@ resource "azurerm_container_app" "app" {
       image  = docker_registry_image.app_image.name
       cpu    = 0.25    # TODO: COnfigurable
       memory = "0.5Gi" # TODO: Configurable
+      env {
+        name  = "DATABASE_NAME"
+        value = azurerm_postgresql_flexible_server_database.db.name
+      }
+      env {
+        name  = DATABASE_USER
+        value = azurerm_postgresql_flexible_server.db_server.administrator_login
+      }
+      env {
+        name  = DATABASE_HOST
+        value = azurerm_postgresql_flexible_server.db_server.fqdn
+      }
+      env {
+        name  = DATABASE_PASSWORD
+        value = azurerm_postgresql_flexible_server.db_server.administrator_password
+      }
     }
   }
 }
