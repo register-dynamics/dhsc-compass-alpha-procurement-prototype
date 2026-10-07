@@ -46,7 +46,7 @@
     "helmet": "^8.3.0",
     "kysely": "^0.29.5",
     "nhsuk-frontend": "^10.6.0",
-    "node-gyp": "^10.3.1",
+    "node-gyp": "^13.1.0",
     "nunjucks": "^3.2.4",
     "passport": "^0.7.0",
     "passport-local": "^1.0.0",
@@ -65,7 +65,7 @@
     "@types/passport-local": "^1.0.38",
     "@types/pg": "^8.23.1",
     "@types/supertest": "^7.2.1",
-    "@vitest/coverage-v8": "^1.0.0",
+    "@vitest/coverage-v8": "^5.0.3",
     "@vitest/eslint-plugin": "^1.0.0",
     "esbuild": "0.28.2",
     "eslint": "^10.8.1",
@@ -78,6 +78,6 @@
     "tsx": "^4.23.12",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.67.0",
-    "vitest": "^1.1.5"
+    "vitest": "^5.0.3"
   }
 }
