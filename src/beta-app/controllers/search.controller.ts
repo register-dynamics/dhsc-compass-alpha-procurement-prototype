@@ -3,6 +3,7 @@ import { sql } from "kysely";
 
 import config from "../config.js";
 import { db } from "../database/client.js";
+import { getTopLevelCategories } from "../services/gmdnCategoryService.js";
 
 export const renderSearch = (req: Request, res: Response) => {
   res.render("search");
@@ -116,3 +117,10 @@ export const renderSearchResults = async (req: Request, res: Response) => {
       });
     });
 };
+
+export const renderCategories = async (req: Request, res: Response) => {
+  const categories = await getTopLevelCategories();
+  res.render("categories.html", { categories });
+};
+
+  

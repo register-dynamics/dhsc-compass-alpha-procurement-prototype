@@ -19,6 +19,7 @@ export interface Database {
   organisation_user: OrganisationUserTable;
   organisation_contact: OrganisationContactTable;
   organisations: OrganisationsTable;
+  gmdnCategories: GmdnCategoriesTable;
 }
 
 export type Contact = Selectable<ContactTable>;
@@ -176,4 +177,14 @@ export type Organisations = Selectable<OrganisationsTable>;
 export interface OrganisationsTable {
   organisationId: number;
   organisationName: string;
+}
+
+export type GmdnCategory = Selectable<GmdnCategoriesTable>;
+
+export interface GmdnCategoriesTable {
+  id: Generated<string>;
+  gmdnCategoryCode: string;
+  name: string;
+  definition: string;
+  parentId: null | string;
 }
