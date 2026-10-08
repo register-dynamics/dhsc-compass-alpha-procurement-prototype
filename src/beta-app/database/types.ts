@@ -11,6 +11,7 @@ export interface Database {
   product_documents_useful: ProductDocumentsUsefulTable;
   search: SearchTable;
   users: UserTable;
+  gmdnCategories: GmdnCategoriesTable;
 }
 
 export type Contact = Selectable<ContactTable>;
@@ -105,4 +106,14 @@ export interface UserTable {
   lastName: string;
   createdAt: Generated<Date>;
   modifiedAt: Date;
+}
+
+export type GmdnCategory = Selectable<GmdnCategoriesTable>;
+
+export interface GmdnCategoriesTable {
+  id: Generated<string>;
+  gmdnCategoryCode: string;
+  name: string;
+  definition: string;
+  parentId: null | string;
 }
