@@ -1,9 +1,9 @@
-import { Kysely, sql } from "kysely";
+import { Kysely } from "kysely";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function down(db: Kysely<any>): Promise<void> {
-  await db.schema.dropTable("external.gmdn_category")
-  await db.schema.dropTable("external.gmdn_category_term")
+  await db.schema.dropTable("external.gmdn_category").execute();
+  await db.schema.dropTable("external.gmdn_category_term").execute();
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -23,6 +23,9 @@ export async function up(db: Kysely<any>): Promise<void> {
     .createTable("external.gmdn_category_term")
     .addColumn("category_code", "varchar", (col) => col.notNull())
     .addColumn("term_code", "varchar", (col) => col.notNull())
-    .addPrimaryKeyConstraint("gmdn_category_term_pk", ["category_code", "term_code"])
+    .addPrimaryKeyConstraint("gmdn_category_term_pk", [
+      "category_code",
+      "term_code",
+    ])
     .execute();
 }

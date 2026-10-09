@@ -1,4 +1,4 @@
-import { Kysely, sql } from "kysely";
+import { Kysely } from "kysely";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function down(db: Kysely<any>): Promise<void> {
@@ -10,8 +10,7 @@ export async function down(db: Kysely<any>): Promise<void> {
 
   await db.schema
     .alterTable("external.device_type")
-    .alterColumn("gmdn_code", (ac) => ac.setNotNull()
-    )
+    .alterColumn("gmdn_code", (ac) => ac.setNotNull())
     .alterColumn("device_risk_sub_type", (ac) => ac.setNotNull())
     .execute();
 
@@ -34,8 +33,7 @@ export async function up(db: Kysely<any>): Promise<void> {
 
   await db.schema
     .alterTable("external.device_type")
-    .alterColumn("gmdn_code", (ac) => ac.dropNotNull()
-    )
+    .alterColumn("gmdn_code", (ac) => ac.dropNotNull())
     .alterColumn("device_risk_sub_type", (ac) => ac.dropNotNull())
     .execute();
 
