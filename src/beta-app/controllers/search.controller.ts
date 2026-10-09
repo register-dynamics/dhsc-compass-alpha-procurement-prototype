@@ -3,7 +3,7 @@ import { sql } from "kysely";
 
 import config from "../config.js";
 import { db } from "../database/client.js";
-import { getTopLevelCategories } from "../services/gmdnCategoryService.js";
+import { getCategoriesWithParentId, getCategoryById, getHierarchyForCategory, getTopLevelCategories } from "../services/gmdnCategoryService.js";
 
 export const renderSearch = (req: Request, res: Response) => {
   res.render("search");
@@ -123,4 +123,14 @@ export const renderCategories = async (req: Request, res: Response) => {
   res.render("categories.html", { categories });
 };
 
-  
+export const renderCategory = async (req: Request, res: Response) => {
+  const { categoryId } = req.params;
+
+  const categoryHierarchy = await getHierarchyForCategory(String(categoryId));
+
+  const category = await getCategoryById(String(categoryId));
+
+  const subcategories = await getCategoriesWithParentId(String(categoryId));
+
+  res.render("category.html", { category, categoryHierarchy, subcategories });
+};
