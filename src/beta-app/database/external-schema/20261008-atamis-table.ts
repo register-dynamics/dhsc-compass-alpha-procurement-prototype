@@ -4,7 +4,9 @@ import { Kysely } from "kysely";
 export async function down(db: Kysely<any>): Promise<void> {
   await db.schema.dropTable("external.atamis_pipeline").execute();
   await db.schema.dropTable("external.atamis_contracts").execute();
-  await db.schema.dropTable("external.contracts_to_mhra_manufacturers").execute();
+  await db.schema
+    .dropTable("external.contracts_to_mhra_manufacturers")
+    .execute();
   await db.schema.dropTable("external.category_to_gmdn").execute();
 }
 
