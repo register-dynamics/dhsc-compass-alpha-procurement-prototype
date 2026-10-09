@@ -1,11 +1,11 @@
-import { Kysely, sql } from "kysely";
+import { Kysely } from "kysely";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function down(db: Kysely<any>): Promise<void> {
-  await db.schema.dropTable("external.atamis_pipeline")
-  await db.schema.dropTable("external.atamis_contracts")
-  await db.schema.dropTable("external.contracts_to_mhra_manufacturers")
-  await db.schema.dropTable("external.category_to_gmdn")
+  await db.schema.dropTable("external.atamis_pipeline").execute();
+  await db.schema.dropTable("external.atamis_contracts").execute();
+  await db.schema.dropTable("external.contracts_to_mhra_manufacturers").execute();
+  await db.schema.dropTable("external.category_to_gmdn").execute();
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -49,7 +49,10 @@ export async function up(db: Kysely<any>): Promise<void> {
     .createTable("external.contracts_to_mhra_manufacturers")
     .addColumn("contract_ref", "varchar", (col) => col.notNull())
     .addColumn("manufacturer_id", "integer", (col) => col.notNull())
-    .addPrimaryKeyConstraint("contracts_to_mhra_manufacturers_pk", ["contract_ref", "manufacturer_id"])
+    .addPrimaryKeyConstraint("contracts_to_mhra_manufacturers_pk", [
+      "contract_ref",
+      "manufacturer_id",
+    ])
     .execute();
 
   await db.schema
