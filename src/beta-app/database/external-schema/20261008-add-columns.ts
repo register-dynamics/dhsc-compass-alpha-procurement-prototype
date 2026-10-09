@@ -5,7 +5,7 @@ export async function down(db: Kysely<any>): Promise<void> {
   await db.schema
     .alterTable("external.manufacturers")
     .dropColumn("company_regestration_number")
-    .exeute();  
+    .execute();  
 
   await db.schema
     .alterTable("external.products")
