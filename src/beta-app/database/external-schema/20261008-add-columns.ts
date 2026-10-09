@@ -4,12 +4,12 @@ import { Kysely, sql } from "kysely";
 export async function down(db: Kysely<any>): Promise<void> {
   await db.schema
     .alterTable("external.manufacturers")
-    .removeColumn("company_regestration_number")
+    .dropColumn("company_regestration_number")
     .exeute();  
 
   await db.schema
     .alterTable("external.products")
-    .removeColumn("aggregation_name")
+    .dropColumn("aggregation_name")
     .execute();
 }
 
