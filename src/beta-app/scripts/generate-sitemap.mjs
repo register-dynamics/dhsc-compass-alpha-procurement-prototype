@@ -17,6 +17,16 @@ const routesNeedingParams = [
     replace: "/product/:id",
     with: "/product/14236541",
   },
+  {
+    path: "/product/:productId/add-evidence",
+    replace: "/product/:productId/add-evidence",
+    with: "/product/14236541/add-evidence",
+  },
+  {
+    path: "/product/:productId/evidence/add-evidence-contact-self",
+    replace: "/product/:productId/evidence/add-evidence-contact-self",
+    with: "/product/14236541/evidence/add-evidence-contact-self",
+  },
 ];
 
 const signInUrlTest = {

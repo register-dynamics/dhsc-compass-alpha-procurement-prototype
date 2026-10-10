@@ -38,6 +38,8 @@
     "http://localhost:3001/",
     "http://localhost:3001/dashboard",
     "http://localhost:3001/product/14236541",
+    "http://localhost:3001/product/14236541/add-evidence",
+    "http://localhost:3001/product/14236541/evidence/add-evidence-contact-self",
     "http://localhost:3001/search",
     "http://localhost:3001/search-results?q=glucose",
     "http://localhost:3001/sign-in",
