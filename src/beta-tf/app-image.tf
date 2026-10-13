@@ -1,6 +1,6 @@
 resource "azurerm_container_registry" "acr" {
   name                  = "${var.deployment_name}"
-  resource_group_name   = azurerm_resource_group.rg.name
+  resource_group_name   = var.resource_group
   location              = var.location
   sku                   = "Premium" # TODO make configurable
   admin_enabled         = false
