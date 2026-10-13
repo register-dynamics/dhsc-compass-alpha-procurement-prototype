@@ -1,4 +1,4 @@
-resource "azuremr_resource_group" "rg" {
+resource "azurerm_resource_group" "rg" {
   name     = "${var.deployment_name}-rg"
   location = var.location
 }
@@ -15,7 +15,7 @@ resource "azurerm_network_security_group" "nsg" {
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
 
-  security_rule {
+#  security_rule {
     # name                       = "test123"
     # priority                   = 100
     # direction                  = "Inbound"
@@ -25,7 +25,7 @@ resource "azurerm_network_security_group" "nsg" {
     # destination_port_range     = "*"
     # source_address_prefix      = "*"
     # destination_address_prefix = "*"
-  }
+#  }
 }
 
 resource "azurerm_subnet" "sn-fs" {
@@ -33,7 +33,7 @@ resource "azurerm_subnet" "sn-fs" {
   virtual_network_name = azurerm_virtual_network.net.name
   resource_group_name  = azurerm_resource_group.rg.name
   address_prefixes     = ["10.0.2.0/24"]
-  service_endpoints    = ["Microsoft.Storage"]
+  #service_endpoints    = ["Microsoft.Storage"]
 
   delegation {
     name = "fs"
@@ -53,7 +53,7 @@ resource "azurerm_subnet" "sn-app" {
   virtual_network_name = azurerm_virtual_network.net.name
   resource_group_name  = azurerm_resource_group.rg.name
   address_prefixes     = ["10.0.3.0/24"]
-  service_endpoints    = ["Microsoft.Storage"]
+  #service_endpoints    = ["Microsoft.Storage"]
 
   delegation {
     name = "app"
@@ -82,7 +82,6 @@ resource "azurerm_private_dns_zone" "pdns" {
 
 resource "azurerm_private_dns_zone_virtual_network_link" "dns_link" {
   name                  = "${var.deployment_name}-dns_link"
-  private_dns_zone_name = azurerm_private_dns_zone.pdns.name
+  private_dns_zone_id   = azurerm_private_dns_zone.pdns.id
   virtual_network_id    = azurerm_virtual_network.net.id
-  resource_group_name   = azurerm_resource_group.rg.name
 }

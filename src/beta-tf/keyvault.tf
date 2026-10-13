@@ -29,5 +29,5 @@ resource "azurerm_key_vault" "kv" {
 resource "azurerm_key_vault_secret" "acr_registry_password" {
   name         = "${var.deployment_name}-acr-registry-password"
   value        = azurerm_container_registry.acr.admin_password
-  key_vault_id = azurerm_key_vault.example.id
+  key_vault_id = azurerm_key_vault.kv.id
 }

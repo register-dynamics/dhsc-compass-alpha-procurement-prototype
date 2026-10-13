@@ -1,5 +1,5 @@
 resource "azurerm_container_app_environment" "app_env" {
-  name                       = "${var.deployment_name}-app_env"
+  name                       = "${var.deployment_name}-app-env"
   location                   = var.location
   resource_group_name        = azurerm_resource_group.rg.name
   log_analytics_workspace_id = azurerm_log_analytics_workspace.law.id
@@ -29,15 +29,15 @@ resource "azurerm_container_app" "app" {
         value = azurerm_postgresql_flexible_server_database.db.name
       }
       env {
-        name  = DATABASE_USER
+        name  = "DATABASE_USER"
         value = azurerm_postgresql_flexible_server.db_server.administrator_login
       }
       env {
-        name  = DATABASE_HOST
+        name  = "DATABASE_HOST"
         value = azurerm_postgresql_flexible_server.db_server.fqdn
       }
       env {
-        name  = DATABASE_PASSWORD
+        name  = "DATABASE_PASSWORD"
         value = azurerm_postgresql_flexible_server.db_server.administrator_password
       }
     }
