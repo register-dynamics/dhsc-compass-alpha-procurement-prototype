@@ -3,7 +3,7 @@
 # A wee helper script to help make sure we pass all the millions of things
 # Terraform needs passed to it, all from one environment file
 
-set -e
+set -ex
 
 ENV_FILE=terraform.env
 
@@ -22,6 +22,8 @@ then
     echo "I'm going to make you a template one to fill in... Please edit it up then try again."
     (
         echo "# Details of the storage bucket where terraform state is kept"
+	echo "TF_WORKSPACE_STORAGE_SUBSCRIPTION_ID=..."
+	echo "TF_WORKSPACE_STORAGE_RG_NAME=..."
         echo "TF_WORKSPACE_STORAGE_ACCOUNT_NAME=..."
         echo "TF_WORKSPACE_STORAGE_CONTAINER_NAME=..."
         echo "# Your own personal deployment name (must be unique!), eg 'dev-abs'"
@@ -30,11 +32,11 @@ then
     exit
 fi
 
-source "./$ENV_FILE"
+. "./$ENV_FILE"
 
 VARIABLES="-var=deployment_name=$TF_DEPLOYMENT_NAME"
 
-BACKEND_CONFIG="-backend-config=storage_account_name=$TF_WORKSPACE_STORAGE_ACCOUNT_NAME -backend-config=container_name=$TF_WORKSPACE_STORAGE_CONTAINER_NAME key=$TF_DEPLOYMENT_NAME.tfstate"
+BACKEND_CONFIG="-backend-config=subscription_id=$TF_WORKSPACE_STORAGE_SUBSCRIPTION_ID -backend-config=resource_group_name=$TF_WORKSPACE_STORAGE_RG_NAME -backend-config=storage_account_name=$TF_WORKSPACE_STORAGE_ACCOUNT_NAME -backend-config=container_name=$TF_WORKSPACE_STORAGE_CONTAINER_NAME -backend-config=key=$TF_DEPLOYMENT_NAME.tfstate"
 
 # Operate from the tf directory
 cd "$BETA_TF_DIR"
