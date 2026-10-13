@@ -96,8 +96,7 @@ then
         then
             if docker exec $CONTAINER npm run generate:sitemap
             then
-                # FIXME: I don't like this hardcoded path to where playwright installed chromium, what's better?
-                if docker exec -e PUPPETEER_EXECUTABLE_PATH=/root/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome $CONTAINER npm run test:a11y
+                if docker exec "$CONTAINER" sh -lc 'PUPPETEER_EXECUTABLE_PATH="$(node --input-type=module -e "import { chromium } from \"playwright\"; process.stdout.write(chromium.executablePath())")" npm run test:a11y'
                 then
                     echo OK
                 else
