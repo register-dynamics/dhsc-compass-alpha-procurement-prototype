@@ -133,7 +133,7 @@ fi
 (cd $BETA_DIR ; docker compose down)
 
 # Return saved result code for success/failure
-if [ x$FAILURES = "x" ]
+if [ "x$FAILURES" = "x" ]
 then
     echo "OK: All tests passed"
 else

@@ -1,4 +1,4 @@
-export interface DocumentContact {
+export interface EvidenceContact {
   contactId: number;
   discussBusinessCase: boolean;
   discussEhrIntegration: boolean;
@@ -7,11 +7,11 @@ export interface DocumentContact {
   discussPharmacyIntegration: boolean;
   discussRealWorldUse: boolean;
   discussTraining: boolean;
-  documentId: number;
-  email: string;
+  email: null | string;
+  evidenceId: number;
   givenName: string;
-  phoneNo: string;
+  phoneNo: null | string;
   role: string;
   surname: string;
-  title: string;
+  title: null | string;
 }
