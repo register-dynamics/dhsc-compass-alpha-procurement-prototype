@@ -1,5 +1,14 @@
--- The cascade knocks everything else out, as it all depends on GMDN
 TRUNCATE TABLE "external"."gmdn" CASCADE;
+-- NOTICE:  truncate cascades to table "device_type"
+-- NOTICE:  truncate cascades to table "products"
+-- NOTICE:  truncate cascades to table "product_matches"
+-- NOTICE:  truncate cascades to table "product_documents_useful"
+
+TRUNCATE TABLE "external"."manufacturers" CASCADE;
+-- NOTICE:  truncate cascades to table "device_type"
+-- NOTICE:  truncate cascades to table "products"
+-- NOTICE:  truncate cascades to table "product_matches"
+-- NOTICE:  truncate cascades to table "product_documents_useful"
 
 INSERT INTO "external"."gmdn" ("gmdn_code","gmdn_term_name") VALUES (48218,'HIV1/Hepatitis C virus/Hepatitis B virus nucleic acid IVD, control'),
  (41973,'Hepatitis C virus total antibody IVD, control'),
