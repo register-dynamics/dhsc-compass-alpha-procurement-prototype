@@ -4,7 +4,7 @@ resource "random_password" "pg_admin_pass" {
 
 resource "azurerm_postgresql_flexible_server" "db_server" {
   name                          = "${var.deployment_name}-db-server"
-  resource_group_name           = azurerm_resource_group.rg.name
+  resource_group_name           = var.resource_group
   location                      = var.location
   version                       = "18"
   delegated_subnet_id           = azurerm_subnet.sn-fs.id

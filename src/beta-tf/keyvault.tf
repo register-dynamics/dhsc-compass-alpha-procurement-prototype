@@ -1,7 +1,7 @@
 resource "azurerm_key_vault" "kv" {
   name                       = "${var.deployment_name}-kv"
   location                   = var.location
-  resource_group_name        = azurerm_resource_group.rg.name
+  resource_group_name        = var.resource_group
   rbac_authorization_enabled = false
   tenant_id                  = data.azurerm_client_config.current.tenant_id
   sku_name                   = "premium"

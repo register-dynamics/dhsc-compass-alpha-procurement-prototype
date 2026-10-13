@@ -1,7 +1,7 @@
 resource "azurerm_container_app_environment" "app_env" {
   name                       = "${var.deployment_name}-app-env"
   location                   = var.location
-  resource_group_name        = azurerm_resource_group.rg.name
+  resource_group_name        = var.resource_group
   log_analytics_workspace_id = azurerm_log_analytics_workspace.law.id
   infrastructure_subnet_id   = azurerm_subnet.sn-app.id
 }
@@ -9,7 +9,7 @@ resource "azurerm_container_app_environment" "app_env" {
 resource "azurerm_container_app" "app" {
   name                         = "${var.deployment_name}-app"
   container_app_environment_id = azurerm_container_app_environment.app_env.id
-  resource_group_name          = azurerm_resource_group.rg.name
+  resource_group_name          = var.resource_group
   revision_mode                = "Single"
 
   registry {

@@ -1,19 +1,15 @@
-resource "azurerm_resource_group" "rg" {
-  name     = "${var.deployment_name}-rg"
-  location = var.location
-}
 
 resource "azurerm_virtual_network" "net" {
   name                = "${var.deployment_name}-net"
   location            = var.location
-  resource_group_name = azurerm_resource_group.rg.name
+  resource_group_name = var.resource_group
   address_space       = ["10.0.0.0/16"]
 }
 
 resource "azurerm_network_security_group" "nsg" {
   name                = "${var.deployment_name}-nsg"
   location            = var.location
-  resource_group_name = azurerm_resource_group.rg.name
+  resource_group_name = var.resource_group
 
 #  security_rule {
     # name                       = "test123"
@@ -31,7 +27,7 @@ resource "azurerm_network_security_group" "nsg" {
 resource "azurerm_subnet" "sn-fs" {
   name                 = "${var.deployment_name}-sn-fs"
   virtual_network_name = azurerm_virtual_network.net.name
-  resource_group_name  = azurerm_resource_group.rg.name
+  resource_group_name  = var.resource_group
   address_prefixes     = ["10.0.2.0/24"]
   #service_endpoints    = ["Microsoft.Storage"]
 
@@ -51,7 +47,7 @@ resource "azurerm_subnet" "sn-fs" {
 resource "azurerm_subnet" "sn-app" {
   name                 = "${var.deployment_name}-sn-app"
   virtual_network_name = azurerm_virtual_network.net.name
-  resource_group_name  = azurerm_resource_group.rg.name
+  resource_group_name  = var.resource_group
   address_prefixes     = ["10.0.3.0/24"]
   #service_endpoints    = ["Microsoft.Storage"]
 
@@ -75,7 +71,7 @@ resource "azurerm_subnet_network_security_group_association" "sg_assoc" {
 
 resource "azurerm_private_dns_zone" "pdns" {
   name                = "privatelink.postgres.database.azure.com"
-  resource_group_name = azurerm_resource_group.rg.name
+  resource_group_name = var.resource_group
 
   depends_on = [azurerm_subnet_network_security_group_association.sg_assoc]
 }
