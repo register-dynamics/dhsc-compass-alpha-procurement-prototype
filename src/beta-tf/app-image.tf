@@ -1,10 +1,10 @@
 resource "azurerm_container_registry" "acr" {
-  name                  = "${var.deployment_name}-acr"
+  name                  = "${var.deployment_name}"
   resource_group_name   = azurerm_resource_group.rg.name
   location              = var.location
   sku                   = "Premium" # TODO make configurable
   admin_enabled         = false
-  anonymous_pull_enable = false
+  anonymous_pull_enabled = false
 }
 
 resource "docker_registry_image" "app_image" {
