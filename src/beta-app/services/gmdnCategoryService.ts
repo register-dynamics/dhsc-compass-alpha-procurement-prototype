@@ -15,8 +15,17 @@ export const getTopLevelCategories = async () => {
 export const getCategoriesWithParentId = async (parentId: string) => {
   return await db.withSchema("app")
                  .selectFrom("gmdnCategories")
-                 .where("parentId", "=", parentId)
-                 .selectAll()
+                 .leftJoin("gmdnCategories as childCategory", "childCategory.parentId", "gmdnCategories.id")
+                 .where("gmdnCategories.parentId", "=", parentId)
+                 .selectAll("gmdnCategories")
+                 .select((eb) => eb.fn.count<number>("childCategory.id").as("subcategoryCount"))
+                 .groupBy([
+                   "gmdnCategories.id",
+                   "gmdnCategories.gmdnCategoryCode",
+                   "gmdnCategories.name",
+                   "gmdnCategories.definition",
+                   "gmdnCategories.parentId",
+                 ])
                  .orderBy("name", "asc")
                  .execute();
 };

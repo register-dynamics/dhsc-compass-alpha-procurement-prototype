@@ -1,0 +1,39 @@
+{% macro gmdnLevel1(category, subcategories) %}
+<div class="nhsuk-grid-row">
+        <div class="nhsuk-grid-column-two-thirds">
+            <h1 class="nhsuk-heading-l nhsuk-u-margin-bottom-2">{{ category.name }}</h1>
+            <p>{{category.definition}}</p>
+        </div>
+    </div>
+
+    <div class="nhsuk-grid-row">
+
+        <div class="nhsuk-grid-column-one-half">
+
+            <ul class="nhsuk-list nhsuk-list--border nhsuk-u-margin-bottom-5">
+                {% for subcategory in subcategories %}
+                    <li>
+                        <a href="/category/{{ subcategory.id }}">{{ subcategory.name }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+
+        </div>
+    </div>
+
+    <div class="nhsuk-grid-row">
+        <div class="nhsuk-grid-column-two-thirds">
+            {% set parentUrl = "/categories" if category.parentId == null else 
+                "/category/" ~ category.parentId %}
+            {% set backText = "Back" %}
+            {% if category.id == '4' %}
+                {% set backText = "Browse by device function instead" %}
+            {% elif category.id == '4941' %}
+                {% set backText = "Browse by anatomical specialty instead" %}
+            {% endif %}
+            <p>
+                <a href="{{ parentUrl }}">{{ backText }}</a>
+            </p>
+        </div>
+    </div>
+{% endmacro %}
