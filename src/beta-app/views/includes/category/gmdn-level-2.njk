@@ -1,0 +1,35 @@
+{% macro gmdnLevel2(category, subcategories, parentCategory) %}
+    <div class="nhsuk-grid-row">
+        <div class="nhsuk-grid-column-two-thirds">
+            <h1 class="nhsuk-heading-l nhsuk-u-margin-bottom-2">
+                <span class="nhsuk-caption-l">{{ parentCategory.name }}</span>
+                {{ category.name }}
+            </h1>
+
+        </div>
+    </div>
+
+    <div class="nhsuk-grid-row">
+        <div class="nhsuk-grid-column-two-thirds">
+            <h2 class="nhsuk-heading-m nhsuk-u-margin-bottom-2">Subcategories</h2>
+
+            <p class="nhsuk-body-s">From GMDN, grouped by what the devices do. Numbers show how many device types each one contains.</p>
+
+        </div>
+    </div>
+
+    <div class="nhsuk-grid-row">
+
+        <div class="nhsuk-grid-column-one-half">
+
+            <ul class="nhsuk-list nhsuk-list--border nhsuk-u-margin-bottom-5">
+                {% for subcategory in subcategories %}
+                <li>
+                    <a href="/category/{{ subcategory.id }}">{{ subcategory.name }}</a>
+                    ({{ subcategory.subcategoryCount }})
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+{% endmacro %}

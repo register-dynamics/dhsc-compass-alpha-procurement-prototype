@@ -132,5 +132,7 @@ export const renderCategory = async (req: Request, res: Response) => {
 
   const subcategories = await getCategoriesWithParentId(String(categoryId));
 
-  res.render("category.html", { category, categoryHierarchy, subcategories });
+  const hierarchyLevel = categoryHierarchy.length;
+
+  res.render("category.html", { category, categoryHierarchy, hierarchyLevel, subcategories });
 };
