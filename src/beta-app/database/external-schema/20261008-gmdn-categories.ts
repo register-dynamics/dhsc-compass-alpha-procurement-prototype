@@ -10,7 +10,7 @@ export async function down(db: Kysely<any>): Promise<void> {
 export async function up(db: Kysely<any>): Promise<void> {
   await db.schema
     .createTable("external.gmdn_category")
-    .addColumn("nodeID", "varchar", (col) => col.primaryKey())
+    .addColumn("node_id", "varchar", (col) => col.primaryKey())
     .addColumn("category_code", "varchar", (col) => col.notNull())
     .addColumn("path", "varchar", (col) => col.notNull())
     .addColumn("name", "varchar", (col) => col.notNull())

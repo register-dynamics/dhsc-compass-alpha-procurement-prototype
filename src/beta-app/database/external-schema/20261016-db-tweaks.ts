@@ -1,0 +1,62 @@
+import { Kysely } from "kysely";
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function down(db: Kysely<any>): Promise<void> {
+  await db.schema
+    .dropTable("atamis_to_gmdn")
+    .execute();
+
+  await db.schema
+    .createTable("external.category_to_gmdn")
+    .addColumn("category", "varchar", (col) => col.notNull())
+    .addColumn("gmdn_code", "integer", (col) => col.notNull())
+    .addPrimaryKeyConstraint("category_to_gmdn_pk", ["category", "gmdn_code"])
+    .execute();
+
+  await db.schema
+    .alterTable("external.products")
+    .dropColumn("aggregation_type",)
+    .execute();
+
+  await db.schema
+    .alterTable("external.gmdn_category")
+    .alterColumn("node_id", (ac) => ac.setDataType("varchar"))
+    .alterColumn("parent_id", (ac) => ac.setDataType("varchar"))
+    .alterColumn("top_id", (ac) => ac.setDataType("varchar"))
+    .execute();
+
+  await db.schema
+    .alterTable("external.gmdn_category_term")
+    .alterColumn("term_code", (ac) => ac.setDataType("varchar"))
+    .execute();
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function up(db: Kysely<any>): Promise<void> {
+  await db.schema
+    .dropTable("category_to_gmdn")
+    .execute();
+
+  await db.schema
+    .createTable("atamis_to_gmdn")
+    .addColumn("atamis_ref", "varchar", (col) => col.notNull())
+    .addColumn("gmdn_code", "integer", (col) => col.notNull())
+    .execute();
+
+  await db.schema
+    .alterTable("external.products")
+    .addColumn("aggregation_type", "varchar", (col) => col.notNull())
+    .execute();
+
+  await db.schema
+    .alterTable("external.gmdn_category")
+    .alterColumn("node_id", (ac) => ac.setDataType("integer"))
+    .alterColumn("parent_id", (ac) => ac.setDataType("integer"))
+    .alterColumn("top_id", (ac) => ac.setDataType("integer"))
+    .execute();
+
+  await db.schema
+    .alterTable("external.gmdn_category_term")
+    .alterColumn("term_code", (ac) => ac.setDataType("integer"))
+    .execute();
+}
