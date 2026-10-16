@@ -41,6 +41,7 @@ export async function up(db: Kysely<any>): Promise<void> {
     .createTable("atamis_to_gmdn")
     .addColumn("atamis_ref", "varchar", (col) => col.notNull())
     .addColumn("gmdn_code", "integer", (col) => col.notNull())
+    .addPrimaryKeyConstraint("atamis_to_gmdn_pk", ["atamis_ref", "gmdn_code"])
     .execute();
 
   await db.schema
