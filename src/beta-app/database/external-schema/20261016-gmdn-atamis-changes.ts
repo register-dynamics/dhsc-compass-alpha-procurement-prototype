@@ -3,7 +3,7 @@ import { Kysely } from "kysely";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function down(db: Kysely<any>): Promise<void> {
   await db.schema
-    .dropTable("atamis_to_gmdn")
+    .dropTable("external.atamis_to_gmdn")
     .execute();
 
   await db.schema
@@ -20,25 +20,25 @@ export async function down(db: Kysely<any>): Promise<void> {
 
   await db.schema
     .alterTable("external.gmdn_category")
-    .alterColumn("node_id", (ac) => ac.setDataType("varchar"))
-    .alterColumn("parent_id", (ac) => ac.setDataType("varchar"))
-    .alterColumn("top_id", (ac) => ac.setDataType("varchar"))
+    .alterColumn("nodeID", (ac) => ac.setDataType(sql`varchar USING nodeID`))
+    .alterColumn("parent_id", (ac) => ac.setDataType(sql`varchar USING nodeID`))
+    .alterColumn("top_id", (ac) => ac.setDataType(sql`varchar USING nodeID`))
     .execute();
 
   await db.schema
     .alterTable("external.gmdn_category_term")
-    .alterColumn("term_code", (ac) => ac.setDataType("varchar"))
+    .alterColumn("term_code", (ac) => ac.setDataType(sql`varchar USING nodeID`))
     .execute();
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function up(db: Kysely<any>): Promise<void> {
   await db.schema
-    .dropTable("category_to_gmdn")
+    .dropTable("external.category_to_gmdn")
     .execute();
 
   await db.schema
-    .createTable("atamis_to_gmdn")
+    .createTable("external.atamis_to_gmdn")
     .addColumn("atamis_ref", "varchar", (col) => col.notNull())
     .addColumn("gmdn_code", "integer", (col) => col.notNull())
     .addPrimaryKeyConstraint("atamis_to_gmdn_pk", ["atamis_ref", "gmdn_code"])
@@ -51,13 +51,13 @@ export async function up(db: Kysely<any>): Promise<void> {
 
   await db.schema
     .alterTable("external.gmdn_category")
-    .alterColumn("node_id", (ac) => ac.setDataType("integer"))
-    .alterColumn("parent_id", (ac) => ac.setDataType("integer"))
-    .alterColumn("top_id", (ac) => ac.setDataType("integer"))
+    .alterColumn("nodeID", (ac) => ac.setDataType(sql`integer USING nodeID`))
+    .alterColumn("parent_id", (ac) => ac.setDataType(sql`integer USING nodeID`))
+    .alterColumn("top_id", (ac) => ac.setDataType(sql`integer USING nodeID`))
     .execute();
 
   await db.schema
     .alterTable("external.gmdn_category_term")
-    .alterColumn("term_code", (ac) => ac.setDataType("integer"))
+    .alterColumn("term_code", (ac) => ac.setDataType(sql`integer USING nodeID`))
     .execute();
 }
