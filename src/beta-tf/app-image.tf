@@ -1,9 +1,9 @@
 resource "azurerm_container_registry" "acr" {
-  name                  = "${var.deployment_name}"
-  resource_group_name   = var.resource_group
-  location              = var.location
-  sku                   = "Premium" # TODO make configurable
-  admin_enabled         = false
+  name                   = var.deployment_name
+  resource_group_name    = var.rg_name
+  location               = var.location
+  sku                    = "Premium" # TODO make configurable
+  admin_enabled          = false
   anonymous_pull_enabled = false
 }
 
