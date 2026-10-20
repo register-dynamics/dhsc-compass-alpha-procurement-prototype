@@ -70,7 +70,7 @@ INSERT INTO "external"."gmdn_category" ("node_id","category_code","path","name",
  (12764,'CT522','/4941/11189/12764/','Patient baths','Devices designed as vessels or receptacles for water in which a patients body or body part is immersed/placed for bathing or therapy.',11189,4941),
  (12766,'CT1438','/4941/11189/12764/12766/''Therapeutic baths','Devices designed as vessels or receptacles for water in which a patients body or body part is immersed/placed for therapeutic purposes (hydrotherapy).',12764,4941),
  (168,'CT264','/3/168/','Thermometers and associated devices','Instruments designed to measure the temperature of patients, objects, or media; and associated devices.',3,3),
- (2689,'CT1952','/3/168/2689/','Thermometers','Instruments designed to measure the temperature of patients, objects, or media.'168,3),
+ (2689,'CT1952','/3/168/2689/','Thermometers','Instruments designed to measure the temperature of patients, objects, or media.',168,3),
  (2691,'CT1953','/3/168/2689/2691/','Patient thermometers','Instruments designed to measure the temperature of patients.',2689,3),
  (2693,'CT1954','/3/168/2689/2691/2693/','Electronic patient thermometers','Electronic instruments designed to measure the temperature of patients.',2691,3),
  (10026,'CT1953','/4941/6710/10026/','Patient thermometers','Instruments designed to measure the temperature of patients.',6710,4941),
@@ -182,7 +182,7 @@ INSERT INTO "external"."manufacturers" ("manufacturer_id","man_organisation_name
  (95632,'ArcTech Ltd','Limited Company','England, United Kingdom','');
 
 
-INSERT INTO "external"."device_type" ("device_id","gmdn_code","device_risk_sub_type","device_type_code","device_type_name","manufacturer_id") VALUES (1258,35643,'NULL','AID','Active Implantable Device',44622),
+INSERT INTO "external"."device_type" ("device_id","gmdn_code","device_risk_sub_type","device_type_code","device_type_name","manufacturer_id") VALUES (1258,14451,'NULL','AID','Active Implantable Device',44622),
  (1596,63088,'IVD Annex II List B','IVDD','In Vitro Diagnostic Device',55623),
  (1896,33665,'Class IIb','GMD','General Medical Device',91326),
  (4258,35839,'Class IIb','GMD','General Medical Device',95632),
@@ -197,7 +197,7 @@ INSERT INTO "external"."device_type" ("device_id","gmdn_code","device_risk_sub_t
  (6542,35198,'Class IIa','GMD','General Medical Device',13455),
  (7895,36387,'Class I','GMD','General Medical Device',78546);
 
-INSERT INTO "external"."products" ("product_id","udi_number","device_id","is_model","brand_trade_name","model","product_code","manufacturer_id","aggregation_name","aggregation_type") VALUES (12467896,1324657985,4624,0,'HydroHeal Plus','HydroHeal Plus','751649',73156,'model'),
+INSERT INTO "external"."products" ("product_id","udi_number","device_id","is_model","brand_trade_name","model","product_code","manufacturer_id","aggregation_name","aggregation_type") VALUES (12467896,1324657985,4624,0,'HydroHeal Plus','HydroHeal Plus','751649',73156,'HydroHeal Plus','model'),
  (14236541,4563217896,1596,0,'GlucoSense Flex Reader','GlucoSense','CENK93434',55623,'GlucoSense','model'),
  (14236541,4563217896,1596,0,'GlucoSense Flex Sensor','GlucoSense','CENK93434',55623,'GlucoSense','model'),
  (14236541,4563217896,1596,0,'GlucoSense Flex Display','GlucoSense','CENK93434',55623,'GlucoSense','model'),
@@ -235,7 +235,7 @@ INSERT INTO "external"."products" ("product_id","udi_number","device_id","is_mod
  (94621578,2184663215,6324,0,'Insulin Safety Syringe with Fixed Needle','Insulin Kit','7824526',33625,'Insulin Kit','model'),
  (96541235,4561231522,1258,0,'BetaPlex 4000 Static','BetaPlex 4000','RE-190',44622,'BetaPlex 4000','model');
  
-INSERT INTO "external"."atamis_contracts" ("contract_ref","contract_name","description","owner","status","supplier","company_regestration_number","duns","contracting_authority","business_unit","primary_category","secondary_category","start_date","end_date","contract_finder_url") VALUES ('FAKE0001','FHFT - C- Orthopaedics - Paragon42 Orthopaedic and Trauma Consignments (foot & a','FHFT - C- Orthopaedics - Paragon42 Orthopaedic and Trauma Consignments (foot & ankle)','William Hill','Active - Renewal in Progress','NHS SUPPLY CHAIN COORDINATION LIMITED (NHSSC - SCCL)','10881732','22334455','Frogmorton Health NHS Foundation Trust','FHFT - Procurement','Clinical and Medical Support Services',NULL,'16/01/2024','15/01/2025','www.fake_cf_url.gov.uk'),
+INSERT INTO "external"."atamis_contracts" ("contract_ref","contract_name","description","owner","status","supplier","company_regestration_number","duns","contracting_authority","business_unit","primary_category","secondary_category","start_date","end_date","contract_finder_url") VALUES ('FAKE0001','FHFT - C- Orthopaedics - Paragon42 Orthopaedic and Trauma Consignments (foot & a','FHFT - C- Orthopaedics - Paragon42 Orthopaedic and Trauma Consignments (foot & ankle)','William Hill','Active - Renewal in Progress','NHS SUPPLY CHAIN COORDINATION LIMITED (NHSSC - SCCL)','10881732','22334455','Frogmorton Health NHS Foundation Trust','FHFT - Procurement','Clinical and Medical Support Services',NULL,2024-01-16,2025-01-15,'www.fake_cf_url.gov.uk'),
  ('FAKE0002','OthoSolutions - Orthopaedic Internal & External Fixation','Orthopaedic Internal & External Fixation - Screw - Plate Fixation, Compression Screws, Cannulated Screws, Foot & Ankle Plates, Staples, IM Nailing Systems, External Fixation Systems, Miscellaneous / Consumables, DHS','William Ford','Active','Otho Solutions Limited','434123','22334466','Great Farthing Hospitals NHS Foundation Trust','GFH - Surgery & Planned Care','Medical equipments pharmaceuticals and personal care products',NULL,'30/08/2023','28/08/2027',NULL),
  ('FAKE0003','PHU - UNIT - Trauma & Orthopedics (1.3c Hip)','UNIT Lot 1.3c Hip - TOS3','Carol Ann Hartnell','Active','Upper Norfolk Implant Technologies UK Limited','14275623','22334477','Waymeet Hospitals University National Health Service Trust','WHU404 - Surgery, Anaesthetics and Critical Care DIV','Medical equipments pharmaceuticals and personal care products',NULL,'01/09/2025','31/01/2028',NULL),
  ('FAKE0004','TOS3 UNIT Hip Trauma','4 year commitment contract with Medartis via TOS3 framework','Jacqueline Russell','Active','Upper Norfolk Implant Technologies Ltd',NULL,'22334488','Southern Service Ltd','SSL - Orthopaedics','Orthopaedic implants','Medical & Surgical Consumables','01/05/2024','30/04/2028',NULL),
@@ -259,7 +259,7 @@ INSERT INTO "external"."atamis_pipeline" ("ref_no","workplan_name","contracting_
  ('FAKE1003','WHU Trauma & Orthopedics (1.3c Hip)','Waymeet Hospitals University National Health Service Trust','WHU404 - Surgery, Anaesthetics and Critical Care DIV',NULL,'WHU Trauma & Orthopedics (1.3c Hip)',NULL,'Upper Norfolk Implant Technologies UK Limited',NULL,'Orthopaedic implants','Surgical Implants and Associated Products',NULL),
  ('FAKE1004','TOS3 Hip Trauma','Southern Service Ltd','SSL - Orthopaedics',NULL,'TOS3 Hip Trauma','Margot Burgh',NULL,NULL,'Orthopaedic implants','Surgical Implants and Associated Products','Henley Thomas'),
  ('FAKE1005','TC13 Heart Implants','University Hospitals of Longcleeve NHS Trust','UHL ITAPS CMG',NULL,'Procurement of Heart Implants','Tom Booth','Aorta Solutions Ltd',NULL,'Cardiovascular Implants',NULL,NULL),
- ('FAKE1006','Opthalmic refractometers agreement','Whitwell Acute Hospitals NHS Trust','Whitwell NHS Trust - Eye Department','Ian Cullen','Opthalmic refractometers agreement','David Anderson',NULL,'Sienar Systems UK Ltd','Phaco emulsification',NULL,NULL),
+ ('FAKE1006','Opthalmic refractometers agreement','Whitwell Acute Hospitals NHS Trust','Whitwell NHS Trust - Eye Department','Ian Cullen','Opthalmic refractometers agreement','David Anderson','Sienar Systems UK Ltd',NULL,'Phaco emulsification',NULL,NULL),
  ('FAKE1007','Combined Needle and Syringe procurement','Frogmorton Health NHS Foundation Trust','FHFT - Procurement',NULL,'Combined Needle and Syringe procurement',NULL,NULL,NULL,'Medical Consumables',NULL,'Fiona Walker'),
  ('FAKE1008','Thermometers and Probe Covers procurement','Frogmorton Health NHS Foundation Trust','FHFT - Procurement','Alan James','Thermometers and Probe Covers procurement','Andre Boulay',NULL,NULL,'Tympanic Thermometer Consumables','Thermometers - Patient',NULL),
  ('FAKE1009','Thermometers & Probe Covers','Baranduin Teaching Hospitals NHS Foundation Trust','BTHFT - 13 - Specialist Medicine',NULL,'Thermometers & Probe Covers','John Corckett',NULL,NULL,'Tympanic Thermometer Consumables','Thermometers - Patient',NULL);
