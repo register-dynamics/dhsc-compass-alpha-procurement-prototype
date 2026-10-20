@@ -11,6 +11,7 @@ export async function down(db: Kysely<any>): Promise<void> {
 export async function up(db: Kysely<any>): Promise<void> {
   await db.schema
     .alterTable("external.gmdn_category")
+    //eslint-disable-next-line
     .alterColumn("nodeID", (ac) => ac.setDataType(sql`integer USING nodeID::integer`))
     .execute();
 }
