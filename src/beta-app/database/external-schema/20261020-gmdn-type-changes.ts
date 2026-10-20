@@ -10,7 +10,7 @@ export async function down(db: Kysely<any>): Promise<void> {
 
 export async function up(db: Kysely<any>): Promise<void> {
   await db.schema
-    .alterTable("external.atamis_to_gmdn")
+    .alterTable("external.gmdn_category")
     .alterColumn("nodeID", (ac) => ac.setDataType(sql`integer USING nodeID::integer`))
     .execute();
 }
