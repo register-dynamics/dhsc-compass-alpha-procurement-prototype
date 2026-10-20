@@ -20,7 +20,7 @@ export async function down(db: Kysely<any>): Promise<void> {
 
   await db.schema
     .alterTable("external.gmdn_category")
-    .alterColumn("nodeID", (ac) => ac.setDataType(sql`varchar USING nodeID`))
+    .alterColumn("nodeID", (ac) => ac.setDataType("varchar"))
     .alterColumn("parent_id", (ac) => ac.setDataType(sql`varchar USING nodeID`))
     .alterColumn("top_id", (ac) => ac.setDataType(sql`varchar USING nodeID`))
     .execute();
