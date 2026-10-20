@@ -1,0 +1,145 @@
+{#
+  1 trust's experience of this device, 2 levels down from the branded
+  device page, reached from trusts-with-experience.html.
+
+  Dylan's model: trust, then people and contracts. Showing every trust's
+  people and contracts on 1 page mixed the levels up (trust, people,
+  contracts, trust, people, contracts), so each trust has this page.
+  The caption (the device) and the breadcrumb say what it is scoped to:
+  this trust's experience of InsuFlow Pro, not a profile of the trust.
+
+  Under the heading, a link to a page all about the trust (Dylan): this
+  page is only the trust's experience of this device. The link text is the
+  trust's name, the heading of the trust page (trust.html).
+
+  Next to it, what AdviseInc's purchase data shows for this trust and
+  device, as its own row with the source in the key, so the trust's own
+  account and the purchase record sit side by side and are not combined
+  (they can disagree). Invented.
+
+  At the top, the outcome the trust reported in the sharing flow
+  (sketchpad/experience-acquisition.html), as on the trusts list.
+
+  2 sections, so the 2 kinds of record do not mix:
+  - People: 1 summary card per person who shared their own details. Rows
+    describe the person; each document sits inside the Documents row,
+    labelled with its ward or department.
+  - Contracts: 1 summary card per Atamis contract (Dylan kept cards here:
+    they work for this use case). Atamis stores everything per contract
+    and people are only names in its role fields, so the card is the
+    contract, with the business unit and each named person by their role.
+    The name is free text, so the title is not the link; "View contract
+    details" goes to the contract page. The source line sits under the
+    title, as on the other cards.
+  Only rows with something in them are shown. Email addresses are plain
+  text, not mailto links: people are building a shortlist, not emailing
+  straight away (Dylan).
+
+  Example trust: Barts Health NHS Trust. Mahalia Immings and the business
+  case are from database.db, as on current/product-page?make=74589621. The
+  contract follows the shape of Dylan's Atamis sample export (used as a
+  guide; none of it is about this pump) and is invented, as are Daniel
+  Okoro and Sarah Mensah. Contract names and business units are shown as
+  the records have them; they are often entered by hand. Whether a contract
+  is for a product or a service is not known and is never stated. Every
+  line of copy is a draft for Jill.
+#}
+
+{% extends "branded-device/_layout.html" %}
+
+{% from "summary-list/macro.njk" import summaryList %}
+{% from "card/macro.njk" import card %}
+
+{% set brand = "InsuFlow Pro" %}
+{% set supplier = "ArcTech Ltd" %}
+{% set deviceType = "Ambulatory insulin infusion pump reservoir" %}
+{% set trust = "Barts Health NHS Trust" %}
+{% set pageName = trust + " – experience of " + brand + " by " + supplier %}
+{% set mainClasses = "nhsuk-main-wrapper--s" %}
+
+{% set trail = [
+    { href: "/identify-alternatives/search-and-browse", text: "Search and browse" },
+    { href: "/identify-alternatives/device-function", text: "Device function" },
+    { href: "#", text: deviceType },
+    { href: "/branded-device", text: brand },
+    { href: "/branded-device/trusts-with-experience", text: "Trusts with experience of this device" }
+  ] %}
+
+{% set people = [
+  {
+    name: "Mahalia Immings",
+    rows: [
+      { key: { text: "Role" }, value: { text: "Software Engineer I, Software Development" } },
+      { key: { text: "Phone" }, value: { text: "6431047410" } },
+      { key: { text: "Happy to discuss" }, value: { text: "Training, pharmacy integration, real world use" } },
+      { key: { text: "Documents" }, value: { html: '<a href="#">Business case, January 2023</a><br>Ward or department: Dialysis Unit, St Bartholomew\'s Hospital' }, classes: "nhsuk-summary-list__row--no-border" }
+    ]
+  }
+] %}
+
+{% set contracts = [
+  {
+    name: "BH - Insulin Pumps and Consumables - ArcTech",
+    href: "/branded-device/contract",
+    source: "From Atamis contract records",
+    rows: [
+      { key: { text: "Business unit" }, value: { text: "Barts - Diabetes and Endocrinology" } },
+      { key: { text: "Contract owner" }, value: { text: "Daniel Okoro" } },
+      { key: { text: "Procurement lead" }, value: { html: 'Sarah Mensah<br>sarah.mensah2@nhs.net' } }
+    ]
+  }
+] %}
+
+{% block beforeContent %}
+
+{{ breadcrumb({ items: trail }) }}
+
+{% endblock %}
+
+{% block content %}
+
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+
+    <h1 class="nhsuk-heading-l nhsuk-u-margin-bottom-4">
+      <span class="nhsuk-caption-l">{{ brand }}</span>
+      {{ trust }}
+    </h1>
+
+    <p><a href="/branded-device/trust">View {{ trust }}</a></p>
+
+    {{ summaryList({
+      rows: [
+        { key: { text: "Outcome reported by the trust" }, value: { text: "Procured it" } },
+        { key: { text: "Purchases recorded by AdviseInc" }, value: { text: "Bought it, most recent order March 2026" } }
+      ]
+    }) }}
+
+    <h2 class="nhsuk-heading-m nhsuk-u-margin-top-5">People</h2>
+    {% for item in people %}
+      {% call card({
+        heading: item.name,
+        headingLevel: 3,
+        headingClasses: "nhsuk-heading-s"
+      }) %}
+        {{ summaryList({ classes: "nhsuk-u-margin-bottom-0", rows: item.rows }) }}
+      {% endcall %}
+    {% endfor %}
+
+    <h2 class="nhsuk-heading-m nhsuk-u-margin-top-5">Contracts</h2>
+    {% for item in contracts %}
+      {% call card({
+        heading: item.name,
+        headingLevel: 3,
+        headingClasses: "nhsuk-heading-s"
+      }) %}
+        <p class="nhsuk-body-s nhsuk-u-margin-bottom-2">{{ item.source }}</p>
+        {{ summaryList({ rows: item.rows }) }}
+        <p class="nhsuk-u-margin-bottom-0"><a href="{{ item.href }}">View contract details</a></p>
+      {% endcall %}
+    {% endfor %}
+
+  </div>
+</div>
+
+{% endblock %}

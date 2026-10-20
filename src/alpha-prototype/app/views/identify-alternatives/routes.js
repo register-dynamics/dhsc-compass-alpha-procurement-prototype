@@ -206,11 +206,26 @@ router.get('/device-function', (req, res, next) => {
   next()
 })
 
+// The same page as device-function, as a card per group.
+router.get('/device-function-cards', (req, res, next) => {
+  next()
+})
+
 router.get('/tissue-reparation-devices', (req, res, next) => {
   next()
 })
 
+// The same page as tissue-reparation-devices, as cards with scent trails.
+router.get('/tissue-reparation-devices-cards', (req, res, next) => {
+  next()
+})
+
 router.get('/bone-joint-fixation-implants', (req, res, next) => {
+  next()
+})
+
+// The same page as bone-joint-fixation-implants, as grouped subcategories only.
+router.get('/bone-joint-fixation-implants-subcategories', (req, res, next) => {
   next()
 })
 
@@ -227,6 +242,14 @@ router.get('/nuvasive-bone-screw-internal-spinal-fixation-system', (req, res, ne
 })
 
 router.get('/mas-plif', (req, res, next) => {
+  next()
+})
+
+// A device type of single devices, one branded device and its variants. ?from= says which route the user
+// came by (anatomical, search, or none for Device function), so the
+// breadcrumb can follow it.
+router.get(['/corneal-scissors-reusable', '/reusable-scissors-france-chirurgie', '/reusable-scissors-france-chirurgie-variants'], (req, res, next) => {
+  res.locals.cameFrom = req.query.from
   next()
 })
 

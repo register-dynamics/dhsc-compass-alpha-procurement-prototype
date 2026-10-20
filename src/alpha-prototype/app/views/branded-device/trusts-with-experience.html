@@ -1,0 +1,124 @@
+{#
+  Trusts with experience of this device, 1 level down from the branded
+  device page (index.html).
+
+  The "Related trusts" box in Dylan's model. Each trust is 1 summary card
+  (Components/summary-list.md, "Summary cards"), with the same counts as the
+  device page cards, so the levels read as one system. The card title is
+  the trust name and links to that trust's experience of this device
+  (trust-experience.html), where its people and contracts are. Keeping them
+  a level down stops trusts, people and contracts mixing on 1 long page.
+  Only rows with something in them are shown.
+
+  "Outcome reported by the trust" is the trust's own answer from the
+  sharing flow (sketchpad/experience-acquisition.html: "What happened when
+  your trust looked at this device?"), shown per trust, not added up. It
+  replaces the alpha's aggregated "Working with this supplier" feedback,
+  which was aspirational (Dylan). The answers are reworded from "we" so
+  they read in the third person: Procured it; Chose it, procurement still
+  going on; Still reviewing it; Did not procure it; Not sure. A trust that
+  only added itself and its outcome shows just that row. "Add your experience" sits at
+  this level, as in the model.
+
+  Trusts are A to Z, to keep the engineering simple (Dylan): recency would
+  need a rule for which date counts. Dylan expects a device to match 1 to
+  10 trusts, so there is no pagination or filtering.
+
+  Counts match the trust pages and the device page (3 trusts, 3 people,
+  2 contracts, 2 evaluations, 1 business case). "People" counts only people
+  who shared their own details (the People section of a trust page); names
+  on Atamis contracts are reached through the contract, so the count is
+  true to what people see when they click through. Only Barts has a trust page
+  for now; the others link to "#". Trust names are from current/trusts.js.
+  Every line of copy is a draft for Jill.
+#}
+
+{% extends "branded-device/_layout.html" %}
+
+{% from "summary-list/macro.njk" import summaryList %}
+{% from "card/macro.njk" import card %}
+{% from "button/macro.njk" import button %}
+
+{% set brand = "InsuFlow Pro" %}
+{% set supplier = "ArcTech Ltd" %}
+{% set deviceType = "Ambulatory insulin infusion pump reservoir" %}
+{% set pageName = "Trusts with experience of " + brand + " by " + supplier %}
+{% set mainClasses = "nhsuk-main-wrapper--s" %}
+
+{% set trail = [
+    { href: "/identify-alternatives/search-and-browse", text: "Search and browse" },
+    { href: "/identify-alternatives/device-function", text: "Device function" },
+    { href: "#", text: deviceType },
+    { href: "/branded-device", text: brand }
+  ] %}
+
+{% set trusts = [
+  {
+    name: "Barts Health NHS Trust",
+    href: "/branded-device/trust-experience",
+    rows: [
+      { key: { text: "Outcome reported by the trust" }, value: { text: "Procured it" } },
+      { key: { text: "People" }, value: { text: "1" } },
+      { key: { text: "Contracts" }, value: { text: "1" } },
+      { key: { text: "Shared documents" }, value: { html: '<ul class="nhsuk-list nhsuk-u-margin-bottom-0"><li>1 business case</li></ul>' }, classes: "nhsuk-summary-list__row--no-border" }
+    ]
+  },
+  {
+    name: "Guy's and St Thomas' NHS Foundation Trust",
+    href: "#",
+    rows: [
+      { key: { text: "Outcome reported by the trust" }, value: { text: "Chose it, procurement still going on" } },
+      { key: { text: "People" }, value: { text: "1" } },
+      { key: { text: "Contracts" }, value: { text: "1" } },
+      { key: { text: "Shared documents" }, value: { html: '<ul class="nhsuk-list nhsuk-u-margin-bottom-0"><li>1 evaluation</li></ul>' }, classes: "nhsuk-summary-list__row--no-border" }
+    ]
+  },
+  {
+    name: "Leeds Teaching Hospitals NHS Trust",
+    href: "#",
+    rows: [
+      { key: { text: "Outcome reported by the trust" }, value: { text: "Did not procure it" } },
+      { key: { text: "People" }, value: { text: "1" } },
+      { key: { text: "Shared documents" }, value: { html: '<ul class="nhsuk-list nhsuk-u-margin-bottom-0"><li>1 evaluation</li></ul>' }, classes: "nhsuk-summary-list__row--no-border" }
+    ]
+  }
+] %}
+
+{% block beforeContent %}
+
+{{ breadcrumb({ items: trail }) }}
+
+{% endblock %}
+
+{% block content %}
+
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+
+    <h1 class="nhsuk-heading-l nhsuk-u-margin-bottom-4">
+      <span class="nhsuk-caption-l">{{ brand }}</span>
+      Trusts with experience of this device
+    </h1>
+
+    {{ button({
+      text: "Add your trust's experience",
+      href: "#",
+      classes: "nhsuk-button--secondary"
+    }) }}
+
+    <p class="nhsuk-body-s">A to Z by trust.</p>
+
+    {% for trust in trusts %}
+      {% call card({
+        heading: trust.name,
+        href: trust.href,
+        headingClasses: "nhsuk-heading-m"
+      }) %}
+        {{ summaryList({ classes: "nhsuk-u-margin-bottom-0", rows: trust.rows }) }}
+      {% endcall %}
+    {% endfor %}
+
+  </div>
+</div>
+
+{% endblock %}

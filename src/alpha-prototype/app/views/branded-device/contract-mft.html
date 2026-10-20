@@ -1,0 +1,35 @@
+{#
+  Contract details: Manchester University NHS Foundation Trust, from related-contracts.html (contracts in the
+  same or related categories, always with the same supplier). Invented, in
+  the shape of Dylan's Atamis sample export (used as a guide; none of it is
+  about this pump); the category above the device type is made up. No public notice, so that row is left out.
+  Template and rules: _contract.html.
+#}
+
+{% extends "branded-device/_contract.html" %}
+
+{% set brand = "InsuFlow Pro" %}
+{% set supplier = "ArcTech Ltd" %}
+{% set deviceType = "Ambulatory insulin infusion pump reservoir" %}
+{% set trust = "Manchester University NHS Foundation Trust" %}
+{% set contractName = "MFT-Diabetes Technology-ArcTech-2025" %}
+{% set category = "Insulin infusion devices" %}
+{% set businessUnit = "MFT - Clinical Support - Diabetes Centre" %}
+{% set procured = "PCR Framework - Further Competition" %}
+{% set status = "Active" %}
+{% set startDate = "1 July 2025" %}
+{% set endDate = "30 June 2028" %}
+{% set awardValue = "£412,500, including options, excluding VAT" %}
+{% set training = "Initial training for diabetes specialist nurses, then annual refresher sessions" %}
+
+{% set trail = [
+    { href: "/identify-alternatives/search-and-browse", text: "Search and browse" },
+    { href: "/identify-alternatives/device-function", text: "Device function" },
+    { href: "#", text: deviceType },
+    { href: "/branded-device", text: brand },
+    { href: "/branded-device/related-contracts", text: "Trusts with contracts in the same or related categories" }
+  ] %}
+
+{% set people = [
+  { key: { text: "Contract owner" }, value: { html: 'Priya Natarajan<br>priya.natarajan@mft.nhs.uk' } }
+] %}

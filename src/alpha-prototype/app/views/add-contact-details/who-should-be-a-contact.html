@@ -1,0 +1,69 @@
+{#
+  Who should be a contact: the question page behind "Add contact details" on
+  the branded device page. Static.
+
+  A filter question (Content/how-to-write-good-questions-for-forms/04), so
+  the 2 quick answers, "just me" and "everyone", take 1 click, and only
+  people who want a mix go on to pick names (choose-contacts).
+
+  - Radios, since the answer is 1 of 3 (Components/radios.md). None is
+    pre-selected. Options are in order of reach, not A to Z, which the
+    guidance allows where it helps.
+  - "including me" is in the "everyone" label, not a hint, because people
+    read labels and skip hints (Dylan's research experience).
+  - The hint under the question is Jill's line, verbatim: context between
+    the question and the answers (team convention).
+  - Branches in routes.js: "just me" and "everyone" go to check-contacts,
+    "choose" to choose-contacts. The answer is pre-filled when coming back.
+#}
+
+{% extends "add-contact-details/_layout.html" %}
+
+{% from "back-link/macro.njk" import backLink %}
+{% from "radios/macro.njk" import radios %}
+{% from "button/macro.njk" import button %}
+
+{% set brand = "REUSABLE SCISSORS" %}
+{% set pageName = "Who should be a contact for this device?" %}
+{% set mainClasses = "nhsuk-main-wrapper--s" %}
+
+{% block beforeContent %}
+  {{ backLink({
+    href: "/add-contact-details/branded-device",
+    text: "Back"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+
+    <form action="/add-contact-details/who-should-be-a-contact" method="post" novalidate>
+
+      {{ radios({
+        name: "whoShouldBeAContact",
+        value: data.whoShouldBeAContact,
+        fieldset: {
+          legend: {
+            html: '<span class="nhsuk-caption-l">' + brand + '</span>' + pageName,
+            classes: "nhsuk-fieldset__legend--l",
+            isPageHeading: true
+          }
+        },
+        hint: { text: "This information will only be visible to users in the NHS." },
+        items: [
+          { value: "me", text: "Just me" },
+          { value: "everyone", text: "Everyone in my trust, including me" },
+          { value: "choose", text: "Choose people from my trust" }
+        ]
+      }) }}
+
+      {{ button({ text: "Continue" }) }}
+
+    </form>
+
+  </div>
+</div>
+
+{% endblock %}

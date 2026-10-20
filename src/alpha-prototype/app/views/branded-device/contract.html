@@ -1,0 +1,38 @@
+{#
+  Contract details: Barts Health NHS Trust, from the trust experience page.
+  Invented, in the shape of Dylan's Atamis sample export (used as a guide;
+  none of it is about this pump). The Contracts Finder link is a real
+  notice from that sample (EP consumables, Norfolk and Norwich), used for
+  mockup purposes only. Template and rules: _contract.html.
+#}
+
+{% extends "branded-device/_contract.html" %}
+
+{% set brand = "InsuFlow Pro" %}
+{% set supplier = "ArcTech Ltd" %}
+{% set deviceType = "Ambulatory insulin infusion pump reservoir" %}
+{% set trust = "Barts Health NHS Trust" %}
+{% set contractName = "BH - Insulin Pumps and Consumables - ArcTech" %}
+{% set device = '<a href="/branded-device">InsuFlow Pro</a>' %}
+{% set businessUnit = "Barts - Diabetes and Endocrinology" %}
+{% set procured = "PCR Framework - Direct Award" %}
+{% set status = "Active" %}
+{% set startDate = "1 April 2024" %}
+{% set endDate = "31 March 2027" %}
+{% set awardValue = "£184,000, including options, excluding VAT" %}
+{% set training = "On-site training for ward and pharmacy staff at installation" %}
+{% set noticeUrl = "https://www.contractsfinder.service.gov.uk/Notice/752759c3-ecd3-475a-b345-b48bc41a59d6" %}
+
+{% set trail = [
+    { href: "/identify-alternatives/search-and-browse", text: "Search and browse" },
+    { href: "/identify-alternatives/device-function", text: "Device function" },
+    { href: "#", text: deviceType },
+    { href: "/branded-device", text: brand },
+    { href: "/branded-device/trusts-with-experience", text: "Trusts with experience of this device" },
+    { href: "/branded-device/trust-experience", text: trust }
+  ] %}
+
+{% set people = [
+  { key: { text: "Contract owner" }, value: { text: "Daniel Okoro" } },
+  { key: { text: "Procurement lead" }, value: { html: 'Sarah Mensah<br>sarah.mensah2@nhs.net' } }
+] %}
