@@ -1,4 +1,4 @@
-import { Kysely } from "kysely";
+import { Kysely, sql } from "kysely";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function down(db: Kysely<any>): Promise<void> {
@@ -20,7 +20,7 @@ export async function down(db: Kysely<any>): Promise<void> {
 
   await db.schema
     .alterTable("external.gmdn_category")
-    .alterColumn("nodeID", (ac) => ac.setDataType("varchar"))
+    .alterColumn("nodeID", (ac) => ac.setDataType(sql`varchar USING nodeID`))
     .alterColumn("parent_id", (ac) => ac.setDataType(sql`varchar USING nodeID`))
     .alterColumn("top_id", (ac) => ac.setDataType(sql`varchar USING nodeID`))
     .execute();
