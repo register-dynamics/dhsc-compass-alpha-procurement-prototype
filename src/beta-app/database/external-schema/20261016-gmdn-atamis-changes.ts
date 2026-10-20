@@ -15,22 +15,6 @@ export async function down(db: Kysely<any>): Promise<void> {
     .alterTable("external.products")
     .dropColumn("aggregation_type")
     .execute();
-
-  await db.schema
-    .alterTable("external.gmdn_category")
-    .alterColumn("nodeID", (ac) => ac.setDataType(sql`varchar USING nodeID`))
-    .alterColumn("parent_id", (ac) =>
-      ac.setDataType(sql`varchar USING parent_id`),
-    )
-    .alterColumn("top_id", (ac) => ac.setDataType(sql`varchar USING top_id`))
-    .execute();
-
-  await db.schema
-    .alterTable("external.gmdn_category_term")
-    .alterColumn("term_code", (ac) =>
-      ac.setDataType(sql`varchar USING term_code`),
-    )
-    .execute();
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -46,22 +30,6 @@ export async function up(db: Kysely<any>): Promise<void> {
 
   await db.schema
     .alterTable("external.products")
-    .addColumn("aggregation_type", "varchar", (col) => col.notNull())
-    .execute();
-
-  await db.schema
-    .alterTable("external.gmdn_category")
-    .alterColumn("nodeID", (ac) => ac.setDataType(sql`integer USING nodeID`))
-    .alterColumn("parent_id", (ac) =>
-      ac.setDataType(sql`integer USING parent_id`),
-    )
-    .alterColumn("top_id", (ac) => ac.setDataType(sql`integer USING top_id`))
-    .execute();
-
-  await db.schema
-    .alterTable("external.gmdn_category_term")
-    .alterColumn("term_code", (ac) =>
-      ac.setDataType(sql`integer USING term_code`),
-    )
+    .addColumn("aggregation_type", "varchar")
     .execute();
 }
