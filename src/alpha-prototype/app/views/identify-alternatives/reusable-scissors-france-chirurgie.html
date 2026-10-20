@@ -1,0 +1,116 @@
+{#
+  Sketch 1i: Branded device page (single device).
+
+  The single-device version of the Nuvasive system page. In our taxonomy a
+  branded device has variants directly, with no components, so the
+  components table becomes one link to a variants page. Variants get their
+  own page because a device can have thousands of them, and they would
+  bury the documents and page them along with the variants.
+
+  - Heading: the brand as recorded (aggregator and model are both
+    "REUSABLE SCISSORS", so it is shown once), with the supplier in the
+    caption, as on the Nuvasive page. Block capitals are kept as recorded,
+    by Dylan's choice.
+  - device_id (118105) is the database key, so it is not shown.
+
+  ── Breadcrumb follows the route in ───────────────────────────────────────
+
+  The device type sits in 2 GMDN trees, and the trail shows the one the user
+  came by (Dylan's call; the knowledge base does not cover a page in 2
+  hierarchies, so worth watching in research). Picked by ?from= on the URL:
+  - no parameter: Device function
+  - ?from=anatomical: Anatomical specialty
+  - ?from=search: back to search results
+  The variants link passes ?from= on, so the trail carries through.
+  Levels with no page yet link to "#". Names exactly as in GMDN.
+
+  ── Content ───────────────────────────────────────────────────────────────
+
+  Supplier, device type, brand and variant count are real market data Dylan
+  supplied. Document names are invented, trusts are from current/trusts.js.
+  Wording is a draft for Jill.
+#}
+
+{% extends "identify-alternatives/_layout.html" %}
+
+{% from "tables/macro.njk" import table %}
+{% from "summary-list/macro.njk" import summaryList %}
+
+{% set brand = "REUSABLE SCISSORS" %}
+{% set supplier = "France Chirurgie Instrumentation SAS" %}
+{% set deviceType = "Corneal scissors, reusable" %}
+{% set pageName = brand + " by " + supplier %}
+{% set mainClasses = "nhsuk-main-wrapper--s" %}
+
+{% set fromQuery = ("?from=" + cameFrom) if cameFrom else "" %}
+
+{% if cameFrom == "search" %}
+  {% set trail = [
+    { href: "/identify-alternatives/search-and-browse", text: "Search and browse" },
+    { href: "/identify-alternatives/search-results", text: "Search results" }
+  ] %}
+{% elif cameFrom == "anatomical" %}
+  {% set trail = [
+    { href: "/identify-alternatives/search-and-browse", text: "Search and browse" },
+    { href: "#", text: "Anatomical specialty" },
+    { href: "#", text: "Ophthalmic devices" },
+    { href: "#", text: "Ophthalmic scissors" },
+    { href: "/identify-alternatives/corneal-scissors-reusable" + fromQuery, text: deviceType }
+  ] %}
+{% else %}
+  {% set trail = [
+    { href: "/identify-alternatives/search-and-browse", text: "Search and browse" },
+    { href: "/identify-alternatives/device-function", text: "Device function" },
+    { href: "#", text: "Surgical/Invasive procedure instrumentation" },
+    { href: "#", text: "Tissue-penetrating mechanical surgical instrumentation" },
+    { href: "#", text: "Surgical scissors" },
+    { href: "/identify-alternatives/corneal-scissors-reusable" + fromQuery, text: deviceType }
+  ] %}
+{% endif %}
+
+{% block beforeContent %}
+
+{{ breadcrumb({ items: trail }) }}
+
+{% endblock %}
+
+{% block content %}
+
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+
+    <h1 class="nhsuk-heading-l nhsuk-u-margin-bottom-4">
+      <span class="nhsuk-caption-l">{{ supplier }}</span>
+      {{ brand }}
+    </h1>
+
+    {{ summaryList({
+      rows: [
+        { key: { text: "Supplied as" }, value: { text: "A single device" } },
+        { key: { text: "Device type" }, value: { html: '<a href="/identify-alternatives/corneal-scissors-reusable' + fromQuery + '">' + deviceType + '</a>' } },
+        { key: { text: "Variants" }, value: { html: '<a href="/identify-alternatives/reusable-scissors-france-chirurgie-variants' + fromQuery + '">4 variants</a>' } }
+      ]
+    }) }}
+
+    <h2 class="nhsuk-heading-m nhsuk-u-margin-top-5 nhsuk-u-margin-bottom-2">3 documents</h2>
+    <p class="nhsuk-body-s">Shared by trusts, A to Z by trust.</p>
+
+    {{ table({
+      caption: "Documents about " + brand,
+      captionClasses: "nhsuk-u-visually-hidden",
+      head: [
+        { text: "Document" },
+        { text: "Type" },
+        { text: "Trust" }
+      ],
+      rows: [
+        [ { html: '<a href="#">Corneal transplant instruments evaluation</a>' }, { text: "Evaluation" }, { text: "Ashford and St Peter's Hospitals NHS Foundation Trust" } ],
+        [ { html: '<a href="#">Reusable ophthalmic scissors business case</a>' }, { text: "Business case" }, { text: "Cambridge University Hospitals NHS Foundation Trust" } ],
+        [ { html: '<a href="#">Keratoplasty instrument set evaluation</a>' }, { text: "Evaluation" }, { text: "Chelsea and Westminster Hospital NHS Foundation Trust" } ]
+      ]
+    }) }}
+
+  </div>
+</div>
+
+{% endblock %}

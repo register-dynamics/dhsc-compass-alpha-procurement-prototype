@@ -1,0 +1,187 @@
+{#
+  Branded device page sketch. Started on 2026-10-19 as a copy of
+  add-contact-details/branded-device.html, which is left as it is, then
+  restructured around how people use the page.
+
+  Primary scenario: designing and running a trial. Writing a business case is
+  secondary, usually a return visit. Compass is not a marketplace. The page
+  feeds an acquisition person's judgement, and a good visit ends with a lead,
+  or enough confidence to shortlist the device.
+
+  A summary and navigation hub, not every piece of data in a long list, so
+  it stays the same size whether a device has no trust experience or
+  hundreds of trusts.
+
+  Each lead section answers only "is it worth clicking?", so it surfaces
+  the number of trusts, the key signal of how widely adopted the device is
+  (Dylan), in the card title. People, contracts and documents are
+  supplementary: how much useful information is behind it, as key and
+  value under the title. Documents are 1 "Shared documents" row, listed by
+  type (evaluations, business cases, clinical trials or pilot studies,
+  other), because the type decides what a document is good for, e.g. an
+  evaluation for designing a trial, and "shared documents" says they are
+  files people can get at. Only types that exist are listed. Summary cards (Components/summary-list.md, "Summary
+  cards"): a card with a title and a summary list, then 1 link through to
+  the trusts page whose heading it mirrors.
+
+  Follows Dylan's data model: leads are framed by trust, and within a trust
+  by people, who are sometimes linked to contracts and sometimes to
+  documents. Both lead sections
+  have that same shape. The page is centred on trusts, so each section has
+  1 way in, a link to its trusts. If the business case visit needs a
+  by-type view (e.g. all business cases), it is a filter on the trusts page.
+
+  Order, from Dylan's data hierarchy:
+  1. What it is. Hard data, organised by us. Orientation comes first.
+  2. Trusts with experience of this device (exact matches). No inferred
+     status like "Bought" or "Used": a contract proves buying, not use.
+     "People", not "contacts" (Dylan's term). Within a trust, things hang
+     off people: a person is sometimes linked to contracts, sometimes to
+     documents. People include procurement leads from contract records,
+     marked as such on the trusts page.
+  3. Trusts with contracts in the same or related categories (Dylan's wording:
+     "bought related devices" is not necessarily true). Contracts matched
+     only by supplier and contract category, because contract categories are
+     not GMDN. Separate so weaker leads are not mistaken for direct
+     experience.
+
+  Document pages carry the download.
+
+  The summary at the top has only device type, supplier and acquisition
+  cost (Dylan's call). Everything else about the device (supplied as,
+  variants, certifications and compliance, specifications, further costs)
+  is on the specifications and costs page. The supplier name links to the
+  supplier page. Every figure states its source.
+
+  Each card ends in a short "View trusts" link (Dylan's approved design),
+  with no visually hidden text (Dylan: universal design); the card title
+  above it says which trusts.
+
+  "Add your trust's experience" is a smaller secondary button inside the
+  trusts card, so it does not outweigh the "View trusts" link, the main
+  action there (Components/buttons.md allows smaller buttons in a card).
+  nhsuk-frontend 10.1 has no small button, so it uses the repo's
+  app-button--small, as identify-alternatives/mas-plif.html does.
+
+  "Contact us" is on this page only (Dylan), with the wording copied as it
+  is from current/product-page.html. The current page puts it in a
+  non-urgent care card; care cards are for helping people decide when and
+  where to get care (Components/card.md), so here it is plain content.
+  The email is a mailto link, since contacting the team is the action.
+
+  The tabs from the copy are gone. Components/tabs.md says to test content
+  without tabs first, and not to use them when the 1st tab is not the most
+  relevant.
+
+  Device: the InsuFlow Pro 300 Pump System by ArcTech Ltd, as on
+  current/product-page?make=74589621, so it is like for like with the
+  alpha. Brand, supplier and device type (GMDN term) are from database.db
+  (dummy data; the GMDN term "reservoir" is as the data has it). Following
+  the nomenclature, the model (InsuFlow Pro) is the brand and the brand
+  trade name is a variant. The acquisition cost is copied from the current
+  product page. The breadcrumb skips the device function levels between
+  "Device function" and the device type, which we do not have for this term.
+
+  Static mockup. Pages one level down go to "#". The trust, people,
+  contract and document counts are invented (the database has 1 business
+  case and 1 contact for this device). Every line of copy is a draft for
+  Jill.
+#}
+
+{% extends "branded-device/_layout.html" %}
+
+{% from "summary-list/macro.njk" import summaryList %}
+{% from "button/macro.njk" import button %}
+{% from "card/macro.njk" import card %}
+
+{% set brand = "InsuFlow Pro" %}
+{% set supplier = "ArcTech Ltd" %}
+{% set deviceType = "Ambulatory insulin infusion pump reservoir" %}
+{% set pageName = brand + " by " + supplier %}
+{% set mainClasses = "nhsuk-main-wrapper--s" %}
+
+{% set trail = [
+    { href: "/identify-alternatives/search-and-browse", text: "Search and browse" },
+    { href: "/identify-alternatives/device-function", text: "Device function" },
+    { href: "#", text: deviceType }
+  ] %}
+
+{% block beforeContent %}
+
+{{ breadcrumb({ items: trail }) }}
+
+{% endblock %}
+
+{% block content %}
+
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+
+    <h1 class="nhsuk-heading-l nhsuk-u-margin-bottom-4">
+      <span class="nhsuk-caption-l">{{ supplier }}</span>
+      {{ brand }}
+    </h1>
+
+    {{ summaryList({
+      rows: [
+        { key: { text: "Device type" }, value: { html: '<a href="#">' + deviceType + '</a>' } },
+        { key: { text: "Supplier" }, value: { html: '<a href="/branded-device/supplier">' + supplier + '</a>' } },
+        { key: { text: "Acquisition cost" }, value: { text: "£8,500 to £12,000, depending on configuration and volume (source: AdviseInc)" } }
+      ]
+    }) }}
+
+    <p><a href="/branded-device/specifications-and-costs">View specifications and costs</a></p>
+
+  </div>
+</div>
+
+<ul class="nhsuk-grid-row nhsuk-card-group nhsuk-u-margin-top-4">
+  <li class="nhsuk-grid-column-one-half nhsuk-card-group__item">
+    {% call card({
+      heading: "3 trusts with experience of this device",
+      headingClasses: "nhsuk-heading-m"
+    }) %}
+      {{ summaryList({
+        rows: [
+          { key: { text: "People" }, value: { text: "3" } },
+          { key: { text: "Contracts" }, value: { text: "2" } },
+          { key: { text: "Shared documents" }, value: { html: '<ul class="nhsuk-list nhsuk-u-margin-bottom-0"><li>2 evaluations</li><li>1 business case</li></ul>' }, classes: "nhsuk-summary-list__row--no-border" }
+        ]
+      }) }}
+      <p><a href="/branded-device/trusts-with-experience">View trusts</a></p>
+      {{ button({
+        text: "Add your trust's experience",
+        href: "#",
+        classes: "nhsuk-button--secondary app-button--small nhsuk-u-margin-bottom-0"
+      }) }}
+    {% endcall %}
+  </li>
+  <li class="nhsuk-grid-column-one-half nhsuk-card-group__item">
+    {% call card({
+      heading: "4 trusts with contracts in the same or related categories",
+      headingClasses: "nhsuk-heading-m"
+    }) %}
+      {{ summaryList({
+        rows: [
+          { key: { text: "Contracts" }, value: { text: "5" }, classes: "nhsuk-summary-list__row--no-border" }
+        ]
+      }) }}
+      <p class="nhsuk-u-margin-bottom-0"><a href="/branded-device/related-contracts">View trusts</a></p>
+    {% endcall %}
+  </li>
+</ul>
+
+
+<div class="nhsuk-grid-row nhsuk-u-margin-top-5">
+  <div class="nhsuk-grid-column-two-thirds">
+    <p class="nhsuk-u-margin-bottom-2">You can contact us if you:</p>
+    <ul>
+      <li>disagree with something on this page</li>
+      <li>have a query about something on this page</li>
+      <li>would like to amend something on this page</li>
+    </ul>
+    <p>Contact the team on 0330 2234 776 or email: <a href="mailto:enquiries@dhsc.gov.uk">enquiries@dhsc.gov.uk</a></p>
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,34 @@
+{#
+  Contract details: University Hospitals of Leicester NHS Trust, from related-contracts.html (contracts in the
+  same or related categories, always with the same supplier). Invented, in
+  the shape of Dylan's Atamis sample export (used as a guide; none of it is
+  about this pump); the category above the device type is made up. Its category is the broadest of the 4. No training or public notice recorded.
+  Template and rules: _contract.html.
+#}
+
+{% extends "branded-device/_contract.html" %}
+
+{% set brand = "InsuFlow Pro" %}
+{% set supplier = "ArcTech Ltd" %}
+{% set deviceType = "Ambulatory insulin infusion pump reservoir" %}
+{% set trust = "University Hospitals of Leicester NHS Trust" %}
+{% set contractName = "UHL - Drug Administration Consumables - ArcTech" %}
+{% set category = "Drug administration devices" %}
+{% set businessUnit = "UHL Trustwide" %}
+{% set procured = "PCR Framework - Direct Award" %}
+{% set status = "Active" %}
+{% set startDate = "1 June 2023" %}
+{% set endDate = "31 May 2027" %}
+{% set awardValue = "£538,000, including options, excluding VAT" %}
+
+{% set trail = [
+    { href: "/identify-alternatives/search-and-browse", text: "Search and browse" },
+    { href: "/identify-alternatives/device-function", text: "Device function" },
+    { href: "#", text: deviceType },
+    { href: "/branded-device", text: brand },
+    { href: "/branded-device/related-contracts", text: "Trusts with contracts in the same or related categories" }
+  ] %}
+
+{% set people = [
+  { key: { text: "Contract owner" }, value: { text: "Ruth Ellison" } }
+] %}

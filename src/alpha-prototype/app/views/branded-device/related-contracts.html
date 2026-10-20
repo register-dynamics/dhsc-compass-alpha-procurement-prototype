@@ -1,0 +1,158 @@
+{#
+  Trusts with contracts in the same or related categories, 1 level down
+  from the branded device page (index.html), from its 2nd card.
+
+  These are Atamis contracts that could not be matched to this exact
+  device. What we know (Dylan):
+  - They are always with the same supplier as the device, so the supplier
+    is stated once, at the top.
+  - Their category always includes this device, but can be broader, like
+    moving up the breadcrumb. So each contract shows its exact category,
+    and people judge how close it is.
+  - The trusts have only contracts (usually 1 or 2), no people or
+    documents, so there is no trust page: 1 page, trust headings (A to Z),
+    and a contract card per contract (a summary card: category, business
+    unit, and each named person by their role on the contract). Dylan kept
+    cards here, not a table: they work for this use case. The contract name
+    is free text, so the title is not the link; "View contract details"
+    goes to the contract page.
+
+  Contracts follow the shape of Dylan's Atamis sample export (used as
+  a guide; none of it is about this pump) and the fields the team chose to
+  pull through. Contracts, people and categories are invented; the
+  categories above the device type are made up, since we do not have the
+  device function hierarchy for this device type. Trust names are from
+  current/trusts.js. Whether a contract is for a product or a service is
+  not known and is never stated. Every line of copy is a draft for Jill.
+#}
+
+{% extends "branded-device/_layout.html" %}
+
+{% from "summary-list/macro.njk" import summaryList %}
+{% from "card/macro.njk" import card %}
+
+{% set brand = "InsuFlow Pro" %}
+{% set supplier = "ArcTech Ltd" %}
+{% set deviceType = "Ambulatory insulin infusion pump reservoir" %}
+{% set pageName = "Trusts with contracts in the same or related categories – " + brand + " by " + supplier %}
+{% set mainClasses = "nhsuk-main-wrapper--s" %}
+
+{% set trail = [
+    { href: "/identify-alternatives/search-and-browse", text: "Search and browse" },
+    { href: "/identify-alternatives/device-function", text: "Device function" },
+    { href: "#", text: deviceType },
+    { href: "/branded-device", text: brand }
+  ] %}
+
+{% set trusts = [
+  {
+    name: "Manchester University NHS Foundation Trust",
+    contracts: [
+      {
+        name: "MFT-Diabetes Technology-ArcTech-2025",
+        href: "/branded-device/contract-mft",
+        rows: [
+          { key: { text: "Category" }, value: { text: "Insulin infusion devices" } },
+          { key: { text: "Business unit" }, value: { text: "MFT - Clinical Support - Diabetes Centre" } },
+          { key: { text: "Contract owner" }, value: { html: 'Priya Natarajan<br>priya.natarajan@mft.nhs.uk' } }
+        ]
+      }
+    ]
+  },
+  {
+    name: "Oxford University Hospitals NHS Foundation Trust",
+    contracts: [
+      {
+        name: "OUH Infusion Devices Framework Call Off (ArcTech)",
+        href: "/branded-device/contract-ouh",
+        rows: [
+          { key: { text: "Category" }, value: { text: "Infusion devices" } },
+          { key: { text: "Business unit" }, value: { text: "OUH Trustwide" } },
+          { key: { text: "Contract owner" }, value: { text: "James Whitfield" } },
+          { key: { text: "Procurement lead" }, value: { text: "Hannah Price" } }
+        ]
+      },
+      {
+        name: "OUH - Drug Administration Sets - ArcTech",
+        href: "/branded-device/contract-ouh-2",
+        rows: [
+          { key: { text: "Category" }, value: { text: "Drug administration devices" } },
+          { key: { text: "Business unit" }, value: { text: "OUH - Pharmacy" } },
+          { key: { text: "Contract owner" }, value: { text: "James Whitfield" } }
+        ]
+      }
+    ]
+  },
+  {
+    name: "Sheffield Teaching Hospitals NHS Foundation Trust",
+    contracts: [
+      {
+        name: "STH - Ambulatory Pumps - ArcTech",
+        href: "/branded-device/contract-sth",
+        rows: [
+          { key: { text: "Category" }, value: { text: deviceType } },
+          { key: { text: "Business unit" }, value: { text: "STH - Specialist Services - Diabetes and Endocrinology" } },
+          { key: { text: "Procurement lead" }, value: { html: 'Marcus Lee<br>marcus.lee3@nhs.net' } }
+        ]
+      }
+    ]
+  },
+  {
+    name: "University Hospitals of Leicester NHS Trust",
+    contracts: [
+      {
+        name: "UHL - Drug Administration Consumables - ArcTech",
+        href: "/branded-device/contract-uhl",
+        rows: [
+          { key: { text: "Category" }, value: { text: "Drug administration devices" } },
+          { key: { text: "Business unit" }, value: { text: "UHL Trustwide" } },
+          { key: { text: "Contract owner" }, value: { text: "Ruth Ellison" } }
+        ]
+      }
+    ]
+  }
+] %}
+
+{% block beforeContent %}
+
+{{ breadcrumb({ items: trail }) }}
+
+{% endblock %}
+
+{% block content %}
+
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+
+    <h1 class="nhsuk-heading-l nhsuk-u-margin-bottom-4">
+      <span class="nhsuk-caption-l">{{ brand }}</span>
+      Trusts with contracts in the same or related categories
+    </h1>
+
+    {{ summaryList({
+      rows: [
+        { key: { text: "Supplier named on the contracts" }, value: { text: supplier } }
+      ]
+    }) }}
+
+    <p class="nhsuk-body-s">A to Z by trust.</p>
+
+    {% for trust in trusts %}
+      <h2 class="nhsuk-heading-m nhsuk-u-margin-top-5">{{ trust.name }}</h2>
+      {% for item in trust.contracts %}
+        {% call card({
+          heading: item.name,
+          headingLevel: 3,
+          headingClasses: "nhsuk-heading-s"
+        }) %}
+          <p class="nhsuk-body-s nhsuk-u-margin-bottom-2">From Atamis contract records</p>
+          {{ summaryList({ rows: item.rows }) }}
+          <p class="nhsuk-u-margin-bottom-0"><a href="{{ item.href }}">View contract details</a></p>
+        {% endcall %}
+      {% endfor %}
+    {% endfor %}
+
+  </div>
+</div>
+
+{% endblock %}

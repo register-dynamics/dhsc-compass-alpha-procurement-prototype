@@ -113,6 +113,8 @@ router.use('/current', require('./views/current/routes'))
 router.use('/UR', require('./views/UR/routes'))
 router.use('/sketchpad', require('./views/sketchpad/routes'))
 router.use('/identify-alternatives', require('./views/identify-alternatives/routes'))
+router.use('/add-contact-details', require('./views/add-contact-details/routes'))
+router.use('/branded-device', require('./views/branded-device/routes'))
 
 
 

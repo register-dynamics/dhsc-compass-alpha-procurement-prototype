@@ -1,0 +1,169 @@
+{#
+  Trusts with contracts with a supplier, 1 level down from the supplier
+  page (supplier.html), from its "View trusts" link.
+
+  The same page type as related-contracts.html: trust headings, A to Z,
+  each with a table of its contracts, 1 row per contract, for B2B density.
+  Columns: contract, category, business unit, the people named on it (each
+  with their role on the contract), and a "View" link (with the contract
+  name shown in the row) to the contract page, since contract names are free
+  text. Contracts are nested under trusts, as on the device pages.
+
+  No text explaining where the contracts come from or how they are matched
+  (Dylan: no content explaining how the interface works). The list still
+  includes contracts that name the supplier as "related supplier" (e.g.
+  bought through NHS Supply Chain), and categories are matched by contract
+  names and descriptions, so some may be wrong.
+
+  At this size (9 trusts, 12 contracts) there is no pagination or
+  filtering. A big supplier would need both, by trust and paginated; a
+  category filter could replace the unlinked supplier-contracts.html.
+
+  Contracts follow the shape of Dylan's Atamis sample export (used as a
+  guide; none of it is about this pump). The 6 that also appear on the
+  device pages match them and link to their contract pages; the other 6
+  are invented and link to "#". Categories above the device type are
+  invented. Trust names are from current/trusts.js. Whether a contract is
+  for a product or a service is not known and is never stated. Every line
+  of copy is a draft for Jill.
+#}
+
+{% extends "branded-device/_layout.html" %}
+
+{# Light pink background: the supplier pages are a concept design (Dylan) #}
+{% set bodyClasses = "app-concept" %}
+
+{% from "tables/macro.njk" import table %}
+
+{% set supplier = "ArcTech Ltd" %}
+{% set deviceType = "Ambulatory insulin infusion pump reservoir" %}
+{% set pageName = "Trusts with contracts with " + supplier %}
+{% set mainClasses = "nhsuk-main-wrapper--s" %}
+
+{% set trusts = [
+  {
+    name: "Barts Health NHS Trust",
+    contracts: [
+      { name: "BH - Insulin Pumps and Consumables - ArcTech", href: "/branded-device/contract", category: deviceType, businessUnit: "Barts - Diabetes and Endocrinology",
+        people: 'Contract owner: Daniel Okoro<br>Procurement lead: Sarah Mensah<br>sarah.mensah2@nhs.net' }
+    ]
+  },
+  {
+    name: "Cambridge University Hospitals NHS Foundation Trust",
+    contracts: [
+      { name: "CUH - Volumetric Pumps Fleet Replacement", href: "#", category: "Volumetric infusion pumps", businessUnit: "CUH - Clinical Engineering",
+        people: 'Contract owner: Helen Shaw<br>Procurement lead: Owen Barker<br>owen.barker@nhs.net' },
+      { name: "CUH - Syringe Drivers (Palliative Care)", href: "#", category: "Syringe drivers", businessUnit: "CUH - Division E - Palliative Care",
+        people: 'Contract owner: Helen Shaw' }
+    ]
+  },
+  {
+    name: "Guy's and St Thomas' NHS Foundation Trust",
+    contracts: [
+      { name: "GSTT - Ambulatory Insulin Pumps (Direct Award)", href: "#", category: deviceType, businessUnit: "GSTT - Specialist Services - Diabetes",
+        people: 'Contract owner: Tom Haldane<br>tom.haldane@nhs.net' }
+    ]
+  },
+  {
+    name: "Manchester University NHS Foundation Trust",
+    contracts: [
+      { name: "MFT-Diabetes Technology-ArcTech-2025", href: "/branded-device/contract-mft", category: "Insulin infusion devices", businessUnit: "MFT - Clinical Support - Diabetes Centre",
+        people: 'Contract owner: Priya Natarajan<br>priya.natarajan@mft.nhs.uk' }
+    ]
+  },
+  {
+    name: "Newcastle upon Tyne Hospitals NHS Foundation Trust",
+    contracts: [
+      { name: "NUTH-MEDENG-ArcTech VIP managed service", href: "#", category: "Volumetric infusion pumps", businessUnit: "NUTH - Medical Engineering",
+        people: 'Contract owner: Graham Liddle<br>Procurement lead: Jo Armstrong' },
+      { name: "NUTH - Syringe Drivers - ArcTech", href: "#", category: "Syringe drivers", businessUnit: "NUTH - Community Services",
+        people: 'Procurement lead: Jo Armstrong' }
+    ]
+  },
+  {
+    name: "Oxford University Hospitals NHS Foundation Trust",
+    contracts: [
+      { name: "OUH Infusion Devices Framework Call Off (ArcTech)", href: "/branded-device/contract-ouh", category: "Infusion devices", businessUnit: "OUH Trustwide",
+        people: 'Contract owner: James Whitfield<br>Procurement lead: Hannah Price' },
+      { name: "OUH - Drug Administration Sets - ArcTech", href: "/branded-device/contract-ouh-2", category: "Drug administration devices", businessUnit: "OUH - Pharmacy",
+        people: 'Contract owner: James Whitfield' }
+    ]
+  },
+  {
+    name: "Royal Devon University Healthcare NHS Foundation Trust",
+    contracts: [
+      { name: "RDUH - Infusion Pumps (Volumetric) - ArcTech", href: "#", category: "Volumetric infusion pumps", businessUnit: "RDUH - Estates and Medical Equipment",
+        people: 'Contract owner: Lucy Penrose<br>lucy.penrose@nhs.net' }
+    ]
+  },
+  {
+    name: "Sheffield Teaching Hospitals NHS Foundation Trust",
+    contracts: [
+      { name: "STH - Ambulatory Pumps - ArcTech", href: "/branded-device/contract-sth", category: deviceType, businessUnit: "STH - Specialist Services - Diabetes and Endocrinology",
+        people: 'Procurement lead: Marcus Lee<br>marcus.lee3@nhs.net' }
+    ]
+  },
+  {
+    name: "University Hospitals of Leicester NHS Trust",
+    contracts: [
+      { name: "UHL - Drug Administration Consumables - ArcTech", href: "/branded-device/contract-uhl", category: "Drug administration devices", businessUnit: "UHL Trustwide",
+        people: 'Contract owner: Ruth Ellison' }
+    ]
+  }
+] %}
+
+{% block beforeContent %}
+
+{{ breadcrumb({
+  items: [
+    { href: "/identify-alternatives/search-and-browse", text: "Search and browse" },
+    { href: "/branded-device/supplier", text: supplier }
+  ]
+}) }}
+
+{% endblock %}
+
+{% block content %}
+
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-full">
+
+    <h1 class="nhsuk-heading-l nhsuk-u-margin-bottom-4">
+      <span class="nhsuk-caption-l">{{ supplier }}</span>
+      Trusts with contracts
+    </h1>
+
+    
+    <p class="nhsuk-body-s">A to Z by trust.</p>
+
+    {% for trust in trusts %}
+      {% set rows = [] %}
+      {% for c in trust.contracts %}
+        {% set rows = (rows.push([
+          { header: "Contract", text: c.name },
+          { header: "Category", text: c.category },
+          { header: "Business unit", text: c.businessUnit },
+          { header: "People named on the contract", html: c.people },
+          { header: "Details", html: '<a href="' + c.href + '">View</a>' }
+        ]), rows) %}
+      {% endfor %}
+      <h2 class="nhsuk-heading-m nhsuk-u-margin-top-5 nhsuk-u-margin-bottom-2" id="trust-{{ loop.index }}">{{ trust.name }}</h2>
+      {{ table({
+        attributes: { "aria-labelledby": "trust-" + loop.index },
+        responsive: true,
+        firstCellIsHeader: true,
+        head: [
+          { text: "Contract" },
+          { text: "Category" },
+          { text: "Business unit" },
+          { text: "People named on the contract" },
+          { text: "Details" }
+        ],
+        rows: rows
+      }) }}
+    {% endfor %}
+
+  </div>
+</div>
+
+{% endblock %}

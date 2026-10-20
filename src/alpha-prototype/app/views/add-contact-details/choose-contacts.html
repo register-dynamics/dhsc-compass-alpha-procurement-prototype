@@ -1,0 +1,78 @@
+{#
+  Choose contacts: reached by answering "Choose people from my trust" on
+  who-should-be-a-contact. Static.
+
+  - Checkboxes, since several people can be picked (Components/checkboxes.md).
+    None is pre-selected. Small checkboxes, as on other staff-facing pages.
+  - The list is the trust's people, from their accounts. No hint saying so,
+    or saying how it is ordered: Dylan removed non-critical hints, since
+    people skip them. This departs from the team convention of stating the
+    source and order of system-generated lists.
+  - You are first, marked "(you)", so including or leaving yourself out is
+    1 tick. The rest are A to Z by first name. The guidance defaults to A to
+    Z but allows another order where it helps.
+  - "Someone who is not on this list" comes last, for people with no
+    account, and leads to add-someone-not-listed. No "or" divider: that
+    marks an option that excludes the others, and this one does not.
+  - Branches in routes.js: someone not on the list goes to
+    add-someone-not-listed, otherwise to check-contacts. Ticks are
+    pre-filled when coming back.
+  - Names and job titles are invented.
+#}
+
+{% extends "add-contact-details/_layout.html" %}
+
+{% from "back-link/macro.njk" import backLink %}
+{% from "checkboxes/macro.njk" import checkboxes %}
+{% from "button/macro.njk" import button %}
+
+{% set brand = "REUSABLE SCISSORS" %}
+{% set pageName = "Who from your trust should be a contact?" %}
+{% set mainClasses = "nhsuk-main-wrapper--s" %}
+
+{% block beforeContent %}
+  {{ backLink({
+    href: "/add-contact-details/who-should-be-a-contact",
+    text: "Back"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+
+    <form action="/add-contact-details/choose-contacts" method="post" novalidate>
+
+      {# Lets the kit clear the answer when every box is unticked #}
+      <input type="hidden" name="contacts" value="_unchecked">
+
+      {{ checkboxes({
+        name: "contacts",
+        values: data.contacts,
+        classes: "nhsuk-checkboxes--small",
+        fieldset: {
+          legend: {
+            html: '<span class="nhsuk-caption-l">' + brand + '</span>' + pageName,
+            classes: "nhsuk-fieldset__legend--l",
+            isPageHeading: true
+          }
+        },
+        items: [
+          { value: "kelvin-simpson", text: "Kelvin Simpson (you)" },
+          { value: "aisha-rahman", text: "Aisha Rahman" },
+          { value: "ben-okafor", text: "Ben Okafor" },
+          { value: "hannah-whitlock", text: "Hannah Whitlock" },
+          { value: "marcus-lee", text: "Marcus Lee" },
+          { value: "not-listed", text: "Someone who is not on this list" }
+        ]
+      }) }}
+
+      {{ button({ text: "Continue" }) }}
+
+    </form>
+
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,86 @@
+{#
+  Check contacts: the end of every branch, before anyone is added
+  (Patterns/check-answers.md).
+
+  - The heading says what to do, and the button says what it does
+    ("Confirm and add contacts"), as the pattern asks.
+  - Answers are rephrased as the result, the people who will be added,
+    rather than repeating "Just me" or "Everyone in my trust".
+  - Change links go back to the question that set each section, with
+    visually hidden text naming it. People not on the list each get their
+    own Change link, which pre-fills them (?edit=).
+  - "Add another person who is not on the list" covers adding more than 1,
+    since the knowledge base has no "add another" pattern. It shows only on
+    the "choose" branch, the only one that allows people not on the list.
+  - Confirming goes to contacts-added. Nothing is saved to the device page
+    yet.
+#}
+
+{% extends "add-contact-details/_layout.html" %}
+
+{% from "back-link/macro.njk" import backLink %}
+{% from "summary-list/macro.njk" import summaryList %}
+{% from "button/macro.njk" import button %}
+
+{% set brand = "REUSABLE SCISSORS" %}
+{% set pageName = "Check who will be added as a contact" %}
+{% set mainClasses = "nhsuk-main-wrapper--s" %}
+
+{% set chosePeople = data.whoShouldBeAContact == "choose" %}
+{% set trustChange = "/add-contact-details/choose-contacts" if chosePeople else "/add-contact-details/who-should-be-a-contact" %}
+
+{% set trustNames %}
+  {% for person in peopleFromTrust %}
+    {{ person.name }}{% if person.you %} (you){% endif %}<br>
+  {% else %}
+    No one
+  {% endfor %}
+{% endset %}
+
+{% set rows = [
+  {
+    key: { text: "From your trust" },
+    value: { html: trustNames },
+    actions: { items: [ { href: trustChange, text: "Change", visuallyHiddenText: "people from your trust" } ] }
+  }
+] %}
+
+{% for person in otherContacts %}
+  {% set rows = (rows.push({
+    key: { text: "Not on the list" },
+    value: { html: person.name + "<br>" + person.jobTitle + "<br>" + person.email },
+    actions: { items: [ { href: "/add-contact-details/add-someone-not-listed?edit=" + loop.index0, text: "Change", visuallyHiddenText: person.name } ] }
+  }), rows) %}
+{% endfor %}
+
+{% block beforeContent %}
+  {{ backLink({
+    href: "/add-contact-details/who-should-be-a-contact",
+    text: "Back"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+
+    <h1 class="nhsuk-heading-l">
+      <span class="nhsuk-caption-l">{{ brand }}</span>
+      {{ pageName }}
+    </h1>
+
+    {{ summaryList({ rows: rows }) }}
+
+    {% if chosePeople %}
+      <p><a href="/add-contact-details/add-someone-not-listed">Add another person who is not on the list</a></p>
+    {% endif %}
+
+    <form action="/add-contact-details/check-contacts" method="post" novalidate>
+      {{ button({ text: "Confirm and add contacts" }) }}
+    </form>
+
+  </div>
+</div>
+
+{% endblock %}
