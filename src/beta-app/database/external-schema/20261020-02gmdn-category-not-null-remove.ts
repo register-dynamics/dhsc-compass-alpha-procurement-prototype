@@ -4,9 +4,7 @@ import { Kysely } from "kysely";
 export async function down(db: Kysely<any>): Promise<void> {
   await db.schema
     .alterTable("external.gmdn_category")
-    .alterColumn("category_code", (ac) =>
-      ac.setNotNull(),
-    )
+    .alterColumn("category_code", (ac) => ac.setNotNull())
     .execute();
 }
 
@@ -14,8 +12,6 @@ export async function down(db: Kysely<any>): Promise<void> {
 export async function up(db: Kysely<any>): Promise<void> {
   await db.schema
     .alterTable("external.gmdn_category")
-    .alterColumn("category_code", (ac) =>
-      ac.dropNotNull(),
-    )
+    .alterColumn("category_code", (ac) => ac.dropNotNull())
     .execute();
 }

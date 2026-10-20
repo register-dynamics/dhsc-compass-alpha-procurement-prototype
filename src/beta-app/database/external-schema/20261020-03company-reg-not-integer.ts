@@ -5,7 +5,7 @@ export async function down(db: Kysely<any>): Promise<void> {
   await db.schema
     .alterTable("external.atamis_contracts")
     .alterColumn("company_regestration_number", (ac) =>
-      ac.setDataType(sql`integer USING company_regestration_number::integer`)
+      ac.setDataType(sql`integer USING company_regestration_number::integer`),
     )
     .execute();
 }
@@ -15,7 +15,7 @@ export async function up(db: Kysely<any>): Promise<void> {
   await db.schema
     .alterTable("external.atamis_contracts")
     .alterColumn("company_regestration_number", (ac) =>
-      ac.setDataType(sql`varchar USING company_regestration_number::varchar`)
+      ac.setDataType(sql`varchar USING company_regestration_number::varchar`),
     )
     .execute();
 }
