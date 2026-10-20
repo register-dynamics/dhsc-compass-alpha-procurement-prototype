@@ -4,8 +4,8 @@ import { Kysely, sql } from "kysely";
 export async function down(db: Kysely<any>): Promise<void> {
   await db.schema
     .alterTable("external.gmdn_category")
-    .alterColumn("nodeID", (ac) =>
-      ac.setDataType(sql`varchar USING nodeID::varchar`),
+    .alterColumn("node_id", (ac) =>
+      ac.setDataType(sql`varchar USING node_id::varchar`),
     )
     .alterColumn("parent_id", (ac) =>
       ac.setDataType(sql`varchar USING parent_id::varchar`),
@@ -27,8 +27,8 @@ export async function down(db: Kysely<any>): Promise<void> {
 export async function up(db: Kysely<any>): Promise<void> {
   await db.schema
     .alterTable("external.gmdn_category")
-    .alterColumn("nodeID", (ac) =>
-      ac.setDataType(sql`integer USING nodeID::integer`),
+    .alterColumn("node_id", (ac) =>
+      ac.setDataType(sql`integer USING node_id::integer`),
     )
     .alterColumn("parent_id", (ac) =>
       ac.setDataType(sql`integer USING parent_id::integer`),
