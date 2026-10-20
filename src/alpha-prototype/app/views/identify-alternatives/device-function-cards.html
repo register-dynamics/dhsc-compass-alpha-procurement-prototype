@@ -1,0 +1,96 @@
+{#
+  Sketch 1a (cards): Device function.
+
+  A variation on device-function, in the same form as
+  tissue-reparation-devices-cards: one clickable primary card per group
+  instead of a group heading over a list of links. Built to compare against
+  the list version.
+
+  Cards follow the hub page shape that Components/card.md points to for
+  grouped cards, one link per card. Card headings are h2, since they sit
+  directly under the h1. Three columns, for B2B density.
+
+  ── Content ─────────────────────────────────────────────────────────────
+
+  Group names are ours, not GMDN's, as on the list version, and need a
+  clinical check. Scent trails are GMDN category names in GMDN's order,
+  lower-cased in running text as on search-and-browse. Over 3 in a group,
+  the first 3 as "Like X, Y or Z". 3 or fewer, all of them, since "like"
+  would suggest there are more. Drafts for Jill.
+
+  No counts: the list version has none, so none are invented here.
+
+  "Disability-living products" and US spellings are kept, since they are
+  GMDN terms.
+
+  ── Open question ───────────────────────────────────────────────────────
+
+  A group is not a GMDN level, so there is no page for a card to open yet.
+  For now Implants, surgery and endoscopy goes to the card version of Tissue
+  reparation devices so the journey continues, and the other cards go to "#".
+#}
+
+{% extends "identify-alternatives/_layout.html" %}
+
+{% set pageName = "Device function" %}
+
+{% set mainClasses = "nhsuk-main-wrapper--s" %}
+
+{% set groups = [
+  { heading: "Implants, surgery and endoscopy", href: "/identify-alternatives/tissue-reparation-devices-cards",
+    description: "Like active implant devices/ancillaries, tissue reparation devices or surgical/invasive procedure instrumentation" },
+  { heading: "Anaesthesia, circulation and blood", href: "#",
+    description: "Anaesthesia and ventilation devices, circulatory assistive/bypass devices and autologous blood processing devices" },
+  { heading: "Imaging and energy-based therapy", href: "#",
+    description: "Radiological devices and energy-based therapy equipment (non-radiological/non-surgical)" },
+  { heading: "Monitoring and examination", href: "#",
+    description: "Physiological monitoring/measuring devices and physical examination equipment" },
+  { heading: "Therapy, rehabilitation and everyday care", href: "#",
+    description: "Like biomechanical rehabilitation equipment, bariatric therapy devices or general hospital devices" },
+  { heading: "Laboratory, diagnostics and software", href: "#",
+    description: "Laboratory instruments and equipment, in vitro diagnostic medical devices (IVDs) and software" }
+] %}
+
+{% block beforeContent %}
+
+{{ breadcrumb({
+  items: [
+    { href: "/identify-alternatives/search-and-browse", text: "Search and browse" }
+  ]
+}) }}
+
+{% endblock %}
+
+{% block content %}
+
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+    <h1 class="nhsuk-heading-l nhsuk-u-margin-bottom-2">{{ pageName }}</h1>
+    <p>Categories that group medical devices by clinical functionality or paraclinical context.</p>
+  </div>
+</div>
+
+<ul class="nhsuk-grid-row nhsuk-card-group">
+  {% for group in groups %}
+  <li class="nhsuk-grid-column-one-third nhsuk-card-group__item">
+    {{ card({
+      primary: true,
+      clickable: true,
+      href: group.href,
+      heading: group.heading,
+      headingLevel: "2",
+      headingClasses: "nhsuk-heading-m",
+      description: group.description
+    }) }}
+  </li>
+  {% endfor %}
+</ul>
+
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+    {# Kept from the list version: a route sideways to the other root node. #}
+    <p><a href="/identify-alternatives/search-and-browse">Browse by anatomical specialty instead</a></p>
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,73 @@
+{% extends 'layout.html' %}
+
+{% from "back-link/macro.njk" import backLink %}
+
+{% set pageName = "Add contact details" %}
+
+{#
+  Landing page for the "add contact details" concept.
+
+  Sketches go in the list below as they are made, one link per sketch, with a
+  line saying how each differs from the ones beside it. Keep the differences
+  in the list rather than on the sketches themselves, so a participant
+  choosing from this page is not steered towards one.
+
+  Every page made for this concept is listed here, including pages reached by
+  clicking through a sketch rather than starting from it. Those are nested
+  under the sketch they belong to, so the list shows the shape of each journey
+  and nothing is reachable only by knowing its URL.
+#}
+
+{% block beforeContent %}
+  {{ backLink({
+    href: "/",
+    text: "Back"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+
+    <h1 class="nhsuk-heading-l">{{ pageName }}</h1>
+
+    <h2 class="nhsuk-heading-m">Sketches</h2>
+
+    <ul class="nhsuk-list">
+      <li>
+        <a href="/add-contact-details/branded-device">1. Branded device page</a>
+        <br><span class="nhsuk-hint">A copy of the branded device page from Identify comparable alternatives, with variants, contacts and documents in tabs</span>
+        <ul class="nhsuk-list nhsuk-u-margin-left-4 nhsuk-u-margin-top-2">
+          <li>
+            <a href="/add-contact-details/who-should-be-a-contact">Who should be a contact</a>
+            <br><span class="nhsuk-hint">Reached from Add contact details on the Contacts tab. A filter question: just me, everyone in my trust, or choose people. Just me and everyone go straight to Check contacts</span>
+            <ul class="nhsuk-list nhsuk-u-margin-left-4 nhsuk-u-margin-top-2">
+              <li>
+                <a href="/add-contact-details/choose-contacts">Choose contacts</a>
+                <br><span class="nhsuk-hint">Reached by choosing people. The 5 people in your trust as checkboxes, you first, and an option for someone not on the list</span>
+                <ul class="nhsuk-list nhsuk-u-margin-left-4 nhsuk-u-margin-top-2">
+                  <li>
+                    <a href="/add-contact-details/add-someone-not-listed">Add someone not listed</a>
+                    <br><span class="nhsuk-hint">Reached by ticking someone who is not on the list. Their name, job title and NHS email address</span>
+                  </li>
+                  <li>
+                    <a href="/add-contact-details/check-contacts">Check contacts</a>
+                    <br><span class="nhsuk-hint">The end of every branch. Who will be added, with Change links, before confirming</span>
+                  </li>
+                  <li>
+                    <a href="/add-contact-details/contacts-added">Contacts added</a>
+                    <br><span class="nhsuk-hint">The confirmation page, reached by confirming. What happens next, and a link back to the device</span>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+    </ul>
+
+  </div>
+</div>
+
+{% endblock %}

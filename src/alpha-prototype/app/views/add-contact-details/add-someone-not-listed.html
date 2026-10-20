@@ -1,0 +1,86 @@
+{#
+  Add someone not listed: reached by ticking "Someone who is not on this
+  list" on choose-contacts. For people at the trust who have no account yet,
+  so are not in the list. Static.
+
+  - A separate page rather than a reveal under the checkbox: the guidance
+    says revealing questions with more than 1 part confuses users
+    (Components/checkboxes.md, known issues).
+  - 3 related fields on 1 page, grouped in a fieldset with the question as
+    the legend and h1 (Patterns/question-pages.md, Components/fieldset.md).
+  - The trust is known from the account, so it is not asked. No hint:
+    Dylan removed non-critical hints.
+  - No autocomplete on name or email: they are someone else's, and browser
+    autofill would offer the user's own (WCAG 1.3.5 only covers the user's
+    own details).
+  - 1 person per pass. check-contacts links back here to add another, and
+    each person's Change link comes back with ?edit= to pre-fill them.
+#}
+
+{% extends "add-contact-details/_layout.html" %}
+
+{% from "back-link/macro.njk" import backLink %}
+{% from "fieldset/macro.njk" import fieldset %}
+{% from "input/macro.njk" import input %}
+{% from "button/macro.njk" import button %}
+
+{% set brand = "REUSABLE SCISSORS" %}
+{% set pageName = "Who else should be a contact?" %}
+{% set mainClasses = "nhsuk-main-wrapper--s" %}
+
+{% block beforeContent %}
+  {{ backLink({
+    href: "/add-contact-details/choose-contacts",
+    text: "Back"
+  }) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+
+    <form action="/add-contact-details/add-someone-not-listed{{ ("?edit=" + editIndex) if editIndex is defined }}" method="post" novalidate>
+
+      {% call fieldset({
+        legend: {
+          html: '<span class="nhsuk-caption-l">' + brand + '</span>' + pageName,
+          classes: "nhsuk-fieldset__legend--l",
+          isPageHeading: true
+        }
+      }) %}
+
+        {{ input({
+          label: { text: "Full name" },
+          id: "otherContactName",
+          name: "otherContactName",
+          spellcheck: false,
+          value: person.name
+        }) }}
+
+        {{ input({
+          label: { text: "Job title" },
+          id: "otherContactJobTitle",
+          name: "otherContactJobTitle",
+          value: person.jobTitle
+        }) }}
+
+        {{ input({
+          label: { text: "NHS email address" },
+          id: "otherContactEmail",
+          name: "otherContactEmail",
+          type: "email",
+          spellcheck: false,
+          value: person.email
+        }) }}
+
+      {% endcall %}
+
+      {{ button({ text: "Continue" }) }}
+
+    </form>
+
+  </div>
+</div>
+
+{% endblock %}

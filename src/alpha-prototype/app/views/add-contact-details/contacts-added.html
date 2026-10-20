@@ -1,0 +1,46 @@
+{#
+  Contacts added: the end of the journey, after Confirm and add contacts on
+  check-contacts (Patterns/confirmation-page.md).
+
+  A confirmation page rather than a success banner on the device page, by
+  Dylan's choice: taking in "it worked" and landing on a different page at
+  the same time is harder than doing them one at a time.
+
+  - The green panel's heading confirms what was done, as the pattern
+    requires. The device name goes in the panel text.
+  - "What happens next" is required by the pattern. It says only what the
+    design already does: NHS users can see the contacts on the device's
+    Contacts tab. Whether the people added are told is not decided, so it
+    is not claimed here.
+  - Kept to 3 parts (panel, what happens next, a link back), since the
+    pattern warns that more components confuse people.
+  - The link opens the device page on the Contacts tab (#contacts).
+#}
+
+{% extends "add-contact-details/_layout.html" %}
+
+{% from "panel/macro.njk" import panel %}
+
+{% set brand = "REUSABLE SCISSORS" %}
+{% set pageName = "Contacts added" %}
+{% set mainClasses = "nhsuk-main-wrapper--s" %}
+
+{% block content %}
+
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+
+    {{ panel({
+      titleText: pageName,
+      text: "For " + brand
+    }) }}
+
+    <h2 class="nhsuk-heading-m">What happens next</h2>
+    <p>NHS users can now see these contacts on the Contacts tab for this device.</p>
+
+    <p><a href="/add-contact-details/branded-device#contacts">Go back to {{ brand }}</a></p>
+
+  </div>
+</div>
+
+{% endblock %}
