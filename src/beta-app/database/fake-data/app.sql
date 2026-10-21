@@ -152,6 +152,7 @@ INSERT INTO "app"."product_matches" ("product_id","evidence_id") VALUES
  (45236891,13456),
  (45236891,4321);
  
+
 -- Seed user for beta app login
 INSERT INTO app.users (id, username, password_hash, given_name, last_name) VALUES
   (1, 'test@example.com', '$argon2id$v=19$m=65536,p=4,t=3$FOt9ovCYjfa8MBG+0xhOiA$ql+3cvHd48lV8auNcHSU/Wjw3Lfr1IFRRroA32XFhKM', 'Johnny', 'Test');
@@ -160,7 +161,7 @@ INSERT INTO app.users (id, username, password_hash, given_name, last_name) VALUE
 INSERT INTO app.organisation_user (organisation_id, user_id) VALUES
   (3, 1);
 
-  -- Update sequences for tables that were missing identity columns
+-- Update sequences for tables that were missing identity columns
 SELECT setval(pg_get_serial_sequence('"app"."contacts"', 'contact_id'), COALESCE((SELECT MAX("contact_id") FROM "app"."contacts"), 1));
 SELECT setval(pg_get_serial_sequence('"app"."document_type"', 'type_of_doc_id'), COALESCE((SELECT MAX("type_of_doc_id") FROM "app"."document_type"), 1));
 SELECT setval(pg_get_serial_sequence('"app"."org_category"', 'org_category_id'), COALESCE((SELECT MAX("org_category_id") FROM "app"."org_category"), 1));
