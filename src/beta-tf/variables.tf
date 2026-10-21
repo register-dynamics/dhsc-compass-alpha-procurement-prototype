@@ -37,8 +37,3 @@ variable "subnet_id" {
 
 # PE Subnet for accessing blob store
 # AMPLS for monitoring
-
-
-# ACR - Premium
-
-# Push to Github container registry for public things then pull it from ACR for better caching

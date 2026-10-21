@@ -1,0 +1,25 @@
+name: Beta CI on pull requests
+
+on:
+   push:
+       paths:
+          - 'src/beta-app/**'
+
+jobs:
+  deploy:
+    runs-on: mps-selfhosted-runner
+    environment: dev
+    steps:
+      - uses: actions/checkout@v7
+      - uses: azure/login@v3
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_RTL_SUBSCRIPTION_ID }}
+      - uses: hashicorp/setup-terraform@v4
+      - run: ./terraform-ci-deploy.sh dev $GITHUB_REF
+        env:
+          ARM_USE_OIDC: "true"
+          ARM_CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
+          ARM_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
+          ARM_SUBSCRIPTION_ID: ${{ vars.AZURE_RTL_SUBSCRIPTION_ID }}
