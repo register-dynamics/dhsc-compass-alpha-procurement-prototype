@@ -25,7 +25,7 @@
             <ul class="nhsuk-list nhsuk-list--border nhsuk-u-margin-bottom-5">
                 {% for subcategory in subcategories %}
                 <li>
-                    <a href="/category/{{ subcategory.id }}">{{ subcategory.name }}</a>
+                    <a href="/category/{{ subcategory.nodeId }}">{{ subcategory.name }}</a>
                     ({{ subcategory.subcategoryCount }})
                 </li>
                 {% endfor %}

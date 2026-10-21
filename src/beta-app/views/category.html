@@ -17,7 +17,7 @@
 {% for item in categoryHierarchy %}
     {% set breadcrumbItems = breadcrumbItems.concat([
         {
-            href: "/category/" ~ item.id,
+            href: "/category/" ~ item.nodeId,
             text: item.name
         }
     ]) %}
@@ -36,10 +36,10 @@
     {% if hierarchyLevel == 1 %}
         {{ gmdnLevel1(category, subcategories) }}
     {% elif hierarchyLevel == 2 %}
-        {% set parentCategory = categoryHierarchy | selectattr("id", "equalto", category.parentId) | first %}
+        {% set parentCategory = categoryHierarchy | selectattr("nodeId", "equalto", category.parentId) | first %}
         {{ gmdnLevel2(category, subcategories, parentCategory) }}
     {% elif hierarchyLevel == 3 %}
-        {% set parentCategory = categoryHierarchy | selectattr("id", "equalto", category.parentId) | first %}
+        {% set parentCategory = categoryHierarchy | selectattr("nodeId", "equalto", category.parentId) | first %}
         {{ gmdnLevel3(category, subcategories, parentCategory) }}
     {# DEBUG: Comment out when done #}
     {% else %}

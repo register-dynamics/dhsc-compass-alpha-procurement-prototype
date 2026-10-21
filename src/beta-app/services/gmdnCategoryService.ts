@@ -4,8 +4,8 @@ const categoryAllowList = ["Anatomical Specialty", "Device Function"];
 
 export const getTopLevelCategories = async () => {
   return await db
-    .withSchema("app")
-    .selectFrom("gmdnCategories")
+    .withSchema("external")
+    .selectFrom("gmdnCategory")
     .where("parentId", "is", null)
     .where("name", "in", categoryAllowList)
     .selectAll()
@@ -13,41 +13,41 @@ export const getTopLevelCategories = async () => {
     .execute();
 };
 
-export const getCategoriesWithParentId = async (parentId: string) => {
+export const getCategoriesWithParentId = async (parentId: number) => {
   return await db
-    .withSchema("app")
-    .selectFrom("gmdnCategories")
+    .withSchema("external")
+    .selectFrom("gmdnCategory")
     .leftJoin(
-      "gmdnCategories as childCategory",
+      "gmdnCategory as childCategory",
       "childCategory.parentId",
-      "gmdnCategories.id",
+      "gmdnCategory.nodeId",
     )
-    .where("gmdnCategories.parentId", "=", parentId)
-    .selectAll("gmdnCategories")
+    .where("gmdnCategory.parentId", "=", parentId)
+    .selectAll("gmdnCategory")
     .select((eb) =>
-      eb.fn.count<number>("childCategory.id").as("subcategoryCount"),
+      eb.fn.count<number>("childCategory.nodeId").as("subcategoryCount"),
     )
     .groupBy([
-      "gmdnCategories.id",
-      "gmdnCategories.gmdnCategoryCode",
-      "gmdnCategories.name",
-      "gmdnCategories.definition",
-      "gmdnCategories.parentId",
+      "gmdnCategory.nodeId",
+      "gmdnCategory.categoryCode",
+      "gmdnCategory.name",
+      "gmdnCategory.definition",
+      "gmdnCategory.parentId",
     ])
     .orderBy("name", "asc")
     .execute();
 };
 
-export const getCategoryById = async (categoryId: string) => {
+export const getCategoryById = async (categoryId: number) => {
   return await db
-    .withSchema("app")
-    .selectFrom("gmdnCategories")
-    .where("id", "=", categoryId)
+    .withSchema("external")
+    .selectFrom("gmdnCategory")
+    .where("nodeId", "=", categoryId)
     .selectAll()
     .executeTakeFirstOrThrow();
 };
 
-export const getHierarchyForCategory = async (categoryId: string) => {
+export const getHierarchyForCategory = async (categoryId: number) => {
   const category = await getCategoryById(categoryId);
   const hierarchy = [category];
   let currentCategory = category;

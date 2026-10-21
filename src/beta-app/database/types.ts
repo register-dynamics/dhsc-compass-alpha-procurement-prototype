@@ -19,7 +19,7 @@ export interface Database {
   organisation_user: OrganisationUserTable;
   organisation_contact: OrganisationContactTable;
   organisations: OrganisationsTable;
-  gmdnCategories: GmdnCategoriesTable;
+  gmdnCategory: GmdnCategoryTable;
 }
 
 export type Contact = Selectable<ContactTable>;
@@ -179,12 +179,13 @@ export interface OrganisationsTable {
   organisationName: string;
 }
 
-export type GmdnCategory = Selectable<GmdnCategoriesTable>;
+export type GmdnCategory = Selectable<GmdnCategoryTable>;
 
-export interface GmdnCategoriesTable {
-  id: Generated<string>;
-  gmdnCategoryCode: string;
+export interface GmdnCategoryTable {
+  nodeId: Generated<number>;
+  categoryCode: null | string;
   name: string;
   definition: string;
-  parentId: null | string;
+  parentId: null | number;
+  topId: null | number;
 }

@@ -131,11 +131,11 @@ export const renderCategories = async (req: Request, res: Response) => {
 export const renderCategory = async (req: Request, res: Response) => {
   const { categoryId } = req.params;
 
-  const categoryHierarchy = await getHierarchyForCategory(String(categoryId));
+  const categoryHierarchy = await getHierarchyForCategory(Number(categoryId));
 
-  const category = await getCategoryById(String(categoryId));
+  const category = await getCategoryById(Number(categoryId));
 
-  const subcategories = await getCategoriesWithParentId(String(categoryId));
+  const subcategories = await getCategoriesWithParentId(Number(categoryId));
 
   const hierarchyLevel = categoryHierarchy.length;
 

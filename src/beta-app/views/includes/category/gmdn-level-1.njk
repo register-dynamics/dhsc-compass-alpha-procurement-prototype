@@ -13,7 +13,7 @@
             <ul class="nhsuk-list nhsuk-list--border nhsuk-u-margin-bottom-5">
                 {% for subcategory in subcategories %}
                     <li>
-                        <a href="/category/{{ subcategory.id }}">{{ subcategory.name }}</a>
+                        <a href="/category/{{ subcategory.nodeId }}">{{ subcategory.name }}</a>
                     </li>
                 {% endfor %}
             </ul>
@@ -26,9 +26,9 @@
             {% set parentUrl = "/categories" if category.parentId == null else 
                 "/category/" ~ category.parentId %}
             {% set backText = "Back" %}
-            {% if category.id == '4' %}
+            {% if category.nodeId == '4' %}
                 {% set backText = "Browse by device function instead" %}
-            {% elif category.id == '4941' %}
+            {% elif category.nodeId == '4941' %}
                 {% set backText = "Browse by anatomical specialty instead" %}
             {% endif %}
             <p>
