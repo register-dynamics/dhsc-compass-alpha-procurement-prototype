@@ -24,13 +24,13 @@ const routeDefinitions: RouteDefinition[] = [
   {
     handler: renderCategories,
     method: "get",
-    path: "/categories"
+    path: "/categories",
   },
   {
     handler: renderCategory,
     method: "get",
-    path: "/category/:categoryId"
-  }
+    path: "/category/:categoryId",
+  },
 ];
 
 registerRoutes(router, routeDefinitions);

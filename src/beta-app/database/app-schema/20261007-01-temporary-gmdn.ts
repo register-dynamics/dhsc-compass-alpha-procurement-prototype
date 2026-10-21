@@ -1,4 +1,4 @@
-import { Kysely, sql } from "kysely";
+import { Kysely } from "kysely";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function down(db: Kysely<any>): Promise<void> {
@@ -8,7 +8,6 @@ export async function down(db: Kysely<any>): Promise<void> {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function up(db: Kysely<any>): Promise<void> {
-
   await db.schema
     .createTable("app.gmdn_category_term_links")
     .addColumn("gmdn_category_code", "varchar", (col) => col.notNull())
@@ -21,6 +20,8 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn("gmdn_category_code", "varchar")
     .addColumn("name", "varchar", (col) => col.notNull())
     .addColumn("definition", "varchar", (col) => col.notNull())
-    .addColumn("parent_id", "varchar", (col) => col.references("app.gmdn_categories.id"))
+    .addColumn("parent_id", "varchar", (col) =>
+      col.references("app.gmdn_categories.id"),
+    )
     .execute();
 }
