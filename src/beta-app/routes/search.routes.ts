@@ -3,6 +3,7 @@ import { Router } from "express";
 import {
   renderCategories,
   renderCategory,
+  renderDeviceType,
   renderSearch,
   renderSearchResults,
 } from "../controllers/search.controller.js";
@@ -31,6 +32,11 @@ const routeDefinitions: RouteDefinition[] = [
     method: "get",
     path: "/category/:categoryId",
   },
+  {
+    handler: renderDeviceType,
+    method: "get",
+    path: "/device-type/:deviceTypeId",
+  }
 ];
 
 registerRoutes(router, routeDefinitions);

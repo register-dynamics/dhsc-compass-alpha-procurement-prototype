@@ -3,6 +3,7 @@
 {% from "includes/category/gmdn-level-1.njk" import gmdnLevel1 %}
 {% from "includes/category/gmdn-level-2.njk" import gmdnLevel2 %}
 {% from "includes/category/gmdn-level-3.njk" import gmdnLevel3 %}
+{% from "includes/category/device-types-list.njk" import deviceTypesList %}
 
 {% set pageName = category.name %}
 
@@ -31,7 +32,7 @@
 
 {% endblock %}
 
-{% block content %}
+{% block content %}   
 
     {% if hierarchyLevel == 1 %}
         {{ gmdnLevel1(category, subcategories) }}
@@ -41,6 +42,8 @@
     {% elif hierarchyLevel == 3 %}
         {% set parentCategory = categoryHierarchy | selectattr("nodeId", "equalto", category.parentId) | first %}
         {{ gmdnLevel3(category, subcategories, parentCategory) }}
+    {% elif subcategories|length == 0 %}
+        {{ deviceTypesList(deviceTypes, category.name) }}
     {# DEBUG: Comment out when done #}
     {% else %}
         {{ subcategories | dump }}
