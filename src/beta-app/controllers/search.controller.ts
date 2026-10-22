@@ -148,7 +148,7 @@ export const renderCategory = async (
   const subcategories = await getCategoriesWithParentId(Number(categoryId));
 
   const hierarchyLevel = categoryHierarchy.length;
- 
+
   const payload: {
     category: typeof category;
     categoryHierarchy: typeof categoryHierarchy;
@@ -156,7 +156,14 @@ export const renderCategory = async (
     gmdnTermName: string;
     hierarchyLevel: number;
     subcategories: typeof subcategories;
-  } = { category, categoryHierarchy, deviceTypes: [], gmdnTermName: "", hierarchyLevel, subcategories };
+  } = {
+    category,
+    categoryHierarchy,
+    deviceTypes: [],
+    gmdnTermName: "",
+    hierarchyLevel,
+    subcategories,
+  };
 
   // Check if we're at the bottom of the hierarchy (no subcategories)
   if (subcategories.length === 0) {
@@ -191,7 +198,7 @@ export const renderDeviceType = async (
 
   if (products.length === 0) {
     throw new Error(`No products found for device type ID ${deviceTypeId}`);
-  }  
+  }
 
   res.render("device-type.html", { deviceType, products });
 };

@@ -36,7 +36,7 @@ const routeDefinitions: RouteDefinition[] = [
     handler: renderDeviceType,
     method: "get",
     path: "/device-type/:deviceTypeId",
-  }
+  },
 ];
 
 registerRoutes(router, routeDefinitions);
