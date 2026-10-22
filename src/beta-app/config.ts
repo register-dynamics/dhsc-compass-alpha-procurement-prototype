@@ -17,6 +17,7 @@ const config = {
   database: {
     database: process.env.DATABASE_NAME,
     host: process.env.DATABASE_HOST,
+    password: process.env.DATABASE_PASSWORD,
     password_file: process.env.DATABASE_PASSWORD_FILE,
     user: process.env.DATABASE_USER,
   },
