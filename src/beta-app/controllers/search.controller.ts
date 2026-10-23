@@ -187,10 +187,11 @@ export const renderCategory = async (
 };
 
 export const renderDeviceType = async (
-  req: Request<{ deviceTypeId: string }>,
+  req: Request<{ category: number; deviceTypeId: string }>,
   res: Response,
 ) => {
   const { deviceTypeId } = req.params;
+  const category = Number(req.query.category);
 
   const deviceType = await getDeviceTypeById(Number(deviceTypeId));
 
@@ -200,5 +201,7 @@ export const renderDeviceType = async (
     throw new Error(`No products found for device type ID ${deviceTypeId}`);
   }
 
-  res.render("device-type.html", { deviceType, products });
+  const categoryHierarchy = await getHierarchyForCategory(category);
+
+  res.render("device-type.html", { categoryHierarchy, deviceType, products });
 };

@@ -1,15 +1,10 @@
-{% macro deviceTypesList(deviceTypes, categoryName) %}
-    {# 
-        Example payload
-        [{"deviceId":5362,"gmdnCode":14035,"deviceRiskSubType":"Class IIa","deviceTypeCode":"GMD","deviceTypeName":"General Medical Device","manufacturerId":65283}]
-
-    #}
+{% macro deviceTypesList(deviceTypes, category) %}
         <div class="nhsuk-grid-row">
 
         <div class="app-grid-column-two-thirds-right">
 
             <h1 class="nhsuk-heading-l nhsuk-u-margin-bottom-2" id="device-types"> {{deviceTypes | length}} device types in
-                {{ categoryName }}</h1>
+                {{ category.name }}</h1>
 
             <div data-module="app-paginated-table" data-page-size="5">
 
@@ -17,7 +12,7 @@
 
             <table class="nhsuk-table" data-module="nhsuk-table">
                 <caption class="nhsuk-table__caption nhsuk-u-visually-hidden">Device types in
-                    {{ categoryName }}</caption>
+                    {{ category.name }}</caption>
                 <thead class="nhsuk-table__head">
                     <tr>
                         <th scope="col" class="nhsuk-table__header" aria-sort="ascending" data-sort>Device type</th>
@@ -29,7 +24,7 @@
                         <tr class="nhsuk-table__row">
 
                             <td class="nhsuk-table__cell">
-                                <a href="/device-type/{{ deviceType.deviceId }}">{{ deviceType.deviceTypeName }}</a>
+                                <a href="/device-type/{{ deviceType.deviceId }}?category={{ category.nodeId }}">{{ deviceType.deviceTypeName }}</a>
                             </td>
 
                             <td class="nhsuk-table__cell nhsuk-table__cell--numeric">##</td>

@@ -43,7 +43,7 @@
         {% set parentCategory = categoryHierarchy | selectattr("nodeId", "equalto", category.parentId) | first %}
         {{ gmdnLevel3(category, subcategories, parentCategory) }}
     {% elif subcategories|length == 0 %}
-        {{ deviceTypesList(deviceTypes, category.name) }}
+        {{ deviceTypesList(deviceTypes, category) }}
     {# DEBUG: Comment out when done #}
     {% else %}
         {{ subcategories | dump }}

@@ -4,7 +4,7 @@
 
 {% set mainClasses = "nhsuk-main-wrapper--s" %}
 
-{# {% set breadcrumbItems = [
+{% set breadcrumbItems = [
     {
         href: "/categories",
         text: "Search and browse"
@@ -17,15 +17,21 @@
             text: item.name
         }
     ]) %}
-{% endfor %} #}
+{% endfor %}
+{% set breadcrumbItems = breadcrumbItems.concat([
+    {
+        href: "/device-type/" ~ deviceType.deviceId ~ "?category=" ~ categoryHierarchy[categoryHierarchy | length - 1].nodeId,
+        text: deviceType.deviceTypeName
+    }
+]) %}
 
-{# {% block beforeContent %}
+{% block beforeContent %}
 
     {{ breadcrumb({
         items: breadcrumbItems
     }) }}
 
-{% endblock %} #}
+{% endblock %}
 
 {% block content %}   
 
