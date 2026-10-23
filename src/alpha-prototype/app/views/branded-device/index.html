@@ -138,14 +138,13 @@
 <ul class="nhsuk-grid-row nhsuk-card-group nhsuk-u-margin-top-4">
   <li class="nhsuk-grid-column-one-half nhsuk-card-group__item">
     {% call card({
-      heading: "3 trusts with experience of this device",
+      heading: "3 trusts shared contact details or documents for this device",
       headingClasses: "nhsuk-heading-m"
     }) %}
       {{ summaryList({
         rows: [
-          { key: { text: "People" }, value: { text: "3" } },
-          { key: { text: "Contracts" }, value: { text: "2" } },
-          { key: { text: "Shared documents" }, value: { html: '<ul class="nhsuk-list nhsuk-u-margin-bottom-0"><li>2 evaluations</li><li>1 business case</li></ul>' }, classes: "nhsuk-summary-list__row--no-border" }
+          { key: { text: "People to contact" }, value: { text: "3" } },
+          { key: { text: "Documents" }, value: { html: '<ul class="nhsuk-list nhsuk-u-margin-bottom-0"><li>2 evaluations</li><li>1 business case</li></ul>' }, classes: "nhsuk-summary-list__row--no-border" }
         ]
       }) }}
       <p><a href="/branded-device/trusts-with-experience">View trusts</a></p>
@@ -158,12 +157,12 @@
   </li>
   <li class="nhsuk-grid-column-one-half nhsuk-card-group__item">
     {% call card({
-      heading: "4 trusts with contracts in the same or related categories",
+      heading: "4 trusts have procurement contracts in the same or related categories",
       headingClasses: "nhsuk-heading-m"
     }) %}
       {{ summaryList({
         rows: [
-          { key: { text: "Contracts" }, value: { text: "5" }, classes: "nhsuk-summary-list__row--no-border" }
+          { key: { text: "Procurement contracts on Atamis" }, value: { text: "5" }, classes: "nhsuk-summary-list__row--no-border" }
         ]
       }) }}
       <p class="nhsuk-u-margin-bottom-0"><a href="/branded-device/related-contracts">View trusts</a></p>
@@ -173,15 +172,13 @@
 
 
 <div class="nhsuk-grid-row nhsuk-u-margin-top-5">
-  <div class="nhsuk-grid-column-two-thirds">
-    <p class="nhsuk-u-margin-bottom-2">You can contact us if you:</p>
+    <p class="nhsuk-u-margin-bottom-2">You can contact our team if you:</p>
     <ul>
-      <li>disagree with something on this page</li>
-      <li>have a query about something on this page</li>
-      <li>would like to amend something on this page</li>
+      <li>have a question</li>
+      <li>disagree with information you find on these pages</li>
+      <li>would like us to update something or make a change</li>
     </ul>
-    <p>Contact the team on 0330 2234 776 or email: <a href="mailto:enquiries@dhsc.gov.uk">enquiries@dhsc.gov.uk</a></p>
-  </div>
+    <p>Call us on <a href="tel.:+4403302234776">0330 2234 776</a> or email <a href="mailto:enquiries@dhsc.gov.uk">enquiries@dhsc.gov.uk</a></p>
 </div>
 
 {% endblock %}

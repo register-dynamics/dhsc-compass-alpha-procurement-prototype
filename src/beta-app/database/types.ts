@@ -3,7 +3,6 @@
 import { Generated, Selectable } from "kysely";
 
 import type { EvidenceContact } from "../models/evidenceContact.js";
-
 export interface Database {
   contacts: ContactTable;
   product_matches: ProductMatchesTable;
@@ -19,6 +18,13 @@ export interface Database {
   organisation_user: OrganisationUserTable;
   organisation_contact: OrganisationContactTable;
   organisations: OrganisationsTable;
+
+  // external schema
+  gmdn_category: GmdnCategoryTable;
+  gmdn_category_term: GmdnCategoryTermTable;
+  gmdn: GmdnTable;
+  device_type: DeviceTypeTable;
+  products: ProductTable;
 }
 
 export type Contact = Selectable<ContactTable>;
@@ -176,4 +182,55 @@ export type Organisations = Selectable<OrganisationsTable>;
 export interface OrganisationsTable {
   organisationId: number;
   organisationName: string;
+}
+
+export type GmdnCategory = Selectable<GmdnCategoryTable>;
+
+export interface GmdnCategoryTable {
+  nodeId: Generated<number>;
+  categoryCode: null | string;
+  name: string;
+  definition: string;
+  parentId: null | number;
+  topId: null | number;
+}
+
+export type GmdnCategoryTerm = Selectable<GmdnCategoryTermTable>;
+
+export interface GmdnCategoryTermTable {
+  categoryCode: string;
+  termCode: number;
+}
+
+export type Gmdn = Selectable<GmdnTable>;
+
+export interface GmdnTable {
+  gmdnCode: number;
+  gmdnTermName: string;
+}
+
+export type DeviceType = Selectable<DeviceTypeTable>;
+
+export interface DeviceTypeTable {
+  deviceId: number;
+  gmdnCode: null | number;
+  deviceRiskSubType: null | string;
+  deviceTypeCode: string;
+  deviceTypeName: string;
+  manufacturerId: number;
+}
+
+export type Product = Selectable<ProductTable>;
+
+export interface ProductTable {
+  productId: number;
+  udiNumber: null | number;
+  deviceId: number;
+  isModel: number;
+  brandTradeName: null | string;
+  model: null | string;
+  productCode: null | string;
+  manufacturerId: number;
+  aggregationName: null | string;
+  aggregationType: null | string;
 }

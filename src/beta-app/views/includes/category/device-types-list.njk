@@ -1,0 +1,41 @@
+{% macro deviceTypesList(deviceTypes, category) %}
+        <div class="nhsuk-grid-row">
+
+        <div class="app-grid-column-two-thirds-right">
+
+            <h1 class="nhsuk-heading-l nhsuk-u-margin-bottom-2" id="device-types"> {{deviceTypes | length}} device types in
+                {{ category.name }}</h1>
+
+            <div data-module="app-paginated-table" data-page-size="5">
+
+            <p class="nhsuk-body-s" data-pagination-status>Showing all {{ deviceTypes | length }}, ordered A to Z.</p>
+
+            <table class="nhsuk-table" data-module="nhsuk-table">
+                <caption class="nhsuk-table__caption nhsuk-u-visually-hidden">Device types in
+                    {{ category.name }}</caption>
+                <thead class="nhsuk-table__head">
+                    <tr>
+                        <th scope="col" class="nhsuk-table__header" aria-sort="ascending" data-sort>Device type</th>
+                        <th scope="col" class="nhsuk-table__header nhsuk-table__header--numeric" data-sort>Suppliers</th>
+                    </tr>
+                </thead>
+                <tbody class="nhsuk-table__body">
+                    {% for deviceType in deviceTypes %}
+                        <tr class="nhsuk-table__row">
+
+                            <td class="nhsuk-table__cell">
+                                <a href="/device-type/{{ deviceType.deviceId }}?category={{ category.nodeId }}">{{ deviceType.deviceTypeName }}</a>
+                            </td>
+
+                            <td class="nhsuk-table__cell nhsuk-table__cell--numeric">##</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <nav class="nhsuk-pagination nhsuk-pagination--numbered" role="navigation" aria-label="Pagination" data-pagination hidden></nav>
+
+            </div>
+        </div>
+    </div>
+{% endmacro %}

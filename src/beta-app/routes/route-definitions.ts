@@ -2,7 +2,9 @@ import type { Request, RequestHandler, Router } from "express";
 
 export interface RouteDefinition {
   auth?: boolean;
-  handler: RequestHandler;
+  // Params are `any` so handlers can declare typed route params (e.g. Request<{ id: string }>)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  handler: RequestHandler<any>;
   method: RouteMethod;
   path: string;
 }
