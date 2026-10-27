@@ -7,17 +7,17 @@ import nunjucks from "nunjucks";
 
 import config from "./config.js";
 import { pgPool } from "./database/client.js";
-import { ensureAuthenticated, initializeAuth } from "./middleware/auth.js";
+import {
+  exposeCurrentUser,
+  initializeAuth,
+  requireAuthForProtectedRoutes,
+} from "./middleware/auth.js";
 import { helmetConfig } from "./middleware/helmetConfig.js";
 import { permissionsPolicy } from "./middleware/helmetConfig.js";
 import indexRoutes, { indexRouteDefinitions } from "./routes/index.routes.js";
 import productRoutes, {
   productRouteDefinitions,
 } from "./routes/product.routes.js";
-import {
-  buildPublicRouteMatcher,
-  buildRouteMatcher,
-} from "./routes/route-definitions.js";
 import searchRoutes, {
   searchRouteDefinitions,
 } from "./routes/search.routes.js";
@@ -61,6 +61,7 @@ const sessionOptions: session.SessionOptions = {
 
 app.use(session(sessionOptions));
 initializeAuth(app);
+app.use(exposeCurrentUser);
 
 // Set up Nunjucks templating engine with NHS Design System
 const nunjucksEnv = nunjucks.configure(
@@ -76,12 +77,6 @@ const nunjucksEnv = nunjucks.configure(
     express: app,
   },
 );
-
-// TODO: Remove this and put it in a better middleware place
-app.use((req, res, next) => {
-  res.locals.currentUser = req.user;
-  next();
-});
 
 nunjucksEnv.addGlobal("serviceName", config.app.name);
 
@@ -123,23 +118,12 @@ const routeModules = [
   },
 ];
 
-const isPublicRoute = buildPublicRouteMatcher(
-  routeModules.flatMap(({ definitions }) => definitions),
+// Require authentication for all routes not marked as public
+app.use(
+  requireAuthForProtectedRoutes(
+    routeModules.flatMap(({ definitions }) => definitions),
+  ),
 );
-const isKnownRoute = buildRouteMatcher(
-  routeModules.flatMap(({ definitions }) => definitions),
-);
-
-// TODO: Put this middleware in a better place
-// Middleware to determine if the current route is public and should bypass authentication
-app.use((req, res, next) => {
-  if (!isKnownRoute(req) || isPublicRoute(req)) {
-    next();
-    return;
-  }
-
-  ensureAuthenticated(req, res, next);
-});
 
 // Register routes
 for (const { mountPath, router } of routeModules) {
