@@ -1,40 +1,91 @@
 {#
-  Trusts with contracts in the same or related categories, 1 level down
+  Contracts in the same or related categories, 1 level down
   from the branded device page (index.html), from its 2nd card.
 
   These are Atamis contracts that could not be matched to this exact
   device. What we know (Dylan):
-  - They are always with the same supplier as the device, so the supplier
-    is stated once, at the top.
+  - They are always with the same supplier as the device.
   - Their category always includes this device, but can be broader, like
     moving up the breadcrumb. So each contract shows its exact category,
     and people judge how close it is.
-  - The trusts have only contracts (usually 1 or 2), no people or
-    documents, so there is no trust page: 1 page, trust headings (A to Z),
-    and a contract card per contract (a summary card: category, business
-    unit, and each named person by their role on the contract). Dylan kept
-    cards here, not a table: they work for this use case. The contract name
-    is free text, so the title is not the link; "View contract details"
-    goes to the contract page.
 
-  Contracts follow the shape of Dylan's Atamis sample export (used as
-  a guide; none of it is about this pump) and the fields the team chose to
-  pull through. Contracts, people and categories are invented; the
-  categories above the device type are made up, since we do not have the
-  device function hierarchy for this device type. Trust names are from
-  current/trusts.js. Whether a contract is for a product or a service is
-  not known and is never stated. Every line of copy is a draft for Jill.
+  Redesigned for a different task (Dylan): matching here is softer, so
+  there may be up to 100 contracts, and people sift them for the best few
+  leads rather than reading each one. What they need to see is trust name
+  (relevance), category and business unit, and recency (contract dates).
+  So the page follows supplier-contracts.html, not the earlier trust
+  headings and contract cards:
+  - A full-width table, 1 row per contract, 1 fact per column
+    (Components/table.md: compare and scan). Contacts are left to the
+    contract page: they matter once a lead is picked, not while sifting.
+    Contract name first (Dylan: it is a contract viewer), then trust,
+    category and start date. The name is the link to the contract page:
+    it is that page's heading (Accessibility/design.md: link text should
+    match the target page's heading), so no "View" column. Names are free
+    text, so the name column is not sortable.
+    No business unit column (Dylan): trust, category and start date
+    together carry the sifting; business unit is on the contract page.
+    The data keeps it (unit) for that.
+  - Recency is 1 column, the start date as month and year: when the trust
+    last bought in this category, so the people involved are likelier to
+    still be there. The end date matters once a lead is picked, so it is
+    left to the contract page (Dylan: both dates were too much). The
+    export holds active contracts only.
+  - Sortable column headers, the nhsuk-frontend table's own sorting (from
+    10.x; Dylan's dev), instead of a separate sort select: 1 control for
+    sorting. Sorted on the server: each header is a link (the component's
+    href option) and the page reloads in that order, so a line above the
+    table can say how it is ordered, like NHS.UK's "Your closest services
+    are listed first" (Dylan). Browser sorting would leave that line out of
+    date. The filter keeps the sort, and the sort links keep the filter.
+    Default: start date, newest first. Category sorts by the category
+    hierarchy, not A to Z: the device type, then each broader category.
+  - Headed by the contracts, not the trusts (Dylan): it is a contract
+    viewer, 1 row per contract, and a trust can appear more than once.
+    No separate "Contracts" heading, which would repeat the page heading:
+    the filter, the count and the table follow the heading, so the filter
+    reads as part of the results it controls.
+  - Category filter, with counts, above the table, not in a sidebar: 5
+    columns of long trust and business unit names were squashed into
+    two-thirds width (Dylan). As vertically compact as the guidance allows
+    (Dylan): in an expander, 1 line when closed, as on NHS.UK's Find a
+    pharmacy results ("Filter by ... (0 applied)"), so the summary says
+    whether a filter is on. Dylan's choice, knowingly against
+    Components/expander.md, which says not to use expanders on pages with
+    buttons or inputs; NHS.UK does the same. Inside: small checkboxes
+    (Components/checkboxes.md: search filters), a small button with
+    "Clear filters" beside it (Components/buttons.md: smaller button
+    group). Not a select, which is for long lists (Components/select.md).
+    The NHS has no filter pattern; the arrangement is ours. No trust
+    filter: at 100 contracts it would be as long as the table. It works,
+    so people can see it working: it reads the URL
+    (query, set in routes.js), not session data, so unticking everything
+    clears it. "Clear filters" shows once something is ticked.
+  - No summary list at the top (Dylan: not needed): the supplier is not
+    stated, and the count is only above the table, "Showing x contracts"
+    (or "x of y" when filtered), as on mas-plif.html. The page reloads,
+    so it is read with the page.
+  - No pagination: 100 rows on 1 page keeps them comparable. Paginate only
+    if filtering is not enough.
+
+  Contracts follow the shape of Dylan's Atamis sample export (used as a
+  guide; none of it is about this pump). Contracts and categories are
+  invented; trust names are from current/trusts.js. The 5 that have
+  contract pages link to them; the rest go to "#". Whether a contract is
+  for a product or a service is not known and is never stated. Sorting is the
+  table component's own; filtering is done in this template. Every line of copy is a draft for Jill.
 #}
 
 {% extends "branded-device/_layout.html" %}
 
-{% from "summary-list/macro.njk" import summaryList %}
-{% from "card/macro.njk" import card %}
+{% from "tables/macro.njk" import table %}
+{% from "checkboxes/macro.njk" import checkboxes %}
+{% from "details/macro.njk" import details %}
 
 {% set brand = "InsuFlow Pro" %}
 {% set supplier = "ArcTech Ltd" %}
 {% set deviceType = "Ambulatory insulin infusion pump reservoir" %}
-{% set pageName = "Trusts with contracts in the same or related categories – " + brand + " by " + supplier %}
+{% set pageName = "Contracts in the same or related categories – " + brand + " by " + supplier %}
 {% set mainClasses = "nhsuk-main-wrapper--s" %}
 
 {% set trail = [
@@ -44,74 +95,107 @@
     { href: "/branded-device", text: brand }
   ] %}
 
-{% set trusts = [
-  {
-    name: "Manchester University NHS Foundation Trust",
-    contracts: [
-      {
-        name: "MFT-Diabetes Technology-ArcTech-2025",
-        href: "/branded-device/contract-mft",
-        rows: [
-          { key: { text: "Category" }, value: { text: "Insulin infusion devices" } },
-          { key: { text: "Business unit" }, value: { text: "MFT - Clinical Support - Diabetes Centre" } },
-          { key: { text: "Contract owner" }, value: { html: 'Priya Natarajan<br>priya.natarajan@mft.nhs.uk' } }
-        ]
-      }
-    ]
-  },
-  {
-    name: "Oxford University Hospitals NHS Foundation Trust",
-    contracts: [
-      {
-        name: "OUH Infusion Devices Framework Call Off (ArcTech)",
-        href: "/branded-device/contract-ouh",
-        rows: [
-          { key: { text: "Category" }, value: { text: "Infusion devices" } },
-          { key: { text: "Business unit" }, value: { text: "OUH Trustwide" } },
-          { key: { text: "Contract owner" }, value: { text: "James Whitfield" } },
-          { key: { text: "Procurement lead" }, value: { text: "Hannah Price" } }
-        ]
-      },
-      {
-        name: "OUH - Drug Administration Sets - ArcTech",
-        href: "/branded-device/contract-ouh-2",
-        rows: [
-          { key: { text: "Category" }, value: { text: "Drug administration devices" } },
-          { key: { text: "Business unit" }, value: { text: "OUH - Pharmacy" } },
-          { key: { text: "Contract owner" }, value: { text: "James Whitfield" } }
-        ]
-      }
-    ]
-  },
-  {
-    name: "Sheffield Teaching Hospitals NHS Foundation Trust",
-    contracts: [
-      {
-        name: "STH - Ambulatory Pumps - ArcTech",
-        href: "/branded-device/contract-sth",
-        rows: [
-          { key: { text: "Category" }, value: { text: deviceType } },
-          { key: { text: "Business unit" }, value: { text: "STH - Specialist Services - Diabetes and Endocrinology" } },
-          { key: { text: "Procurement lead" }, value: { html: 'Marcus Lee<br>marcus.lee3@nhs.net' } }
-        ]
-      }
-    ]
-  },
-  {
-    name: "University Hospitals of Leicester NHS Trust",
-    contracts: [
-      {
-        name: "UHL - Drug Administration Consumables - ArcTech",
-        href: "/branded-device/contract-uhl",
-        rows: [
-          { key: { text: "Category" }, value: { text: "Drug administration devices" } },
-          { key: { text: "Business unit" }, value: { text: "UHL Trustwide" } },
-          { key: { text: "Contract owner" }, value: { text: "Ruth Ellison" } }
-        ]
-      }
-    ]
-  }
+{# Narrowest first: the device type, then each broader category #}
+{% set categories = [deviceType, "Insulin infusion devices", "Infusion devices", "Drug administration devices"] %}
+
+{# Sorted by start date, newest first #}
+{% set contracts = [
+  { name: "GSTT - Insulin Pump Consumables - ArcTech", trust: "Guy's and St Thomas' NHS Foundation Trust", category: "Insulin infusion devices", unit: "GSTT - Medicine - Diabetes and Endocrinology", startDate: "April 2026", href: "#" },
+  { name: "NUH Diabetes - Pump Reservoirs and Sets", trust: "Nottingham University Hospitals NHS Trust", category: deviceType, unit: "NUH - Medicine - Diabetes", startDate: "March 2026", href: "#" },
+  { name: "CHFT-THEATRES-Infusion Pumps-2026", trust: "Calderdale and Huddersfield NHS Foundation Trust", category: "Infusion devices", unit: "CHFT - Surgery and Anaesthetics", startDate: "February 2026", href: "#" },
+  { name: "LTHT Infusion Devices Framework Call Off (ArcTech)", trust: "Leeds Teaching Hospitals NHS Trust", category: "Infusion devices", unit: "LTHT - Trustwide", startDate: "January 2026", href: "#" },
+  { name: "BHFT - Insulin Pump Reservoirs - ArcTech", trust: "Barnsley Hospital NHS Foundation Trust", category: deviceType, unit: "BHFT - Medicine - Diabetes Centre", startDate: "November 2025", href: "#" },
+  { name: "RFL Pharmacy - Drug Administration Consumables", trust: "Royal Free London NHS Foundation Trust", category: "Drug administration devices", unit: "RFL - Pharmacy", startDate: "October 2025", href: "#" },
+  { name: "NUTH-PHARM-ArcTech drug delivery 2025", trust: "Newcastle upon Tyne Hospitals NHS Foundation Trust", category: "Drug administration devices", unit: "NUTH - Pharmacy and Medicines Optimisation", startDate: "September 2025", href: "#" },
+  { name: "MFT-Diabetes Technology-ArcTech-2025", trust: "Manchester University NHS Foundation Trust", category: "Insulin infusion devices", unit: "MFT - Clinical Support - Diabetes Centre", startDate: "July 2025", href: "/branded-device/contract-mft" },
+  { name: "Insulin pump reservoirs (3 quotes)", trust: "Bradford Teaching Hospitals NHS Foundation Trust", category: deviceType, unit: "", startDate: "June 2025", href: "#" },
+  { name: "CUH - Medical Equipment Library - Infusion Devices", trust: "Cambridge University Hospitals NHS Foundation Trust", category: "Infusion devices", unit: "CUH - Medical Equipment Library", startDate: "May 2025", href: "#" },
+  { name: "SCH - Paediatric Insulin Pumps and Consumables", trust: "Sheffield Children's NHS Foundation Trust", category: "Insulin infusion devices", unit: "SCH - Paediatric Diabetes", startDate: "April 2025", href: "#" },
+  { name: "BWC Paediatric Diabetes Technology - ArcTech", trust: "Birmingham Women's and Children's NHS Foundation Trust", category: "Insulin infusion devices", unit: "BWC - Paediatric Endocrinology", startDate: "February 2025", href: "#" },
+  { name: "STH - Ambulatory Pumps - ArcTech", trust: "Sheffield Teaching Hospitals NHS Foundation Trust", category: deviceType, unit: "STH - Specialist Services - Diabetes and Endocrinology", startDate: "February 2025", href: "/branded-device/contract-sth" },
+  { name: "UHB Endocrinology - Insulin Pump Consumables", trust: "University Hospitals Birmingham NHS Foundation Trust", category: "Insulin infusion devices", unit: "UHB - Specialist Medicine - Endocrinology", startDate: "January 2025", href: "#" },
+  { name: "CRH - Drug Administration Sets", trust: "Chesterfield Royal Hospital NHS Foundation Trust", category: "Drug administration devices", unit: "CRH - Pharmacy", startDate: "December 2024", href: "#" },
+  { name: "BH - Infusion Devices - ArcTech (Direct Award)", trust: "Barts Health NHS Trust", category: "Infusion devices", unit: "BH - Clinical Support Services", startDate: "November 2024", href: "#" },
+  { name: "Insulin pumps and consumables - ArcTech", trust: "Croydon Health Services NHS Trust", category: "Insulin infusion devices", unit: "", startDate: "October 2024", href: "#" },
+  { name: "OUH - Drug Administration Sets - ArcTech", trust: "Oxford University Hospitals NHS Foundation Trust", category: "Drug administration devices", unit: "OUH - Pharmacy", startDate: "September 2024", href: "/branded-device/contract-ouh-2" },
+  { name: "GOSH - Insulin Pump Consumables", trust: "Great Ormond Street Hospital for Children NHS Foundation Trust", category: "Insulin infusion devices", unit: "GOSH - Endocrinology", startDate: "August 2024", href: "#" },
+  { name: "HHFT Diabetes - Pump Reservoirs - ArcTech", trust: "Hampshire Hospitals NHS Foundation Trust", category: deviceType, unit: "HHFT - Medicine - Diabetes", startDate: "May 2024", href: "#" },
+  { name: "RDUH - Infusion Devices - ArcTech", trust: "Royal Devon University Healthcare NHS Foundation Trust", category: "Infusion devices", unit: "RDUH - Trustwide", startDate: "March 2024", href: "#" },
+  { name: "CWFT - Insulin Infusion Consumables", trust: "Chelsea and Westminster Hospital NHS Foundation Trust", category: "Insulin infusion devices", unit: "CWFT - Diabetes and Endocrinology", startDate: "March 2024", href: "#" },
+  { name: "LTHT Pharmacy - Drug Administration Devices", trust: "Leeds Teaching Hospitals NHS Trust", category: "Drug administration devices", unit: "LTHT - Pharmacy", startDate: "January 2024", href: "#" },
+  { name: "FHFT-CRITCARE-Infusion Devices-ArcTech", trust: "Frimley Health NHS Foundation Trust", category: "Infusion devices", unit: "FHFT - Theatres and Critical Care", startDate: "December 2023", href: "#" },
+  { name: "EKHUFT - Drug Administration Consumables", trust: "East Kent Hospitals University NHS Foundation Trust", category: "Drug administration devices", unit: "EKHUFT - Trustwide", startDate: "July 2023", href: "#" },
+  { name: "UHL - Drug Administration Consumables - ArcTech", trust: "University Hospitals of Leicester NHS Trust", category: "Drug administration devices", unit: "UHL Trustwide", startDate: "June 2023", href: "/branded-device/contract-uhl" },
+  { name: "GHFT Infusion Devices (Framework Call Off)", trust: "Gloucestershire Hospitals NHS Foundation Trust", category: "Infusion devices", unit: "", startDate: "April 2023", href: "#" },
+  { name: "DCH Pharmacy - Drug Administration Sets", trust: "Dorset County Hospital NHS Foundation Trust", category: "Drug administration devices", unit: "DCH - Pharmacy", startDate: "January 2023", href: "#" },
+  { name: "OUH Infusion Devices Framework Call Off (ArcTech)", trust: "Oxford University Hospitals NHS Foundation Trust", category: "Infusion devices", unit: "OUH Trustwide", startDate: "November 2022", href: "/branded-device/contract-ouh" }
 ] %}
+
+{% set months = { January: "01", February: "02", March: "03", April: "04", May: "05", June: "06", July: "07", August: "08", September: "09", October: "10", November: "11", December: "12" } %}
+
+{# Ticked categories, from the URL: 1 is a string, more is a list.
+   Only real categories count, so stray values (like the kit's hidden
+   "_unchecked") do not filter everything out. #}
+{% set picked = [] %}
+{% if query.category %}
+  {% set picked = [query.category] if query.category is string else query.category %}
+{% endif %}
+{% set selected = [] %}
+{% for cat in categories %}
+  {% if cat in picked %}{% set _ = selected.push(cat) %}{% endif %}
+{% endfor %}
+
+{% set categoryItems = [] %}
+{% for cat in categories %}
+  {% set count = 0 %}
+  {% for c in contracts %}
+    {% if c.category == cat %}{% set count = count + 1 %}{% endif %}
+  {% endfor %}
+  {% set _ = categoryItems.push({ value: cat, text: cat + " (" + count + ")", checked: cat in selected }) %}
+{% endfor %}
+
+{# Sort, from the URL. Each column has a first order when you pick it. #}
+{% set firstOrder = { "trust": "ascending", "category": "ascending", "start-date": "descending" } %}
+{% set sortBy = query.sort if query.sort in ["trust", "category", "start-date"] else "start-date" %}
+{% set order = query.order if query.order in ["ascending", "descending"] else firstOrder[sortBy] %}
+{% set sortKey = { "trust": "trust", "category": "categoryKey", "start-date": "dateKey" }[sortBy] %}
+
+{% set orderText = {
+  "start-date": { descending: "Most recent contracts are listed first.", ascending: "Oldest contracts are listed first." },
+  "trust": { ascending: "Contracts are listed A to Z by trust.", descending: "Contracts are listed Z to A by trust." },
+  "category": { ascending: "Contracts in the closest categories are listed first.", descending: "Contracts in the broadest categories are listed first." }
+}[sortBy][order] %}
+
+{# The filter as a query string, for the sort links #}
+{% set filterQuery = "" %}
+{% for cat in selected %}
+  {% set filterQuery = filterQuery + "category=" + cat | urlencode + "&" %}
+{% endfor %}
+
+{# Filtered, with sort keys: dates as 202604, categories by closeness #}
+{% set shown = [] %}
+{% for c in contracts %}
+  {% if not selected | length or c.category in selected %}
+    {% set _ = shown.push({
+      name: c.name, trust: c.trust, category: c.category, startDate: c.startDate, href: c.href,
+      categoryKey: categories.indexOf(c.category),
+      dateKey: c.startDate.split(" ")[1] + months[c.startDate.split(" ")[0]]
+    }) %}
+  {% endif %}
+{% endfor %}
+{% set shown = shown | sort(order == "descending", false, sortKey) %}
+
+{# Contract names are free text, so not sortable #}
+{% set head = [{ text: "Contract" }] %}
+{% for col in [{ key: "trust", text: "Trust" }, { key: "category", text: "Category" }, { key: "start-date", text: "Start date" }] %}
+  {% set isCurrent = col.key == sortBy %}
+  {% set nextOrder = ("ascending" if order == "descending" else "descending") if isCurrent else firstOrder[col.key] %}
+  {% set _ = head.push({
+    text: col.text,
+    sort: order if isCurrent else "none",
+    href: "?" + filterQuery + "sort=" + col.key + "&order=" + nextOrder
+  }) %}
+{% endfor %}
 
 {% block beforeContent %}
 
@@ -124,33 +208,70 @@
 <div class="nhsuk-grid-row">
   <div class="nhsuk-grid-column-two-thirds">
 
-    <h1 class="nhsuk-heading-l nhsuk-u-margin-bottom-4">
+    <h1 class="nhsuk-heading-l nhsuk-u-margin-bottom-4" id="contracts-heading">
       <span class="nhsuk-caption-l">{{ brand }}</span>
-      Trusts with contracts in the same or related categories
+      Contracts in the same or related categories
     </h1>
 
-    {{ summaryList({
-      rows: [
-        { key: { text: "Supplier named on the contracts" }, value: { text: supplier } }
-      ]
-    }) }}
+  </div>
+</div>
 
-    <p class="nhsuk-body-s">A to Z by trust.</p>
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-full">
 
-    {% for trust in trusts %}
-      <h2 class="nhsuk-heading-m nhsuk-u-margin-top-5">{{ trust.name }}</h2>
-      {% for item in trust.contracts %}
-        {% call card({
-          heading: item.name,
-          headingLevel: 3,
-          headingClasses: "nhsuk-heading-s"
-        }) %}
-          <p class="nhsuk-body-s nhsuk-u-margin-bottom-2">From Atamis contract records</p>
-          {{ summaryList({ rows: item.rows }) }}
-          <p class="nhsuk-u-margin-bottom-0"><a href="{{ item.href }}">View contract details</a></p>
-        {% endcall %}
-      {% endfor %}
+    {% call details({ summaryText: "Filter by category (" + selected | length + " applied)", classes: "nhsuk-expander" }) %}
+      <form method="get" novalidate>
+
+        {{ checkboxes({
+          name: "category",
+          idPrefix: "category",
+          fieldset: { legend: { text: "Category", size: "s" } },
+          items: categoryItems,
+          classes: "nhsuk-checkboxes--small",
+          formGroup: { classes: "nhsuk-u-margin-bottom-3" }
+        }) }}
+
+        <input type="hidden" name="sort" value="{{ sortBy }}">
+        <input type="hidden" name="order" value="{{ order }}">
+
+        <div class="nhsuk-button-group nhsuk-button-group--small nhsuk-u-margin-bottom-0">
+          <button class="nhsuk-button nhsuk-button--secondary nhsuk-button--small" data-module="nhsuk-button" type="submit">
+            Update results
+          </button>
+          {% if selected | length %}
+            <a class="nhsuk-link" href="?sort={{ sortBy }}&order={{ order }}">Clear filters</a>
+          {% endif %}
+        </div>
+
+      </form>
+    {% endcall %}
+
+    <p class="nhsuk-body">
+      {%- if selected | length -%}
+        Showing {{ shown | length }} of {{ contracts | length }} contracts.
+      {%- else -%}
+        Showing {{ contracts | length }} contracts.
+      {%- endif %}
+      {{ orderText }}
+    </p>
+
+    {% set rows = [] %}
+    {% for c in shown %}
+      {% set rows = (rows.push([
+        { header: "Contract", html: '<a href="' + c.href + '">' + c.name | escape + '</a>' },
+        { header: "Trust", text: c.trust },
+        { header: "Category", text: c.category },
+        { header: "Start date", text: c.startDate }
+      ]), rows) %}
     {% endfor %}
+
+    {{ table({
+      attributes: { "aria-labelledby": "contracts-heading" },
+      responsive: true,
+      firstCellIsHeader: true,
+      head: head,
+      rows: rows
+    }) }}
 
   </div>
 </div>

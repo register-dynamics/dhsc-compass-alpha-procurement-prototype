@@ -39,11 +39,14 @@
      off people: a person is sometimes linked to contracts, sometimes to
      documents. People include procurement leads from contract records,
      marked as such on the trusts page.
-  3. Trusts with contracts in the same or related categories (Dylan's wording:
+  3. Contracts in the same or related categories (Dylan's wording:
      "bought related devices" is not necessarily true). Contracts matched
      only by supplier and contract category, because contract categories are
      not GMDN. Separate so weaker leads are not mistaken for direct
-     experience.
+     experience. Headed by contracts, not trusts (Dylan): its page is a
+     contract viewer. The contract count is in the heading, like the
+     first card's trust count (Dylan); the rows say what is behind them:
+     trusts, and people from the contract records (invented figure).
 
   Document pages carry the download.
 
@@ -53,9 +56,9 @@
   is on the specifications and costs page. The supplier name links to the
   supplier page. Every figure states its source.
 
-  Each card ends in a short "View trusts" link (Dylan's approved design),
+  Each card ends in a short "View trusts" (or "View contracts") link (Dylan's approved design),
   with no visually hidden text (Dylan: universal design); the card title
-  above it says which trusts.
+  above it says which trusts or contracts.
 
   "Add your trust's experience" is a smaller secondary button inside the
   trusts card, so it does not outweigh the "View trusts" link, the main
@@ -158,15 +161,16 @@
   </li>
   <li class="nhsuk-grid-column-one-half nhsuk-card-group__item">
     {% call card({
-      heading: "4 trusts with contracts in the same or related categories",
+      heading: "29 contracts in the same or related categories",
       headingClasses: "nhsuk-heading-m"
     }) %}
       {{ summaryList({
         rows: [
-          { key: { text: "Contracts" }, value: { text: "5" }, classes: "nhsuk-summary-list__row--no-border" }
+          { key: { text: "Trusts" }, value: { text: "27" } },
+          { key: { text: "People" }, value: { text: "48" }, classes: "nhsuk-summary-list__row--no-border" }
         ]
       }) }}
-      <p class="nhsuk-u-margin-bottom-0"><a href="/branded-device/related-contracts">View trusts</a></p>
+      <p class="nhsuk-u-margin-bottom-0"><a href="/branded-device/related-contracts">View contracts</a></p>
     {% endcall %}
   </li>
 </ul>
