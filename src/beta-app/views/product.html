@@ -5,8 +5,6 @@
 {% from "summary-list/macro.njk" import summaryList %}
 {% from "button/macro.njk" import button %}
 
-{% set deviceType = "TODO" %}
-
 {% set pageName = product.productName + " by " + product.manufacturer %}
 
 {% block beforeContent %}
@@ -30,6 +28,8 @@
 
 {% block content %}
 
+    {{ product | dump }}
+
     <div class="nhsuk-grid-row">
         <div class="nhsuk-grid-column-two-thirds">
 
@@ -40,9 +40,10 @@
 
             {# TODO: Supplier page #}
             {# TODO: Where do we get acquisition cost from? #}
+            {# TODO: How do we get device-type URL to work? It needs category param at the moment #}
             {{ summaryList({
                 rows: [
-                    { key: { text: "Device type" }, value: { html: '<a href="#">' + deviceType + '</a>' } },
+                    { key: { text: "Device type" }, value: { html: '<a href="/device-type/' + product.deviceId + '">' + product.type + '</a>' } },
                     { key: { text: "Supplier" }, value: { html: '<a href="/supplier/">' + product.manufacturer + '</a>' } },
                     { key: { text: "Acquisition cost" }, value: { text: "TODO" } }
                 ]
