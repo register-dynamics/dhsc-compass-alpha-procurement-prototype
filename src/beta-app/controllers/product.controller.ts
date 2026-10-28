@@ -404,6 +404,27 @@ export const postAddEvidenceContactSelf = async (
   }
 };
 
+export const renderProductSpecifications = async (
+  req: Request,
+  res: Response,
+) => {
+  await new Promise((resolve) => { console.log("temp async to make linter happy"); resolve(""); });
+  res.status(500).send("Not implemented yet");
+}
+
+export const renderProductTrusts = async (req: Request, res: Response) => {
+  await new Promise((resolve) => { console.log("temp async to make linter happy"); resolve(""); });
+  res.status(500).send("Not implemented yet");
+}
+
+export const renderProductRelatedTrusts = async (
+  req: Request,
+  res: Response,
+) => {
+  await new Promise((resolve) => { console.log("temp async to make linter happy"); resolve(""); });
+  res.status(500).send("Not implemented yet");
+}
+
 async function createEvidenceCardForOrganisation(
   organisationId: number,
   productId: number,

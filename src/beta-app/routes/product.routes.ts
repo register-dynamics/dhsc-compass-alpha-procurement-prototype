@@ -8,6 +8,9 @@ import {
   renderAddEvidence,
   renderAddEvidenceContactSelf,
   renderProduct,
+  renderProductRelatedTrusts,
+  renderProductSpecifications,
+  renderProductTrusts,
 } from "../controllers/product.controller.js";
 import { registerRoutes, type RouteDefinition } from "./route-definitions.js";
 
@@ -69,6 +72,21 @@ const routeDefinitions: RouteDefinition[] = [
     method: "post",
     path: "/product/:productId/evidence/add-evidence-contact-self",
   },
+  {
+    handler: renderProductSpecifications,
+    method: "get",
+    path: "/product/:productId/specifications",
+  },
+  {
+    handler: renderProductTrusts,
+    method: "get",
+    path: "/product/:productId/trusts",
+  },
+  {
+    handler: renderProductRelatedTrusts,
+    method: "get",
+    path: "/product/:productId/related-trusts",
+  }
 ];
 
 registerRoutes(router, routeDefinitions);
