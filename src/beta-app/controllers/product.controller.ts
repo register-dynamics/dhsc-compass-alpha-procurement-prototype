@@ -4,7 +4,7 @@ import { db } from "../database/client.js";
 import { Contact, Organisations } from "../database/types.js";
 import { postAddEvidenceContactSelfSchema } from "../models/request-schemas/postAddEvidenceContactSelfSchema.js";
 import { postMarkUsefulSchema } from "../models/request-schemas/postMarkUsefulSchema.js";
-import { getProductWithId } from "../services/productsService.js";
+import { getCountOfContactsWithExperienceWithProduct, getCountOfDocumentsByTypeForProduct, getCountOfOrganisationsWithExperienceWithProduct, getProductWithId } from "../services/productsService.js";
 
 export const renderProduct = async (req: Request, res: Response) => {
   let productId;
@@ -28,8 +28,15 @@ export const renderProduct = async (req: Request, res: Response) => {
     return;
   }
 
+  const trustsWithExperienceCount = await getCountOfOrganisationsWithExperienceWithProduct(productId);
+  const peopleWithExperienceCount = await getCountOfContactsWithExperienceWithProduct(productId);
+  const documentTypes = await getCountOfDocumentsByTypeForProduct(productId);
+
   res.render("product", {
+    documentTypes,
+    peopleWithExperienceCount,
     product,
+    trustsWithExperienceCount,
   });
 };
 
