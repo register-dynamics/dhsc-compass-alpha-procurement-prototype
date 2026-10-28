@@ -54,7 +54,7 @@
 {% set supplier = "ArcTech Ltd" %}
 {% set deviceType = "Ambulatory insulin infusion pump reservoir" %}
 {% set trust = "Barts Health NHS Trust" %}
-{% set pageName = trust + " – experience of " + brand + " by " + supplier %}
+{% set pageName = trust + " – experience with " + brand + " by " + supplier %}
 {% set mainClasses = "nhsuk-main-wrapper--s" %}
 
 {% set trail = [
@@ -62,7 +62,7 @@
     { href: "/identify-alternatives/device-function", text: "Device function" },
     { href: "#", text: deviceType },
     { href: "/branded-device", text: brand },
-    { href: "/branded-device/trusts-with-experience", text: "Trusts with experience of this device" }
+    { href: "/branded-device/trusts-with-experience", text: "Trusts sharing experience with this device" }
   ] %}
 
 {% set people = [
@@ -72,7 +72,7 @@
       { key: { text: "Role" }, value: { text: "Software Engineer I, Software Development" } },
       { key: { text: "Phone" }, value: { text: "6431047410" } },
       { key: { text: "Happy to discuss" }, value: { text: "Training, pharmacy integration, real world use" } },
-      { key: { text: "Documents" }, value: { html: '<a href="#">Business case, January 2023</a><br>Ward or department: Dialysis Unit, St Bartholomew\'s Hospital' }, classes: "nhsuk-summary-list__row--no-border" }
+      { key: { text: "Shared documents" }, value: { html: '<a href="#">Business case, January 2023</a><br>Ward or department: Dialysis Unit, St Bartholomew\'s Hospital' }, classes: "nhsuk-summary-list__row--no-border" }
     ]
   }
 ] %}
@@ -84,7 +84,7 @@
     source: "From Atamis contract records",
     rows: [
       { key: { text: "Business unit" }, value: { text: "Barts - Diabetes and Endocrinology" } },
-      { key: { text: "Contract owner" }, value: { text: "Daniel Okoro" } },
+      { key: { text: "Procurement contract owner" }, value: { text: "Daniel Okoro" } },
       { key: { text: "Procurement lead" }, value: { html: 'Sarah Mensah<br>sarah.mensah2@nhs.net' } }
     ]
   }
@@ -106,16 +106,16 @@
       {{ trust }}
     </h1>
 
-    <p><a href="/branded-device/trust">View {{ trust }}</a></p>
+    <p><a href="/branded-device/trust">View {{ trust }} overview</a></p>
 
     {{ summaryList({
       rows: [
         { key: { text: "Outcome reported by the trust" }, value: { text: "Procured it" } },
-        { key: { text: "Purchases recorded by AdviseInc" }, value: { text: "Bought it, most recent order March 2026" } }
+        { key: { text: "Purchases recorded by AdviseInc" }, value: { text: "Bought it, most recently in March 2026" } }
       ]
     }) }}
 
-    <h2 class="nhsuk-heading-m nhsuk-u-margin-top-5">People</h2>
+    <h2 class="nhsuk-heading-m nhsuk-u-margin-top-5">People you can contact</h2>
     {% for item in people %}
       {% call card({
         heading: item.name,
@@ -126,7 +126,7 @@
       {% endcall %}
     {% endfor %}
 
-    <h2 class="nhsuk-heading-m nhsuk-u-margin-top-5">Contracts</h2>
+    <h2 class="nhsuk-heading-m nhsuk-u-margin-top-5">Procurement contracts</h2>
     {% for item in contracts %}
       {% call card({
         heading: item.name,
@@ -135,10 +135,21 @@
       }) %}
         <p class="nhsuk-body-s nhsuk-u-margin-bottom-2">{{ item.source }}</p>
         {{ summaryList({ rows: item.rows }) }}
-        <p class="nhsuk-u-margin-bottom-0"><a href="{{ item.href }}">View contract details</a></p>
+        <p class="nhsuk-u-margin-bottom-0"><a href="{{ item.href }}">View procurement contract details</a></p>
       {% endcall %}
     {% endfor %}
 
+  </div>
+</div>
+
+<div class="nhsuk-grid-row nhsuk-u-margin-top-5">
+    <p class="nhsuk-u-margin-bottom-2">You can contact our team if you:</p>
+    <ul>
+      <li>have a question</li>
+      <li>disagree with information you find on these pages</li>
+      <li>would like us to update something or make a change</li>
+    </ul>
+    <p>Call us on <a href="tel:+443302234776">0330 2234 776</a> or email <a href="mailto:enquiries@dhsc.gov.uk">enquiries@dhsc.gov.uk</a></p>
   </div>
 </div>
 

@@ -5,8 +5,13 @@ import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 
 import type { User } from "../database/types.js";
+import type { RouteDefinition } from "../routes/route-definitions.js";
 
 import { db } from "../database/client.js";
+import {
+  buildPublicRouteMatcher,
+  buildRouteMatcher,
+} from "../routes/route-definitions.js";
 
 export const normalizeAuthError = (error: unknown) => {
   if (error instanceof Error) {
@@ -81,4 +86,28 @@ export const ensureAuthenticated: RequestHandler = (req, res, next) => {
     return;
   }
   res.redirect("/sign-in");
+};
+
+// Expose the signed-in user to views as `currentUser`
+export const exposeCurrentUser: RequestHandler = (req, res, next) => {
+  res.locals.currentUser = req.user;
+  next();
+};
+
+// Require authentication for known routes unless they are marked as public.
+// Unknown routes are passed through so they can fall through to the 404 handler.
+export const requireAuthForProtectedRoutes = (
+  definitions: RouteDefinition[],
+): RequestHandler => {
+  const isPublicRoute = buildPublicRouteMatcher(definitions);
+  const isKnownRoute = buildRouteMatcher(definitions);
+
+  return (req, res, next) => {
+    if (!isKnownRoute(req) || isPublicRoute(req)) {
+      next();
+      return;
+    }
+
+    ensureAuthenticated(req, res, next);
+  };
 };

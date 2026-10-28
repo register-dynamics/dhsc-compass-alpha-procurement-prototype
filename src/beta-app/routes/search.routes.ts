@@ -1,6 +1,9 @@
 import { Router } from "express";
 
 import {
+  renderCategories,
+  renderCategory,
+  renderDeviceType,
   renderSearch,
   renderSearchResults,
 } from "../controllers/search.controller.js";
@@ -18,6 +21,21 @@ const routeDefinitions: RouteDefinition[] = [
     handler: renderSearchResults,
     method: "get",
     path: "/search-results",
+  },
+  {
+    handler: renderCategories,
+    method: "get",
+    path: "/categories",
+  },
+  {
+    handler: renderCategory,
+    method: "get",
+    path: "/category/:categoryId",
+  },
+  {
+    handler: renderDeviceType,
+    method: "get",
+    path: "/device-type/:deviceTypeId",
   },
 ];
 

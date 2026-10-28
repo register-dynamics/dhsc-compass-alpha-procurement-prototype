@@ -39,14 +39,11 @@
      off people: a person is sometimes linked to contracts, sometimes to
      documents. People include procurement leads from contract records,
      marked as such on the trusts page.
-  3. Contracts in the same or related categories (Dylan's wording:
+  3. Trusts with contracts in the same or related categories (Dylan's wording:
      "bought related devices" is not necessarily true). Contracts matched
      only by supplier and contract category, because contract categories are
      not GMDN. Separate so weaker leads are not mistaken for direct
-     experience. Headed by contracts, not trusts (Dylan): its page is a
-     contract viewer. The contract count is in the heading, like the
-     first card's trust count (Dylan); the rows say what is behind them:
-     trusts, and people from the contract records (invented figure).
+     experience.
 
   Document pages carry the download.
 
@@ -56,9 +53,9 @@
   is on the specifications and costs page. The supplier name links to the
   supplier page. Every figure states its source.
 
-  Each card ends in a short "View trusts" (or "View contracts") link (Dylan's approved design),
+  Each card ends in a short "View trusts" link (Dylan's approved design),
   with no visually hidden text (Dylan: universal design); the card title
-  above it says which trusts or contracts.
+  above it says which trusts.
 
   "Add your trust's experience" is a smaller secondary button inside the
   trusts card, so it does not outweigh the "View trusts" link, the main
@@ -141,14 +138,14 @@
 <ul class="nhsuk-grid-row nhsuk-card-group nhsuk-u-margin-top-4">
   <li class="nhsuk-grid-column-one-half nhsuk-card-group__item">
     {% call card({
-      heading: "3 trusts with experience of this device",
-      headingClasses: "nhsuk-heading-m"
+  heading: "3 trusts have experience with " + brand,
+  headingClasses: "nhsuk-heading-m"
     }) %}
       {{ summaryList({
         rows: [
-          { key: { text: "People" }, value: { text: "3" } },
-          { key: { text: "Contracts" }, value: { text: "2" } },
-          { key: { text: "Shared documents" }, value: { html: '<ul class="nhsuk-list nhsuk-u-margin-bottom-0"><li>2 evaluations</li><li>1 business case</li></ul>' }, classes: "nhsuk-summary-list__row--no-border" }
+          { key: { text: "People to contact" }, value: { text: "3" } },
+          { key: { text: "Procurement contracts" }, value: { text: "2" } },
+          { key: { text: "Other documents" }, value: { html: '<ul class="nhsuk-list nhsuk-u-margin-bottom-0"><li>2 evaluations</li><li>1 business case</li></ul>' }, classes: "nhsuk-summary-list__row--no-border" }
         ]
       }) }}
       <p><a href="/branded-device/trusts-with-experience">View trusts</a></p>
@@ -161,31 +158,29 @@
   </li>
   <li class="nhsuk-grid-column-one-half nhsuk-card-group__item">
     {% call card({
-      heading: "29 contracts in the same or related categories",
+      heading: "4 trusts have experience with devices in the same or related categories",
       headingClasses: "nhsuk-heading-m"
     }) %}
       {{ summaryList({
         rows: [
-          { key: { text: "Trusts" }, value: { text: "27" } },
-          { key: { text: "People" }, value: { text: "48" }, classes: "nhsuk-summary-list__row--no-border" }
+         { key: { text: "People to contact" }, value: { text: "3" } },
+          { key: { text: "Procurement contracts" }, value: { text: "5" }, classes: "nhsuk-summary-list__row--no-border" }
         ]
       }) }}
-      <p class="nhsuk-u-margin-bottom-0"><a href="/branded-device/related-contracts">View contracts</a></p>
+      <p class="nhsuk-u-margin-bottom-0"><a href="/branded-device/related-contracts">View trusts</a></p>
     {% endcall %}
   </li>
 </ul>
 
 
 <div class="nhsuk-grid-row nhsuk-u-margin-top-5">
-  <div class="nhsuk-grid-column-two-thirds">
-    <p class="nhsuk-u-margin-bottom-2">You can contact us if you:</p>
+    <p class="nhsuk-u-margin-bottom-2">You can contact our team if you:</p>
     <ul>
-      <li>disagree with something on this page</li>
-      <li>have a query about something on this page</li>
-      <li>would like to amend something on this page</li>
+      <li>have a question</li>
+      <li>disagree with information you find on these pages</li>
+      <li>would like us to update something or make a change</li>
     </ul>
-    <p>Contact the team on 0330 2234 776 or email: <a href="mailto:enquiries@dhsc.gov.uk">enquiries@dhsc.gov.uk</a></p>
-  </div>
+    <p>Call us on <a href="tel.:+4403302234776">0330 2234 776</a> or email <a href="mailto:enquiries@dhsc.gov.uk">enquiries@dhsc.gov.uk</a></p>
 </div>
 
 {% endblock %}

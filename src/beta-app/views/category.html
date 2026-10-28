@@ -1,0 +1,53 @@
+{% extends "layouts/base.html" %}
+{% from "breadcrumb/macro.njk" import breadcrumb %}
+{% from "includes/category/gmdn-level-1.njk" import gmdnLevel1 %}
+{% from "includes/category/gmdn-level-2.njk" import gmdnLevel2 %}
+{% from "includes/category/gmdn-level-3.njk" import gmdnLevel3 %}
+{% from "includes/category/device-types-list.njk" import deviceTypesList %}
+
+{% set pageName = category.name %}
+
+{% set mainClasses = "nhsuk-main-wrapper--s" %}
+
+{% set breadcrumbItems = [
+    {
+        href: "/categories",
+        text: "Search and browse"
+    }
+] %}
+{% for item in categoryHierarchy %}
+    {% set breadcrumbItems = breadcrumbItems.concat([
+        {
+            href: "/category/" ~ item.nodeId,
+            text: item.name
+        }
+    ]) %}
+{% endfor %}
+
+{% block beforeContent %}
+
+    {{ breadcrumb({
+        items: breadcrumbItems
+    }) }}
+
+{% endblock %}
+
+{% block content %}   
+
+    {% if hierarchyLevel == 1 %}
+        {{ gmdnLevel1(category, subcategories) }}
+    {% elif hierarchyLevel == 2 %}
+        {% set parentCategory = categoryHierarchy | selectattr("nodeId", "equalto", category.parentId) | first %}
+        {{ gmdnLevel2(category, subcategories, parentCategory) }}
+    {% elif hierarchyLevel == 3 %}
+        {% set parentCategory = categoryHierarchy | selectattr("nodeId", "equalto", category.parentId) | first %}
+        {{ gmdnLevel3(category, subcategories, parentCategory) }}
+    {% elif subcategories|length == 0 %}
+        {{ deviceTypesList(deviceTypes, category) }}
+    {# DEBUG: Comment out when done #}
+    {% else %}
+        {{ subcategories | dump }}
+    {% endif %}
+
+
+{% endblock %}
