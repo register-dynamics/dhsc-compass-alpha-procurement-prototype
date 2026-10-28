@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import { sql } from "kysely";
 
 import { db } from "../database/client.js";
 import { Contact, Organisations, Search } from "../database/types.js";
@@ -12,13 +11,13 @@ export const renderProduct = async (req: Request, res: Response) => {
   try {
     productId = parseInt(req.params.id as string);
   } catch {
-    // TODO: Send to better error handling page
-    return res.status(400).send("Invalid Product ID");
+    res.status(404).render("not-found");
+    return;
   }
 
   if (!productId) {
-    // TODO: Send to better error handling page
-    return res.status(400).send("Product ID is required");
+    res.status(404).render("not-found");
+    return;
   }
 
   const product = await db
@@ -29,135 +28,11 @@ export const renderProduct = async (req: Request, res: Response) => {
     .executeTakeFirst();
 
   if (!product) {
-    // TODO: Send to better error handling page
-    return res.status(404).send("Product not found");
+    res.status(404).render("not-found");
+    return;
   }
-
-  const evidences = await db
-    .withSchema("app")
-    .selectFrom("evidence")
-    .innerJoin(
-      "product_matches",
-      "product_matches.evidenceId",
-      "evidence.evidenceId",
-    )
-    .innerJoin(
-      "evidence_type",
-      "evidence_type.typeOfEvidenceId",
-      "evidence.typeOfEvidenceId",
-    )
-    .innerJoin(
-      "organisation_details",
-      "organisation_details.organisationId",
-      "evidence.organisationId",
-    )
-    .where("productId", "=", productId)
-    .selectAll()
-    .execute();
-
-  // Add documents to evidences if there are any
-  if (evidences.length > 0) {
-    const evidenceIds = evidences.map((ev) => ev.evidenceId);
-    const documents = await db
-      .withSchema("app")
-      .selectFrom("documents")
-      .innerJoin(
-        "document_type",
-        "document_type.typeOfDocId",
-        "documents.typeOfDocId",
-      )
-      .where("evidenceId", "in", evidenceIds)
-      .selectAll()
-      .execute();
-
-    const userId = req.user?.id;
-
-    const evidenceUsefulness = await db
-      .withSchema("app")
-      .selectFrom("product_evidence_useful")
-      .select([
-        "evidenceId",
-        db.fn
-          .max(sql`CASE WHEN "user_id" = ${userId} THEN 1 ELSE 0 END`)
-          .as("hasUserMarkedUseful"),
-        db.fn.count("evidenceId").as("totalUsefulCount"),
-      ])
-      .where("productId", "=", productId)
-      .where("evidenceId", "in", evidenceIds)
-      .groupBy("evidenceId")
-      .execute();
-
-    const contacts = await db
-      .withSchema("app")
-      .selectFrom("evidence_contacts as ec")
-      .innerJoin("contacts as c", "c.contactId", "ec.contactId")
-      .select([
-        "ec.evidenceId",
-        "ec.discussImplementation",
-        "ec.discussTraining",
-        "ec.discussOutcomes",
-        "ec.discussPharmacyIntegration",
-        "ec.discussBusinessCase",
-        "ec.discussRealWorldUse",
-        "ec.discussEhrIntegration",
-        "c.contactId",
-        "c.title",
-        "c.givenName",
-        "c.surname",
-        "c.email",
-        "c.phoneNo",
-        "c.role",
-      ])
-      .where("ec.evidenceId", "in", evidenceIds)
-      .execute();
-
-    // Attach contacts, documents, and usefulness to their evidences
-    evidences.forEach((ev) => {
-      ev.contacts = contacts.filter(
-        (contact) => contact.evidenceId === ev.evidenceId,
-      );
-
-      ev.documents = documents.filter(
-        (doc) => doc.evidenceId === ev.evidenceId,
-      );
-
-      ev.markedUseful = Number(
-        evidenceUsefulness.find((eu) => eu.evidenceId === ev.evidenceId)
-          ?.hasUserMarkedUseful ?? 0,
-      );
-
-      ev.totalUsefulCount = Number(
-        evidenceUsefulness.find((eu) => eu.evidenceId === ev.evidenceId)
-          ?.totalUsefulCount ?? 0,
-      );
-    });
-  }
-
-  const userId = req.user?.id;
-
-  if (!userId) {
-    // TODO: Send to better error handling page
-    return res.status(500).send("Unable to determine user ID");
-  }
-
-  const userOrg = await getUserOrganisation(userId);
-
-  if (!userOrg) {
-    // TODO: Send to better error handling page
-    return res.status(500).send("Unable to determine user organisation");
-  }
-
-  // Check if user's organisation has evidence for this product
-  const organisationEvidence = evidences.filter(
-    (ev) => ev.organisationId === userOrg.organisationId,
-  );
-
-  const hasEvidenceFromUsersOrg = organisationEvidence.length > 0;
 
   res.render("product", {
-    evidences,
-    hasEvidenceFromUsersOrg,
-    organisationName: userOrg.organisationName,
     product,
   });
 };
