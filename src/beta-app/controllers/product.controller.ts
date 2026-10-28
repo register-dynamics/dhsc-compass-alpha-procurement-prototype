@@ -1,9 +1,10 @@
 import { Request, Response } from "express";
 
 import { db } from "../database/client.js";
-import { Contact, Organisations, Search } from "../database/types.js";
+import { Contact, Organisations } from "../database/types.js";
 import { postAddEvidenceContactSelfSchema } from "../models/request-schemas/postAddEvidenceContactSelfSchema.js";
 import { postMarkUsefulSchema } from "../models/request-schemas/postMarkUsefulSchema.js";
+import { getProductWithId } from "../services/productsService.js";
 
 export const renderProduct = async (req: Request, res: Response) => {
   let productId;
@@ -20,12 +21,7 @@ export const renderProduct = async (req: Request, res: Response) => {
     return;
   }
 
-  const product = await db
-    .withSchema("external")
-    .selectFrom("search")
-    .selectAll()
-    .where("productId", "=", productId)
-    .executeTakeFirst();
+  const product = await getProductWithId(productId);
 
   if (!product) {
     res.status(404).render("not-found");
@@ -492,16 +488,6 @@ function getProductIdFromParams(req: Request): null | number {
   } catch {
     return null;
   }
-}
-
-async function getProductWithId(productId: number): Promise<null | Search> {
-  const product = await db
-    .withSchema("external")
-    .selectFrom("search")
-    .selectAll()
-    .where("productId", "=", productId)
-    .executeTakeFirst();
-  return product ?? null;
 }
 
 // NOTE: This assumes that the user only belongs to a single organisation
