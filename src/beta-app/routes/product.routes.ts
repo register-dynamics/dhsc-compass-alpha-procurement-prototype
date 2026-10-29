@@ -86,7 +86,7 @@ const routeDefinitions: RouteDefinition[] = [
     handler: renderProductRelatedTrusts,
     method: "get",
     path: "/product/:productId/related-trusts",
-  }
+  },
 ];
 
 registerRoutes(router, routeDefinitions);

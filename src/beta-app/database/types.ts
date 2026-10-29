@@ -25,6 +25,8 @@ export interface Database {
   gmdn: GmdnTable;
   device_type: DeviceTypeTable;
   products: ProductTable;
+  atamis_contracts: AtamisContractTable;
+  atamis_to_gmdn: AtamisToGmdnMappingTable;
 }
 
 export type Contact = Selectable<ContactTable>;
@@ -234,4 +236,31 @@ export interface ProductTable {
   manufacturerId: number;
   aggregationName: null | string;
   aggregationType: null | string;
+}
+
+export type AtamisContract = Selectable<AtamisContractTable>;
+
+export interface AtamisContractTable {
+  contractRef: string;
+  contractName: string;
+  description: string;
+  owner: string;
+  status: string;
+  supplier: string;
+  companyRegestrationNumber: null | string;
+  duns: null | number;
+  contractingAuthority: string;
+  businessUnit: null | string;
+  primaryCategory: string;
+  secondaryCategory: null | string;
+  startDate: Date;
+  endDate: Date;
+  contractFinderUrl: null | string;
+}
+
+export type AtamisToGmdnMapping = Selectable<AtamisToGmdnMappingTable>;
+
+export interface AtamisToGmdnMappingTable {
+  atamisRef: string;
+  gmdnCode: number;
 }

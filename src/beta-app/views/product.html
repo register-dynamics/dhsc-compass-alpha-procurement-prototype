@@ -70,7 +70,7 @@
             {{ summaryList({
                 rows: [
                     { key: { text: "People to contact" }, value: { text: peopleWithExperienceCount | string } },
-                    { key: { text: "Procurement contracts" }, value: { text: "##" } },
+                    { key: { text: "Procurement contracts" }, value: { text: procurementContractCount | string } },
                     { key: { text: "Other documents" }, value: { html: '<ul class="nhsuk-list nhsuk-u-margin-bottom-0">' + documentTypesContent + '</ul>' }, classes: "nhsuk-summary-list__row--no-border" }
                 ]
             }) }}

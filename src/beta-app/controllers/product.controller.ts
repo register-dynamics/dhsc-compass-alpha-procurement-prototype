@@ -4,7 +4,13 @@ import { db } from "../database/client.js";
 import { Contact, Organisations } from "../database/types.js";
 import { postAddEvidenceContactSelfSchema } from "../models/request-schemas/postAddEvidenceContactSelfSchema.js";
 import { postMarkUsefulSchema } from "../models/request-schemas/postMarkUsefulSchema.js";
-import { getCountOfContactsWithExperienceWithProduct, getCountOfDocumentsByTypeForProduct, getCountOfOrganisationsWithExperienceWithProduct, getProductWithId } from "../services/productsService.js";
+import { getContractCountForProduct } from "../services/atamisService.js";
+import {
+  getCountOfContactsWithExperienceWithProduct,
+  getCountOfDocumentsByTypeForProduct,
+  getCountOfOrganisationsWithExperienceWithProduct,
+  getProductWithId,
+} from "../services/productsService.js";
 
 export const renderProduct = async (req: Request, res: Response) => {
   let productId;
@@ -28,13 +34,17 @@ export const renderProduct = async (req: Request, res: Response) => {
     return;
   }
 
-  const trustsWithExperienceCount = await getCountOfOrganisationsWithExperienceWithProduct(productId);
-  const peopleWithExperienceCount = await getCountOfContactsWithExperienceWithProduct(productId);
+  const trustsWithExperienceCount =
+    await getCountOfOrganisationsWithExperienceWithProduct(productId);
+  const peopleWithExperienceCount =
+    await getCountOfContactsWithExperienceWithProduct(productId);
+  const procurementContractCount = await getContractCountForProduct(productId);
   const documentTypes = await getCountOfDocumentsByTypeForProduct(productId);
 
   res.render("product", {
     documentTypes,
     peopleWithExperienceCount,
+    procurementContractCount,
     product,
     trustsWithExperienceCount,
   });
@@ -408,22 +418,31 @@ export const renderProductSpecifications = async (
   req: Request,
   res: Response,
 ) => {
-  await new Promise((resolve) => { console.log("temp async to make linter happy"); resolve(""); });
+  await new Promise((resolve) => {
+    console.log("temp async to make linter happy");
+    resolve("");
+  });
   res.status(500).send("Not implemented yet");
-}
+};
 
 export const renderProductTrusts = async (req: Request, res: Response) => {
-  await new Promise((resolve) => { console.log("temp async to make linter happy"); resolve(""); });
+  await new Promise((resolve) => {
+    console.log("temp async to make linter happy");
+    resolve("");
+  });
   res.status(500).send("Not implemented yet");
-}
+};
 
 export const renderProductRelatedTrusts = async (
   req: Request,
   res: Response,
 ) => {
-  await new Promise((resolve) => { console.log("temp async to make linter happy"); resolve(""); });
+  await new Promise((resolve) => {
+    console.log("temp async to make linter happy");
+    resolve("");
+  });
   res.status(500).send("Not implemented yet");
-}
+};
 
 async function createEvidenceCardForOrganisation(
   organisationId: number,
