@@ -20,7 +20,7 @@ const routeDefinitions: RouteDefinition[] = [
   {
     handler: renderProduct,
     method: "get",
-    path: "/product/:id",
+    path: "/product/:aggregationName",
   },
   {
     handler: postMarkUseful,

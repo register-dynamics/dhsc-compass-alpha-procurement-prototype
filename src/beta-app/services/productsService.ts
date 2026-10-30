@@ -1,5 +1,5 @@
 import { db } from "../database/client.js";
-import { Search } from "../database/types.js";
+import { Product, Search } from "../database/types.js";
 
 export const getProductsByDeviceId = async (deviceId: number) => {
   return await db
@@ -20,6 +20,18 @@ export const getProductWithId = async (
     .where("productId", "=", productId)
     .executeTakeFirst();
   return product ?? null;
+};
+
+export const getAggregationWithName = async (
+  aggregationName: string,
+): Promise<null | Product[]> => {
+  const aggregation = await db
+    .withSchema("external")
+    .selectFrom("products")
+    .selectAll()
+    .where("aggregationName", "=", aggregationName)
+    .execute();
+  return aggregation;
 };
 
 export const getCountOfOrganisationsWithExperienceWithProduct = async (

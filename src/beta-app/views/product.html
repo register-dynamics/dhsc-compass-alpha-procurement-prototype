@@ -5,26 +5,7 @@
 {% from "summary-list/macro.njk" import summaryList %}
 {% from "button/macro.njk" import button %}
 
-{% set pageName = product.productName + " by " + product.manufacturer %}
-
-{% block beforeContent %}
-
-    {{ breadcrumb({
-        items: [
-            {
-            href: "/",
-            text: "Home"
-            },
-            {
-            href: "/search-results?q=" + (searchTerm or ""),
-            text: "Search"
-            }
-        ],
-        href: "#",
-        text: product.productName + " – " + product.model
-    }) }}
-
-{% endblock %}
+{% set pageName = productAggregation.aggregationName + " by " + productAggregation.supplierName %}
 
 {% block content %}
 
@@ -32,65 +13,52 @@
         <div class="nhsuk-grid-column-two-thirds">
 
             <h1 class="nhsuk-heading-l nhsuk-u-margin-bottom-4">
-                <span class="nhsuk-caption-l">{{ product.manufacturer }}</span>
-                {{ product.productName }}
+                <span class="nhsuk-caption-l">{{ productAggregation.supplierName }}</span>
+                {{ productAggregation.aggregationName }}
             </h1>
 
-            {# TODO: Supplier page #}
-            {# TODO: Where do we get acquisition cost from? #}
-            {# TODO: How do we get device-type URL to work? It needs category param at the moment #}
             {{ summaryList({
                 rows: [
-                    { key: { text: "Device type" }, value: { html: '<a href="/device-type/' + product.deviceId + '">' + product.type + '</a>' } },
-                    { key: { text: "Supplier" }, value: { html: '<a href="/supplier/">' + product.manufacturer + '</a>' } },
-                    { key: { text: "Acquisition cost" }, value: { text: "TODO" } }
+                    { key: { text: "Device type" }, value: { html: productAggregation.deviceType } },
+                    { key: { text: "Supplier" }, value: { html: productAggregation.supplierName } }
                 ]
             }) }}
-
-            {# TODO: Specifications and costs page #}
-            <p>
-                <a href="/product/{{ product.productId }}/specifications">View specifications and costs</a>
-            </p>
-
         </div>
     </div>
 
     <ul class="nhsuk-grid-row nhsuk-card-group nhsuk-u-margin-top-4">
         <li class="nhsuk-grid-column-one-half nhsuk-card-group__item">
             {% call card({
-                heading: trustsWithExperienceCount + " trusts have experience with " + product.productName,
+                heading: productAggregation.trustsWithExperienceCount + " trusts have experience with " + productAggregation.aggregationName,
                 headingClasses: "nhsuk-heading-m"
             }) %}
             {% set documentTypesContent %}
-                {% for documentType in documentTypes %}
-                    <li>{{ documentType.count }} {{ documentType.type }}</li>
+                {% for documentType in productAggregation.relevantDocuments %}
+                    <li>{{ documentType.count }} {{ documentType.documentType }}</li>
                 {% endfor %}
             {% endset %}
-            {# TODO: Populate list content #}
             {{ summaryList({
                 rows: [
-                    { key: { text: "People to contact" }, value: { text: peopleWithExperienceCount | string } },
-                    { key: { text: "Procurement contracts" }, value: { text: procurementContractCount | string } },
+                    { key: { text: "People to contact" }, value: { text: productAggregation.peopleWithExperienceCount | string } },
+                    { key: { text: "Procurement contracts" }, value: { text: productAggregation.procurementContractCount | string } },
                     { key: { text: "Other documents" }, value: { html: '<ul class="nhsuk-list nhsuk-u-margin-bottom-0">' + documentTypesContent + '</ul>' }, classes: "nhsuk-summary-list__row--no-border" }
                 ]
             }) }}
-            <p>
+            {# <p>
                 <a href="/product/{{ product.productId }}/trusts">View trusts</a>
-            </p>
-            {{ button({
+            </p> #}
+            {# {{ button({
                 text: "Add your trust's experience",
                 href: "/product/" + product.productId + "/add-evidence",
                 classes: "nhsuk-button--secondary app-button--small nhsuk-u-margin-bottom-0"
-            }) }}
+            }) }} #}
             {% endcall %}
         </li>
-        <li class="nhsuk-grid-column-one-half nhsuk-card-group__item">
-            {# TODO: Update this heading #}
+        {# <li class="nhsuk-grid-column-one-half nhsuk-card-group__item">
             {% call card({
                 heading: "## trusts have experience with devices in the same or related categories",
                 headingClasses: "nhsuk-heading-m"
             }) %}
-            {# TODO: Populate list content #}
             {{ summaryList({
                 rows: [
                 { key: { text: "People to contact" }, value: { text: "##" } },
@@ -101,7 +69,7 @@
                 <a href="/product/{{ product.productId }}/related-trusts">View trusts</a>
             </p>
             {% endcall %}
-        </li>
+        </li> #}
     </ul>
 
     <div class="nhsuk-grid-row nhsuk-u-margin-top-5">

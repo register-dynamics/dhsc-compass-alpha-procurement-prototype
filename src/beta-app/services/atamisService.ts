@@ -1,7 +1,7 @@
 import { db } from "../database/client.js";
 
-export const getContractCountForProduct = async (
-  productId: number,
+export const getContractCountForAggregation = async (
+  aggregationName: string,
 ): Promise<number> => {
   const result = await db
     .withSchema("external")
@@ -12,7 +12,7 @@ export const getContractCountForProduct = async (
     .select((eb) =>
       eb.fn.count<string>("ac.contractRef").distinct().as("contractCount"),
     )
-    .where("p.productId", "=", productId)
+    .where("p.aggregationName", "=", aggregationName)
     .executeTakeFirstOrThrow();
   return Number(result.contractCount);
 };

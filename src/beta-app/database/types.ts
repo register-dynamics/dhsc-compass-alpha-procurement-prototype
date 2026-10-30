@@ -27,6 +27,7 @@ export interface Database {
   products: ProductTable;
   atamis_contracts: AtamisContractTable;
   atamis_to_gmdn: AtamisToGmdnMappingTable;
+  manufacturers: ManufacturerTable;
 }
 
 export type Contact = Selectable<ContactTable>;
@@ -263,4 +264,15 @@ export type AtamisToGmdnMapping = Selectable<AtamisToGmdnMappingTable>;
 export interface AtamisToGmdnMappingTable {
   atamisRef: string;
   gmdnCode: number;
+}
+
+export type Manufacturer = Selectable<ManufacturerTable>;
+
+export interface ManufacturerTable {
+  manufacturerId: number;
+  manOrganisationName: string;
+  manCountry: null | string;
+  manOrganisationType: null | string;
+  // TODO: This is typoed, we need to change it in the external schema
+  companyRegestrationNumber: null | string;
 }

@@ -4,49 +4,49 @@ import { db } from "../database/client.js";
 import { Contact, Organisations } from "../database/types.js";
 import { postAddEvidenceContactSelfSchema } from "../models/request-schemas/postAddEvidenceContactSelfSchema.js";
 import { postMarkUsefulSchema } from "../models/request-schemas/postMarkUsefulSchema.js";
-import { getContractCountForProduct } from "../services/atamisService.js";
+import { ProductAggregation } from "../models/view-models/productAggregation.js";
+import { getContractCountForAggregation } from "../services/atamisService.js";
+import { getGmdnTermForDeviceId } from "../services/gmdnCategoryService.js";
 import {
-  getCountOfContactsWithExperienceWithProduct,
-  getCountOfDocumentsByTypeForProduct,
-  getCountOfOrganisationsWithExperienceWithProduct,
+  getAggregationWithName,
   getProductWithId,
 } from "../services/productsService.js";
+import { getSupplierWithId } from "../services/supplierService.js";
 
 export const renderProduct = async (req: Request, res: Response) => {
-  let productId;
+  const aggregationName = req.params.aggregationName as string;
 
-  try {
-    productId = parseInt(req.params.id as string);
-  } catch {
+  if (!aggregationName) {
     res.status(404).render("not-found");
     return;
   }
 
-  if (!productId) {
+  const aggregation = await getAggregationWithName(aggregationName);
+
+  if (!aggregation || aggregation.length === 0) {
     res.status(404).render("not-found");
     return;
   }
 
-  const product = await getProductWithId(productId);
+  const supplier = await getSupplierWithId(aggregation[0].manufacturerId);
 
-  if (!product) {
-    res.status(404).render("not-found");
-    return;
-  }
+  const deviceType = await getGmdnTermForDeviceId(aggregation[0].deviceId);
 
-  const trustsWithExperienceCount =
-    await getCountOfOrganisationsWithExperienceWithProduct(productId);
-  const peopleWithExperienceCount =
-    await getCountOfContactsWithExperienceWithProduct(productId);
-  const procurementContractCount = await getContractCountForProduct(productId);
-  const documentTypes = await getCountOfDocumentsByTypeForProduct(productId);
+  const procurementContractCount =
+    await getContractCountForAggregation(aggregationName);
+
+  const productAggregation: ProductAggregation = {
+    aggregationName: aggregation[0].aggregationName ?? "",
+    deviceType: deviceType,
+    peopleWithExperienceCount: 0,
+    procurementContractCount: procurementContractCount,
+    relevantDocuments: [],
+    supplierName: supplier?.manOrganisationName ?? "",
+    trustsWithExperienceCount: 0,
+  };
 
   res.render("product", {
-    documentTypes,
-    peopleWithExperienceCount,
-    procurementContractCount,
-    product,
-    trustsWithExperienceCount,
+    productAggregation,
   });
 };
 
