@@ -8,5 +8,5 @@ export interface ProductAggregation {
   trustsWithExperienceCount: number;
   peopleWithExperienceCount: number;
   procurementContractCount: number;
-  relevantDocuments?: [] | [{ count: number; documentType: string }];
+  relevantDocuments?: [] | { count: number; documentType: string }[];
 }

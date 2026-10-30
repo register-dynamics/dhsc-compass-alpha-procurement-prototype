@@ -5,7 +5,7 @@ import { Generated, Selectable } from "kysely";
 import type { EvidenceContact } from "../models/evidenceContact.js";
 export interface Database {
   contacts: ContactTable;
-  product_matches: ProductMatchesTable;
+  product_evidence: ProductEvidenceTable;
   evidence_type: EvidenceTypeTable;
   evidence: EvidenceTable;
   document_type: DocumentTypeTable;
@@ -43,10 +43,10 @@ export interface ContactTable {
   userId: null | number;
 }
 
-export type ProductMatches = Selectable<ProductMatchesTable>;
+export type ProductEvidence = Selectable<ProductEvidenceTable>;
 
-export interface ProductMatchesTable {
-  productId: number;
+export interface ProductEvidenceTable {
+  aggregationName: string;
   evidenceId: number;
 }
 

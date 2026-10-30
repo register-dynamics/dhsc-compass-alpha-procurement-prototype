@@ -29,7 +29,7 @@
     <ul class="nhsuk-grid-row nhsuk-card-group nhsuk-u-margin-top-4">
         <li class="nhsuk-grid-column-one-half nhsuk-card-group__item">
             {% call card({
-                heading: productAggregation.trustsWithExperienceCount + " trusts have experience with " + productAggregation.aggregationName,
+                heading: productAggregation.trustsWithExperienceCount + " trust" + ("s have" if productAggregation.trustsWithExperienceCount != 1 else " has") + " experience with " + productAggregation.aggregationName,
                 headingClasses: "nhsuk-heading-m"
             }) %}
             {% set documentTypesContent %}

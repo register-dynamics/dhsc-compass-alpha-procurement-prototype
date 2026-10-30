@@ -8,7 +8,11 @@ import { ProductAggregation } from "../models/view-models/productAggregation.js"
 import { getContractCountForAggregation } from "../services/atamisService.js";
 import { getGmdnTermForDeviceId } from "../services/gmdnCategoryService.js";
 import {
+  getAggregationNameForProductId,
   getAggregationWithName,
+  getCountOfContactsWithExperienceWithAggregation,
+  getCountOfDocumentsByTypeForAggregation,
+  getCountOfOrganisationsWithExperienceWithAggregation,
   getProductWithId,
 } from "../services/productsService.js";
 import { getSupplierWithId } from "../services/supplierService.js";
@@ -32,17 +36,20 @@ export const renderProduct = async (req: Request, res: Response) => {
 
   const deviceType = await getGmdnTermForDeviceId(aggregation[0].deviceId);
 
+  const trustsWithExperienceCount = await getCountOfOrganisationsWithExperienceWithAggregation(aggregationName);  
+  const peopleWithExperienceCount = await getCountOfContactsWithExperienceWithAggregation(aggregationName);
   const procurementContractCount =
     await getContractCountForAggregation(aggregationName);
+  const relevantDocuments = await getCountOfDocumentsByTypeForAggregation(aggregationName);
 
   const productAggregation: ProductAggregation = {
     aggregationName: aggregation[0].aggregationName ?? "",
     deviceType: deviceType,
-    peopleWithExperienceCount: 0,
+    peopleWithExperienceCount: peopleWithExperienceCount,
     procurementContractCount: procurementContractCount,
-    relevantDocuments: [],
+    relevantDocuments: relevantDocuments,
     supplierName: supplier?.manOrganisationName ?? "",
-    trustsWithExperienceCount: 0,
+    trustsWithExperienceCount: trustsWithExperienceCount,
   };
 
   res.render("product", {
@@ -450,6 +457,13 @@ async function createEvidenceCardForOrganisation(
 ): Promise<number> {
   const genericEvidenceType = 8;
 
+  // Evidence is linked to the product's aggregation rather than the product itself
+  const aggregationName = await getAggregationNameForProductId(productId);
+
+  if (!aggregationName) {
+    throw new Error(`No aggregation found for product ID ${String(productId)}`);
+  }
+
   const trx = await db.startTransaction().execute();
 
   try {
@@ -465,10 +479,10 @@ async function createEvidenceCardForOrganisation(
 
     await trx
       .withSchema("app")
-      .insertInto("product_matches")
+      .insertInto("product_evidence")
       .values({
+        aggregationName,
         evidenceId: evidence.evidenceId,
-        productId,
       })
       .executeTakeFirstOrThrow();
 

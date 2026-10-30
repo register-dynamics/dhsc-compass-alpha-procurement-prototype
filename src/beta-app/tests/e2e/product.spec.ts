@@ -68,6 +68,7 @@ test.describe("evidence submission journeys", () => {
   test.describe.configure({ mode: "serial" });
 
   const productId = "73516943";
+  const aggregationName = "UNIT Artifical Hip";
 
   const deleteEvidenceForTestOrganisation = async () => {
     const user = await db
@@ -90,10 +91,10 @@ test.describe("evidence submission journeys", () => {
 
     const evidenceRows = await db
       .withSchema("app")
-      .selectFrom("product_matches as pm")
-      .innerJoin("evidence as e", "e.evidenceId", "pm.evidenceId")
-      .select("pm.evidenceId")
-      .where("pm.productId", "=", Number(productId))
+      .selectFrom("product_evidence as pe")
+      .innerJoin("evidence as e", "e.evidenceId", "pe.evidenceId")
+      .select("pe.evidenceId")
+      .where("pe.aggregationName", "=", aggregationName)
       .where("e.organisationId", "=", organisation.organisationId)
       .execute();
 
@@ -109,7 +110,7 @@ test.describe("evidence submission journeys", () => {
 
     await db
       .withSchema("app")
-      .deleteFrom("product_matches")
+      .deleteFrom("product_evidence")
       .where("evidenceId", "in", evidenceIds)
       .execute();
 
