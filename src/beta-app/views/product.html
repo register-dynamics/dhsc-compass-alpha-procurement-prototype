@@ -44,9 +44,9 @@
                     { key: { text: "Other documents" }, value: { html: '<ul class="nhsuk-list nhsuk-u-margin-bottom-0">' + documentTypesContent + '</ul>' }, classes: "nhsuk-summary-list__row--no-border" }
                 ]
             }) }}
-            {# <p>
-                <a href="/product/{{ product.productId }}/trusts">View trusts</a>
-            </p> #}
+            <p>
+                <a href="/product/{{ productAggregation.aggregationName }}/trusts">View trusts</a>
+            </p>
             {# {{ button({
                 text: "Add your trust's experience",
                 href: "/product/" + product.productId + "/add-evidence",

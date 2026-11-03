@@ -5,6 +5,7 @@ import { Contact, Organisations } from "../database/types.js";
 import { postAddEvidenceContactSelfSchema } from "../models/request-schemas/postAddEvidenceContactSelfSchema.js";
 import { postMarkUsefulSchema } from "../models/request-schemas/postMarkUsefulSchema.js";
 import { ProductAggregation } from "../models/view-models/productAggregation.js";
+import { ProductTrusts } from "../models/view-models/productTrusts.js";
 import { getContractCountForAggregation } from "../services/atamisService.js";
 import { getGmdnTermForDeviceId } from "../services/gmdnCategoryService.js";
 import {
@@ -13,6 +14,7 @@ import {
   getCountOfContactsWithExperienceWithAggregation,
   getCountOfDocumentsByTypeForAggregation,
   getCountOfOrganisationsWithExperienceWithAggregation,
+  getEvidenceCardsForAggregation,
   getProductWithId,
 } from "../services/productsService.js";
 import { getSupplierWithId } from "../services/supplierService.js";
@@ -421,23 +423,31 @@ export const postAddEvidenceContactSelf = async (
   }
 };
 
-export const renderProductSpecifications = async (
-  req: Request,
-  res: Response,
-) => {
-  await new Promise((resolve) => {
-    console.log("temp async to make linter happy");
-    resolve("");
-  });
-  res.status(500).send("Not implemented yet");
-};
-
 export const renderProductTrusts = async (req: Request, res: Response) => {
-  await new Promise((resolve) => {
-    console.log("temp async to make linter happy");
-    resolve("");
-  });
-  res.status(500).send("Not implemented yet");
+  const aggregationName = req.params.aggregationName as string;
+
+  if (!aggregationName) {
+    res.status(404).render("not-found");
+    return;
+  }
+
+  const aggregation = await getAggregationWithName(aggregationName);
+
+  if (!aggregation || aggregation.length === 0) {
+    res.status(404).render("not-found");
+    return;
+  }
+
+  const supplier = await getSupplierWithId(aggregation[0].manufacturerId);
+  const evidenceCards = await getEvidenceCardsForAggregation(aggregationName);
+
+  const viewModel: ProductTrusts = {
+    aggregationName: aggregation[0].aggregationName ?? "",
+    evidenceCards: evidenceCards,
+    supplierName: supplier?.manOrganisationName ?? "",
+  };
+
+  res.render("product/trusts", viewModel);
 };
 
 export const renderProductRelatedTrusts = async (
