@@ -315,3 +315,4 @@ INSERT INTO "external"."atamis_to_gmdn" ("atamis_ref","gmdn_code") VALUES ('FAKE
  ('FAKE1009',14035);
 
 REFRESH MATERIALIZED VIEW "external"."search";
+REFRESH MATERIALIZED VIEW "external"."aggregation_search";

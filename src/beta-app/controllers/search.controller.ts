@@ -47,87 +47,109 @@ export const renderSearchResults = async (req: Request, res: Response) => {
       : "";
 
   const queryParams = {
-    categories: JSON.stringify(queryCategories),
     limit: pageSize,
     offset: pageSize * currentPage,
   };
 
-  // Get the total count of search results for the given search term
-  let searchResultsCountQuery = db
+  // Each aggregation can span several GMDN categories, so match any
+  // aggregation with at least one of the selected categories. The "No
+  // category" checkbox has an empty value and matches aggregations with no
+  // GMDN categories at all.
+  const selectedGmdnNames = queryCategories.filter((c) => c !== "");
+  const noCategorySelected = queryCategories.includes("");
+  const categoryFilter = sql<boolean>`(
+    "gmdn_names" && ${selectedGmdnNames}::varchar[]
+    OR (${noCategorySelected} AND cardinality("gmdn_names") = 0)
+  )`;
+
+  const searchResultsQuery = db
     .withSchema("external")
-    .selectFrom("search")
-    .select(db.fn.count<number>("productId").as("count"))
+    .selectFrom("aggregation_search")
     .where(sanitisedSearchTerm);
 
-  if (queryCategories.length > 0) {
-    searchResultsCountQuery = searchResultsCountQuery.where(
-      "gmdnName",
-      "in",
-      queryCategories,
-    );
-  }
+  const filteredSearchResultsQuery =
+    queryCategories.length > 0
+      ? searchResultsQuery.where(categoryFilter)
+      : searchResultsQuery;
 
-  const searchResultsCount = await searchResultsCountQuery
+  // Get the total count of search results for the given search term
+  const searchResultsCount = await filteredSearchResultsQuery
+    .select(db.fn.countAll<string>().as("count"))
     .executeTakeFirstOrThrow()
-    .then((result) => result.count);
+    .then((result) => Number(result.count));
 
   const searchOffset = searchResultsCount > 0 ? currentPage * pageSize + 1 : 0;
   const searchMaxPages =
     Math.trunc(searchResultsCount / pageSize) +
     Math.min(searchResultsCount % pageSize, 1);
 
-  // Get the categories for the filter sidebar, along with the count of results for each category
+  // Get the categories for the filter sidebar, along with the count of
+  // aggregations in each category. An aggregation is counted once in every
+  // category it belongs to, and aggregations without a category are counted
+  // under null ("No category").
   const categoriesInSearchResults = await db
-    .withSchema("external")
-    .selectFrom("search")
-    .select(["gmdnName", db.fn.count<number>("gmdnName").as("count")])
-    .where(sanitisedSearchTerm)
-    .groupBy("gmdnName")
+    .selectFrom(
+      searchResultsQuery
+        .select(
+          sql<null | string>`unnest(
+            CASE
+              WHEN cardinality("gmdn_names") = 0 THEN ARRAY[NULL]::varchar[]
+              ELSE "gmdn_names"
+            END
+          )`.as("gmdnName"),
+        )
+        .as("c"),
+    )
+    .select(["c.gmdnName", db.fn.countAll<string>().as("count")])
+    .groupBy("c.gmdnName")
     .orderBy("count", "desc")
     .execute()
     .then((results) =>
       results.map((result) => ({
-        checked: queryCategories.includes(result.gmdnName),
-        count: result.count,
+        checked: queryCategories.includes(result.gmdnName ?? ""),
+        count: Number(result.count),
         name: result.gmdnName,
       })),
     );
 
-  // Perform the search query with pagination and render the results page
-  let results = db
-    .withSchema("external")
-    .selectFrom("search")
-    .selectAll()
-    .where(sanitisedSearchTerm);
-
-  // Add in the category filter if any categories are selected
-  if (queryCategories.length > 0) {
-    results = results.where("gmdnName", "in", queryCategories);
-  }
-
-  await results
+  // Perform the search query with pagination and render the results page.
+  // Order by name so pages are stable.
+  const results = await filteredSearchResultsQuery
+    .select([
+      "aggregationName",
+      "aggregationType",
+      "productCount",
+      "productNames",
+      "models",
+      "manufacturers",
+      "countries",
+      "gmdnNames",
+      "types",
+    ])
+    .orderBy("aggregationName")
     .limit(queryParams.limit)
     .offset(queryParams.offset)
     .execute()
-    .then((results) => {
+    .then((results) =>
       // Add some dummy data to the results for now, until we have a proper database with these fields
-      for (const result of results) {
-        result.procured = 1;
-        result.under_review = 1;
-        result.excluded = 1;
-      }
+      results.map((result) => ({
+        ...result,
+        excluded: 1,
+        procured: 1,
+        under_review: 1,
+      })),
+    );
 
-      res.render("search-results.html", {
-        categoriesQueryString,
-        searchMaxPages,
-        searchOffset,
-        searchPage,
-        searchResultCategories: categoriesInSearchResults,
-        searchResults: results,
-        searchResultsCount,
-        searchTerm,
-      });
-    });
+  res.render("search-results.html", {
+    categoriesQueryString,
+    searchMaxPages,
+    searchOffset,
+    searchPage,
+    searchResultCategories: categoriesInSearchResults,
+    searchResults: results,
+    searchResultsCount,
+    searchTerm,
+  });
 };
 
 export const renderCategories = async (req: Request, res: Response) => {

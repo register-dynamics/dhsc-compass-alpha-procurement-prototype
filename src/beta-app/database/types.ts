@@ -14,6 +14,7 @@ export interface Database {
   evidence_contacts: EvidenceContactsTable;
   product_evidence_useful: ProductEvidenceUsefulTable;
   search: SearchTable;
+  aggregation_search: AggregationSearchTable;
   users: UserTable;
   organisation_user: OrganisationUserTable;
   organisation_contact: OrganisationContactTable;
@@ -143,6 +144,23 @@ export interface SearchTable {
 
   // FTS5 virtual table column for MATCH
   search: string;
+}
+
+export type AggregationSearch = Selectable<AggregationSearchTable>;
+
+export interface AggregationSearchTable {
+  aggregationName: string;
+  aggregationType: null | string;
+  productCount: number;
+  productNames: string[];
+  models: string[];
+  productCodes: string[];
+  manufacturers: string[];
+  countries: string[];
+  gmdnCodes: number[];
+  gmdnNames: string[];
+  types: string[];
+  searchDoc: string;
 }
 
 export type User = Selectable<UserTable>;
