@@ -51,7 +51,7 @@
     {{ table({
       attributes: { "aria-labelledby": "devices-heading" },
       head: [
-        { text: "Name" },
+        { text: "Device name" },
         { text: "Trusts with available data", format: "numeric" }
       ],
       rows: [
@@ -71,12 +71,12 @@
 </div>
 
 
-<h2 class="nhsuk-heading-m nhsuk-u-margin-top-5">Available trust information</h2>
+<h2 class="nhsuk-heading-m nhsuk-u-margin-top-5">Available trust data</h2>
 
 <ul class="nhsuk-grid-row nhsuk-card-group">
   <li class="nhsuk-grid-column-one-half nhsuk-card-group__item">
     {% call card({
-      heading: "3 trusts with " + supplier + " " + brand + " experience",
+      heading: "3 trusts have " + supplier + " " + brand + " experience",
       headingLevel: 3,
       headingClasses: "nhsuk-heading-s"
     }) %}
