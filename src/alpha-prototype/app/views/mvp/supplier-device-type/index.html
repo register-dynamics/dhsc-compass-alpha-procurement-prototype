@@ -1,0 +1,115 @@
+{#
+  Devices 1 supplier makes in 1 GMDN category, copied from
+  identify-alternatives/nuvasive-bone-screw-internal-spinal-fixation-system.html.
+  Device names are real market data; trust counts are invented. Links go to
+  "#", except MAS PLIF.
+#}
+
+{% extends "mvp/branded-device/_layout.html" %}
+
+{% from "tables/macro.njk" import table %}
+{% from "summary-list/macro.njk" import summaryList %}
+{% from "button/macro.njk" import button %}
+{% from "card/macro.njk" import card %}
+
+{% set brand = "Bone-screw internal spinal fixation system" %}
+{% set supplier = "Nuvasive" %}
+{% set pageName = brand + " by " + supplier %}
+{% set mainClasses = "nhsuk-main-wrapper--s" %}
+
+{% block beforeContent %}
+
+{{ breadcrumb({
+  items: [
+    { href: "/identify-alternatives/search-and-browse", text: "Search and browse" },
+    { href: "/identify-alternatives/device-function", text: "Device function" },
+    { href: "/identify-alternatives/tissue-reparation-devices", text: "Tissue reparation devices" },
+    { href: "/identify-alternatives/bone-joint-fixation-implants", text: "Bone/Joint fixation implants" },
+    { href: "/identify-alternatives/internal-spinal-fixation-systems", text: "Internal spinal fixation systems" },
+    { href: "/identify-alternatives/bone-screw-internal-spinal-fixation-system-non-sterile", text: "Bone-screw internal spinal fixation system, non-sterile" }
+  ]
+}) }}
+
+{% endblock %}
+
+{% block content %}
+
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+
+    <h1 class="nhsuk-heading-l nhsuk-u-margin-bottom-4" id="devices-heading">
+      <span class="nhsuk-caption-l">{{ supplier }}</span>
+      {{ brand }}
+    </h1>
+
+    {{ summaryList({
+      rows: [
+        { key: { text: "Device type" }, value: { html: '<a href="/identify-alternatives/bone-screw-internal-spinal-fixation-system-non-sterile">Bone-screw internal spinal fixation system, non-sterile</a>' } }
+      ]
+    }) }}
+
+    {{ table({
+      attributes: { "aria-labelledby": "devices-heading" },
+      head: [
+        { text: "Device name" },
+        { text: "Trusts with available data", format: "numeric" }
+      ],
+      rows: [
+        [ { html: '<a href="#">ARMADA</a>' }, { text: "7", format: "numeric" } ],
+        [ { html: '<a href="/identify-alternatives/mas-plif">MAS PLIF</a>' }, { text: "12", format: "numeric" } ],
+        [ { html: '<a href="#">MAS Plif Fixation</a>' }, { text: "2", format: "numeric" } ],
+        [ { html: '<a href="#">PRECEPT</a>' }, { text: "9", format: "numeric" } ],
+        [ { html: '<a href="#">RELINE</a>' }, { text: "1", format: "numeric" } ],
+        [ { html: '<a href="#">RELINE</a>' }, { text: "11", format: "numeric" } ],
+        [ { html: '<a href="#">RELINE System Implants</a>' }, { text: "3", format: "numeric" } ],
+        [ { html: '<a href="#">VuePoint</a>' }, { text: "5", format: "numeric" } ],
+        [ { html: '<a href="#">VuePoint OCT/II System Implants</a>' }, { text: "4", format: "numeric" } ]
+      ]
+    }) }}
+
+  </div>
+</div>
+
+
+<h2 class="nhsuk-heading-m nhsuk-u-margin-top-5">Available trust data</h2>
+
+<ul class="nhsuk-grid-row nhsuk-card-group">
+  <li class="nhsuk-grid-column-one-half nhsuk-card-group__item">
+    {% call card({
+      heading: "3 trusts have " + supplier + " " + brand + " experience",
+      headingLevel: 3,
+      headingClasses: "nhsuk-heading-s"
+    }) %}
+      {{ summaryList({
+        rows: [
+          { key: { text: "People to contact" }, value: { text: "3" } },
+          { key: { text: "Procurement contracts" }, value: { text: "2" } },
+          { key: { text: "Other documents" }, value: { html: '<ul class="nhsuk-list nhsuk-u-margin-bottom-0"><li>2 evaluations</li><li>1 business case</li></ul>' }, classes: "nhsuk-summary-list__row--no-border" }
+        ]
+      }) }}
+      <p><a href="/mvp/branded-device/trusts-with-experience">View trusts</a></p>
+      {{ button({
+        text: "Add your trust's experience",
+        href: "#",
+        classes: "nhsuk-button--secondary app-button--small nhsuk-u-margin-bottom-0"
+      }) }}
+    {% endcall %}
+  </li>
+  <li class="nhsuk-grid-column-one-half nhsuk-card-group__item">
+    {% call card({
+      heading: "4 trusts have experience with devices in the same or related categories",
+      headingLevel: 3,
+      headingClasses: "nhsuk-heading-s"
+    }) %}
+      {{ summaryList({
+        rows: [
+         { key: { text: "People to contact" }, value: { text: "3" } },
+          { key: { text: "Procurement contracts" }, value: { text: "5" }, classes: "nhsuk-summary-list__row--no-border" }
+        ]
+      }) }}
+      <p class="nhsuk-u-margin-bottom-0"><a href="/mvp/branded-device/related-contracts">View trusts</a></p>
+    {% endcall %}
+  </li>
+</ul>
+
+{% endblock %}

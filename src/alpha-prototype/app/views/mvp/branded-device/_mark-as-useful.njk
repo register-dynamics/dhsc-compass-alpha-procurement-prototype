@@ -1,0 +1,15 @@
+{% from "button/macro.njk" import button %}
+
+{# Toggle button (aria-pressed). Toggled by the script on the page. #}
+{% macro markAsUsefulButton() %}
+  {{ button({
+    element: "button",
+    type: "button",
+    text: "Mark as useful",
+    classes: "nhsuk-button--secondary nhsuk-button--small nhsuk-u-margin-top-2 nhsuk-u-margin-bottom-0",
+    attributes: {
+      "data-mark-useful": "",
+      "aria-pressed": "false"
+    }
+  }) }}
+{% endmacro %}
