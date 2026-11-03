@@ -9,6 +9,9 @@ export interface EvidenceCard {
   contactCount: number;
   procurementContractCount: number;
   sharedDocuments: EvidenceCardDocumentCount[];
+
+  usefulCount: number;
+  markedUseful: boolean;
 }
 
 export interface EvidenceCardDocumentCount {

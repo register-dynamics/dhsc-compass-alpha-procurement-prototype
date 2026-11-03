@@ -225,7 +225,7 @@ describe("Product controller", () => {
     const send = vi.fn();
     await postMarkUseful(
       {
-        body: { evidenceId: "12", productId: "34" },
+        body: { aggregationName: "Pump", evidenceId: "12" },
         user: { id: 56 },
       } as unknown as Request,
       { send, status } as unknown as Response,
@@ -233,7 +233,11 @@ describe("Product controller", () => {
 
     expect(insertIntoMock).toHaveBeenCalledWith("product_evidence_useful");
     expect(insertQuery.values).toHaveBeenCalledWith(
-      expect.objectContaining({ evidenceId: 12, productId: 34, userId: 56 }),
+      expect.objectContaining({
+        aggregationName: "Pump",
+        evidenceId: 12,
+        userId: 56,
+      }),
     );
     expect(status).toHaveBeenCalledWith(200);
     expect(send).toHaveBeenCalledWith({ count: 4 });
@@ -257,7 +261,7 @@ describe("Product controller", () => {
     const send = vi.fn();
     await postUnmarkUseful(
       {
-        body: { evidenceId: 12, productId: 34 },
+        body: { aggregationName: "Pump", evidenceId: 12 },
         user: { id: 56 },
       } as unknown as Request,
       { send, status } as unknown as Response,
@@ -265,7 +269,12 @@ describe("Product controller", () => {
 
     expect(deleteFromMock).toHaveBeenCalledWith("product_evidence_useful");
     expect(deleteQuery.where).toHaveBeenNthCalledWith(1, "evidenceId", "=", 12);
-    expect(deleteQuery.where).toHaveBeenNthCalledWith(2, "productId", "=", 34);
+    expect(deleteQuery.where).toHaveBeenNthCalledWith(
+      2,
+      "aggregationName",
+      "=",
+      "Pump",
+    );
     expect(deleteQuery.where).toHaveBeenNthCalledWith(3, "userId", "=", 56);
     expect(status).toHaveBeenCalledWith(200);
     expect(send).toHaveBeenCalledWith({ count: 2 });
@@ -281,7 +290,7 @@ describe("Product controller", () => {
 
     expect(status).toHaveBeenCalledWith(400);
     expect(send).toHaveBeenCalledWith(
-      "Product ID and Evidence ID are required",
+      "Aggregation name and Evidence ID are required",
     );
   });
 
@@ -289,7 +298,9 @@ describe("Product controller", () => {
     const status = vi.fn().mockReturnThis();
     const send = vi.fn();
     await postMarkUseful(
-      { body: { evidenceId: 1, productId: 2 } } as unknown as Request,
+      {
+        body: { aggregationName: "Pump", evidenceId: 1 },
+      } as unknown as Request,
       { send, status } as unknown as Response,
     );
 
@@ -310,7 +321,7 @@ describe("Product controller", () => {
 
     await postMarkUseful(
       {
-        body: { evidenceId: 1, productId: 2 },
+        body: { aggregationName: "Pump", evidenceId: 1 },
         user: { id: 3 },
       } as unknown as Request,
       { send, status } as unknown as Response,
@@ -325,13 +336,13 @@ describe("Product controller", () => {
     const status = vi.fn().mockReturnThis();
     const send = vi.fn();
     await postUnmarkUseful(
-      { body: { productId: 1 } } as unknown as Request,
+      { body: { aggregationName: "Pump" } } as unknown as Request,
       { send, status } as unknown as Response,
     );
 
     expect(status).toHaveBeenCalledWith(400);
     expect(send).toHaveBeenCalledWith(
-      "Product ID and Evidence ID are required",
+      "Aggregation name and Evidence ID are required",
     );
   });
 
@@ -339,7 +350,9 @@ describe("Product controller", () => {
     const status = vi.fn().mockReturnThis();
     const send = vi.fn();
     await postUnmarkUseful(
-      { body: { evidenceId: 1, productId: 2 } } as unknown as Request,
+      {
+        body: { aggregationName: "Pump", evidenceId: 1 },
+      } as unknown as Request,
       { send, status } as unknown as Response,
     );
 
@@ -360,7 +373,7 @@ describe("Product controller", () => {
 
     await postUnmarkUseful(
       {
-        body: { evidenceId: 1, productId: 2 },
+        body: { aggregationName: "Pump", evidenceId: 1 },
         user: { id: 3 },
       } as unknown as Request,
       { send, status } as unknown as Response,

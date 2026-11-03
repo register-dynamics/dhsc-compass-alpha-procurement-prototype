@@ -120,7 +120,7 @@ export interface EvidenceContactsTable {
 export type ProductEvidenceUseful = Selectable<ProductEvidenceUsefulTable>;
 
 export interface ProductEvidenceUsefulTable {
-  productId: number;
+  aggregationName: string;
   evidenceId: number;
   userId: number;
   dateMarkedUseful: Date;

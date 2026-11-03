@@ -3,6 +3,7 @@
 {% from "summary-list/macro.njk" import summaryList %}
 {% from "card/macro.njk" import card %}
 {% from "button/macro.njk" import button %}
+{% from "includes/mark-useful-button.njk" import mark_useful_button %}
 
 {% set pageName = "Trusts sharing experience with " + aggregationName + " by " + supplierName %}
 
@@ -55,6 +56,7 @@
                     href: "#",
                     headingClasses: "nhsuk-heading-m"
                 }) %}
+                {{ mark_useful_button(evidenceCard.usefulCount, aggregationName, evidenceCard.evidenceId, evidenceCard.markedUseful) }}
                 {{ summaryList({
                     classes: "nhsuk-u-margin-bottom-0",
                     rows: [

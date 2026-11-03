@@ -66,10 +66,12 @@ export const postMarkUseful = async (req: Request, res: Response) => {
   const result = postMarkUsefulSchema.safeParse(req.body);
 
   if (!result.success) {
-    return res.status(400).send("Product ID and Evidence ID are required");
+    return res
+      .status(400)
+      .send("Aggregation name and Evidence ID are required");
   }
 
-  const { evidenceId, productId } = result.data;
+  const { aggregationName, evidenceId } = result.data;
 
   // Get the user ID from the session or request context
   const userId = req.user?.id;
@@ -84,11 +86,11 @@ export const postMarkUseful = async (req: Request, res: Response) => {
       .withSchema("app")
       .insertInto("product_evidence_useful")
       .values({
+        aggregationName,
         // @ts-expect-error: TypeScript may complain about the date format
         // Should be fixed when we switch from SQLite to Postgres
         dateMarkedUseful: new Date().toUTCString(),
         evidenceId: evidenceId,
-        productId: productId,
         userId,
       })
       .execute();
@@ -98,7 +100,7 @@ export const postMarkUseful = async (req: Request, res: Response) => {
       .selectFrom("product_evidence_useful")
       .select(db.fn.count("evidenceId").as("count"))
       .where("evidenceId", "=", evidenceId)
-      .where("productId", "=", productId)
+      .where("aggregationName", "=", aggregationName)
       .execute();
 
     // This gets type "string | number | bigint" for some reason
@@ -116,10 +118,12 @@ export const postUnmarkUseful = async (req: Request, res: Response) => {
   const result = postMarkUsefulSchema.safeParse(req.body);
 
   if (!result.success) {
-    return res.status(400).send("Product ID and Evidence ID are required");
+    return res
+      .status(400)
+      .send("Aggregation name and Evidence ID are required");
   }
 
-  const { evidenceId, productId } = result.data;
+  const { aggregationName, evidenceId } = result.data;
 
   // Get the user ID from the session or request context
   const userId = req.user?.id;
@@ -134,7 +138,7 @@ export const postUnmarkUseful = async (req: Request, res: Response) => {
       .withSchema("app")
       .deleteFrom("product_evidence_useful")
       .where("evidenceId", "=", evidenceId)
-      .where("productId", "=", productId)
+      .where("aggregationName", "=", aggregationName)
       .where("userId", "=", userId)
       .execute();
 
@@ -142,7 +146,7 @@ export const postUnmarkUseful = async (req: Request, res: Response) => {
       .withSchema("app")
       .selectFrom("product_evidence_useful")
       .select(db.fn.count("evidenceId").as("count"))
-      .where("productId", "=", productId)
+      .where("aggregationName", "=", aggregationName)
       .where("evidenceId", "=", evidenceId)
       .execute();
 
@@ -442,7 +446,10 @@ export const renderProductTrusts = async (req: Request, res: Response) => {
   }
 
   const supplier = await getSupplierWithId(aggregation[0].manufacturerId);
-  const evidenceCards = await getEvidenceCardsForAggregation(aggregationName);
+  const evidenceCards = await getEvidenceCardsForAggregation(
+    aggregationName,
+    req.user?.id,
+  );
 
   const viewModel: ProductTrusts = {
     aggregationName: aggregation[0].aggregationName ?? "",

@@ -100,6 +100,7 @@ export const getCountOfDocumentsByTypeForAggregation = async (
 
 export const getEvidenceCardsForAggregation = async (
   aggregationName: string,
+  userId?: number,
 ): Promise<EvidenceCard[]> => {
   // Contacts and documents are counted in separate queries so the joins
   // don't fan out against each other.
@@ -144,6 +145,26 @@ export const getEvidenceCardsForAggregation = async (
     .orderBy("documentType", "asc")
     .execute();
 
+  const usefulRows = await db
+    .withSchema("app")
+    .selectFrom("product_evidence_useful")
+    .select((eb) => [
+      "evidenceId",
+      eb.fn.countAll<string>().as("count"),
+      eb.fn
+        .countAll<string>()
+        .filterWhere("userId", "=", userId ?? null)
+        .as("markedCount"),
+    ])
+    .where("aggregationName", "=", aggregationName)
+    .where(
+      "evidenceId",
+      "in",
+      evidenceRows.map((row) => row.evidenceId),
+    )
+    .groupBy("evidenceId")
+    .execute();
+
   // Atamis contracts are related to trusts by name, as contracting authority
   const contractCounts =
     await getContractCountsByContractingAuthorityForAggregation(
@@ -151,18 +172,23 @@ export const getEvidenceCardsForAggregation = async (
       [...new Set(evidenceRows.map((row) => row.organisationName))],
     );
 
-  return evidenceRows.map((row) => ({
-    contactCount: Number(row.contactCount),
-    evidenceId: row.evidenceId,
-    organisationId: row.organisationId,
-    organisationName: row.organisationName,
-    procured: row.procured,
-    procurementContractCount: contractCounts.get(row.organisationName) ?? 0,
-    sharedDocuments: documentRows
-      .filter((doc) => doc.evidenceId === row.evidenceId)
-      .map((doc) => ({
-        count: Number(doc.count),
-        documentType: doc.documentType,
-      })),
-  }));
+  return evidenceRows.map((row) => {
+    const useful = usefulRows.find((u) => u.evidenceId === row.evidenceId);
+    return {
+      contactCount: Number(row.contactCount),
+      evidenceId: row.evidenceId,
+      markedUseful: Number(useful?.markedCount ?? 0) > 0,
+      organisationId: row.organisationId,
+      organisationName: row.organisationName,
+      procured: row.procured,
+      procurementContractCount: contractCounts.get(row.organisationName) ?? 0,
+      sharedDocuments: documentRows
+        .filter((doc) => doc.evidenceId === row.evidenceId)
+        .map((doc) => ({
+          count: Number(doc.count),
+          documentType: doc.documentType,
+        })),
+      usefulCount: Number(useful?.count ?? 0),
+    };
+  });
 };
