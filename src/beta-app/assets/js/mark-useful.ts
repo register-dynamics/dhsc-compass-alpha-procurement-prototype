@@ -4,7 +4,7 @@
  * "Mark as useful" toggle buttons for product evidence.
  *
  * Rendered by the `mark_useful_button` macro: a `.mark-useful-button` with
- * `data-evidence-id`, `data-product-id` and `data-marked`, and a matching
+ * `data-evidence-id`, `data-aggregation-name` and `data-marked`, and a matching
  * `.useful-count[data-evidence-id]` showing how many people found it useful.
  * Clicking the button posts to the server and updates both from the response.
  */
@@ -27,12 +27,12 @@ export function initMarkUsefulButtons(scope: ParentNode = document) {
 }
 
 async function toggleUseful($button: HTMLButtonElement) {
-  const { evidenceId, productId } = $button.dataset;
+  const { aggregationName, evidenceId } = $button.dataset;
   const mark = $button.dataset.marked !== "true";
   const action = mark ? "mark" : "unmark";
 
   const response = await fetch(`/product/${action}-useful`, {
-    body: JSON.stringify({ evidenceId, productId }),
+    body: JSON.stringify({ aggregationName, evidenceId }),
     headers: { "Content-Type": "application/json" },
     method: "POST",
   });

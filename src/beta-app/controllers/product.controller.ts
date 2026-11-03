@@ -1,164 +1,64 @@
 import { Request, Response } from "express";
-import { sql } from "kysely";
 
 import { db } from "../database/client.js";
-import { Contact, Organisations, Search } from "../database/types.js";
+import { Contact, Organisations } from "../database/types.js";
 import { postAddEvidenceContactSelfSchema } from "../models/request-schemas/postAddEvidenceContactSelfSchema.js";
 import { postMarkUsefulSchema } from "../models/request-schemas/postMarkUsefulSchema.js";
+import { ProductAggregation } from "../models/view-models/productAggregation.js";
+import { ProductTrusts } from "../models/view-models/productTrusts.js";
+import { getContractCountForAggregation } from "../services/atamisService.js";
+import { getGmdnTermForDeviceId } from "../services/gmdnCategoryService.js";
+import {
+  getAggregationNameForProductId,
+  getAggregationWithName,
+  getCountOfContactsWithExperienceWithAggregation,
+  getCountOfDocumentsByTypeForAggregation,
+  getCountOfOrganisationsWithExperienceWithAggregation,
+  getEvidenceCardsForAggregation,
+  getProductWithId,
+} from "../services/productsService.js";
+import { getSupplierWithId } from "../services/supplierService.js";
 
 export const renderProduct = async (req: Request, res: Response) => {
-  let productId;
+  const aggregationName = req.params.aggregationName as string;
 
-  try {
-    productId = parseInt(req.params.id as string);
-  } catch {
-    // TODO: Send to better error handling page
-    return res.status(400).send("Invalid Product ID");
+  if (!aggregationName) {
+    res.status(404).render("not-found");
+    return;
   }
 
-  if (!productId) {
-    // TODO: Send to better error handling page
-    return res.status(400).send("Product ID is required");
+  const aggregation = await getAggregationWithName(aggregationName);
+
+  if (!aggregation || aggregation.length === 0) {
+    res.status(404).render("not-found");
+    return;
   }
 
-  const product = await db
-    .withSchema("external")
-    .selectFrom("search")
-    .selectAll()
-    .where("productId", "=", productId)
-    .executeTakeFirst();
+  const supplier = await getSupplierWithId(aggregation[0].manufacturerId);
 
-  if (!product) {
-    // TODO: Send to better error handling page
-    return res.status(404).send("Product not found");
-  }
+  const deviceType = await getGmdnTermForDeviceId(aggregation[0].deviceId);
 
-  const evidences = await db
-    .withSchema("app")
-    .selectFrom("evidence")
-    .innerJoin(
-      "product_matches",
-      "product_matches.evidenceId",
-      "evidence.evidenceId",
-    )
-    .innerJoin(
-      "evidence_type",
-      "evidence_type.typeOfEvidenceId",
-      "evidence.typeOfEvidenceId",
-    )
-    .innerJoin(
-      "organisation_details",
-      "organisation_details.organisationId",
-      "evidence.organisationId",
-    )
-    .where("productId", "=", productId)
-    .selectAll()
-    .execute();
+  const trustsWithExperienceCount =
+    await getCountOfOrganisationsWithExperienceWithAggregation(aggregationName);
+  const peopleWithExperienceCount =
+    await getCountOfContactsWithExperienceWithAggregation(aggregationName);
+  const procurementContractCount =
+    await getContractCountForAggregation(aggregationName);
+  const relevantDocuments =
+    await getCountOfDocumentsByTypeForAggregation(aggregationName);
 
-  // Add documents to evidences if there are any
-  if (evidences.length > 0) {
-    const evidenceIds = evidences.map((ev) => ev.evidenceId);
-    const documents = await db
-      .withSchema("app")
-      .selectFrom("documents")
-      .innerJoin(
-        "document_type",
-        "document_type.typeOfDocId",
-        "documents.typeOfDocId",
-      )
-      .where("evidenceId", "in", evidenceIds)
-      .selectAll()
-      .execute();
-
-    const userId = req.user?.id;
-
-    const evidenceUsefulness = await db
-      .withSchema("app")
-      .selectFrom("product_evidence_useful")
-      .select([
-        "evidenceId",
-        db.fn
-          .max(sql`CASE WHEN "user_id" = ${userId} THEN 1 ELSE 0 END`)
-          .as("hasUserMarkedUseful"),
-        db.fn.count("evidenceId").as("totalUsefulCount"),
-      ])
-      .where("productId", "=", productId)
-      .where("evidenceId", "in", evidenceIds)
-      .groupBy("evidenceId")
-      .execute();
-
-    const contacts = await db
-      .withSchema("app")
-      .selectFrom("evidence_contacts as ec")
-      .innerJoin("contacts as c", "c.contactId", "ec.contactId")
-      .select([
-        "ec.evidenceId",
-        "ec.discussImplementation",
-        "ec.discussTraining",
-        "ec.discussOutcomes",
-        "ec.discussPharmacyIntegration",
-        "ec.discussBusinessCase",
-        "ec.discussRealWorldUse",
-        "ec.discussEhrIntegration",
-        "c.contactId",
-        "c.title",
-        "c.givenName",
-        "c.surname",
-        "c.email",
-        "c.phoneNo",
-        "c.role",
-      ])
-      .where("ec.evidenceId", "in", evidenceIds)
-      .execute();
-
-    // Attach contacts, documents, and usefulness to their evidences
-    evidences.forEach((ev) => {
-      ev.contacts = contacts.filter(
-        (contact) => contact.evidenceId === ev.evidenceId,
-      );
-
-      ev.documents = documents.filter(
-        (doc) => doc.evidenceId === ev.evidenceId,
-      );
-
-      ev.markedUseful = Number(
-        evidenceUsefulness.find((eu) => eu.evidenceId === ev.evidenceId)
-          ?.hasUserMarkedUseful ?? 0,
-      );
-
-      ev.totalUsefulCount = Number(
-        evidenceUsefulness.find((eu) => eu.evidenceId === ev.evidenceId)
-          ?.totalUsefulCount ?? 0,
-      );
-    });
-  }
-
-  const userId = req.user?.id;
-
-  if (!userId) {
-    // TODO: Send to better error handling page
-    return res.status(500).send("Unable to determine user ID");
-  }
-
-  const userOrg = await getUserOrganisation(userId);
-
-  if (!userOrg) {
-    // TODO: Send to better error handling page
-    return res.status(500).send("Unable to determine user organisation");
-  }
-
-  // Check if user's organisation has evidence for this product
-  const organisationEvidence = evidences.filter(
-    (ev) => ev.organisationId === userOrg.organisationId,
-  );
-
-  const hasEvidenceFromUsersOrg = organisationEvidence.length > 0;
+  const productAggregation: ProductAggregation = {
+    aggregationName: aggregation[0].aggregationName ?? "",
+    deviceType: deviceType,
+    peopleWithExperienceCount: peopleWithExperienceCount,
+    procurementContractCount: procurementContractCount,
+    relevantDocuments: relevantDocuments,
+    supplierName: supplier?.manOrganisationName ?? "",
+    trustsWithExperienceCount: trustsWithExperienceCount,
+  };
 
   res.render("product", {
-    evidences,
-    hasEvidenceFromUsersOrg,
-    organisationName: userOrg.organisationName,
-    product,
+    productAggregation,
   });
 };
 
@@ -166,10 +66,12 @@ export const postMarkUseful = async (req: Request, res: Response) => {
   const result = postMarkUsefulSchema.safeParse(req.body);
 
   if (!result.success) {
-    return res.status(400).send("Product ID and Evidence ID are required");
+    return res
+      .status(400)
+      .send("Aggregation name and Evidence ID are required");
   }
 
-  const { evidenceId, productId } = result.data;
+  const { aggregationName, evidenceId } = result.data;
 
   // Get the user ID from the session or request context
   const userId = req.user?.id;
@@ -184,11 +86,11 @@ export const postMarkUseful = async (req: Request, res: Response) => {
       .withSchema("app")
       .insertInto("product_evidence_useful")
       .values({
+        aggregationName,
         // @ts-expect-error: TypeScript may complain about the date format
         // Should be fixed when we switch from SQLite to Postgres
         dateMarkedUseful: new Date().toUTCString(),
         evidenceId: evidenceId,
-        productId: productId,
         userId,
       })
       .execute();
@@ -198,7 +100,7 @@ export const postMarkUseful = async (req: Request, res: Response) => {
       .selectFrom("product_evidence_useful")
       .select(db.fn.count("evidenceId").as("count"))
       .where("evidenceId", "=", evidenceId)
-      .where("productId", "=", productId)
+      .where("aggregationName", "=", aggregationName)
       .execute();
 
     // This gets type "string | number | bigint" for some reason
@@ -216,10 +118,12 @@ export const postUnmarkUseful = async (req: Request, res: Response) => {
   const result = postMarkUsefulSchema.safeParse(req.body);
 
   if (!result.success) {
-    return res.status(400).send("Product ID and Evidence ID are required");
+    return res
+      .status(400)
+      .send("Aggregation name and Evidence ID are required");
   }
 
-  const { evidenceId, productId } = result.data;
+  const { aggregationName, evidenceId } = result.data;
 
   // Get the user ID from the session or request context
   const userId = req.user?.id;
@@ -234,7 +138,7 @@ export const postUnmarkUseful = async (req: Request, res: Response) => {
       .withSchema("app")
       .deleteFrom("product_evidence_useful")
       .where("evidenceId", "=", evidenceId)
-      .where("productId", "=", productId)
+      .where("aggregationName", "=", aggregationName)
       .where("userId", "=", userId)
       .execute();
 
@@ -242,7 +146,7 @@ export const postUnmarkUseful = async (req: Request, res: Response) => {
       .withSchema("app")
       .selectFrom("product_evidence_useful")
       .select(db.fn.count("evidenceId").as("count"))
-      .where("productId", "=", productId)
+      .where("aggregationName", "=", aggregationName)
       .where("evidenceId", "=", evidenceId)
       .execute();
 
@@ -526,11 +430,61 @@ export const postAddEvidenceContactSelf = async (
   }
 };
 
+export const renderProductTrusts = async (req: Request, res: Response) => {
+  const aggregationName = req.params.aggregationName as string;
+
+  if (!aggregationName) {
+    res.status(404).render("not-found");
+    return;
+  }
+
+  const aggregation = await getAggregationWithName(aggregationName);
+
+  if (!aggregation || aggregation.length === 0) {
+    res.status(404).render("not-found");
+    return;
+  }
+
+  const supplier = await getSupplierWithId(aggregation[0].manufacturerId);
+  const evidenceCards = await getEvidenceCardsForAggregation(
+    aggregationName,
+    req.user?.id,
+  );
+
+  const viewModel: ProductTrusts = {
+    aggregationName: aggregation[0].aggregationName ?? "",
+    evidenceCards: evidenceCards,
+    supplierName: supplier?.manOrganisationName ?? "",
+  };
+
+  res.render("product/trusts", viewModel);
+};
+
+export const renderProductRelatedTrusts = async (
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  req: Request,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  res: Response,
+) => {
+  await new Promise((resolve) => {
+    console.log("temp async to make linter happy");
+    resolve("");
+  });
+  throw new Error("Not implemented yet");
+};
+
 async function createEvidenceCardForOrganisation(
   organisationId: number,
   productId: number,
 ): Promise<number> {
   const genericEvidenceType = 8;
+
+  // Evidence is linked to the product's aggregation rather than the product itself
+  const aggregationName = await getAggregationNameForProductId(productId);
+
+  if (!aggregationName) {
+    throw new Error(`No aggregation found for product ID ${String(productId)}`);
+  }
 
   const trx = await db.startTransaction().execute();
 
@@ -547,10 +501,10 @@ async function createEvidenceCardForOrganisation(
 
     await trx
       .withSchema("app")
-      .insertInto("product_matches")
+      .insertInto("product_evidence")
       .values({
+        aggregationName,
         evidenceId: evidence.evidenceId,
-        productId,
       })
       .executeTakeFirstOrThrow();
 
@@ -617,16 +571,6 @@ function getProductIdFromParams(req: Request): null | number {
   } catch {
     return null;
   }
-}
-
-async function getProductWithId(productId: number): Promise<null | Search> {
-  const product = await db
-    .withSchema("external")
-    .selectFrom("search")
-    .selectAll()
-    .where("productId", "=", productId)
-    .executeTakeFirst();
-  return product ?? null;
 }
 
 // NOTE: This assumes that the user only belongs to a single organisation

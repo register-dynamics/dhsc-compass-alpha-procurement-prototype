@@ -2,7 +2,7 @@ TRUNCATE TABLE "app"."evidence_type" CASCADE;
 -- NOTICE:  truncate cascades to table "evidence"
 -- NOTICE:  truncate cascades to table "documents"
 -- NOTICE:  truncate cascades to table "evidence_contacts"
--- NOTICE:  truncate cascades to table "product_matches"
+-- NOTICE:  truncate cascades to table "product_evidence"
 -- NOTICE:  truncate cascades to table "product_evidence_useful"
 
 TRUNCATE TABLE "app"."document_type" CASCADE;
@@ -15,14 +15,14 @@ TRUNCATE TABLE "app"."org_type" CASCADE;
 -- NOTICE:  truncate cascades to table "documents"
 -- NOTICE:  truncate cascades to table "evidence"
 -- NOTICE:  truncate cascades to table "evidence_contacts"
--- NOTICE:  truncate cascades to table "product_matches"
+-- NOTICE:  truncate cascades to table "product_evidence"
 -- NOTICE:  truncate cascades to table "product_documents_useful"
 
 TRUNCATE TABLE "app"."org_category" CASCADE;
 -- NOTICE:  truncate cascades to table "organisations"
 -- NOTICE:  truncate cascades to table "documents"
 -- NOTICE:  truncate cascades to table "evidence_contacts"
--- NOTICE:  truncate cascades to table "product_matches"
+-- NOTICE:  truncate cascades to table "product_evidence"
 -- NOTICE:  truncate cascades to table "product_documents_useful"
 
 TRUNCATE TABLE "app"."contacts" CASCADE;
@@ -109,48 +109,35 @@ INSERT INTO "app"."evidence_contacts" ("evidence_id","contact_id","discuss_imple
  (4321,10,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE);
 
 
-INSERT INTO "app"."product_matches" ("product_id","evidence_id") VALUES
- (45236891,4567),
- (64782315,4567),
- (84123596,4567),
- (45236891,8912),
- (64782315,8912),
- (84123596,8912),
- (74652319,13456),
- (74652319,7891),
- (94621578,9123),
- (74589621,9123),
- (96541235,4567),
- (78514623,4567),
- (12467896,9123),
- (14236541,9123),
- (12467896,8912),
- (14236541,8912),
- (46523195,4567),
- (19764325,13456),
- (18236541,9123),
- (21649535,1234),
- (15236497,1234),
- (78954612,1234),
- (21649535,7891),
- (15236497,7891),
- (78954612,7891),
- (21649535,13456),
- (15236497,13456),
- (78954612,13456),
- (16234975,1234),
- (28462513,1234),
- (73516943,1234),
- (15320469,1234),
- (16234975,8912),
- (28462513,8912),
- (73516943,8912),
- (15320469,8912),
- (45236891,1234),
- (45236891,7891),
- (45236891,9123),
- (45236891,13456),
- (45236891,4321);
+INSERT INTO "app"."product_evidence" ("aggregation_name","evidence_id") VALUES
+ ('Heart Pro',4567),
+ ('Pacemaker',4567),
+ ('Heart Rate Monitor',4567),
+ ('Heart Pro',8912),
+ ('Pacemaker',8912),
+ ('Heart Rate Monitor',8912),
+ ('Opthalmic',13456),
+ ('Opthalmic',7891),
+ ('Insulin Kit',9123),
+ ('InsuFlow Pro',9123),
+ ('BetaPlex 4000',4567),
+ ('HydroHeal Plus',9123),
+ ('GlucoSense',9123),
+ ('HydroHeal Plus',8912),
+ ('GlucoSense',8912),
+ ('Blood Pressure Kit',4567),
+ ('Thermometer tympanic device',13456),
+ ('Eye Shield',9123),
+ ('Praxis Total Knee',1234),
+ ('Praxis Total Knee',7891),
+ ('Praxis Total Knee',13456),
+ ('UNIT Artifical Hip',1234),
+ ('UNIT Artifical Hip',8912),
+ ('Heart Pro',1234),
+ ('Heart Pro',7891),
+ ('Heart Pro',9123),
+ ('Heart Pro',13456),
+ ('Heart Pro',4321);
  
 
 -- Seed user for beta app login

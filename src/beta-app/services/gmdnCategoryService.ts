@@ -108,3 +108,15 @@ export const getDeviceTypeById = async (deviceTypeId: number) => {
     .selectAll()
     .executeTakeFirstOrThrow();
 };
+
+export const getGmdnTermForDeviceId = async (deviceTypeId: number) => {
+  const result = await db
+    .withSchema("external")
+    .selectFrom("gmdn as g")
+    .innerJoin("device_type as d", "d.gmdnCode", "g.gmdnCode")
+    .where("d.deviceId", "=", deviceTypeId)
+    .select("g.gmdnTermName")
+    .executeTakeFirstOrThrow();
+
+  return result.gmdnTermName;
+};

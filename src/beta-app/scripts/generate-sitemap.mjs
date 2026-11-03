@@ -13,19 +13,39 @@ const routesNeedingParams = [
     with: "/search-results?q=glucose",
   },
   {
-    path: "/product/:id",
-    replace: "/product/:id",
-    with: "/product/14236541",
+    path: "/category/:categoryId",
+    replace: "/category/:categoryId",
+    with: "/category/4941",
+  },
+  {
+    path: "/device-type/:deviceTypeId",
+    replace: "/device-type/:deviceTypeId",
+    with: "/device-type/5362?category=10027",
+  },
+  {
+    path: "/product/:aggregationName",
+    replace: "/product/:aggregationName",
+    with: "/product/Blood%20Pressure%20Kit",
   },
   {
     path: "/product/:productId/add-evidence",
     replace: "/product/:productId/add-evidence",
-    with: "/product/14236541/add-evidence",
+    with: "/product/Blood%20Pressure%20Kit/add-evidence",
   },
   {
     path: "/product/:productId/evidence/add-evidence-contact-self",
     replace: "/product/:productId/evidence/add-evidence-contact-self",
-    with: "/product/14236541/evidence/add-evidence-contact-self",
+    with: "/product/Blood%20Pressure%20Kit/evidence/add-evidence-contact-self",
+  },
+  {
+    path: "/product/:aggregationName/trusts",
+    replace: "/product/:aggregationName/trusts",
+    with: "/product/Blood%20Pressure%20Kit/trusts",
+  },
+  {
+    path: "/product/:productId/related-trusts",
+    replace: "/product/:productId/related-trusts",
+    with: "/product/Blood%20Pressure%20Kit/related-trusts",
   },
 ];
 

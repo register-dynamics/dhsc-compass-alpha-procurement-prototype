@@ -1,16 +1,22 @@
 TRUNCATE TABLE "external"."gmdn" CASCADE;
 -- NOTICE:  truncate cascades to table "device_type"
 -- NOTICE:  truncate cascades to table "products"
--- NOTICE:  truncate cascades to table "product_matches"
 -- NOTICE:  truncate cascades to table "product_documents_useful"
 
 TRUNCATE TABLE "external"."manufacturers" CASCADE;
 -- NOTICE:  truncate cascades to table "device_type"
 -- NOTICE:  truncate cascades to table "products"
--- NOTICE:  truncate cascades to table "product_matches"
 -- NOTICE:  truncate cascades to table "product_documents_useful"
 
-INSERT INTO "external"."gmdn" ("gmdn_code","gmdn_term_name") VALUES (63088,'Blood glucose/blood pressure monitoring system'),
+TRUNCATE TABLE
+  "external"."gmdn_category",
+  "external"."gmdn_category_term",
+  "external"."atamis_contracts",
+  "external"."atamis_pipeline",
+  "external"."contracts_to_mhra_manufacturers",
+  "external"."atamis_to_gmdn";
+
+INSERT INTO "external"."gmdn"("gmdn_code","gmdn_term_name") VALUES (63088,'Blood glucose/blood pressure monitoring system'),
   (33665,'Cruciate-retaining total knee prosthesis'),
   (33182,'Metal-on-polyethylene total hip prosthesis'),
   (35839,'Ambulatory insulin infusion pump tank'),
@@ -317,3 +323,4 @@ INSERT INTO "external"."atamis_to_gmdn" ("atamis_ref","gmdn_code") VALUES ('FAKE
  ('FAKE1009',14035);
 
 REFRESH MATERIALIZED VIEW "external"."search";
+REFRESH MATERIALIZED VIEW "external"."aggregation_search";
