@@ -451,14 +451,16 @@ export const renderProductTrusts = async (req: Request, res: Response) => {
 };
 
 export const renderProductRelatedTrusts = async (
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   req: Request,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   res: Response,
 ) => {
   await new Promise((resolve) => {
     console.log("temp async to make linter happy");
     resolve("");
   });
-  res.status(500).send("Not implemented yet");
+  throw new Error("Not implemented yet");
 };
 
 async function createEvidenceCardForOrganisation(

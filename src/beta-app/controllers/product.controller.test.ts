@@ -41,6 +41,50 @@ vi.mock("../database/client.js", () => ({
   },
 }));
 
+const {
+  getAggregationNameForProductIdMock,
+  getAggregationWithNameMock,
+  getContractCountForAggregationMock,
+  getCountOfContactsWithExperienceWithAggregationMock,
+  getCountOfDocumentsByTypeForAggregationMock,
+  getCountOfOrganisationsWithExperienceWithAggregationMock,
+  getGmdnTermForDeviceIdMock,
+  getSupplierWithIdMock,
+} = vi.hoisted(() => ({
+  getAggregationNameForProductIdMock: vi.fn(),
+  getAggregationWithNameMock: vi.fn(),
+  getContractCountForAggregationMock: vi.fn(),
+  getCountOfContactsWithExperienceWithAggregationMock: vi.fn(),
+  getCountOfDocumentsByTypeForAggregationMock: vi.fn(),
+  getCountOfOrganisationsWithExperienceWithAggregationMock: vi.fn(),
+  getGmdnTermForDeviceIdMock: vi.fn(),
+  getSupplierWithIdMock: vi.fn(),
+}));
+
+vi.mock("../services/productsService.js", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("../services/productsService.js")>()),
+  getAggregationNameForProductId: getAggregationNameForProductIdMock,
+  getAggregationWithName: getAggregationWithNameMock,
+  getCountOfContactsWithExperienceWithAggregation:
+    getCountOfContactsWithExperienceWithAggregationMock,
+  getCountOfDocumentsByTypeForAggregation:
+    getCountOfDocumentsByTypeForAggregationMock,
+  getCountOfOrganisationsWithExperienceWithAggregation:
+    getCountOfOrganisationsWithExperienceWithAggregationMock,
+}));
+
+vi.mock("../services/atamisService.js", () => ({
+  getContractCountForAggregation: getContractCountForAggregationMock,
+}));
+
+vi.mock("../services/gmdnCategoryService.js", () => ({
+  getGmdnTermForDeviceId: getGmdnTermForDeviceIdMock,
+}));
+
+vi.mock("../services/supplierService.js", () => ({
+  getSupplierWithId: getSupplierWithIdMock,
+}));
+
 describe("Product controller", () => {
   beforeEach(() => {
     countMock.mockReset();
@@ -49,6 +93,16 @@ describe("Product controller", () => {
     maxMock.mockReset();
     selectFromMock.mockReset();
     startTransactionMock.mockReset();
+    getAggregationWithNameMock.mockReset();
+    getContractCountForAggregationMock.mockReset();
+    getCountOfContactsWithExperienceWithAggregationMock.mockReset();
+    getCountOfDocumentsByTypeForAggregationMock.mockReset();
+    getCountOfOrganisationsWithExperienceWithAggregationMock.mockReset();
+    getGmdnTermForDeviceIdMock.mockReset();
+    getSupplierWithIdMock.mockReset();
+
+    getAggregationNameForProductIdMock.mockReset();
+    getAggregationNameForProductIdMock.mockResolvedValue("Pump");
 
     countMock.mockReturnValue({
       as: vi.fn().mockReturnValue("totalUsefulCount"),
@@ -58,313 +112,99 @@ describe("Product controller", () => {
     });
   });
 
-  it("GET /product/:id returns 400 when product ID cannot be parsed", async () => {
-    const req = {
-      params: { id: Symbol("bad-id") as unknown as string },
-    } as unknown as Request;
-    const send = vi.fn();
-    const status = vi.fn().mockReturnValue({ send });
+  it("GET /product/:aggregationName returns 404 when aggregation name is missing", async () => {
+    const req = { params: {} } as unknown as Request;
+    const render = vi.fn();
+    const status = vi.fn().mockReturnValue({ render });
     const res = { status } as unknown as Response;
 
     await renderProduct(req, res);
 
-    expect(status).toHaveBeenCalledWith(400);
-    expect(send).toHaveBeenCalledWith("Invalid Product ID");
-    expect(selectFromMock).not.toHaveBeenCalled();
-  });
-
-  it("GET /product/:id returns 400 when product ID is missing or invalid", async () => {
-    const req = { params: { id: "abc" } } as unknown as Request;
-    const send = vi.fn();
-    const status = vi.fn().mockReturnValue({ send });
-    const res = { status } as unknown as Response;
-
-    await renderProduct(req, res);
-
-    expect(status).toHaveBeenCalledWith(400);
-    expect(send).toHaveBeenCalledWith("Product ID is required");
-    expect(selectFromMock).not.toHaveBeenCalled();
-  });
-
-  it("GET /product/:id returns 404 when no product is found", async () => {
-    const productQuery = {
-      executeTakeFirst: vi.fn().mockResolvedValue(undefined),
-      selectAll: vi.fn().mockReturnThis(),
-      where: vi.fn().mockReturnThis(),
-    };
-
-    selectFromMock.mockReturnValue(productQuery);
-
-    const req = { params: { id: "123" } } as unknown as Request;
-    const send = vi.fn();
-    const status = vi.fn().mockReturnValue({ send });
-    const res = { status } as unknown as Response;
-
-    await renderProduct(req, res);
-
-    expect(selectFromMock).toHaveBeenCalledWith("search");
-    expect(productQuery.where).toHaveBeenCalledWith("productId", "=", 123);
     expect(status).toHaveBeenCalledWith(404);
-    expect(send).toHaveBeenCalledWith("Product not found");
+    expect(render).toHaveBeenCalledWith("not-found");
+    expect(getAggregationWithNameMock).not.toHaveBeenCalled();
   });
 
-  it("GET /product/:id renders product page with no documents", async () => {
-    const product = { productId: 7, technologyName: "Example device" };
-    const userOrg = { organisationId: 1, organisationName: "Test Trust" };
-    const productQuery = {
-      executeTakeFirst: vi.fn().mockResolvedValue(product),
-      selectAll: vi.fn().mockReturnThis(),
-      where: vi.fn().mockReturnThis(),
-    };
-    const evidenceQuery = {
-      execute: vi.fn().mockResolvedValue([]),
-      innerJoin: vi.fn().mockReturnThis(),
-      selectAll: vi.fn().mockReturnThis(),
-      where: vi.fn().mockReturnThis(),
-    };
-    const organisationQuery = {
-      executeTakeFirst: vi.fn().mockResolvedValue(userOrg),
-      innerJoin: vi.fn().mockReturnThis(),
-      selectAll: vi.fn().mockReturnThis(),
-      where: vi.fn().mockReturnThis(),
-    };
-
-    selectFromMock
-      .mockReturnValueOnce(productQuery)
-      .mockReturnValueOnce(evidenceQuery)
-      .mockReturnValueOnce(organisationQuery);
-
-    const req = { params: { id: "7" }, user: { id: 99 } } as unknown as Request;
-    const render = vi.fn();
-    const res = { render } as unknown as Response;
-
-    await renderProduct(req, res);
-
-    expect(selectFromMock).toHaveBeenNthCalledWith(1, "search");
-    expect(selectFromMock).toHaveBeenNthCalledWith(2, "evidence");
-    expect(render).toHaveBeenCalledWith("product", {
-      evidences: [],
-      hasEvidenceFromUsersOrg: false,
-      organisationName: "Test Trust",
-      product,
-    });
-  });
-
-  it("GET /product/:id renders product page and attaches contacts to each evidence", async () => {
-    const product = { productId: 42, technologyName: "Pump" };
-    const userOrg = { organisationId: 1, organisationName: "Test Trust" };
-    const evidences = [
-      { evidenceId: 1001, title: "Implementation guide" },
-      { evidenceId: 1002, title: "Outcomes report" },
-    ];
-    const contacts = [
-      {
-        contactId: 1,
-        discussBusinessCase: 1,
-        discussEhrIntegration: 0,
-        discussImplementation: 1,
-        discussOutcomes: 0,
-        discussPharmacyIntegration: 0,
-        discussRealWorldUse: 0,
-        discussTraining: 0,
-        email: "one@example.com",
-        evidenceId: 1001,
-        givenName: "Alex",
-        phoneNo: "123456",
-        role: "Clinical Lead",
-        surname: "One",
-        title: "Dr",
-      },
-      {
-        contactId: 2,
-        discussBusinessCase: 0,
-        discussEhrIntegration: 1,
-        discussImplementation: 0,
-        discussOutcomes: 1,
-        discussPharmacyIntegration: 0,
-        discussRealWorldUse: 1,
-        discussTraining: 1,
-        email: "two@example.com",
-        evidenceId: 1002,
-        givenName: "Sam",
-        phoneNo: "654321",
-        role: "Operations Lead",
-        surname: "Two",
-        title: "Mx",
-      },
-    ];
-
-    const productQuery = {
-      executeTakeFirst: vi.fn().mockResolvedValue(product),
-      selectAll: vi.fn().mockReturnThis(),
-      where: vi.fn().mockReturnThis(),
-    };
-    const evidenceQuery = {
-      execute: vi.fn().mockResolvedValue(evidences),
-      innerJoin: vi.fn().mockReturnThis(),
-      selectAll: vi.fn().mockReturnThis(),
-      where: vi.fn().mockReturnThis(),
-    };
-    const documentsQuery = {
-      execute: vi.fn().mockResolvedValue(contacts),
-      innerJoin: vi.fn().mockReturnThis(),
-      selectAll: vi.fn().mockReturnThis(),
-      where: vi.fn().mockReturnThis(),
-    };
-    const usefulQuery = {
-      execute: vi.fn().mockResolvedValue([]),
-      groupBy: vi.fn().mockReturnThis(),
-      select: vi.fn().mockReturnThis(),
-      selectAll: vi.fn().mockReturnThis(),
-      where: vi.fn().mockReturnThis(),
-    };
-    const contactsQuery = {
-      execute: vi.fn().mockResolvedValue(contacts),
-      innerJoin: vi.fn().mockReturnThis(),
-      select: vi.fn().mockReturnThis(),
-      where: vi.fn().mockReturnThis(),
-    };
-    const organisationQuery = {
-      executeTakeFirst: vi.fn().mockResolvedValue(userOrg),
-      innerJoin: vi.fn().mockReturnThis(),
-      selectAll: vi.fn().mockReturnThis(),
-      where: vi.fn().mockReturnThis(),
-    };
-
-    selectFromMock
-      .mockReturnValueOnce(productQuery)
-      .mockReturnValueOnce(evidenceQuery)
-      .mockReturnValueOnce(documentsQuery)
-      .mockReturnValueOnce(usefulQuery)
-      .mockReturnValueOnce(contactsQuery)
-      .mockReturnValueOnce(organisationQuery);
+  it("GET /product/:aggregationName returns 404 when no aggregation is found", async () => {
+    getAggregationWithNameMock.mockResolvedValue([]);
 
     const req = {
-      params: { id: "42" },
-      user: { id: 99 },
+      params: { aggregationName: "Unknown" },
     } as unknown as Request;
     const render = vi.fn();
-    const res = { render } as unknown as Response;
+    const status = vi.fn().mockReturnValue({ render });
+    const res = { status } as unknown as Response;
 
     await renderProduct(req, res);
 
-    expect(selectFromMock).toHaveBeenNthCalledWith(1, "search");
-    expect(selectFromMock).toHaveBeenNthCalledWith(2, "evidence");
-    expect(selectFromMock).toHaveBeenNthCalledWith(3, "documents");
-    expect(selectFromMock).toHaveBeenNthCalledWith(
-      4,
-      "product_evidence_useful",
-    );
-    expect(selectFromMock).toHaveBeenNthCalledWith(
-      5,
-      "evidence_contacts as ec",
-    );
-    expect(contactsQuery.innerJoin).toHaveBeenCalledWith(
-      "contacts as c",
-      "c.contactId",
-      "ec.contactId",
-    );
-    expect(contactsQuery.where).toHaveBeenCalledWith(
-      "ec.evidenceId",
-      "in",
-      [1001, 1002],
-    );
-
-    expect(render).toHaveBeenCalledTimes(1);
-    const renderPayload = render.mock.calls[0]?.[1] as {
-      evidences: { contacts?: unknown[]; evidenceId: number }[];
-      organisationName: string;
-      product: unknown;
-    };
-    expect(renderPayload.product).toEqual(product);
-    expect(renderPayload.evidences).toHaveLength(2);
-    expect(renderPayload.evidences[0]?.contacts).toEqual([contacts[0]]);
-    expect(renderPayload.evidences[1]?.contacts).toEqual([contacts[1]]);
-    expect(
-      (renderPayload as { organisationName: string }).organisationName,
-    ).toBe("Test Trust");
+    expect(getAggregationWithNameMock).toHaveBeenCalledWith("Unknown");
+    expect(status).toHaveBeenCalledWith(404);
+    expect(render).toHaveBeenCalledWith("not-found");
+    expect(getSupplierWithIdMock).not.toHaveBeenCalled();
   });
 
-  it("GET /product/:id should render the product page with a generic evidence card", async () => {
-    const product = { productId: 7, productName: "Example device" };
-    const userOrg = { organisationId: 1, organisationName: "Test Trust" };
-    const evidences = [
-      {
-        evidenceId: 70,
-        productId: 7,
-        typeOfEvidenceDesc: "Generic evidence",
-      },
-    ];
-    const productQuery = {
-      executeTakeFirst: vi.fn().mockResolvedValue(product),
-      selectAll: vi.fn().mockReturnThis(),
-      where: vi.fn().mockReturnThis(),
-    };
-    const evidenceQuery = {
-      execute: vi.fn().mockResolvedValue(evidences),
-      innerJoin: vi.fn().mockReturnThis(),
-      selectAll: vi.fn().mockReturnThis(),
-      where: vi.fn().mockReturnThis(),
-    };
-    const documentsQuery = {
-      execute: vi.fn().mockResolvedValue([]),
-      innerJoin: vi.fn().mockReturnThis(),
-      selectAll: vi.fn().mockReturnThis(),
-      where: vi.fn().mockReturnThis(),
-    };
-    const usefulQuery = {
-      execute: vi
-        .fn()
-        .mockResolvedValue([
-          { evidenceId: 70, hasUserMarkedUseful: 1, totalUsefulCount: 3 },
-        ]),
-      groupBy: vi.fn().mockReturnThis(),
-      select: vi.fn().mockReturnThis(),
-      where: vi.fn().mockReturnThis(),
-    };
-    const contactsQuery = {
-      execute: vi.fn().mockResolvedValue([]),
-      innerJoin: vi.fn().mockReturnThis(),
-      select: vi.fn().mockReturnThis(),
-      where: vi.fn().mockReturnThis(),
-    };
-    const organisationQuery = {
-      executeTakeFirst: vi.fn().mockResolvedValue(userOrg),
-      innerJoin: vi.fn().mockReturnThis(),
-      selectAll: vi.fn().mockReturnThis(),
-      where: vi.fn().mockReturnThis(),
-    };
-
-    selectFromMock
-      .mockReturnValueOnce(productQuery)
-      .mockReturnValueOnce(evidenceQuery)
-      .mockReturnValueOnce(documentsQuery)
-      .mockReturnValueOnce(usefulQuery)
-      .mockReturnValueOnce(contactsQuery)
-      .mockReturnValueOnce(organisationQuery);
+  it("GET /product/:aggregationName renders the product page with aggregation details", async () => {
+    const relevantDocuments = [{ count: 2, documentType: "Business case" }];
+    getAggregationWithNameMock.mockResolvedValue([
+      { aggregationName: "Pump", deviceId: 5, manufacturerId: 3 },
+    ]);
+    getSupplierWithIdMock.mockResolvedValue({
+      manOrganisationName: "Acme Medical",
+    });
+    getGmdnTermForDeviceIdMock.mockResolvedValue("Infusion pump");
+    getCountOfOrganisationsWithExperienceWithAggregationMock.mockResolvedValue(
+      4,
+    );
+    getCountOfContactsWithExperienceWithAggregationMock.mockResolvedValue(7);
+    getContractCountForAggregationMock.mockResolvedValue(2);
+    getCountOfDocumentsByTypeForAggregationMock.mockResolvedValue(
+      relevantDocuments,
+    );
 
     const render = vi.fn();
     await renderProduct(
-      {
-        params: { id: "7" },
-        user: { id: 99 },
-      } as unknown as Request,
+      { params: { aggregationName: "Pump" } } as unknown as Request,
       { render } as unknown as Response,
     );
 
+    expect(getSupplierWithIdMock).toHaveBeenCalledWith(3);
+    expect(getGmdnTermForDeviceIdMock).toHaveBeenCalledWith(5);
     expect(render).toHaveBeenCalledWith("product", {
-      evidences: [
-        expect.objectContaining({
-          contacts: [],
-          markedUseful: 1,
-          totalUsefulCount: 3,
-          typeOfEvidenceDesc: "Generic evidence",
-        }),
-      ],
-      hasEvidenceFromUsersOrg: false,
-      organisationName: "Test Trust",
-      product,
+      productAggregation: {
+        aggregationName: "Pump",
+        deviceType: "Infusion pump",
+        peopleWithExperienceCount: 7,
+        procurementContractCount: 2,
+        relevantDocuments,
+        supplierName: "Acme Medical",
+        trustsWithExperienceCount: 4,
+      },
     });
+  });
+
+  it("GET /product/:aggregationName renders an empty supplier name when the supplier is not found", async () => {
+    getAggregationWithNameMock.mockResolvedValue([
+      { aggregationName: "Pump", deviceId: 5, manufacturerId: 3 },
+    ]);
+    getSupplierWithIdMock.mockResolvedValue(null);
+    getGmdnTermForDeviceIdMock.mockResolvedValue("Infusion pump");
+    getCountOfOrganisationsWithExperienceWithAggregationMock.mockResolvedValue(
+      0,
+    );
+    getCountOfContactsWithExperienceWithAggregationMock.mockResolvedValue(0);
+    getContractCountForAggregationMock.mockResolvedValue(0);
+    getCountOfDocumentsByTypeForAggregationMock.mockResolvedValue([]);
+
+    const render = vi.fn();
+    await renderProduct(
+      { params: { aggregationName: "Pump" } } as unknown as Request,
+      { render } as unknown as Response,
+    );
+
+    const payload = render.mock.calls[0]?.[1] as {
+      productAggregation: { supplierName: string };
+    };
+    expect(payload.productAggregation.supplierName).toBe("");
   });
 
   it("GET /product/mark-useful should mark evidence as useful", async () => {
@@ -914,121 +754,6 @@ describe("Product controller", () => {
     expect(status).toHaveBeenCalledWith(500);
     expect(send).toHaveBeenCalledWith("Failed to add evidence contact");
     consoleError.mockRestore();
-  });
-
-  it("GET /product/:id returns 500 when the user organisation cannot be determined", async () => {
-    const product = { productId: 7, technologyName: "Example device" };
-    const productQuery = {
-      executeTakeFirst: vi.fn().mockResolvedValue(product),
-      selectAll: vi.fn().mockReturnThis(),
-      where: vi.fn().mockReturnThis(),
-    };
-    const evidenceQuery = {
-      execute: vi.fn().mockResolvedValue([]),
-      innerJoin: vi.fn().mockReturnThis(),
-      selectAll: vi.fn().mockReturnThis(),
-      where: vi.fn().mockReturnThis(),
-    };
-    const organisationQuery = {
-      executeTakeFirst: vi.fn().mockResolvedValue(null),
-      innerJoin: vi.fn().mockReturnThis(),
-      selectAll: vi.fn().mockReturnThis(),
-      where: vi.fn().mockReturnThis(),
-    };
-
-    selectFromMock
-      .mockReturnValueOnce(productQuery)
-      .mockReturnValueOnce(evidenceQuery)
-      .mockReturnValueOnce(organisationQuery);
-
-    const status = vi.fn().mockReturnThis();
-    const send = vi.fn();
-
-    await renderProduct(
-      { params: { id: "7" }, user: { id: 99 } } as unknown as Request,
-      { send, status } as unknown as Response,
-    );
-
-    expect(status).toHaveBeenCalledWith(500);
-    expect(send).toHaveBeenCalledWith("Unable to determine user organisation");
-  });
-
-  it("GET /product/:id marks user evidence as from the same organisation", async () => {
-    const product = { productId: 7, technologyName: "Example device" };
-    const userOrg = { organisationId: 1, organisationName: "Test Trust" };
-    const evidence = {
-      evidenceId: 50,
-      organisationId: 1,
-      title: "Implementation guide",
-    };
-    const productQuery = {
-      executeTakeFirst: vi.fn().mockResolvedValue(product),
-      selectAll: vi.fn().mockReturnThis(),
-      where: vi.fn().mockReturnThis(),
-    };
-    const evidenceQuery = {
-      execute: vi.fn().mockResolvedValue([evidence]),
-      innerJoin: vi.fn().mockReturnThis(),
-      selectAll: vi.fn().mockReturnThis(),
-      where: vi.fn().mockReturnThis(),
-    };
-    const documentsQuery = {
-      execute: vi.fn().mockResolvedValue([]),
-      innerJoin: vi.fn().mockReturnThis(),
-      selectAll: vi.fn().mockReturnThis(),
-      where: vi.fn().mockReturnThis(),
-    };
-    const usefulQuery = {
-      execute: vi
-        .fn()
-        .mockResolvedValue([
-          { evidenceId: 50, hasUserMarkedUseful: 1, totalUsefulCount: 4 },
-        ]),
-      groupBy: vi.fn().mockReturnThis(),
-      select: vi.fn().mockReturnThis(),
-      selectAll: vi.fn().mockReturnThis(),
-      where: vi.fn().mockReturnThis(),
-    };
-    const contactsQuery = {
-      execute: vi.fn().mockResolvedValue([]),
-      innerJoin: vi.fn().mockReturnThis(),
-      select: vi.fn().mockReturnThis(),
-      where: vi.fn().mockReturnThis(),
-    };
-    const organisationQuery = {
-      executeTakeFirst: vi.fn().mockResolvedValue(userOrg),
-      innerJoin: vi.fn().mockReturnThis(),
-      selectAll: vi.fn().mockReturnThis(),
-      where: vi.fn().mockReturnThis(),
-    };
-
-    selectFromMock
-      .mockReturnValueOnce(productQuery)
-      .mockReturnValueOnce(evidenceQuery)
-      .mockReturnValueOnce(documentsQuery)
-      .mockReturnValueOnce(usefulQuery)
-      .mockReturnValueOnce(contactsQuery)
-      .mockReturnValueOnce(organisationQuery);
-
-    const render = vi.fn();
-
-    await renderProduct(
-      { params: { id: "7" }, user: { id: 99 } } as unknown as Request,
-      { render } as unknown as Response,
-    );
-
-    const payload = render.mock.calls[0]?.[1] as {
-      evidences: {
-        evidenceId: number;
-        markedUseful: number;
-        totalUsefulCount: number;
-      }[];
-      hasEvidenceFromUsersOrg: boolean;
-    };
-
-    expect(payload.hasEvidenceFromUsersOrg).toBe(true);
-    expect(payload.evidences[0]?.markedUseful).toBe(1);
-    expect(payload.evidences[0]?.totalUsefulCount).toBe(4);
   });
 
   it("GET /product/:productId/add-evidence should return 400 if the product ID is invalid", async () => {
