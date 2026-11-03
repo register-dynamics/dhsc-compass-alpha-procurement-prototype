@@ -1,12 +1,8 @@
 import { Router } from "express";
 
 import {
-  postAddEvidence,
-  postAddEvidenceContactSelf,
   postMarkUseful,
   postUnmarkUseful,
-  renderAddEvidence,
-  renderAddEvidenceContactSelf,
   renderProduct,
   renderProductRelatedTrusts,
   renderProductTrusts,

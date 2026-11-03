@@ -1,9 +1,7 @@
 import { db } from "../database/client.js";
 import { Product, Search } from "../database/types.js";
 import { EvidenceCard } from "../models/evidenceCard.js";
-import {
-  getContractCountsByContractingAuthorityForAggregation,
-} from "./atamisService.js";
+import { getContractCountsByContractingAuthorityForAggregation } from "./atamisService.js";
 
 export const getProductsByDeviceId = async (deviceId: number) => {
   return await db

@@ -38,11 +38,14 @@ export const renderProduct = async (req: Request, res: Response) => {
 
   const deviceType = await getGmdnTermForDeviceId(aggregation[0].deviceId);
 
-  const trustsWithExperienceCount = await getCountOfOrganisationsWithExperienceWithAggregation(aggregationName);  
-  const peopleWithExperienceCount = await getCountOfContactsWithExperienceWithAggregation(aggregationName);
+  const trustsWithExperienceCount =
+    await getCountOfOrganisationsWithExperienceWithAggregation(aggregationName);
+  const peopleWithExperienceCount =
+    await getCountOfContactsWithExperienceWithAggregation(aggregationName);
   const procurementContractCount =
     await getContractCountForAggregation(aggregationName);
-  const relevantDocuments = await getCountOfDocumentsByTypeForAggregation(aggregationName);
+  const relevantDocuments =
+    await getCountOfDocumentsByTypeForAggregation(aggregationName);
 
   const productAggregation: ProductAggregation = {
     aggregationName: aggregation[0].aggregationName ?? "",
