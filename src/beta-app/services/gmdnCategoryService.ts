@@ -80,6 +80,56 @@ export const getTermCodeByCategoryCode = async (categoryCode: string) => {
   return result.termCode;
 };
 
+// Category codes map to every GMDN term beneath them in the hierarchy, not
+// just their own, so this counts suppliers across the whole subtree.
+export const getSupplierCountsForCategoryCodes = async (
+  categoryCodes: string[],
+): Promise<Map<string, number>> => {
+  if (categoryCodes.length === 0) {
+    return new Map();
+  }
+
+  const rows = await db
+    .withSchema("external")
+    .selectFrom("gmdn_category_term as ct")
+    .innerJoin("device_type as dt", "dt.gmdnCode", "ct.termCode")
+    .where("ct.categoryCode", "in", categoryCodes)
+    .select((eb) => [
+      "ct.categoryCode",
+      eb.fn.count<string>("dt.manufacturerId").distinct().as("supplierCount"),
+    ])
+    .groupBy("ct.categoryCode")
+    .execute();
+
+  return new Map(
+    rows.map((row) => [row.categoryCode, Number(row.supplierCount)]),
+  );
+};
+
+// A leaf category can map to several GMDN terms. These are what the
+// /device-type/:deviceTypeId pages are keyed on.
+export const getGmdnTermsForCategoryCode = async (categoryCode: string) => {
+  const rows = await db
+    .withSchema("external")
+    .selectFrom("gmdn_category_term as ct")
+    .innerJoin("gmdn as g", "g.gmdnCode", "ct.termCode")
+    .leftJoin("device_type as dt", "dt.gmdnCode", "g.gmdnCode")
+    .where("ct.categoryCode", "=", categoryCode)
+    .select((eb) => [
+      "g.gmdnCode",
+      "g.gmdnTermName",
+      eb.fn.count<string>("dt.manufacturerId").distinct().as("supplierCount"),
+    ])
+    .groupBy(["g.gmdnCode", "g.gmdnTermName"])
+    .orderBy("g.gmdnTermName", "asc")
+    .execute();
+
+  return rows.map((row) => ({
+    ...row,
+    supplierCount: Number(row.supplierCount),
+  }));
+};
+
 export const getGmdnTermNameByTermCode = async (termCode: number) => {
   const result = await db
     .withSchema("external")

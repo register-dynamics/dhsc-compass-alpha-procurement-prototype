@@ -1,0 +1,47 @@
+{% extends "layouts/base.html" %}
+
+{% from "summary-list/macro.njk" import summaryList %}
+{% from "tables/macro.njk" import table %}
+
+{% set pageName = gmdnTerm + " by " + supplier.manOrganisationName %}
+
+{% set mainClasses = "nhsuk-main-wrapper--s" %}
+
+{% block content %}
+
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+
+    <h1 class="nhsuk-heading-l nhsuk-u-margin-bottom-4" id="devices-heading">
+      <span class="nhsuk-caption-l">{{ supplier.manOrganisationName }}</span>
+      {{ gmdnTerm }}
+    </h1>
+
+    {{ summaryList({
+      rows: [
+        { key: { text: "Device type" }, value: { html: '<a href="/device-type/' ~ deviceTypeId ~ '">' ~ (gmdnTerm | escape) ~ '</a>' } }
+      ]
+    }) }}
+
+    {% set deviceRows = [] %}
+    {% for device in devices %}
+      {% set deviceRows = deviceRows.concat([[
+        { html: '<a href="/product/' ~ (device.aggregationName | urlencode) ~ '">' ~ (device.aggregationName | escape) ~ '</a>' },
+        { text: device.trustCount, format: "numeric" }
+      ]]) %}
+    {% endfor %}
+
+    {{ table({
+      attributes: { "aria-labelledby": "devices-heading" },
+      head: [
+        { text: "Device name" },
+        { text: "Trusts with available data", format: "numeric" }
+      ],
+      rows: deviceRows
+    }) }}
+
+  </div>
+</div>
+
+
+{% endblock %}
