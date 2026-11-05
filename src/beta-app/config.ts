@@ -12,7 +12,7 @@ const resolveSessionMaxAgeMs = (rawValue: string | undefined) => {
 
 const config = {
   app: {
-    name: "Search and evaluate medical technologies",
+    name: "Search and evaluate medical technology",
   },
   database: {
     database: process.env.DATABASE_NAME,
