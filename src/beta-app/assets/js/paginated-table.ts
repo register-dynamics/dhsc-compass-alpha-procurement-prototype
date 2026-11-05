@@ -14,7 +14,7 @@
  *
  * Optional elements inside the wrapper:
  * - `[data-pagination-status]` – updated with "Showing X to Y of Z, ordered …"
- * - `data-page-size` on the wrapper – rows per page (default 20)
+ * - `data-page-size` on the wrapper – rows per page (default 25)
  */
 
 const arrowLeft =
@@ -49,7 +49,7 @@ class PaginatedTable {
     this.$body = $body;
     this.$pagination = $pagination;
     this.$status = $root.querySelector<HTMLElement>("[data-pagination-status]");
-    this.pageSize = Number($root.dataset.pageSize) || 20;
+    this.pageSize = Number($root.dataset.pageSize) || 25;
 
     // The NHS table re-appends every row when it sorts; one callback per batch
     new MutationObserver(() => {

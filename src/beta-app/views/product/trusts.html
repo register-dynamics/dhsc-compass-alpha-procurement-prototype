@@ -1,11 +1,22 @@
 {% extends "layouts/base.html" %}
 
+{% from "breadcrumb/macro.njk" import breadcrumb %}
 {% from "summary-list/macro.njk" import summaryList %}
 {% from "card/macro.njk" import card %}
 {% from "button/macro.njk" import button %}
 {% from "includes/mark-useful-button.njk" import mark_useful_button %}
 
 {% set pageName = "Trusts sharing experience with " + aggregationName + " by " + supplierName %}
+
+{% set mainClasses = "nhsuk-main-wrapper--s" %}
+
+{% block beforeContent %}
+
+    {{ breadcrumb({
+        items: breadcrumbs
+    }) }}
+
+{% endblock %}
 
 {% block content %}
 
@@ -69,7 +80,7 @@
                 {% endcall %}
             {% endfor %}
 
-            <p><a href="/product/{{ aggregationName }}">Return to the device</a></p>
+            <p><a href="{{ productHref }}">Return to the device</a></p>
 
         </div>        
     </div>

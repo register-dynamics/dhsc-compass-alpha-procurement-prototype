@@ -7,6 +7,16 @@
 
 {% set pageName = productAggregation.aggregationName + " by " + productAggregation.supplierName %}
 
+{% set mainClasses = "nhsuk-main-wrapper--s" %}
+
+{% block beforeContent %}
+
+    {{ breadcrumb({
+        items: breadcrumbs
+    }) }}
+
+{% endblock %}
+
 {% block content %}
 
     <div class="nhsuk-grid-row">
@@ -17,10 +27,16 @@
                 {{ productAggregation.aggregationName }}
             </h1>
 
+            {% set deviceTypeContent %}
+                {% if deviceTypeHref %}<a href="{{ deviceTypeHref }}">{{ productAggregation.deviceType }}</a>{% else %}{{ productAggregation.deviceType }}{% endif %}
+            {% endset %}
+            {% set supplierContent %}
+                {% if supplierHref %}<a href="{{ supplierHref }}">{{ productAggregation.supplierName }}</a>{% else %}{{ productAggregation.supplierName }}{% endif %}
+            {% endset %}
             {{ summaryList({
                 rows: [
-                    { key: { text: "Device type" }, value: { html: productAggregation.deviceType } },
-                    { key: { text: "Supplier" }, value: { html: productAggregation.supplierName } }
+                    { key: { text: "Device type" }, value: { html: deviceTypeContent } },
+                    { key: { text: "Supplier" }, value: { html: supplierContent } }
                 ]
             }) }}
         </div>
@@ -45,7 +61,7 @@
                 ]
             }) }}
             <p>
-                <a href="/product/{{ productAggregation.aggregationName }}/trusts">View trusts</a>
+                <a href="{{ trustsHref }}">View trusts</a>
             </p>
             {# {{ button({
                 text: "Add your trust's experience",

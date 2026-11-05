@@ -6,11 +6,16 @@ import { db } from "../database/client.js";
 import {
   getCategoriesWithParentId,
   getCategoryById,
-  getGmdnTermsForCategoryCode,
+  getDeviceTypeCountsForCategories,
+  getGmdnTermsBeneathCategory,
   getHierarchyForCategory,
-  getSupplierCountsForCategoryCodes,
   getTopLevelCategories,
 } from "../services/gmdnCategoryService.js";
+import {
+  getCategoriesQueryString,
+  getSearchCategories,
+  getSearchQueryString,
+} from "../services/searchQueryService.js";
 
 export const renderSearch = (req: Request, res: Response) => {
   res.render("search");
@@ -32,14 +37,9 @@ export const renderSearchResults = async (req: Request, res: Response) => {
   const currentPage = (parseInt(req.query.page as string) || 1) - 1;
   const searchPage = currentPage + 1;
 
-  const queryCategories = [req.query["[category]"] ?? []]
-    .flat()
-    .filter((c): c is string => typeof c === "string" && c !== "_unchecked");
+  const queryCategories = getSearchCategories(req.query);
 
-  const categoriesQueryString =
-    queryCategories.length > 0
-      ? `&${queryCategories.map((c) => `[category]=${encodeURIComponent(c)}`).join("&")}`
-      : "";
+  const categoriesQueryString = getCategoriesQueryString(queryCategories);
 
   const queryParams = {
     limit: pageSize,
@@ -140,6 +140,7 @@ export const renderSearchResults = async (req: Request, res: Response) => {
     searchMaxPages,
     searchOffset,
     searchPage,
+    searchQueryString: getSearchQueryString(req.query),
     searchResultCategories: categoriesInSearchResults,
     searchResults: results,
     searchResultsCount,
@@ -164,43 +165,29 @@ export const renderCategory = async (
 
   const subcategoryRows = await getCategoriesWithParentId(Number(categoryId));
 
-  const supplierCounts = await getSupplierCountsForCategoryCodes(
-    subcategoryRows.flatMap((subcategory) => subcategory.categoryCode ?? []),
+  const deviceTypeCounts = await getDeviceTypeCountsForCategories(
+    subcategoryRows.map((subcategory) => subcategory.nodeId),
   );
 
   const subcategories = subcategoryRows.map((subcategory) => ({
     ...subcategory,
-    supplierCount: subcategory.categoryCode
-      ? (supplierCounts.get(subcategory.categoryCode) ?? 0)
-      : 0,
+    deviceTypeCount: deviceTypeCounts.get(subcategory.nodeId) ?? 0,
   }));
 
   const hierarchyLevel = categoryHierarchy.length;
 
-  const payload: {
-    category: typeof category;
-    categoryHierarchy: typeof categoryHierarchy;
-    deviceTypes: Awaited<ReturnType<typeof getGmdnTermsForCategoryCode>>;
-    hierarchyLevel: number;
-    subcategories: typeof subcategories;
-  } = {
+  // Levels 1 and 2 are for narrowing down, so they only list subcategories.
+  // From level 3 down, list every GMDN term (device type) beneath this category.
+  const deviceTypes =
+    hierarchyLevel >= 3
+      ? await getGmdnTermsBeneathCategory(Number(categoryId))
+      : [];
+
+  res.render("category.html", {
     category,
     categoryHierarchy,
-    deviceTypes: [],
+    deviceTypes,
     hierarchyLevel,
     subcategories,
-  };
-
-  // At the bottom of the hierarchy, list the GMDN terms (device types) in this category
-  if (subcategories.length === 0) {
-    if (!category.categoryCode) {
-      throw new Error(`Category code not found for category ID ${categoryId}`);
-    }
-
-    payload.deviceTypes = await getGmdnTermsForCategoryCode(
-      category.categoryCode,
-    );
-  }
-
-  res.render("category.html", payload);
+  });
 };

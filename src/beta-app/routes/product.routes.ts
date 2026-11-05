@@ -4,18 +4,33 @@ import {
   postMarkUseful,
   postUnmarkUseful,
   renderProduct,
+  renderProductInCategory,
   renderProductRelatedTrusts,
   renderProductTrusts,
+  renderProductTrustsInCategory,
 } from "../controllers/product.controller.js";
 import { registerRoutes, type RouteDefinition } from "./route-definitions.js";
 
 const router = Router();
+
+const categoryProductPath =
+  "/category/:categoryId/device-type/:deviceTypeId/supplier/:supplierId/product/:aggregationName";
 
 const routeDefinitions: RouteDefinition[] = [
   {
     handler: renderProduct,
     method: "get",
     path: "/product/:aggregationName",
+  },
+  {
+    handler: renderProductInCategory,
+    method: "get",
+    path: categoryProductPath,
+  },
+  {
+    handler: renderProductTrustsInCategory,
+    method: "get",
+    path: `${categoryProductPath}/trusts`,
   },
   {
     handler: postMarkUseful,
