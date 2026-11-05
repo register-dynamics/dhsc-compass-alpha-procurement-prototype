@@ -6,6 +6,6 @@ import config from "./config.js";
 
 describe("Beta app config", () => {
   it("should be called Compass", () => {
-    expect(config.app.name).toBe("Search and evaluate medical technologies");
+    expect(config.app.name).toBe("Search and evaluate medical technology");
   });
 });
