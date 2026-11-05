@@ -1,0 +1,95 @@
+{#
+  Layout for the branded-device sketch, copied from add-contact-details. The
+  same as current/layouts/layout-signed-in.html, except the header navigation
+  links to every page in the sketch, so people can move round it in a review. The header moves links that do not fit into its "More" menu.
+  The page you are on is marked as current (currentPath is set in routes.js).
+  current/ is dev-owned, so the header is overridden here rather than
+  changed there.
+#}
+
+{% extends prototypeVersion + '/layouts/layout-signed-in.html' %}
+
+{% block header %}
+{% from 'header/macro.njk' import header %}
+
+{{ header({
+  logo: {
+    href: "/"
+  },
+  service: {
+    text: "Search and evaluate medical technology",
+    href: "/"
+  },
+  account: {
+    items: [
+      {
+        text: "Kelvin Simpson (Regional Manager)",
+        icon: true
+      },
+      {
+        text: "Log out",
+        href: "sign-in-nhs"
+      }
+    ]
+  },
+  navigation: {
+    items: [
+      {
+        text: "Branded device",
+        href: "/branded-device",
+        current: currentPath == "/"
+      },
+      {
+        text: "Specifications and costs",
+        href: "/branded-device/specifications-and-costs",
+        current: currentPath == "/specifications-and-costs"
+      },
+      {
+        text: "Trusts with experience",
+        href: "/branded-device/trusts-with-experience",
+        current: currentPath == "/trusts-with-experience"
+      },
+      {
+        text: "Trust experience",
+        href: "/branded-device/trust-experience",
+        current: currentPath == "/trust-experience"
+      },
+      {
+        text: "Trust",
+        href: "/branded-device/trust",
+        current: currentPath == "/trust"
+      },
+      {
+        text: "Contract",
+        href: "/branded-device/contract",
+        current: currentPath == "/contract"
+      },
+      {
+        text: "Related categories",
+        href: "/branded-device/related-contracts",
+        current: currentPath == "/related-contracts"
+      },
+      {
+        text: "Supplier",
+        href: "/branded-device/supplier",
+        current: currentPath == "/supplier"
+      },
+      {
+        text: "Supplier devices",
+        href: "/branded-device/supplier-devices",
+        current: currentPath == "/supplier-devices"
+      },
+      {
+        text: "Supplier trusts",
+        href: "/branded-device/supplier-trusts",
+        current: currentPath == "/supplier-trusts"
+      },
+      {
+        text: "Supplier contracts",
+        href: "/branded-device/supplier-contracts",
+        current: currentPath == "/supplier-contracts"
+      }
+    ]
+  }
+}) }}
+{% endblock %}

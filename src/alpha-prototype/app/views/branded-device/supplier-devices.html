@@ -1,0 +1,110 @@
+{#
+  A supplier's devices, 1 level down from the supplier page (supplier.html),
+  from its "4 devices in the catalogue" card.
+
+  Dylan: a supplier-filtered view of devices, using the device type list
+  page type from identify-alternatives (_category-level.html, e.g.
+  identify-alternatives/bone-joint-fixation-implants). It lists device types
+  (GMDN terms), not branded devices, as that page type does; each device
+  type would lead to the device type page filtered to this supplier.
+
+  Same layout as _category-level.html, copied rather than extended, since
+  that template uses the identify-alternatives layout and header:
+  - The h1 gives the count and what the list is filtered to, like "212
+    device types in Bone/Joint fixation implants". Results first in the
+    source, floated right, so the h1 is the first heading.
+  - A one-third sidebar with category navigation, styled after the NHS
+    digital service manual's sidebar (components/_side-nav.scss): the
+    categories this supplier's device types sit in.
+  - Results: a 2-column table, device type and how many of this supplier's
+    devices are of that type (numeric, right-aligned).
+  - 3 rows fit on 1 page, so no sort, filters or pagination, by that
+    template's rule.
+
+  Hard data from the catalogue. The database has 1 ArcTech device
+  (InsuFlow Pro, "Ambulatory insulin infusion pump reservoir"); the other
+  device types, devices and categories are invented, and match the supplier
+  page (4 devices, 3 device types) and the device names on the supplier
+  contracts page (FlowLine VP, SyriDrive S2). Every line of copy is a draft
+  for Jill.
+#}
+
+{% extends "branded-device/_layout.html" %}
+
+{# Light pink background: the supplier pages are a concept design (Dylan) #}
+{% set bodyClasses = "app-concept" %}
+
+{% from "tables/macro.njk" import table %}
+
+{% set supplier = "ArcTech Ltd" %}
+{% set pageName = "Device types from " + supplier %}
+{% set mainClasses = "nhsuk-main-wrapper--s" %}
+
+{% set rows = [
+  { name: "Ambulatory insulin infusion pump reservoir", href: "#", devices: "1" },
+  { name: "General-purpose infusion pump, volumetric", href: "#", devices: "2" },
+  { name: "Syringe driver, ambulatory", href: "#", devices: "1" }
+] %}
+
+{% set categories = [
+  { name: "Insulin infusion devices", href: "#", count: "1" },
+  { name: "Syringe drivers", href: "#", count: "1" },
+  { name: "Volumetric infusion pumps", href: "#", count: "1" }
+] %}
+
+{% block beforeContent %}
+
+{{ breadcrumb({
+  items: [
+    { href: "/identify-alternatives/search-and-browse", text: "Search and browse" },
+    { href: "/branded-device/supplier", text: supplier }
+  ]
+}) }}
+
+{% endblock %}
+
+{% block content %}
+
+<div class="nhsuk-grid-row">
+
+  <div class="app-grid-column-two-thirds-right">
+
+    <h1 class="nhsuk-heading-l nhsuk-u-margin-bottom-2" id="device-types">{{ rows | length }} device types from {{ supplier }}</h1>
+    <p class="nhsuk-body-s">Ordered A to Z.</p>
+
+    {% set tableRows = [] %}
+    {% for row in rows %}
+      {% set _ = tableRows.push([
+        { html: '<a href="' + row.href + '">' + row.name + '</a>' },
+        { text: row.devices, format: "numeric" }
+      ]) %}
+    {% endfor %}
+
+    {{ table({
+      attributes: { "aria-labelledby": "device-types" },
+      head: [
+        { text: "Device type" },
+        { text: "Devices from " + supplier, format: "numeric" }
+      ],
+      rows: tableRows
+    }) }}
+
+  </div>
+
+  <div class="nhsuk-grid-column-one-third">
+    <nav aria-labelledby="category-nav-heading">
+      <h2 class="app-side-nav__heading nhsuk-heading-s nhsuk-u-margin-bottom-3" id="category-nav-heading">Categories</h2>
+      <ul class="app-side-nav__list">
+        {% for item in categories %}
+        <li class="app-side-nav__item">
+          <a class="app-side-nav__link" href="{{ item.href }}">{{ item.name }}</a>
+          <span class="app-side-nav__count">({{ item.count }})</span>
+        </li>
+        {% endfor %}
+      </ul>
+    </nav>
+  </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,110 @@
+{#
+  Sketch 1j: Variants page (single device).
+
+  Reached from the variants link on the REUSABLE SCISSORS device page. The
+  single-device counterpart of the MAS PLIF component page: one branded
+  device's variants. The end of the line, so the rows are not links.
+
+  - Built to the same scale rule as MAS PLIF: filters, the name search and
+    pagination appear only when the list runs past 1 page. With 4 variants
+    they do not show, and the table takes the full two-thirds column.
+  - Blade and side get their own columns, read from the variant names, so
+    rows can be compared down a column. Every variant has blunt tips, so
+    tips would not tell them apart and has no column.
+  - Ordered by blade length, then side. A to Z would put 11.5mm before
+    9.5mm. Measurements have no space before the unit, per
+    Content/numbers-measurements-dates-time.md; variant names keep theirs,
+    as recorded.
+  - Breadcrumb: the same trail as the device page, picked by ?from=, with
+    the device page as the parent.
+
+  Content: variant names are real market data Dylan supplied, as recorded.
+#}
+
+{% extends "identify-alternatives/_layout.html" %}
+
+{% from "tables/macro.njk" import table %}
+{% from "summary-list/macro.njk" import summaryList %}
+
+{% set brand = "REUSABLE SCISSORS" %}
+{% set supplier = "France Chirurgie Instrumentation SAS" %}
+{% set deviceType = "Corneal scissors, reusable" %}
+{% set pageName = "Variants of " + brand + " by " + supplier %}
+{% set mainClasses = "nhsuk-main-wrapper--s" %}
+
+{% set fromQuery = ("?from=" + cameFrom) if cameFrom else "" %}
+{% set devicePage = { href: "/identify-alternatives/reusable-scissors-france-chirurgie" + fromQuery, text: supplier } %}
+
+{% if cameFrom == "search" %}
+  {% set trail = [
+    { href: "/identify-alternatives/search-and-browse", text: "Search and browse" },
+    { href: "/identify-alternatives/search-results", text: "Search results" },
+    devicePage
+  ] %}
+{% elif cameFrom == "anatomical" %}
+  {% set trail = [
+    { href: "/identify-alternatives/search-and-browse", text: "Search and browse" },
+    { href: "#", text: "Anatomical specialty" },
+    { href: "#", text: "Ophthalmic devices" },
+    { href: "#", text: "Ophthalmic scissors" },
+    { href: "/identify-alternatives/corneal-scissors-reusable" + fromQuery, text: deviceType },
+    devicePage
+  ] %}
+{% else %}
+  {% set trail = [
+    { href: "/identify-alternatives/search-and-browse", text: "Search and browse" },
+    { href: "/identify-alternatives/device-function", text: "Device function" },
+    { href: "#", text: "Surgical/Invasive procedure instrumentation" },
+    { href: "#", text: "Tissue-penetrating mechanical surgical instrumentation" },
+    { href: "#", text: "Surgical scissors" },
+    { href: "/identify-alternatives/corneal-scissors-reusable" + fromQuery, text: deviceType },
+    devicePage
+  ] %}
+{% endif %}
+
+{% block beforeContent %}
+
+{{ breadcrumb({ items: trail }) }}
+
+{% endblock %}
+
+{% block content %}
+
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+
+    <h1 class="nhsuk-heading-l nhsuk-u-margin-bottom-4">
+      <span class="nhsuk-caption-l">{{ supplier }}</span>
+      Variants of {{ brand }}
+    </h1>
+
+    {{ summaryList({
+      rows: [
+        { key: { text: "Device" }, value: { html: '<a href="' + devicePage.href + '">' + brand + '</a>' } },
+        { key: { text: "Variants" }, value: { text: "4" } }
+      ]
+    }) }}
+
+    <h2 class="nhsuk-heading-m nhsuk-u-margin-top-5 nhsuk-u-margin-bottom-2">Variants</h2>
+    <p class="nhsuk-body-s">Showing all 4 variants, by blade length then side.</p>
+
+    {{ table({
+      caption: "Variants of " + brand,
+      captionClasses: "nhsuk-u-visually-hidden",
+      head: [
+        { text: "Variant" },
+        { text: "Blade", format: "numeric" },
+        { text: "Side" }
+      ],
+      rows: [
+        [ { text: "KATZIN CORNEAL TRANSPLANT SCISSORS 9.5 mm BLADE BLUNT TIPS LEFT" }, { text: "9.5mm", format: "numeric" }, { text: "Left" } ],
+        [ { text: "KATZIN CORNEAL TRANSPLANT SCISSORS 9.5 mm BLADE BLUNT TIPS RIGHT" }, { text: "9.5mm", format: "numeric" }, { text: "Right" } ],
+        [ { text: "KATZIN CORNEAL TRANSPLANT SCISSORS 11.5 mm BLADE BLUNT TIPS LEFT" }, { text: "11.5mm", format: "numeric" }, { text: "Left" } ],
+        [ { text: "KATZIN CORNEAL TRANSPLANT SCISSORS 11.5 mm BLADE BLUNT TIPS RIGHT" }, { text: "11.5mm", format: "numeric" }, { text: "Right" } ]
+      ]
+    }) }}
+
+  </div>
+</div>
+
+{% endblock %}

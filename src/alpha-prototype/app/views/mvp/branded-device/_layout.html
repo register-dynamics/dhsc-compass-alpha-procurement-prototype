@@ -1,0 +1,45 @@
+{#
+  Layout for the MVP pages: current/layouts/layout-signed-in.html with the
+  header overridden so its navigation links work from MVP. current/ is
+  dev-owned.
+#}
+
+{% extends prototypeVersion + '/layouts/layout-signed-in.html' %}
+
+{% block header %}
+{% from 'header/macro.njk' import header %}
+
+{{ header({
+  logo: {
+    href: "/"
+  },
+  service: {
+    text: "Search and evaluate medical technology",
+    href: "/"
+  },
+  account: {
+    items: [
+      {
+        text: "Kelvin Simpson (Regional Manager)",
+        icon: true
+      },
+      {
+        text: "Log out",
+        href: "sign-in-nhs"
+      }
+    ]
+  },
+  navigation: {
+    items: [
+      {
+        text: "Dashboard",
+        href: "/current/dashboard"
+      },
+      {
+        text: "Search",
+        href: "/current/search"
+      }
+    ]
+  }
+}) }}
+{% endblock %}

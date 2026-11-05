@@ -1,0 +1,100 @@
+{#
+  Specifications and costs for a branded device, 1 level down from the
+  branded device page (index.html), which keeps only device type, supplier
+  and acquisition cost.
+
+  Fields are from Dylan's "Device specs and costs" data list. Hard data, so
+  we organise it: device facts and technical specifications as summary
+  lists, costs as a summary list with the source of every figure. A device
+  can have up to around 1,000 variants, so they are a count and a link to
+  their own page, modelled on identify-alternatives/mas-plif.html. Contract
+  figures (award value, training) are not here: they sit under each
+  contract, since they do not aggregate.
+
+  Independent ratings of the device, such as ODEP ratings for orthopaedic
+  implants, go in the technical specifications when they apply to the
+  device (Dylan). None applies to this pump, so none is shown.
+
+  Device: the InsuFlow Pro 300 Pump System by ArcTech Ltd. Manufacturer and
+  the variant count are from database.db (dummy data). Specifications,
+  acquisition cost and annual maintenance are copied from
+  current/product-page.html. Ranges use "to" and units have no space
+  before them (Content/numbers-measurements-dates-time.md). "Supplied as"
+  is carried over from the earlier sketch and not confirmed for this
+  device. Every line of copy is a draft for Jill.
+#}
+
+{% extends "branded-device/_layout.html" %}
+
+{% from "summary-list/macro.njk" import summaryList %}
+
+{% set brand = "InsuFlow Pro" %}
+{% set supplier = "ArcTech Ltd" %}
+{% set deviceType = "Ambulatory insulin infusion pump reservoir" %}
+{% set pageName = "Specifications and costs – " + brand + " by " + supplier %}
+{% set mainClasses = "nhsuk-main-wrapper--s" %}
+
+{% set trail = [
+    { href: "/identify-alternatives/search-and-browse", text: "Search and browse" },
+    { href: "/identify-alternatives/device-function", text: "Device function" },
+    { href: "#", text: deviceType },
+    { href: "/branded-device", text: brand }
+  ] %}
+
+{% block beforeContent %}
+
+{{ breadcrumb({ items: trail }) }}
+
+{% endblock %}
+
+{% block content %}
+
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+
+    <h1 class="nhsuk-heading-l nhsuk-u-margin-bottom-4">
+      <span class="nhsuk-caption-l">{{ brand }}</span>
+      Specifications and costs
+    </h1>
+
+    <h2 class="nhsuk-heading-m">Device</h2>
+
+    {{ summaryList({
+      rows: [
+        { key: { text: "Supplied as" }, value: { text: "A single device" } },
+        { key: { text: "Manufacturer" }, value: { text: supplier } },
+        { key: { text: "Variants" }, value: { text: "1" } }
+      ]
+    }) }}
+
+    <p><a href="#">View variants</a></p>
+
+    <h2 class="nhsuk-heading-m nhsuk-u-margin-top-4">Technical specifications</h2>
+
+    {{ summaryList({
+      rows: [
+        { key: { text: "Flow rate range" }, value: { text: "0.1 to 999ml/hr" } },
+        { key: { text: "Accuracy" }, value: { text: "±5% at steady state" } },
+        { key: { text: "Pressure range" }, value: { text: "0 to 1,000mmHg" } },
+        { key: { text: "Power supply" }, value: { html: '<ul class="nhsuk-list nhsuk-u-margin-bottom-0"><li>AC 100 to 240V, 50/60Hz</li><li>Internal rechargeable battery</li></ul>' } },
+        { key: { text: "Dimensions" }, value: { text: "310mm (H) x 180mm (W) x 150mm (D)" } },
+        { key: { text: "Weight" }, value: { text: "3.2kg" } },
+        { key: { text: "Certifications and compliance" }, value: { html: '<ul class="nhsuk-list nhsuk-u-margin-bottom-0"><li>CE marked (MDR 2017/745)</li><li>MHRA registered</li><li>ISO 13485:2016</li></ul>' } },
+        { key: { text: "Compatibility and connectivity" }, value: { html: '<ul class="nhsuk-list nhsuk-u-margin-bottom-0"><li>Wi-Fi 802.11 a/b/g/n</li><li>Bluetooth 5.0</li><li>USB 3.0</li></ul>' } }
+      ]
+    }) }}
+
+    <h2 class="nhsuk-heading-m nhsuk-u-margin-top-4">Costs</h2>
+
+    {{ summaryList({
+      rows: [
+        { key: { text: "Acquisition cost" }, value: { text: "£8,500 to £12,000, depending on configuration and volume (source: AdviseInc)" } },
+        { key: { text: "Ongoing costs" }, value: { text: "Annual maintenance, £850, including software updates, calibration and support (source: business case, Barts Health NHS Trust)" } },
+        { key: { text: "Cost analysis" }, value: { html: '<a href="#">Business case</a> (Barts Health NHS Trust)' } }
+      ]
+    }) }}
+
+  </div>
+</div>
+
+{% endblock %}

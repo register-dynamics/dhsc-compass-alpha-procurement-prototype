@@ -26,12 +26,13 @@
 
 {% block header %}
   {{ header({
-    logo: { href: "/", ariaLabel: "Search and evaluate medical technologies" },
-    service: { text: "Search and evaluate medical technologies", href: "/" },
+    logo: { href: "/", ariaLabel: "Search and evaluate medical technology" },
+    service: { text: "Search and evaluate medical technology", href: "/" },
     navigation: {
       items: [
         { text: "Dashboard", href: "/dashboard" },
-        { text: "Search", href: "/search" }
+        { text: "Search", href: "/search" },
+        { text: "Browse", href: "/categories" }
       ]
     },
     account: {
@@ -60,5 +61,5 @@ text: "Help and support" }, { href: "#", text: "Cookies" }, { href: "#", text:
 {% endblock %}
 
 {% block bodyEnd %}
-  <script type="module" src="/javascripts/nhsuk-frontend.min.js"></script>
+  <script type="module" src="/javascripts/main.min.js"></script>
 {% endblock %}

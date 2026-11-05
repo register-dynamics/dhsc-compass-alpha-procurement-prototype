@@ -1,0 +1,46 @@
+{#
+  Sketch 1c (subcategories): Bone/Joint fixation implants.
+
+  A variation on bone-joint-fixation-implants, in the form of
+  tissue-reparation-devices: subcategories only, under group headings, with
+  no filters or device list (hideDevices). Built to compare against the
+  device-list version. Layout is in _category-level.html.
+
+  Subcategory names and counts are the same as bone-joint-fixation-implants.
+  Counts are invented, except Internal spinal fixation systems (8).
+
+  7 subcategories, one over the 6 Content/formatting.md suggests, so they are
+  chunked. GROUP NAMES ARE OURS, not GMDN's, and need a clinical check: fracture
+  fixation, and spinal and joint fusion (arthrodesis). Within each group, A to Z.
+
+  Only Internal spinal fixation systems links onward. Everything else goes to "#".
+#}
+
+{% extends "identify-alternatives/_category-level.html" %}
+
+{% set category = {
+  name: "Bone/Joint fixation implants",
+  caption: "Tissue reparation devices"
+} %}
+
+{% set breadcrumbs = [
+  { href: "/identify-alternatives/search-and-browse", text: "Search and browse" },
+  { href: "/identify-alternatives/device-function", text: "Device function" },
+  { href: "/identify-alternatives/tissue-reparation-devices", text: "Tissue reparation devices" }
+] %}
+
+{% set hideDevices = true %}
+
+{% set subcategoryGroups = [
+  { heading: "Fracture fixation", items: [
+    { name: "Implantable bone fixation pins", href: "#", count: "18" },
+    { name: "Implantable bone screws", href: "#", count: "54" },
+    { name: "Implantable fixation plates", href: "#", count: "41" },
+    { name: "Intramedullary bone nails", href: "#", count: "22" },
+    { name: "Orthopaedic fixation systems", href: "#", count: "29" }
+  ] },
+  { heading: "Spinal and joint fusion", items: [
+    { name: "Internal spinal fixation systems", href: "/identify-alternatives/internal-spinal-fixation-systems", count: "8" },
+    { name: "Sacroiliac joint fixation/arthrodesis implants", href: "#", count: "6" }
+  ] }
+] %}

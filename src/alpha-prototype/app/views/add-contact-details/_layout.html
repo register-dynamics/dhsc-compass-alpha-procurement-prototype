@@ -1,0 +1,71 @@
+{#
+  Layout for the add-contact-details sketch. The same as
+  current/layouts/layout-signed-in.html, except the header navigation links
+  to every page in the sketch, in the order of the sketches index, so people can move round it
+  in a review. The header moves links that do not fit into its "More" menu.
+  The page you are on is marked as current (currentPath is set in routes.js).
+  current/ is dev-owned, so the header is overridden here rather than
+  changed there.
+#}
+
+{% extends prototypeVersion + '/layouts/layout-signed-in.html' %}
+
+{% block header %}
+{% from 'header/macro.njk' import header %}
+
+{{ header({
+  logo: {
+    href: "/"
+  },
+  service: {
+    text: "Search and evaluate medical technology",
+    href: "/"
+  },
+  account: {
+    items: [
+      {
+        text: "Kelvin Simpson (Regional Manager)",
+        icon: true
+      },
+      {
+        text: "Log out",
+        href: "sign-in-nhs"
+      }
+    ]
+  },
+  navigation: {
+    items: [
+      {
+        text: "Branded device",
+        href: "/add-contact-details/branded-device",
+        current: currentPath == "/branded-device"
+      },
+      {
+        text: "Who should be a contact",
+        href: "/add-contact-details/who-should-be-a-contact",
+        current: currentPath == "/who-should-be-a-contact"
+      },
+      {
+        text: "Choose contacts",
+        href: "/add-contact-details/choose-contacts",
+        current: currentPath == "/choose-contacts"
+      },
+      {
+        text: "Add someone not listed",
+        href: "/add-contact-details/add-someone-not-listed",
+        current: currentPath == "/add-someone-not-listed"
+      },
+      {
+        text: "Check contacts",
+        href: "/add-contact-details/check-contacts",
+        current: currentPath == "/check-contacts"
+      },
+      {
+        text: "Contacts added",
+        href: "/add-contact-details/contacts-added",
+        current: currentPath == "/contacts-added"
+      }
+    ]
+  }
+}) }}
+{% endblock %}

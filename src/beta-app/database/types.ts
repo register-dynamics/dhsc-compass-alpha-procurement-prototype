@@ -3,10 +3,9 @@
 import { Generated, Selectable } from "kysely";
 
 import type { EvidenceContact } from "../models/evidenceContact.js";
-
 export interface Database {
   contacts: ContactTable;
-  product_matches: ProductMatchesTable;
+  product_evidence: ProductEvidenceTable;
   evidence_type: EvidenceTypeTable;
   evidence: EvidenceTable;
   document_type: DocumentTypeTable;
@@ -15,10 +14,21 @@ export interface Database {
   evidence_contacts: EvidenceContactsTable;
   product_evidence_useful: ProductEvidenceUsefulTable;
   search: SearchTable;
+  aggregation_search: AggregationSearchTable;
   users: UserTable;
   organisation_user: OrganisationUserTable;
   organisation_contact: OrganisationContactTable;
   organisations: OrganisationsTable;
+
+  // external schema
+  gmdn_category: GmdnCategoryTable;
+  gmdn_category_term: GmdnCategoryTermTable;
+  gmdn: GmdnTable;
+  device_type: DeviceTypeTable;
+  products: ProductTable;
+  atamis_contracts: AtamisContractTable;
+  atamis_to_gmdn: AtamisToGmdnMappingTable;
+  manufacturers: ManufacturerTable;
 }
 
 export type Contact = Selectable<ContactTable>;
@@ -34,10 +44,10 @@ export interface ContactTable {
   userId: null | number;
 }
 
-export type ProductMatches = Selectable<ProductMatchesTable>;
+export type ProductEvidence = Selectable<ProductEvidenceTable>;
 
-export interface ProductMatchesTable {
-  productId: number;
+export interface ProductEvidenceTable {
+  aggregationName: string;
   evidenceId: number;
 }
 
@@ -110,7 +120,7 @@ export interface EvidenceContactsTable {
 export type ProductEvidenceUseful = Selectable<ProductEvidenceUsefulTable>;
 
 export interface ProductEvidenceUsefulTable {
-  productId: number;
+  aggregationName: string;
   evidenceId: number;
   userId: number;
   dateMarkedUseful: Date;
@@ -124,6 +134,7 @@ export interface SearchTable {
   model: string;
   productId: number;
   searchDoc: string;
+  manufacturer: string;
 
   // Temp hardcoded properties
   excluded: number;
@@ -133,6 +144,23 @@ export interface SearchTable {
 
   // FTS5 virtual table column for MATCH
   search: string;
+}
+
+export type AggregationSearch = Selectable<AggregationSearchTable>;
+
+export interface AggregationSearchTable {
+  aggregationName: string;
+  aggregationType: null | string;
+  productCount: number;
+  productNames: string[];
+  models: string[];
+  productCodes: string[];
+  manufacturers: string[];
+  countries: string[];
+  gmdnCodes: number[];
+  gmdnNames: string[];
+  types: string[];
+  searchDoc: string;
 }
 
 export type User = Selectable<UserTable>;
@@ -176,4 +204,93 @@ export type Organisations = Selectable<OrganisationsTable>;
 export interface OrganisationsTable {
   organisationId: number;
   organisationName: string;
+}
+
+export type GmdnCategory = Selectable<GmdnCategoryTable>;
+
+export interface GmdnCategoryTable {
+  nodeId: Generated<number>;
+  categoryCode: null | string;
+  name: string;
+  definition: string;
+  parentId: null | number;
+  topId: null | number;
+}
+
+export type GmdnCategoryTerm = Selectable<GmdnCategoryTermTable>;
+
+export interface GmdnCategoryTermTable {
+  categoryCode: string;
+  termCode: number;
+}
+
+export type Gmdn = Selectable<GmdnTable>;
+
+export interface GmdnTable {
+  gmdnCode: number;
+  gmdnTermName: string;
+}
+
+export type DeviceType = Selectable<DeviceTypeTable>;
+
+export interface DeviceTypeTable {
+  deviceId: number;
+  gmdnCode: null | number;
+  deviceRiskSubType: null | string;
+  deviceTypeCode: string;
+  deviceTypeName: string;
+  manufacturerId: number;
+}
+
+export type Product = Selectable<ProductTable>;
+
+export interface ProductTable {
+  productId: number;
+  udiNumber: null | number;
+  deviceId: number;
+  isModel: number;
+  brandTradeName: null | string;
+  model: null | string;
+  productCode: null | string;
+  manufacturerId: number;
+  aggregationName: null | string;
+  aggregationType: null | string;
+}
+
+export type AtamisContract = Selectable<AtamisContractTable>;
+
+export interface AtamisContractTable {
+  contractRef: string;
+  contractName: string;
+  description: string;
+  owner: string;
+  status: string;
+  supplier: string;
+  companyRegestrationNumber: null | string;
+  duns: null | number;
+  contractingAuthority: string;
+  businessUnit: null | string;
+  primaryCategory: string;
+  secondaryCategory: null | string;
+  startDate: Date;
+  endDate: Date;
+  contractFinderUrl: null | string;
+}
+
+export type AtamisToGmdnMapping = Selectable<AtamisToGmdnMappingTable>;
+
+export interface AtamisToGmdnMappingTable {
+  atamisRef: string;
+  gmdnCode: number;
+}
+
+export type Manufacturer = Selectable<ManufacturerTable>;
+
+export interface ManufacturerTable {
+  manufacturerId: number;
+  manOrganisationName: string;
+  manCountry: null | string;
+  manOrganisationType: null | string;
+  // TODO: This is typoed, we need to change it in the external schema
+  companyRegestrationNumber: null | string;
 }

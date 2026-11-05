@@ -1,0 +1,205 @@
+{#
+  All contracts with a supplier, 1 level down from the supplier page
+  (supplier.html), from its "View contracts" link. A new page type
+  (Dylan): at this point people look at all the contracts, not trust by
+  trust, with filter and sort controls by trust and category.
+
+  Layout follows identify-alternatives/mas-plif.html and device-results.html:
+  - Filters in a collapsible section above the table (the details
+    component, "Filter contracts"), so the table gets the full width:
+    small checkboxes with counts (Components/checkboxes.md: search
+    filters) for trust, device and category, side by side. Their own
+    button, so nothing changes until people ask (WCAG 3.2.2). Shown even
+    at 12 contracts, because Dylan asked for them and a supplier's
+    contracts quickly run long.
+  - Sort above the table: a select with its own button, as on
+    device-results.html. Components/select.md says to use select as a last
+    resort in public-facing services; this is a staff service and it
+    follows the existing results page.
+  - A full-width table, 1 row per contract, 1 fact per column: contract,
+    trust, device, category, end date, and a "View" link in a "Details"
+    column (the row shows which contract; contract names are free text, so
+    the name is not the link). An earlier version paired fields in 1 cell
+    to fit beside a filter sidebar; NHS tables keep 1 fact per cell
+    (Components/table.md), and that is plainer for everyone, including
+    screen reader users.
+  - "Device" is the branded device a contract is matched to, where the
+    matching can tell (InsuFlow Pro links to its page). Otherwise "Not
+    known", in secondary text colour, as Components/table.md says for
+    missing data (no empty cells). The Device filter lists matched devices
+    only.
+  - "Category" is the device type (GMDN term) or the broader category the
+    contract matched. Matching is fuzzy, but the page does not explain it
+    (Dylan: no content explaining how the interface works).
+  With many contracts it would paginate, 25 per page.
+
+  The page used to group contracts by category; that grouping is now the
+  category filter. Contracts are as on supplier-trusts.html (now unlinked).
+  Contracts follow the shape of Dylan's Atamis sample export (used as a
+  guide; none of it is about this pump). The 6 that also appear on the
+  device pages link to their contract pages; the other 6 go to "#".
+  FlowLine VP and SyriDrive S2 are invented ArcTech devices; which
+  contracts match a device is invented.
+  Categories above the device type are invented. Whether a contract is for
+  a product or a service is not known and is never stated. Unwired: nothing
+  filters or sorts. Every line of copy is a draft for Jill.
+#}
+
+{% extends "branded-device/_layout.html" %}
+
+{# Light pink background: the supplier pages are a concept design (Dylan) #}
+{% set bodyClasses = "app-concept" %}
+
+{% from "tables/macro.njk" import table %}
+{% from "checkboxes/macro.njk" import checkboxes %}
+{% from "select/macro.njk" import select %}
+{% from "details/macro.njk" import details %}
+
+{% set supplier = "ArcTech Ltd" %}
+{% set deviceType = "Ambulatory insulin infusion pump reservoir" %}
+{% set pageName = "Contracts with " + supplier %}
+{% set mainClasses = "nhsuk-main-wrapper--s" %}
+
+{% set contracts = [
+  { name: "BH - Insulin Pumps and Consumables - ArcTech", href: "/branded-device/contract", trust: "Barts Health NHS Trust", category: deviceType, endDate: "31 March 2027", device: '<a href="/branded-device">InsuFlow Pro</a>' },
+  { name: "CUH - Volumetric Pumps Fleet Replacement", href: "#", trust: "Cambridge University Hospitals NHS Foundation Trust", category: "Volumetric infusion pumps", endDate: "30 April 2029", device: '<a href="#">FlowLine VP</a>' },
+  { name: "CUH - Syringe Drivers (Palliative Care)", href: "#", trust: "Cambridge University Hospitals NHS Foundation Trust", category: "Syringe drivers", endDate: "31 July 2027", device: '<a href="#">SyriDrive S2</a>' },
+  { name: "GSTT - Ambulatory Insulin Pumps (Direct Award)", href: "#", trust: "Guy's and St Thomas' NHS Foundation Trust", category: deviceType, endDate: "30 September 2028", device: '<a href="/branded-device">InsuFlow Pro</a>' },
+  { name: "MFT-Diabetes Technology-ArcTech-2025", href: "/branded-device/contract-mft", trust: "Manchester University NHS Foundation Trust", category: "Insulin infusion devices", endDate: "30 June 2028", device: '<span class="nhsuk-u-secondary-text-colour">Not known</span>' },
+  { name: "NUTH-MEDENG-ArcTech VIP managed service", href: "#", trust: "Newcastle upon Tyne Hospitals NHS Foundation Trust", category: "Volumetric infusion pumps", endDate: "31 March 2028", device: '<a href="#">FlowLine VP</a>' },
+  { name: "NUTH - Syringe Drivers - ArcTech", href: "#", trust: "Newcastle upon Tyne Hospitals NHS Foundation Trust", category: "Syringe drivers", endDate: "28 February 2027", device: '<span class="nhsuk-u-secondary-text-colour">Not known</span>' },
+  { name: "OUH Infusion Devices Framework Call Off (ArcTech)", href: "/branded-device/contract-ouh", trust: "Oxford University Hospitals NHS Foundation Trust", category: "Infusion devices", endDate: "31 October 2026", device: '<span class="nhsuk-u-secondary-text-colour">Not known</span>' },
+  { name: "OUH - Drug Administration Sets - ArcTech", href: "/branded-device/contract-ouh-2", trust: "Oxford University Hospitals NHS Foundation Trust", category: "Drug administration devices", endDate: "31 August 2027", device: '<span class="nhsuk-u-secondary-text-colour">Not known</span>' },
+  { name: "RDUH - Infusion Pumps (Volumetric) - ArcTech", href: "#", trust: "Royal Devon University Healthcare NHS Foundation Trust", category: "Volumetric infusion pumps", endDate: "31 December 2026", device: '<span class="nhsuk-u-secondary-text-colour">Not known</span>' },
+  { name: "STH - Ambulatory Pumps - ArcTech", href: "/branded-device/contract-sth", trust: "Sheffield Teaching Hospitals NHS Foundation Trust", category: deviceType, endDate: "31 January 2027", device: '<span class="nhsuk-u-secondary-text-colour">Not known</span>' },
+  { name: "UHL - Drug Administration Consumables - ArcTech", href: "/branded-device/contract-uhl", trust: "University Hospitals of Leicester NHS Trust", category: "Drug administration devices", endDate: "31 May 2027", device: '<span class="nhsuk-u-secondary-text-colour">Not known</span>' }
+] %}
+
+{% set filters = [
+  { name: "trust", legend: "Trust", items: [
+    { value: "barts", text: "Barts Health NHS Trust", count: "1" },
+    { value: "cuh", text: "Cambridge University Hospitals NHS Foundation Trust", count: "2" },
+    { value: "gstt", text: "Guy's and St Thomas' NHS Foundation Trust", count: "1" },
+    { value: "mft", text: "Manchester University NHS Foundation Trust", count: "1" },
+    { value: "nuth", text: "Newcastle upon Tyne Hospitals NHS Foundation Trust", count: "2" },
+    { value: "ouh", text: "Oxford University Hospitals NHS Foundation Trust", count: "2" },
+    { value: "rduh", text: "Royal Devon University Healthcare NHS Foundation Trust", count: "1" },
+    { value: "sth", text: "Sheffield Teaching Hospitals NHS Foundation Trust", count: "1" },
+    { value: "uhl", text: "University Hospitals of Leicester NHS Trust", count: "1" }
+  ] },
+  { name: "device", legend: "Device", items: [
+    { value: "flowline-vp", text: "FlowLine VP", count: "2" },
+    { value: "insuflow-pro", text: "InsuFlow Pro", count: "2" },
+    { value: "syridrive-s2", text: "SyriDrive S2", count: "1" }
+  ] },
+  { name: "category", legend: "Category", items: [
+    { value: "aiipr", text: deviceType, count: "3" },
+    { value: "drug-admin", text: "Drug administration devices", count: "2" },
+    { value: "infusion", text: "Infusion devices", count: "1" },
+    { value: "insulin", text: "Insulin infusion devices", count: "1" },
+    { value: "syringe", text: "Syringe drivers", count: "2" },
+    { value: "volumetric", text: "Volumetric infusion pumps", count: "3" }
+  ] }
+] %}
+
+{% block beforeContent %}
+
+{{ breadcrumb({
+  items: [
+    { href: "/identify-alternatives/search-and-browse", text: "Search and browse" },
+    { href: "/branded-device/supplier", text: supplier }
+  ]
+}) }}
+
+{% endblock %}
+
+{% block content %}
+
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+    <h1 class="nhsuk-heading-l nhsuk-u-margin-bottom-4">
+      <span class="nhsuk-caption-l">{{ supplier }}</span>
+      Contracts
+    </h1>
+  </div>
+</div>
+
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-full">
+
+    <h2 class="nhsuk-heading-m nhsuk-u-margin-top-4 nhsuk-u-margin-bottom-2" id="contracts-heading">{{ contracts | length }} contracts</h2>
+
+    {% call details({ summaryText: "Filter contracts" }) %}
+      <form method="get" novalidate>
+        <div class="nhsuk-grid-row">
+          {% for group in filters %}
+            {% set items = [] %}
+            {% for item in group.items %}
+              {% set _ = items.push({ value: item.value, text: item.text + " (" + item.count + ")" }) %}
+            {% endfor %}
+            <div class="nhsuk-grid-column-one-third">
+              {{ checkboxes({
+                name: group.name,
+                idPrefix: group.name,
+                fieldset: { legend: { text: group.legend, classes: "nhsuk-fieldset__legend--s" } },
+                items: items,
+                classes: "nhsuk-checkboxes--small"
+              }) }}
+            </div>
+          {% endfor %}
+        </div>
+        <button class="nhsuk-button nhsuk-button--secondary app-button--small nhsuk-u-margin-bottom-0" data-module="nhsuk-button" type="submit">
+          Update results
+        </button>
+      </form>
+    {% endcall %}
+
+    <form method="get" novalidate>
+      {{ select({
+        id: "sort",
+        name: "sort",
+        label: { text: "Sort by" },
+        items: [
+          { value: "trust", text: "Trust (A to Z)", selected: true },
+          { value: "device", text: "Device (A to Z)" },
+          { value: "category", text: "Category (A to Z)" },
+          { value: "end-date", text: "End date (soonest first)" }
+        ],
+        formGroup: { classes: "nhsuk-u-margin-bottom-2" }
+      }) }}
+      <button class="nhsuk-button nhsuk-button--secondary app-button--small" data-module="nhsuk-button" type="submit">
+        Sort
+      </button>
+    </form>
+
+    {% set rows = [] %}
+    {% for c in contracts %}
+      {% set rows = (rows.push([
+        { header: "Contract", text: c.name },
+        { header: "Trust", text: c.trust },
+        { header: "Device", html: c.device },
+        { header: "Category", text: c.category },
+        { header: "End date", text: c.endDate },
+        { header: "Details", html: '<a href="' + c.href + '">View</a>' }
+      ]), rows) %}
+    {% endfor %}
+
+    {{ table({
+      attributes: { "aria-labelledby": "contracts-heading" },
+      responsive: true,
+      firstCellIsHeader: true,
+      head: [
+        { text: "Contract" },
+        { text: "Trust" },
+        { text: "Device" },
+        { text: "Category" },
+        { text: "End date" },
+        { text: "Details" }
+      ],
+      rows: rows
+    }) }}
+
+  </div>
+</div>
+
+{% endblock %}

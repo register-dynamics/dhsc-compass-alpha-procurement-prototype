@@ -1,13 +1,11 @@
 import { Router } from "express";
 
 import {
-  postAddEvidence,
-  postAddEvidenceContactSelf,
   postMarkUseful,
   postUnmarkUseful,
-  renderAddEvidence,
-  renderAddEvidenceContactSelf,
   renderProduct,
+  renderProductRelatedTrusts,
+  renderProductTrusts,
 } from "../controllers/product.controller.js";
 import { registerRoutes, type RouteDefinition } from "./route-definitions.js";
 
@@ -17,7 +15,7 @@ const routeDefinitions: RouteDefinition[] = [
   {
     handler: renderProduct,
     method: "get",
-    path: "/product/:id",
+    path: "/product/:aggregationName",
   },
   {
     handler: postMarkUseful,
@@ -29,45 +27,35 @@ const routeDefinitions: RouteDefinition[] = [
     method: "post",
     path: "/product/unmark-useful",
   },
-  {
-    handler: renderAddEvidence,
-    method: "get",
-    path: "/product/:productId/add-evidence",
-  },
-  {
-    handler: postAddEvidence,
-    method: "post",
-    path: "/product/:productId/add-evidence",
-  },
   // {
-  //   handler: renderAddEvidenceContactExperience,
+  //   handler: renderAddEvidence,
   //   method: "get",
-  //   path: "/product/:productId/evidence/:evidenceId/add-contact-experience",
+  //   path: "/product/:productId/add-evidence",
   // },
   // {
-  //   handler: renderAddEvidenceContactAcquisition,
-  //   method: "get",
-  //   path: "/product/:productId/evidence/:evidenceId/add-contact-acquisition",
-  // },
-  // {
-  //   handler: renderAddEvidenceContactDocument,
-  //   method: "get",
-  //   path: "/product/:productId/evidence/:evidenceId/add-contact-document",
-  // },
-  // {
-  //   handler: postAddEvidenceContactDone,
+  //   handler: postAddEvidence,
   //   method: "post",
-  //   path: "/product/:productId/evidence/:evidenceId/add-contact-done",
+  //   path: "/product/:productId/add-evidence",
+  // },
+  // {
+  //   handler: renderAddEvidenceContactSelf,
+  //   method: "get",
+  //   path: "/product/:productId/evidence/add-evidence-contact-self",
+  // },
+  // {
+  //   handler: postAddEvidenceContactSelf,
+  //   method: "post",
+  //   path: "/product/:productId/evidence/add-evidence-contact-self",
   // },
   {
-    handler: renderAddEvidenceContactSelf,
+    handler: renderProductTrusts,
     method: "get",
-    path: "/product/:productId/evidence/add-evidence-contact-self",
+    path: "/product/:aggregationName/trusts",
   },
   {
-    handler: postAddEvidenceContactSelf,
-    method: "post",
-    path: "/product/:productId/evidence/add-evidence-contact-self",
+    handler: renderProductRelatedTrusts,
+    method: "get",
+    path: "/product/:productId/related-trusts",
   },
 ];
 

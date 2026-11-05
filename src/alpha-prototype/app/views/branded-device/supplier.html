@@ -1,0 +1,100 @@
+{#
+  Supplier page, reached from the supplier name on the branded device page.
+
+  A broader need than any one device (Dylan): check out a supplier, see the
+  contracts they have going, which trusts they work with, and roughly which
+  device types those contracts map to. Backed by the trial map
+  ("supplier's support and resilience", "review suppliers' feedback" at
+  shortlisting). Contracts are the evidence; there is no rating, since we
+  do not aggregate trust feedback.
+
+  A hub, like the branded device page: supplier facts at the top, then 2
+  ways down, each a card with counts (Dylan):
+  - Devices: goes to a supplier-filtered list of device types (GMDN
+    terms), the category page type from identify-alternatives
+    (supplier-devices.html). Hard data from the catalogue.
+  - Contracts: goes to all of this supplier's contracts, with filter and
+    sort controls by trust and category (supplier-contracts.html). At this
+    point people look at all the contracts, not trust by trust (Dylan); the
+    trust-by-trust page (supplier-trusts.html) is kept unlinked.
+  The 2 cards sit side by side, for density (Dylan). Each card's title is
+  its link, so the link text is visible and complete (no hidden text). The
+  supporting counts are a short list, not a summary list: summary list keys
+  are 30% wide and break mid-word in a narrow card ("Contrac-ts"). They are
+  noun phrases, like the count in the card title, not sentences.
+  Supplier details are from Dylan's supplier info list; values copied from
+  current/product-page?make=74589621 (dummy data: the email and website do
+  not match the company name, as in the database). There is no rating,
+  since we do not aggregate trust feedback; the contracts are the evidence.
+
+  Static mockup. Links to pages below go to "#". The database has 1 ArcTech
+  device; the other 3 devices, the 3 trusts and 5 contracts beyond the ones
+  on the device pages, and all categories above the device type are
+  invented. Every line of copy is a draft for Jill.
+#}
+
+{% extends "branded-device/_layout.html" %}
+
+{# Light pink background: the supplier pages are a concept design (Dylan) #}
+{% set bodyClasses = "app-concept" %}
+
+{% from "summary-list/macro.njk" import summaryList %}
+{% from "card/macro.njk" import card %}
+
+{% set supplier = "ArcTech Ltd" %}
+{% set pageName = supplier %}
+{% set mainClasses = "nhsuk-main-wrapper--s" %}
+
+{% block beforeContent %}
+
+{{ breadcrumb({
+  items: [
+    { href: "/identify-alternatives/search-and-browse", text: "Search and browse" }
+  ]
+}) }}
+
+{% endblock %}
+
+{% block content %}
+
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+
+    <h1 class="nhsuk-heading-l nhsuk-u-margin-bottom-4">
+      <span class="nhsuk-caption-l">Supplier</span>
+      {{ supplier }}
+    </h1>
+
+    {{ summaryList({
+      rows: [
+        { key: { text: "Website" }, value: { html: '<a href="#">www.medtechinnovations.co.uk</a>' } },
+        { key: { text: "Email" }, value: { text: "sales@medtechinnovations.co.uk" } },
+        { key: { text: "Phone" }, value: { text: "0800 123 4567" } }
+      ]
+    }) }}
+
+  </div>
+</div>
+
+<ul class="nhsuk-grid-row nhsuk-card-group nhsuk-u-margin-top-4">
+  <li class="nhsuk-grid-column-one-half nhsuk-card-group__item">
+    {% call card({
+      heading: "4 devices in the catalogue",
+      href: "/branded-device/supplier-devices",
+      headingClasses: "nhsuk-heading-m"
+    }) %}
+      <ul class="nhsuk-list nhsuk-u-margin-bottom-0"><li>3 device types</li></ul>
+    {% endcall %}
+  </li>
+  <li class="nhsuk-grid-column-one-half nhsuk-card-group__item">
+    {% call card({
+      heading: "12 contracts",
+      href: "/branded-device/supplier-contracts",
+      headingClasses: "nhsuk-heading-m"
+    }) %}
+      <ul class="nhsuk-list nhsuk-u-margin-bottom-0"><li>9 trusts</li><li>6 categories</li></ul>
+    {% endcall %}
+  </li>
+</ul>
+
+{% endblock %}

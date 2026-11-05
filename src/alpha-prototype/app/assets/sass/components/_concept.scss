@@ -1,0 +1,12 @@
+// Concept background
+//
+// A light pink page background marks pages as concept designs, not the
+// live service, so nobody mistakes a sketch for agreed design. It is a
+// tint of the NHS palette's pink, so it stays on the palette's colours.
+// Prototype-only: the service itself keeps the grey-5 page background.
+//
+// Add the class with `{% set bodyClasses = "app-concept" %}` in a layout.
+.app-concept,
+.nhsuk-template:has(.app-concept) {
+  background-color: nhsuk-tint(nhsuk-colour("pink"), 85%);
+}

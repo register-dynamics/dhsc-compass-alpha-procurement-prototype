@@ -1,0 +1,91 @@
+{#
+  Sketch 1b (cards): Tissue reparation devices.
+
+  A variation on tissue-reparation-devices, in the language of
+  search-and-browse: one clickable primary card per group instead of a group
+  heading over a list of links. Each card carries a scent trail: how many
+  device types the group holds, and its biggest subcategories as examples.
+  Built to compare against the list version.
+
+  Cards follow the hub page shape that Components/card.md points to for
+  grouped cards, one link per card. Card headings are h2, since they sit
+  directly under the h1. Three columns, for B2B density.
+
+  ── Content ─────────────────────────────────────────────────────────────
+
+  Group names are ours, not GMDN's, as on the list version, and need a
+  clinical check. Examples are GMDN subcategory names, lower-cased in running
+  text as on search-and-browse, and ordered by size, so the trail names what
+  most of the group holds. Counts are the list version's invented ones,
+  summed per group.
+
+  "Like X, Y or Z" matches the search-and-browse card lines. Draft for Jill.
+
+  ── Open question ───────────────────────────────────────────────────────
+
+  A group is not a GMDN level, so there is no page for a card to open yet.
+  It would need one listing that group's subcategories. For now Bone and
+  joint fixation goes straight to Bone/Joint fixation implants so the journey
+  continues, and the other cards go to "#".
+#}
+
+{% extends "identify-alternatives/_layout.html" %}
+
+{% set pageName = "Tissue reparation devices" %}
+
+{% set mainClasses = "nhsuk-main-wrapper--s" %}
+
+{% set groups = [
+  { heading: "Grafts, meshes and soft-tissue repair", href: "#", count: "291",
+    examples: "grafting/prosthetic implants, soft-tissue reconstructive materials or surgical meshes" },
+  { heading: "Bone and joint fixation", href: "/identify-alternatives/bone-joint-fixation-implants", count: "281",
+    examples: "bone/joint fixation implants, external spinal/orthopaedic fixation systems or implantable orthopaedic distractors" },
+  { heading: "Blood vessels", href: "#", count: "159",
+    examples: "stents, embolization implants or vascular closure/compression devices" },
+  { heading: "Dental, head and neck", href: "#", count: "160",
+    examples: "dental reparative/restorative devices, tracheoesophageal speech valves or vocal cord medialization implants" },
+  { heading: "Wound closure and dressings", href: "#", count: "485",
+    examples: "tissue dressing/stabilization devices, sutures or staples" }
+] %}
+
+{% block beforeContent %}
+
+{{ breadcrumb({
+  items: [
+    { href: "/identify-alternatives/search-and-browse", text: "Search and browse" },
+    { href: "/identify-alternatives/device-function", text: "Device function" }
+  ]
+}) }}
+
+{% endblock %}
+
+{% block content %}
+
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+    <h1 class="nhsuk-heading-l nhsuk-u-margin-bottom-2">
+      <span class="nhsuk-caption-l">Device function</span>
+      {{ pageName }}
+    </h1>
+    {# Says where the list comes from, per the team convention. Draft for Jill. #}
+    <p>GMDN subcategories, grouped by what the devices do.</p>
+  </div>
+</div>
+
+<ul class="nhsuk-grid-row nhsuk-card-group">
+  {% for group in groups %}
+  <li class="nhsuk-grid-column-one-third nhsuk-card-group__item">
+    {{ card({
+      primary: true,
+      clickable: true,
+      href: group.href,
+      heading: group.heading,
+      headingLevel: "2",
+      headingClasses: "nhsuk-heading-m",
+      description: group.count + " device types, like " + group.examples
+    }) }}
+  </li>
+  {% endfor %}
+</ul>
+
+{% endblock %}
