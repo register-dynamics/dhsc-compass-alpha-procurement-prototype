@@ -3,19 +3,14 @@ import { sql } from "kysely";
 
 import config from "../config.js";
 import { db } from "../database/client.js";
-import { DeviceType } from "../database/types.js";
 import {
   getCategoriesWithParentId,
   getCategoryById,
-  getCategoryCodeById,
-  getDeviceTypeById,
-  getDeviceTypesByGmdnCode,
-  getGmdnTermNameByTermCode,
+  getGmdnTermsForCategoryCode,
   getHierarchyForCategory,
-  getTermCodeByCategoryCode,
+  getSupplierCountsForCategoryCodes,
   getTopLevelCategories,
 } from "../services/gmdnCategoryService.js";
-import { getProductsByDeviceId } from "../services/productsService.js";
 
 export const renderSearch = (req: Request, res: Response) => {
   res.render("search");
@@ -167,63 +162,45 @@ export const renderCategory = async (
 
   const category = await getCategoryById(Number(categoryId));
 
-  const subcategories = await getCategoriesWithParentId(Number(categoryId));
+  const subcategoryRows = await getCategoriesWithParentId(Number(categoryId));
+
+  const supplierCounts = await getSupplierCountsForCategoryCodes(
+    subcategoryRows.flatMap((subcategory) => subcategory.categoryCode ?? []),
+  );
+
+  const subcategories = subcategoryRows.map((subcategory) => ({
+    ...subcategory,
+    supplierCount: subcategory.categoryCode
+      ? (supplierCounts.get(subcategory.categoryCode) ?? 0)
+      : 0,
+  }));
 
   const hierarchyLevel = categoryHierarchy.length;
 
   const payload: {
     category: typeof category;
     categoryHierarchy: typeof categoryHierarchy;
-    deviceTypes: DeviceType[];
-    gmdnTermName: string;
+    deviceTypes: Awaited<ReturnType<typeof getGmdnTermsForCategoryCode>>;
     hierarchyLevel: number;
     subcategories: typeof subcategories;
   } = {
     category,
     categoryHierarchy,
     deviceTypes: [],
-    gmdnTermName: "",
     hierarchyLevel,
     subcategories,
   };
 
-  // Check if we're at the bottom of the hierarchy (no subcategories)
+  // At the bottom of the hierarchy, list the GMDN terms (device types) in this category
   if (subcategories.length === 0) {
-    // If there are no subcategories, we want to fetch the products or items associated with this category
-    const categoryCode = await getCategoryCodeById(Number(categoryId));
-
-    if (!categoryCode) {
+    if (!category.categoryCode) {
       throw new Error(`Category code not found for category ID ${categoryId}`);
     }
 
-    const termCode = await getTermCodeByCategoryCode(categoryCode);
-
-    const gmdnTermName = await getGmdnTermNameByTermCode(termCode);
-    const deviceTypes = await getDeviceTypesByGmdnCode(termCode);
-
-    payload.deviceTypes = deviceTypes;
-    payload.gmdnTermName = gmdnTermName;
+    payload.deviceTypes = await getGmdnTermsForCategoryCode(
+      category.categoryCode,
+    );
   }
 
   res.render("category.html", payload);
-};
-
-export const renderDeviceType = async (
-  req: Request<{ category: number; deviceTypeId: string }>,
-  res: Response,
-) => {
-  const { deviceTypeId } = req.params;
-  const category = Number(req.query.category);
-
-  const deviceType = await getDeviceTypeById(Number(deviceTypeId));
-
-  const products = await getProductsByDeviceId(Number(deviceTypeId));
-
-  if (products.length === 0) {
-    throw new Error(`No products found for device type ID ${deviceTypeId}`);
-  }
-
-  const categoryHierarchy = await getHierarchyForCategory(category);
-
-  res.render("device-type.html", { categoryHierarchy, deviceType, products });
 };
