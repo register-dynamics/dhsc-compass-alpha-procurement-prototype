@@ -2,47 +2,186 @@ name: Beta container build
 on:
   push:
     tags:
-     - "*"
-  pull_request:
-    paths:
-      - 'src/beta-app/**'
-env:
-   REGISTRY: ghcr.io
-   IMAGE_NAME: ${{ github.repository }}
+      - "*"
 permissions:
-   contents: read
-   id-token: write
-   attestations: write
-   packages: write
-   artifact-metadata: write
+  contents: read
+  id-token: write
+  attestations: write
+  packages: write
+  artifact-metadata: write
 jobs:
-   build:
-      runs-on: ubuntu-latest
-      steps:
-         - name: Checkout code
-           uses: actions/checkout@v7
-         - name: Login to registry
-           uses: docker/login-action@v4
-           with:
-            registry: ${{ env.REGISTRY }}
-            username: ${{ github.actor }}
-            password: ${{ secrets.GITHUB_TOKEN }}
-         - name: Prepare docker metadata
-           id: meta
-           uses: docker/metadata-action@v6
-           with:
-               images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-         - name: Build and push image
-           id: push
-           uses: docker/build-push-action@v7
-           with:
-            context: src/beta-app
-            push: true
-            tags: ${{ steps.meta.outputs.tags }}
-            labels: ${{ steps.meta.outputs.labels }}
-         - name: Attest artifact
-           uses: actions/attest@v4
-           with:
-            subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME}}
-            subject-digest: ${{ steps.push.outputs.digest }}
-            push-to-registry: true
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+      - name: Setup Carvel ytt
+        uses: carvel-dev/setup-action@v2
+        with:
+          token: ${ github.token }}
+          only: ytt
+      - name: Set up environment variables
+        shell: bash
+        run: |
+          set -euo pipefail
+          ENV=dev # FIXME make this depend on the tag name
+          IMAGE_PATH=compass:${{ github.sha }}
+          echo "ENV=${ENV}" >> "$GITHUB_ENV"
+          echo "IMAGE_PATH=${IMAGE_PATH}" >> "$GITHUB_ENV"
+          echo "FULL_IMAGE=${{ vars.AZURE_CONTAINER_REGISTRY}}.azurecr.io/${IMAGE_PATH}" >> "$GITHUB_ENV"
+          echo "REVISION_SUFFIX=${{ github.run_number }}-${{ github.run_attemp }}" >> "$GITHUB_ENV"
+          echo "APP_NAME=${{ github.ref_name }}" >> "$GITHUB_ENV"
+      - name: Obtain database access token
+        shell: bash
+        run: |
+          set -euo pipefail
+          PG_TOKEN=`az account get-access-token --resource-type oss-rdbms | jq .accessToken`
+          echo "DATABASE_NAME=${APP_NAME}"
+          echo "DATABASE_HOST=${{ vars.AZURE_DATABASE_HOST }}"
+          echo "DATABASE_USER=${{ vars.AZURE_DATABASE_USER }}"
+          echo "DATABASE_PASSWORD=${PG_TOKEN}" >> "$GITHUB_ENV"
+      - name: Instantiate container YAML
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "deploy/rendered"
+          ytt \
+            -f "deploy/template/yaml"
+            --data-value acr_login_server="${{ vars.AZURE_CONTAINER_REGISTRY }}.azurecr.io" \
+            --data-value image="${FULL_IMAGE}" \
+            --data-value revision_suffix="${REVISION_SUFFIX}" \
+            > "deploy/rendered.yaml"
+          echo "YAML=deploy/rendered.yaml" >> "$GITHUB_ENV"
+      - name: Validate YAML
+        shell: bash
+        run: |
+          set -euo pipefail
+          if grep -Eq 'YOUR_|__SET_|<replace-me>' "$YAML"; then
+            echo "Rendered YAML still contains placeholder values."
+            exit 1
+          fi
+      - name: Extract bootstrap config from rendered YAML
+        id: rendered_bootstrap
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          extract_scalar() {
+            local key="$1"
+            awk -F': ' -v key="$key" '
+              $1 ~ ("^[[:space:]]*" key "$") {
+                value = $2
+                sub(/^[[:space:]]+/, "", value)
+                gsub(/^"|"$/, "", value)
+                print value
+                exit
+              }
+            ' "$YAML"
+          }
+
+          managed_environment_id="$(extract_scalar managedEnvironmentId)"
+          workload_profile_name="$(extract_scalar workloadProfileName)"
+          managed_identity_resource_id="$(sed -n '/^[[:space:]]*userAssignedIdentities:[[:space:]]*$/{
+            n
+            s/^[[:space:]]*//
+            s/^\?[[:space:]]*//
+            s/:[[:space:]]*{}$//
+            p
+            q
+          }' "$rendered_yaml")"
+
+          if [ -z "${managed_environment_id}" ] || [ -z "${workload_profile_name}" ] || [ -z "${managed_identity_resource_id}" ]; then
+            echo "Unable to extract bootstrap settings from ${rendered_yaml}"
+            exit 1
+          fi
+
+          {
+            echo "managed_environment_id=${managed_environment_id}"
+            echo "workload_profile_name=${workload_profile_name}"
+            echo "managed_identity_resource_id=${managed_identity_resource_id}"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_RTL_SUBSCRIPTION_ID }}
+
+      - name: Build image in ACR
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          az acr build \
+            --subscription "${{ vars.AZURE_RTL_SUBSCRIPTION_ID }}" \
+            --registry "${{ vars.AZURE_CONTAINER_REGISTRY }}" \
+            --source-acr-auth-id '[caller]' \
+            --image "${IMAGE_PATH}" \
+            --file "./src/beta-app/Dockerfile" \
+            ./src/beta-app \
+
+      - name: Check whether Container App exists
+        id: app_exists
+        shell: bash
+        run: |
+          set -euo pipefail
+          if az containerapp show \
+            --name "${APP_NAME}" \
+            --resource-group "${{ vars.AZURE_RESOURCE_GROUP }}" \
+            --subscription "${{ vars.AZURE_RTL_SUBSCRIPTION_ID }}" > /dev/null 2>&1; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Bootstrap Container App with public image
+        if: ${{ steps.app_exists.outputs.exists == 'false' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          az containerapp create \
+            --name "${APP_NAME}" \
+            --resource-group "${{ vars.AZURE_RESOURCE_GROUP }}" \
+            --subscription "${{ vars.AZURE_RTL_SUBSCRIPTION_ID }}" \
+            --environment "${{ steps.rendered_bootstrap.outputs.managed_environment_id }}" \
+            --user-assigned "${{ steps.rendered_bootstrap.outputs.managed_identity_resource_id }}" \
+            --workload-profile-name "${{ steps.rendered_bootstrap.outputs.workload_profile_name }}" \
+            --image "mcr.microsoft.com/k8se/quickstart:latest" \
+            --output none
+
+      - name: Configure Container App registry auth
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          az containerapp registry set \
+            --name "${APP_NAME}" \
+            --resource-group "${{ vars.AZURE_RESOURCE_GROUP }}" \
+            --subscription "${{ vars.AZURE_RTL_SUBSCRIPTION_ID }}" \
+            --server "${{ vars.AZURE_CONTAINER_REGISTRY }}.azurecr.io" \
+            --identity "${{ steps.rendered_bootstrap.outputs.managed_identity_resource_id }}" \
+            --output none
+
+      - name: Update Container App via dac-shared action
+        uses: dhsc-govuk-infrastructure/dac-shared/.github/actions/containerapp-update-from-yaml@main
+        with:
+          app_name: ${{ env.APP_NAME }}
+          azure_resource_group: ${{ vars.AZURE_RESOURCE_GROUP }}
+          container_app_yaml_path: ${{ env.YAML }}
+          image_to_deploy: ${{ env.FULL_IMAGE }}
+          azure_client_id: ${{ vars.AZURE_CLIENT_ID }}
+          azure_tenant_id: ${{ vars.AZURE_TENANT_ID }}
+          azure_subscription_id: ${{ vars.AZURE_RTL_SUBSCRIPTION_ID }}
+
+      - name: Add deployment summary
+        shell: bash
+        run: |
+          fqdn="$(az containerapp show --name "${APP_NAME}" --resource-group "${{ vars.AZURE_RESOURCE_GROUP }}" --subscription "${{ vars.AZURE_RTL_SUBSCRIPTION_ID }}" --query "properties.configuration.ingress.fqdn" -o tsv)"
+          {
+            echo "### ${APP_NAME} deployment"
+            echo
+            echo "- image: ${FULL_IMAGE}"
+            echo "- url: https://${fqdn}"
+          } >> "$GITHUB_STEP_SUMMARY"
