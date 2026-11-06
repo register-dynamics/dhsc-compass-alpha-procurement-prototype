@@ -44,4 +44,43 @@ describe("Search controller", () => {
     expect(response.status).toBe(200);
     expect(response.text).toContain("Search results");
   });
+
+  it("GET /category/:categoryId should list subcategories alongside every device type beneath the category", async () => {
+    const response = await request(app)
+      .get("/category/9986")
+      .set("Cookie", cookies);
+
+    expect(response.status).toBe(200);
+    expect(response.text).toContain("2 device types in");
+    expect(response.text).toContain('href="/category/9990"');
+    expect(response.text).toContain("Heart rate monitor");
+  });
+
+  it("GET /category/:categoryId should include device types that only descendants are mapped to", async () => {
+    const response = await request(app)
+      .get("/category/1481")
+      .set("Cookie", cookies);
+
+    expect(response.status).toBe(200);
+    expect(response.text).toContain("2 device types in");
+  });
+
+  it("GET /category/:categoryId should list device types without a sidebar at the end of a branch", async () => {
+    const response = await request(app)
+      .get("/category/9990")
+      .set("Cookie", cookies);
+
+    expect(response.status).toBe(200);
+    expect(response.text).toContain("Heart rate monitor");
+    expect(response.text).not.toContain("app-side-nav");
+  });
+
+  it("GET /category/:categoryId should not link to itself in the breadcrumbs", async () => {
+    const response = await request(app)
+      .get("/category/9990")
+      .set("Cookie", cookies);
+
+    expect(response.text).toContain('href="/category/9986"');
+    expect(response.text).not.toContain('href="/category/9990"');
+  });
 });

@@ -1,3 +1,5 @@
+import { sql } from "kysely";
+
 import { db } from "../database/client.js";
 
 const categoryAllowList = ["Anatomical Specialty", "Device Function"];
@@ -80,41 +82,72 @@ export const getTermCodeByCategoryCode = async (categoryCode: string) => {
   return result.termCode;
 };
 
-// Category codes map to every GMDN term beneath them in the hierarchy, not
-// just their own, so this counts suppliers across the whole subtree.
-export const getSupplierCountsForCategoryCodes = async (
-  categoryCodes: string[],
-): Promise<Map<string, number>> => {
-  if (categoryCodes.length === 0) {
+// Pairs each root category with itself and every category beneath it. Walks by
+// nodeId because a category code can appear at several places in the tree, and
+// a category's own terms don't reliably include those of its descendants.
+const withCategorySubtrees = (rootIds: number[]) =>
+  db.withSchema("external").withRecursive("subtree", (qb) =>
+    qb
+      .selectFrom("gmdn_category")
+      .where("nodeId", "in", rootIds)
+      .select([
+        "nodeId as rootId",
+        "nodeId",
+        "categoryCode",
+        sql<number>`1`.as("depth"),
+      ])
+      .unionAll(
+        qb
+          .selectFrom("gmdn_category as child")
+          .innerJoin("subtree", "subtree.nodeId", "child.parentId")
+          .select([
+            "subtree.rootId",
+            "child.nodeId",
+            "child.categoryCode",
+            sql<number>`subtree.depth + 1`.as("depth"),
+          ]),
+      ),
+  );
+
+// The number of distinct GMDN terms at or beneath each category. Matches the
+// length of the list from getGmdnTermsBeneathCategory.
+export const getDeviceTypeCountsForCategories = async (
+  categoryIds: number[],
+): Promise<Map<number, number>> => {
+  if (categoryIds.length === 0) {
     return new Map();
   }
 
-  const rows = await db
-    .withSchema("external")
-    .selectFrom("gmdn_category_term as ct")
-    .innerJoin("device_type as dt", "dt.gmdnCode", "ct.termCode")
-    .where("ct.categoryCode", "in", categoryCodes)
-    .select((eb) => [
+  const rows = await withCategorySubtrees(categoryIds)
+    .selectFrom("subtree")
+    .innerJoin(
+      "gmdn_category_term as ct",
       "ct.categoryCode",
-      eb.fn.count<string>("dt.manufacturerId").distinct().as("supplierCount"),
+      "subtree.categoryCode",
+    )
+    .innerJoin("gmdn as g", "g.gmdnCode", "ct.termCode")
+    .select((eb) => [
+      "subtree.rootId",
+      eb.fn.count<string>("g.gmdnCode").distinct().as("deviceTypeCount"),
     ])
-    .groupBy("ct.categoryCode")
+    .groupBy("subtree.rootId")
     .execute();
 
-  return new Map(
-    rows.map((row) => [row.categoryCode, Number(row.supplierCount)]),
-  );
+  return new Map(rows.map((row) => [row.rootId, Number(row.deviceTypeCount)]));
 };
 
-// A leaf category can map to several GMDN terms. These are what the
-// /device-type/:deviceTypeId pages are keyed on.
-export const getGmdnTermsForCategoryCode = async (categoryCode: string) => {
-  const rows = await db
-    .withSchema("external")
-    .selectFrom("gmdn_category_term as ct")
+// Every GMDN term at or beneath a category. These are what the
+// /category/:categoryId/device-type/:deviceTypeId pages are keyed on.
+export const getGmdnTermsBeneathCategory = async (categoryId: number) => {
+  const rows = await withCategorySubtrees([categoryId])
+    .selectFrom("subtree")
+    .innerJoin(
+      "gmdn_category_term as ct",
+      "ct.categoryCode",
+      "subtree.categoryCode",
+    )
     .innerJoin("gmdn as g", "g.gmdnCode", "ct.termCode")
     .leftJoin("device_type as dt", "dt.gmdnCode", "g.gmdnCode")
-    .where("ct.categoryCode", "=", categoryCode)
     .select((eb) => [
       "g.gmdnCode",
       "g.gmdnTermName",
@@ -128,17 +161,6 @@ export const getGmdnTermsForCategoryCode = async (categoryCode: string) => {
     ...row,
     supplierCount: Number(row.supplierCount),
   }));
-};
-
-export const getGmdnTermNameByTermCode = async (termCode: number) => {
-  const result = await db
-    .withSchema("external")
-    .selectFrom("gmdn")
-    .where("gmdnCode", "=", termCode)
-    .select("gmdnTermName")
-    .executeTakeFirstOrThrow();
-
-  return result.gmdnTermName;
 };
 
 export const getDeviceTypesByGmdnCode = async (gmdnCode: number) => {
@@ -169,4 +191,46 @@ export const getGmdnTermForDeviceId = async (deviceTypeId: number) => {
     .executeTakeFirstOrThrow();
 
   return result.gmdnTermName;
+};
+
+// A device's GMDN term sits in many categories, so a page without a browsing
+// path of its own needs one picked for it. This is the most specific category,
+// preferring the Device Function tree, and is the same each time.
+export const getBrowsePathForDevice = async (deviceId: number) => {
+  const device = await db
+    .withSchema("external")
+    .selectFrom("device_type")
+    .where("deviceId", "=", deviceId)
+    .select("gmdnCode")
+    .executeTakeFirst();
+
+  if (!device) {
+    return undefined;
+  }
+
+  const topLevelCategories = await getTopLevelCategories();
+
+  const categories = await withCategorySubtrees(
+    topLevelCategories.map(({ nodeId }) => nodeId),
+  )
+    .selectFrom("subtree")
+    .innerJoin(
+      "gmdn_category_term as ct",
+      "ct.categoryCode",
+      "subtree.categoryCode",
+    )
+    .where("ct.termCode", "=", device.gmdnCode)
+    .select(["subtree.nodeId", "subtree.rootId"])
+    .orderBy("subtree.depth", "desc")
+    .orderBy("subtree.nodeId", "asc")
+    .execute();
+
+  const deviceFunctionId = topLevelCategories.find(
+    ({ name }) => name === "Device Function",
+  )?.nodeId;
+  const category =
+    categories.find(({ rootId }) => rootId === deviceFunctionId) ??
+    categories.at(0);
+
+  return category && { categoryId: category.nodeId, gmdnCode: device.gmdnCode };
 };

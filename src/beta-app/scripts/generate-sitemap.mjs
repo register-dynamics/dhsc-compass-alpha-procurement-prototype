@@ -18,9 +18,27 @@ const routesNeedingParams = [
     with: "/category/4941",
   },
   {
-    path: "/device-type/:deviceTypeId",
-    replace: "/device-type/:deviceTypeId",
-    with: "/device-type/5362?category=10027",
+    path: "/category/:categoryId/device-type/:deviceTypeId",
+    replace: "/category/:categoryId/device-type/:deviceTypeId",
+    with: "/category/10027/device-type/14035",
+  },
+  {
+    path: "/category/:categoryId/device-type/:deviceTypeId/supplier/:supplierId",
+    replace:
+      "/category/:categoryId/device-type/:deviceTypeId/supplier/:supplierId",
+    with: "/category/10027/device-type/14035/supplier/65283",
+  },
+  {
+    path: "/category/:categoryId/device-type/:deviceTypeId/supplier/:supplierId/product/:aggregationName",
+    replace:
+      "/category/:categoryId/device-type/:deviceTypeId/supplier/:supplierId/product/:aggregationName",
+    with: "/category/10027/device-type/14035/supplier/65283/product/Thermometer%20tympanic%20device",
+  },
+  {
+    path: "/category/:categoryId/device-type/:deviceTypeId/supplier/:supplierId/product/:aggregationName/trusts",
+    replace:
+      "/category/:categoryId/device-type/:deviceTypeId/supplier/:supplierId/product/:aggregationName/trusts",
+    with: "/category/10027/device-type/14035/supplier/65283/product/Thermometer%20tympanic%20device/trusts",
   },
   {
     path: "/product/:aggregationName",

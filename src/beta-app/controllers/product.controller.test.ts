@@ -44,6 +44,7 @@ vi.mock("../database/client.js", () => ({
 const {
   getAggregationNameForProductIdMock,
   getAggregationWithNameMock,
+  getBrowsePathForDeviceMock,
   getContractCountForAggregationMock,
   getCountOfContactsWithExperienceWithAggregationMock,
   getCountOfDocumentsByTypeForAggregationMock,
@@ -53,6 +54,7 @@ const {
 } = vi.hoisted(() => ({
   getAggregationNameForProductIdMock: vi.fn(),
   getAggregationWithNameMock: vi.fn(),
+  getBrowsePathForDeviceMock: vi.fn(),
   getContractCountForAggregationMock: vi.fn(),
   getCountOfContactsWithExperienceWithAggregationMock: vi.fn(),
   getCountOfDocumentsByTypeForAggregationMock: vi.fn(),
@@ -78,6 +80,7 @@ vi.mock("../services/atamisService.js", () => ({
 }));
 
 vi.mock("../services/gmdnCategoryService.js", () => ({
+  getBrowsePathForDevice: getBrowsePathForDeviceMock,
   getGmdnTermForDeviceId: getGmdnTermForDeviceIdMock,
 }));
 
@@ -98,6 +101,7 @@ describe("Product controller", () => {
     getCountOfContactsWithExperienceWithAggregationMock.mockReset();
     getCountOfDocumentsByTypeForAggregationMock.mockReset();
     getCountOfOrganisationsWithExperienceWithAggregationMock.mockReset();
+    getBrowsePathForDeviceMock.mockReset();
     getGmdnTermForDeviceIdMock.mockReset();
     getSupplierWithIdMock.mockReset();
 
@@ -130,6 +134,7 @@ describe("Product controller", () => {
 
     const req = {
       params: { aggregationName: "Unknown" },
+      query: {},
     } as unknown as Request;
     const render = vi.fn();
     const status = vi.fn().mockReturnValue({ render });
@@ -163,13 +168,17 @@ describe("Product controller", () => {
 
     const render = vi.fn();
     await renderProduct(
-      { params: { aggregationName: "Pump" } } as unknown as Request,
+      { params: { aggregationName: "Pump" }, query: {} } as unknown as Request,
       { render } as unknown as Response,
     );
 
     expect(getSupplierWithIdMock).toHaveBeenCalledWith(3);
     expect(getGmdnTermForDeviceIdMock).toHaveBeenCalledWith(5);
     expect(render).toHaveBeenCalledWith("product", {
+      breadcrumbs: [
+        { href: "/", text: "Home" },
+        { href: "/search", text: "Search" },
+      ],
       productAggregation: {
         aggregationName: "Pump",
         deviceType: "Infusion pump",
@@ -179,6 +188,7 @@ describe("Product controller", () => {
         supplierName: "Acme Medical",
         trustsWithExperienceCount: 4,
       },
+      trustsHref: "/product/Pump/trusts",
     });
   });
 
@@ -197,7 +207,7 @@ describe("Product controller", () => {
 
     const render = vi.fn();
     await renderProduct(
-      { params: { aggregationName: "Pump" } } as unknown as Request,
+      { params: { aggregationName: "Pump" }, query: {} } as unknown as Request,
       { render } as unknown as Response,
     );
 

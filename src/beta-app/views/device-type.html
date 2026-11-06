@@ -1,11 +1,19 @@
 {% extends "layouts/base.html" %}
 
-{% from "tables/macro.njk" import table %}
+{% from "breadcrumb/macro.njk" import breadcrumb %}
 {% from "tables/macro.njk" import table %}
 
 {% set pageName = gmdnTerm %}
 
 {% set mainClasses = "nhsuk-main-wrapper--s" %}
+
+{% block beforeContent %}
+
+    {{ breadcrumb({
+        items: breadcrumbs
+    }) }}
+
+{% endblock %}
 
 {% block content %}
 
@@ -20,7 +28,7 @@
             {% set supplierRows = [] %}
             {% for supplier in suppliers %}
                 {% set supplierRows = supplierRows.concat([[
-                    { html: '<a href="/device-type/' ~ deviceTypeId ~ '/supplier/' ~ supplier.manufacturerId ~ '">' ~ (supplier.manOrganisationName | escape) ~ '</a>' },
+                    { html: '<a href="' ~ deviceTypePath ~ '/supplier/' ~ supplier.manufacturerId ~ '">' ~ (supplier.manOrganisationName | escape) ~ '</a>' },
                     { text: supplier.deviceCount, format: "numeric" },
                     { text: supplier.trustCount, format: "numeric" }
                 ]]) %}
