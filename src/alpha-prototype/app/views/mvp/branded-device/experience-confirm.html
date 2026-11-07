@@ -1,0 +1,43 @@
+{#
+  Add your trust's experience, step 1. Rebuilt from sketchpad/experience-confirm.html.
+  Invented: the user's trust and email across this flow.
+#}
+
+{% extends "mvp/branded-device/_layout.html" %}
+
+{% from "back-link/macro.njk" import backLink %}
+{% from "button/macro.njk" import button %}
+
+{% set brand = "InsuFlow Pro" %}
+{% set trust = "Manchester University NHS Foundation Trust" %}
+{% set pageName = "Add " + trust + " to " + brand %}
+{% set mainClasses = "nhsuk-main-wrapper--s" %}
+{% set returnHref = "/mvp/branded-device/trusts-with-experience" if query.from == "trusts" else "/mvp/branded-device" %}
+
+{% block beforeContent %}
+
+{{ backLink({ href: returnHref, text: "Back" }) }}
+
+{% endblock %}
+
+{% block content %}
+
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+
+    <h1 class="nhsuk-heading-l">{{ pageName }}</h1>
+
+    <p>Other NHS trusts will see your trust listed as having experience with {{ brand }}.</p>
+
+    <p>You can change this later.</p>
+
+    <form action="/mvp/branded-device/experience-added" method="get" novalidate>
+      {{ button({ text: "Confirm and add my trust" }) }}
+    </form>
+
+    <p><a href="{{ returnHref }}">Cancel</a></p>
+
+  </div>
+</div>
+
+{% endblock %}

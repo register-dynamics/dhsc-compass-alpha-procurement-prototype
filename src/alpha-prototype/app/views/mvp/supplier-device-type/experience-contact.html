@@ -1,0 +1,71 @@
+{#
+  Add your trust's experience, 1 of 2. Based on branded-device/experience-contact.html, with no device or outcome questions.
+#}
+
+{% extends "mvp/branded-device/_layout.html" %}
+
+{% from "back-link/macro.njk" import backLink %}
+{% from "button/macro.njk" import button %}
+{% from "input/macro.njk" import input %}
+{% from "radios/macro.njk" import radios %}
+
+{% set pageName = "Who should other trusts contact about your experience?" %}
+{% set mainClasses = "nhsuk-main-wrapper--s" %}
+
+{% block beforeContent %}
+
+{{ backLink({ href: "/mvp/supplier-device-type/experience-added", text: "Back" }) }}
+
+{% endblock %}
+
+{% block content %}
+
+{% set someoneElseHtml %}
+  {{ input({
+    label: { text: "Contact name" },
+    id: "exp-contact-name",
+    name: "exp-contact-name"
+  }) }}
+  {{ input({
+    label: { text: "Email address" },
+    id: "exp-contact-email",
+    name: "exp-contact-email",
+    type: "email"
+  }) }}
+{% endset %}
+
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+
+    <span class="nhsuk-caption-l">1 of 2</span>
+
+    <form action="/mvp/supplier-device-type/experience-document" method="get" novalidate>
+
+      {{ radios({
+        name: "exp-contact",
+        idPrefix: "exp-c",
+        fieldset: {
+          legend: {
+            text: pageName,
+            classes: "nhsuk-fieldset__legend--l",
+            isPageHeading: true
+          }
+        },
+        hint: { text: "A named contact is the single most useful thing you can add." },
+        items: [
+          { value: "me", text: "Me", hint: { text: "Kelvin Simpson, kelvin.simpson@nhs.net" } },
+          { value: "someone-else", text: "Someone else", conditional: { html: someoneElseHtml } },
+          { value: "none", text: "Nobody, do not show a contact" }
+        ]
+      }) }}
+
+      {{ button({ text: "Continue" }) }}
+
+      <p><a href="/mvp/supplier-device-type/experience-document">Skip this step</a></p>
+
+    </form>
+
+  </div>
+</div>
+
+{% endblock %}
