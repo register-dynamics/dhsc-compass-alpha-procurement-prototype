@@ -1,0 +1,35 @@
+{#
+  Add your trust's experience, step 2. Rebuilt from sketchpad/experience-added.html.
+#}
+
+{% extends "mvp/branded-device/_layout.html" %}
+
+{% from "panel/macro.njk" import panel %}
+{% from "button/macro.njk" import button %}
+
+{% set brand = "InsuFlow Pro" %}
+{% set trust = "Manchester University NHS Foundation Trust" %}
+{% set pageName = "Your trust is now listed" %}
+{% set mainClasses = "nhsuk-main-wrapper--s" %}
+
+{% block content %}
+
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+
+    {{ panel({
+      titleText: pageName,
+      headingLevel: 1,
+      text: trust + " has experience with " + brand
+    }) }}
+
+    <form action="/mvp/branded-device/experience-contact" method="get" novalidate>
+      {{ button({ text: "Add contact details" }) }}
+    </form>
+
+    <p><a href="/mvp/branded-device">Return to the device</a></p>
+
+  </div>
+</div>
+
+{% endblock %}
