@@ -1,0 +1,48 @@
+{#
+  Add your trust's experience, 2 of 2. Based on branded-device/experience-document.html, with no device or outcome questions.
+#}
+
+{% extends "mvp/branded-device/_layout.html" %}
+
+{% from "back-link/macro.njk" import backLink %}
+{% from "button/macro.njk" import button %}
+{% from "file-upload/macro.njk" import fileUpload %}
+
+{% set pageName = "Do you have a document you can share?" %}
+{% set mainClasses = "nhsuk-main-wrapper--s" %}
+
+{% block beforeContent %}
+
+{{ backLink({ href: "/mvp/device-type/experience-contact", text: "Back" }) }}
+
+{% endblock %}
+
+{% block content %}
+
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+
+    <span class="nhsuk-caption-l">2 of 2</span>
+
+    <h1 class="nhsuk-heading-l">{{ pageName }}</h1>
+
+    <form action="/mvp/device-type/experience-done" method="get" novalidate>
+
+      {{ fileUpload({
+        label: { text: "Upload a document", size: "s" },
+        hint: { text: "An evaluation, business case, case study or evaluation criteria. Word, Excel or PDF." },
+        id: "exp-file",
+        name: "exp-file",
+        attributes: { accept: ".pdf,.doc,.docx,.xls,.xlsx" }
+      }) }}
+
+      {{ button({ text: "Continue" }) }}
+
+      <p><a href="/mvp/device-type/experience-done">Skip this step</a></p>
+
+    </form>
+
+  </div>
+</div>
+
+{% endblock %}

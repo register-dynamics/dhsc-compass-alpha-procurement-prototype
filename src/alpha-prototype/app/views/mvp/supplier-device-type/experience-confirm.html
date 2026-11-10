@@ -1,0 +1,42 @@
+{#
+  Add your trust's experience, step 1. Based on branded-device/experience-confirm.html, with no device or outcome questions.
+  Invented: the user's trust and email across this flow.
+#}
+
+{% extends "mvp/branded-device/_layout.html" %}
+
+{% from "back-link/macro.njk" import backLink %}
+{% from "button/macro.njk" import button %}
+
+{% set listingName = "Bone-screw internal spinal fixation system by Nuvasive" %}
+{% set trust = "Manchester University NHS Foundation Trust" %}
+{% set pageName = "Add " + trust + " to " + listingName %}
+{% set mainClasses = "nhsuk-main-wrapper--s" %}
+
+{% block beforeContent %}
+
+{{ backLink({ href: "/mvp/supplier-device-type", text: "Back" }) }}
+
+{% endblock %}
+
+{% block content %}
+
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+
+    <h1 class="nhsuk-heading-l">{{ pageName }}</h1>
+
+    <p>Other NHS trusts will see your trust listed as having experience with {{ listingName }}.</p>
+
+    <p>You can change this later.</p>
+
+    <form action="/mvp/supplier-device-type/experience-added" method="get" novalidate>
+      {{ button({ text: "Confirm and add my trust" }) }}
+    </form>
+
+    <p><a href="/mvp/supplier-device-type">Cancel</a></p>
+
+  </div>
+</div>
+
+{% endblock %}
