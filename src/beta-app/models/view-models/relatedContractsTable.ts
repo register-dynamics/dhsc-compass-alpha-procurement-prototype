@@ -1,6 +1,6 @@
 import type { Request } from "express";
 
-import type { RelatedContract } from "./trustDataService.js";
+import type { RelatedContract } from "../../services/trustDataService.js";
 
 // The related trusts page lists contracts, filtered by category and sorted
 // on the server from the query string. Sorting on the server lets the line

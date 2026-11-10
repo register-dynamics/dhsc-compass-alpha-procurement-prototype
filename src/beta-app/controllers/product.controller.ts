@@ -6,6 +6,7 @@ import { postAddEvidenceContactSelfSchema } from "../models/request-schemas/post
 import { postMarkUsefulSchema } from "../models/request-schemas/postMarkUsefulSchema.js";
 import { ProductAggregation } from "../models/view-models/productAggregation.js";
 import { ProductTrusts } from "../models/view-models/productTrusts.js";
+import { getRelatedContractsTable } from "../models/view-models/relatedContractsTable.js";
 import {
   getBrowsePathForDevice,
   getGmdnTermForDeviceId,
@@ -16,7 +17,6 @@ import {
   getEvidenceCardsForAggregation,
   getProductWithId,
 } from "../services/productsService.js";
-import { getRelatedContractsTable } from "../services/relatedContractsTable.js";
 import { getSearchQueryString } from "../services/searchQueryService.js";
 import { getSupplierWithId } from "../services/supplierService.js";
 import {
