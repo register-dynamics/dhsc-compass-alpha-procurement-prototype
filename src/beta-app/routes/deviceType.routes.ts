@@ -12,12 +12,12 @@ const routeDefinitions: RouteDefinition[] = [
   {
     handler: renderDeviceType,
     method: "get",
-    path: "/device-type/:deviceTypeId",
+    path: "/category/:categoryId/device-type/:deviceTypeId",
   },
   {
     handler: renderDeviceTypeSupplier,
     method: "get",
-    path: "/device-type/:deviceTypeId/supplier/:supplierId",
+    path: "/category/:categoryId/device-type/:deviceTypeId/supplier/:supplierId",
   },
 ];
 

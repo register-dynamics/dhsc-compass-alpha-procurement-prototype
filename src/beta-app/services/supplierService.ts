@@ -23,7 +23,8 @@ export interface SupplierForDeviceType {
 // deviceTypeId is a GMDN code
 //
 // Trusts with available data are found via
-// device_type -> products -> aggregation_name -> app.product_evidence -> app.evidence.
+// device_type -> products -> (aggregation_name, manufacturer_id)
+//   -> app.product_evidence -> app.evidence.
 // The tables live in different schemas, so this is two queries merged here.
 export const getSuppliersForDeviceType = async (
   deviceTypeId: number,
@@ -71,20 +72,27 @@ export const getSuppliersForDeviceType = async (
     ...new Set(deviceRows.flatMap((row) => row.aggregationName ?? [])),
   ];
 
+  // Keyed by manufacturer and aggregation name, as different suppliers can use
+  // the same aggregation name for unrelated products
+  const aggregationKey = (manufacturerId: number, aggregationName: string) =>
+    JSON.stringify([manufacturerId, aggregationName]);
+
   const orgsByAggregation = new Map<string, Set<number>>();
   if (allAggregationNames.length > 0) {
     const evidenceRows = await db
       .withSchema("app")
       .selectFrom("product_evidence as pe")
       .innerJoin("evidence as e", "e.evidenceId", "pe.evidenceId")
-      .select(["pe.aggregationName", "e.organisationId"])
+      .select(["pe.aggregationName", "pe.manufacturerId", "e.organisationId"])
       .where("pe.aggregationName", "in", allAggregationNames)
+      .where("pe.manufacturerId", "in", [...suppliers.keys()])
       .execute();
 
     for (const row of evidenceRows) {
-      const orgs = orgsByAggregation.get(row.aggregationName) ?? new Set();
+      const key = aggregationKey(row.manufacturerId, row.aggregationName);
+      const orgs = orgsByAggregation.get(key) ?? new Set();
       orgs.add(row.organisationId);
-      orgsByAggregation.set(row.aggregationName, orgs);
+      orgsByAggregation.set(key, orgs);
     }
   }
 
@@ -94,7 +102,9 @@ export const getSuppliersForDeviceType = async (
       // this supplier's products is only counted once.
       const trusts = new Set<number>();
       for (const name of supplier.aggregationNames) {
-        orgsByAggregation.get(name)?.forEach((orgId) => trusts.add(orgId));
+        orgsByAggregation
+          .get(aggregationKey(manufacturerId, name))
+          ?.forEach((orgId) => trusts.add(orgId));
       }
       return {
         deviceCount: supplier.deviceIds.size,
@@ -144,6 +154,7 @@ export const getDevicesForSupplierAndDeviceType = async (
       eb.fn.count<string>("e.organisationId").distinct().as("trustCount"),
     ])
     .where("pe.aggregationName", "in", aggregationNames)
+    .where("pe.manufacturerId", "=", supplierId)
     .groupBy("pe.aggregationName")
     .execute();
 

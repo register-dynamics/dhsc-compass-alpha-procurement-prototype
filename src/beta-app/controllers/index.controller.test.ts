@@ -9,7 +9,7 @@ describe("Index controller", () => {
     const response = await request(app).get("/");
 
     expect(response.status).toBe(200);
-    expect(response.text).toContain("Search and evaluate medical technologies");
+    expect(response.text).toContain("Search and evaluate medical technology");
     expect(response.headers["content-type"]).toMatch(/html/);
   });
 

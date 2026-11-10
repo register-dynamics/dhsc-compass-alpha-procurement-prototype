@@ -4,18 +4,35 @@ import {
   postMarkUseful,
   postUnmarkUseful,
   renderProduct,
+  renderProductInCategory,
   renderProductRelatedTrusts,
   renderProductTrusts,
+  renderProductTrustsInCategory,
 } from "../controllers/product.controller.js";
 import { registerRoutes, type RouteDefinition } from "./route-definitions.js";
 
 const router = Router();
 
+// An aggregation is identified by its name and supplier, as different
+// suppliers can use the same aggregation name for unrelated products
+const searchProductPath = "/supplier/:supplierId/product/:aggregationName";
+const categoryProductPath = `/category/:categoryId/device-type/:deviceTypeId${searchProductPath}`;
+
 const routeDefinitions: RouteDefinition[] = [
   {
     handler: renderProduct,
     method: "get",
-    path: "/product/:aggregationName",
+    path: searchProductPath,
+  },
+  {
+    handler: renderProductInCategory,
+    method: "get",
+    path: categoryProductPath,
+  },
+  {
+    handler: renderProductTrustsInCategory,
+    method: "get",
+    path: `${categoryProductPath}/trusts`,
   },
   {
     handler: postMarkUseful,
@@ -50,7 +67,7 @@ const routeDefinitions: RouteDefinition[] = [
   {
     handler: renderProductTrusts,
     method: "get",
-    path: "/product/:aggregationName/trusts",
+    path: `${searchProductPath}/trusts`,
   },
   {
     handler: renderProductRelatedTrusts,

@@ -42,8 +42,9 @@ vi.mock("../database/client.js", () => ({
 }));
 
 const {
-  getAggregationNameForProductIdMock,
+  getAggregationForProductIdMock,
   getAggregationWithNameMock,
+  getBrowsePathForDeviceMock,
   getContractCountForAggregationMock,
   getCountOfContactsWithExperienceWithAggregationMock,
   getCountOfDocumentsByTypeForAggregationMock,
@@ -51,8 +52,9 @@ const {
   getGmdnTermForDeviceIdMock,
   getSupplierWithIdMock,
 } = vi.hoisted(() => ({
-  getAggregationNameForProductIdMock: vi.fn(),
+  getAggregationForProductIdMock: vi.fn(),
   getAggregationWithNameMock: vi.fn(),
+  getBrowsePathForDeviceMock: vi.fn(),
   getContractCountForAggregationMock: vi.fn(),
   getCountOfContactsWithExperienceWithAggregationMock: vi.fn(),
   getCountOfDocumentsByTypeForAggregationMock: vi.fn(),
@@ -63,7 +65,7 @@ const {
 
 vi.mock("../services/productsService.js", async (importOriginal) => ({
   ...(await importOriginal<typeof import("../services/productsService.js")>()),
-  getAggregationNameForProductId: getAggregationNameForProductIdMock,
+  getAggregationForProductId: getAggregationForProductIdMock,
   getAggregationWithName: getAggregationWithNameMock,
   getCountOfContactsWithExperienceWithAggregation:
     getCountOfContactsWithExperienceWithAggregationMock,
@@ -78,6 +80,7 @@ vi.mock("../services/atamisService.js", () => ({
 }));
 
 vi.mock("../services/gmdnCategoryService.js", () => ({
+  getBrowsePathForDevice: getBrowsePathForDeviceMock,
   getGmdnTermForDeviceId: getGmdnTermForDeviceIdMock,
 }));
 
@@ -98,11 +101,15 @@ describe("Product controller", () => {
     getCountOfContactsWithExperienceWithAggregationMock.mockReset();
     getCountOfDocumentsByTypeForAggregationMock.mockReset();
     getCountOfOrganisationsWithExperienceWithAggregationMock.mockReset();
+    getBrowsePathForDeviceMock.mockReset();
     getGmdnTermForDeviceIdMock.mockReset();
     getSupplierWithIdMock.mockReset();
 
-    getAggregationNameForProductIdMock.mockReset();
-    getAggregationNameForProductIdMock.mockResolvedValue("Pump");
+    getAggregationForProductIdMock.mockReset();
+    getAggregationForProductIdMock.mockResolvedValue({
+      aggregationName: "Pump",
+      manufacturerId: 3,
+    });
 
     countMock.mockReturnValue({
       as: vi.fn().mockReturnValue("totalUsefulCount"),
@@ -112,8 +119,8 @@ describe("Product controller", () => {
     });
   });
 
-  it("GET /product/:aggregationName returns 404 when aggregation name is missing", async () => {
-    const req = { params: {} } as unknown as Request;
+  it("GET /supplier/:supplierId/product/:aggregationName returns 404 when aggregation name is missing", async () => {
+    const req = { params: { supplierId: "3" } } as unknown as Request;
     const render = vi.fn();
     const status = vi.fn().mockReturnValue({ render });
     const res = { status } as unknown as Response;
@@ -125,11 +132,9 @@ describe("Product controller", () => {
     expect(getAggregationWithNameMock).not.toHaveBeenCalled();
   });
 
-  it("GET /product/:aggregationName returns 404 when no aggregation is found", async () => {
-    getAggregationWithNameMock.mockResolvedValue([]);
-
+  it("GET /supplier/:supplierId/product/:aggregationName returns 404 when the supplier ID is invalid", async () => {
     const req = {
-      params: { aggregationName: "Unknown" },
+      params: { aggregationName: "Pump", supplierId: "abc" },
     } as unknown as Request;
     const render = vi.fn();
     const status = vi.fn().mockReturnValue({ render });
@@ -137,13 +142,31 @@ describe("Product controller", () => {
 
     await renderProduct(req, res);
 
-    expect(getAggregationWithNameMock).toHaveBeenCalledWith("Unknown");
+    expect(status).toHaveBeenCalledWith(404);
+    expect(render).toHaveBeenCalledWith("not-found");
+    expect(getAggregationWithNameMock).not.toHaveBeenCalled();
+  });
+
+  it("GET /supplier/:supplierId/product/:aggregationName returns 404 when no aggregation is found", async () => {
+    getAggregationWithNameMock.mockResolvedValue([]);
+
+    const req = {
+      params: { aggregationName: "Unknown", supplierId: "3" },
+      query: {},
+    } as unknown as Request;
+    const render = vi.fn();
+    const status = vi.fn().mockReturnValue({ render });
+    const res = { status } as unknown as Response;
+
+    await renderProduct(req, res);
+
+    expect(getAggregationWithNameMock).toHaveBeenCalledWith("Unknown", 3);
     expect(status).toHaveBeenCalledWith(404);
     expect(render).toHaveBeenCalledWith("not-found");
     expect(getSupplierWithIdMock).not.toHaveBeenCalled();
   });
 
-  it("GET /product/:aggregationName renders the product page with aggregation details", async () => {
+  it("GET /supplier/:supplierId/product/:aggregationName renders the product page with aggregation details", async () => {
     const relevantDocuments = [{ count: 2, documentType: "Business case" }];
     getAggregationWithNameMock.mockResolvedValue([
       { aggregationName: "Pump", deviceId: 5, manufacturerId: 3 },
@@ -163,13 +186,22 @@ describe("Product controller", () => {
 
     const render = vi.fn();
     await renderProduct(
-      { params: { aggregationName: "Pump" } } as unknown as Request,
+      {
+        params: { aggregationName: "Pump", supplierId: "3" },
+        query: {},
+      } as unknown as Request,
       { render } as unknown as Response,
     );
 
+    expect(getAggregationWithNameMock).toHaveBeenCalledWith("Pump", 3);
+    expect(getContractCountForAggregationMock).toHaveBeenCalledWith("Pump", 3);
     expect(getSupplierWithIdMock).toHaveBeenCalledWith(3);
     expect(getGmdnTermForDeviceIdMock).toHaveBeenCalledWith(5);
     expect(render).toHaveBeenCalledWith("product", {
+      breadcrumbs: [
+        { href: "/", text: "Home" },
+        { href: "/search", text: "Search" },
+      ],
       productAggregation: {
         aggregationName: "Pump",
         deviceType: "Infusion pump",
@@ -179,10 +211,11 @@ describe("Product controller", () => {
         supplierName: "Acme Medical",
         trustsWithExperienceCount: 4,
       },
+      trustsHref: "/supplier/3/product/Pump/trusts",
     });
   });
 
-  it("GET /product/:aggregationName renders an empty supplier name when the supplier is not found", async () => {
+  it("GET /supplier/:supplierId/product/:aggregationName renders an empty supplier name when the supplier is not found", async () => {
     getAggregationWithNameMock.mockResolvedValue([
       { aggregationName: "Pump", deviceId: 5, manufacturerId: 3 },
     ]);
@@ -197,7 +230,10 @@ describe("Product controller", () => {
 
     const render = vi.fn();
     await renderProduct(
-      { params: { aggregationName: "Pump" } } as unknown as Request,
+      {
+        params: { aggregationName: "Pump", supplierId: "3" },
+        query: {},
+      } as unknown as Request,
       { render } as unknown as Response,
     );
 
@@ -225,7 +261,7 @@ describe("Product controller", () => {
     const send = vi.fn();
     await postMarkUseful(
       {
-        body: { aggregationName: "Pump", evidenceId: "12" },
+        body: { aggregationName: "Pump", evidenceId: "12", supplierId: "3" },
         user: { id: 56 },
       } as unknown as Request,
       { send, status } as unknown as Response,
@@ -236,6 +272,7 @@ describe("Product controller", () => {
       expect.objectContaining({
         aggregationName: "Pump",
         evidenceId: 12,
+        manufacturerId: 3,
         userId: 56,
       }),
     );
@@ -261,7 +298,7 @@ describe("Product controller", () => {
     const send = vi.fn();
     await postUnmarkUseful(
       {
-        body: { aggregationName: "Pump", evidenceId: 12 },
+        body: { aggregationName: "Pump", evidenceId: 12, supplierId: 3 },
         user: { id: 56 },
       } as unknown as Request,
       { send, status } as unknown as Response,
@@ -275,9 +312,30 @@ describe("Product controller", () => {
       "=",
       "Pump",
     );
-    expect(deleteQuery.where).toHaveBeenNthCalledWith(3, "userId", "=", 56);
+    expect(deleteQuery.where).toHaveBeenNthCalledWith(
+      3,
+      "manufacturerId",
+      "=",
+      3,
+    );
+    expect(deleteQuery.where).toHaveBeenNthCalledWith(4, "userId", "=", 56);
     expect(status).toHaveBeenCalledWith(200);
     expect(send).toHaveBeenCalledWith({ count: 2 });
+  });
+
+  it("GET /product/mark-useful should return 400 if the supplier ID is missing", async () => {
+    const status = vi.fn().mockReturnThis();
+    const send = vi.fn();
+    await postMarkUseful(
+      {
+        body: { aggregationName: "Pump", evidenceId: 1 },
+        user: { id: 1 },
+      } as unknown as Request,
+      { send, status } as unknown as Response,
+    );
+
+    expect(status).toHaveBeenCalledWith(400);
+    expect(insertIntoMock).not.toHaveBeenCalled();
   });
 
   it("GET /product/mark-useful should return 400 if parameters are missing", async () => {
@@ -290,7 +348,7 @@ describe("Product controller", () => {
 
     expect(status).toHaveBeenCalledWith(400);
     expect(send).toHaveBeenCalledWith(
-      "Aggregation name and Evidence ID are required",
+      "Aggregation name, supplier ID and evidence ID are required",
     );
   });
 
@@ -299,7 +357,7 @@ describe("Product controller", () => {
     const send = vi.fn();
     await postMarkUseful(
       {
-        body: { aggregationName: "Pump", evidenceId: 1 },
+        body: { aggregationName: "Pump", evidenceId: 1, supplierId: 3 },
       } as unknown as Request,
       { send, status } as unknown as Response,
     );
@@ -321,7 +379,7 @@ describe("Product controller", () => {
 
     await postMarkUseful(
       {
-        body: { aggregationName: "Pump", evidenceId: 1 },
+        body: { aggregationName: "Pump", evidenceId: 1, supplierId: 3 },
         user: { id: 3 },
       } as unknown as Request,
       { send, status } as unknown as Response,
@@ -342,7 +400,7 @@ describe("Product controller", () => {
 
     expect(status).toHaveBeenCalledWith(400);
     expect(send).toHaveBeenCalledWith(
-      "Aggregation name and Evidence ID are required",
+      "Aggregation name, supplier ID and evidence ID are required",
     );
   });
 
@@ -351,7 +409,7 @@ describe("Product controller", () => {
     const send = vi.fn();
     await postUnmarkUseful(
       {
-        body: { aggregationName: "Pump", evidenceId: 1 },
+        body: { aggregationName: "Pump", evidenceId: 1, supplierId: 3 },
       } as unknown as Request,
       { send, status } as unknown as Response,
     );
@@ -373,7 +431,7 @@ describe("Product controller", () => {
 
     await postUnmarkUseful(
       {
-        body: { aggregationName: "Pump", evidenceId: 1 },
+        body: { aggregationName: "Pump", evidenceId: 1, supplierId: 3 },
         user: { id: 3 },
       } as unknown as Request,
       { send, status } as unknown as Response,

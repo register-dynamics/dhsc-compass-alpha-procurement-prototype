@@ -12,7 +12,7 @@ test("user can search and access product details", async ({ page }) => {
   await page.goto("/search");
 
   await page
-    .getByLabel("Search by product, category or supplier")
+    .getByLabel("Search by device, category or supplier")
     .fill("glucose");
 
   await page.getByRole("button", { name: "Search" }).click();
@@ -24,7 +24,9 @@ test("user can search and access product details", async ({ page }) => {
   // Access product details
   await page.getByRole("link", { exact: true, name: "GlucoSense" }).click();
 
-  await expect(page).toHaveURL(/\/product\/GlucoSense$/);
+  await expect(page).toHaveURL(
+    /\/supplier\/55623\/product\/GlucoSense\?q=glucose$/,
+  );
 
   const heading = page.getByRole("heading", { level: 1 });
   await expect(heading).toContainText("GlucoSense");
@@ -39,10 +41,14 @@ test("user can search and access product details", async ({ page }) => {
 
   await expect(page.getByRole("link", { name: "View trusts" })).toHaveAttribute(
     "href",
-    "/product/GlucoSense/trusts",
+    "/supplier/55623/product/GlucoSense/trusts?q=glucose",
   );
 
   // TODO: Check more content here once it's not hardcoded
+
+  // The breadcrumb goes back to the same results
+  await page.getByRole("link", { name: "Search results" }).click();
+  await expect(page).toHaveURL(/\/search-results\?q=glucose$/);
 });
 
 // Skipping marking evidence card as useful test whilst this flow is broken on the new product page.
@@ -74,6 +80,7 @@ test.describe.skip("evidence submission journeys", () => {
 
   const productId = "73516943";
   const aggregationName = "UNIT Artifical Hip";
+  const manufacturerId = 46285;
 
   const deleteEvidenceForTestOrganisation = async () => {
     const user = await db
@@ -100,6 +107,7 @@ test.describe.skip("evidence submission journeys", () => {
       .innerJoin("evidence as e", "e.evidenceId", "pe.evidenceId")
       .select("pe.evidenceId")
       .where("pe.aggregationName", "=", aggregationName)
+      .where("pe.manufacturerId", "=", manufacturerId)
       .where("e.organisationId", "=", organisation.organisationId)
       .execute();
 
