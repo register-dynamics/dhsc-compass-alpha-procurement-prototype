@@ -6,6 +6,7 @@ import {
   renderProduct,
   renderProductInCategory,
   renderProductRelatedTrusts,
+  renderProductRelatedTrustsInCategory,
   renderProductTrusts,
   renderProductTrustsInCategory,
 } from "../controllers/product.controller.js";
@@ -33,6 +34,11 @@ const routeDefinitions: RouteDefinition[] = [
     handler: renderProductTrustsInCategory,
     method: "get",
     path: `${categoryProductPath}/trusts`,
+  },
+  {
+    handler: renderProductRelatedTrustsInCategory,
+    method: "get",
+    path: `${categoryProductPath}/related-trusts`,
   },
   {
     handler: postMarkUseful,
@@ -72,7 +78,7 @@ const routeDefinitions: RouteDefinition[] = [
   {
     handler: renderProductRelatedTrusts,
     method: "get",
-    path: "/product/:productId/related-trusts",
+    path: `${searchProductPath}/related-trusts`,
   },
 ];
 

@@ -28,6 +28,7 @@ export interface Database {
   products: ProductTable;
   atamis_contracts: AtamisContractTable;
   atamis_to_gmdn: AtamisToGmdnMappingTable;
+  contracts_to_mhra_manufacturers: ContractToManufacturerTable;
   manufacturers: ManufacturerTable;
 }
 
@@ -285,6 +286,15 @@ export type AtamisToGmdnMapping = Selectable<AtamisToGmdnMappingTable>;
 export interface AtamisToGmdnMappingTable {
   atamisRef: string;
   gmdnCode: number;
+}
+
+// Which MHRA manufacturer each Atamis contract is with. Atamis records the
+// supplier as free text, so this is matched up when the data is loaded.
+export type ContractToManufacturer = Selectable<ContractToManufacturerTable>;
+
+export interface ContractToManufacturerTable {
+  contractRef: string;
+  manufacturerId: number;
 }
 
 export type Manufacturer = Selectable<ManufacturerTable>;

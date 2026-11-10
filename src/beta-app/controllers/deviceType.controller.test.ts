@@ -85,6 +85,151 @@ describe("Device type controller", () => {
     expect(response.status).toBe(404);
   });
 
+  describe("available trust data", () => {
+    const cardHeadings = (html: string) =>
+      [...html.matchAll(/nhsuk-card__heading[^>]*>\s*([^<]+?)\s*</g)].map(
+        ([, heading]) => heading,
+      );
+
+    it("GET a device type shows trust data for it and similar types", async () => {
+      const response = await get(deviceTypePath);
+
+      expect(cardHeadings(response.text)).toEqual([
+        "9 trusts have experience with this type of device",
+        "8 trusts have experience with similar types of devices",
+      ]);
+    });
+
+    it("GET a device type's supplier shows trust data for that supplier", async () => {
+      const response = await get(`${deviceTypePath}/supplier/13455`);
+
+      expect(cardHeadings(response.text)).toEqual([
+        "7 trusts have Aorta Solutions Heart rate monitor experience",
+        "4 trusts have experience with devices in the same or related categories",
+      ]);
+    });
+
+    it("GET a product shows trust data for it and the supplier's related devices", async () => {
+      const response = await get(
+        `${deviceTypePath}/supplier/13455/product/Heart%20Rate%20Monitor`,
+      );
+
+      expect(cardHeadings(response.text)).toEqual([
+        "3 trusts have experience with Heart Rate Monitor",
+        "9 trusts have experience with Aorta Solutions devices in the same or related categories",
+      ]);
+    });
+
+    it("GET a product links to its related trusts within the same path", async () => {
+      const productPath = `${deviceTypePath}/supplier/13455/product/Heart%20Rate%20Monitor`;
+      const response = await get(productPath);
+
+      expect(response.text).toContain(`href="${productPath}/related-trusts"`);
+    });
+  });
+
+  describe("related trusts pages", () => {
+    const productPath = `${deviceTypePath}/supplier/13455/product/Heart%20Rate%20Monitor`;
+    const searchProductPath = "/supplier/13455/product/Heart%20Rate%20Monitor";
+
+    const contractNames = (html: string) =>
+      [
+        ...html.matchAll(
+          /role="rowheader"[\s\S]*?<\/span>\s*([^<]+?)\s*<\/th>/g,
+        ),
+      ].map(([, name]) => name);
+
+    it("GET related trusts lists the related contracts, most recent first", async () => {
+      const response = await get(`${productPath}/related-trusts`);
+
+      expect(response.status).toBe(200);
+      expect(response.text).toContain("Showing 3 contracts.");
+      expect(response.text).toContain(
+        "Most recent contracts are listed first.",
+      );
+      expect(contractNames(response.text)).toEqual([
+        "WAH - Cardiology - Ambulatory Blood Pressure Monitors",
+        "Blood Pressure Monitoring Equipment",
+        "Vital Signs Monitoring - Aorta",
+      ]);
+      expect(response.text).toContain("February 2026");
+      expect(response.text).toContain(`href="${productPath}"`);
+    });
+
+    it("GET related trusts filters by category and keeps the filter when sorting", async () => {
+      const response = await get(
+        `${productPath}/related-trusts?category=Patient%20Monitoring%20Equipment&category=Unknown`,
+      );
+
+      expect(response.text).toContain("Filter by category (1 applied)");
+      expect(response.text).toContain("Showing 2 of 3 contracts.");
+      expect(contractNames(response.text)).toEqual([
+        "Blood Pressure Monitoring Equipment",
+        "Vital Signs Monitoring - Aorta",
+      ]);
+      expect(response.text).toContain(
+        'href="?category=Patient+Monitoring+Equipment&amp;sort=trust&amp;order=ascending"',
+      );
+    });
+
+    it("GET related trusts sorts by the column in the URL", async () => {
+      const response = await get(
+        `${productPath}/related-trusts?sort=trust&order=descending`,
+      );
+
+      expect(response.text).toContain("Contracts are listed Z to A by trust.");
+      // Whitwell, Waymeet, then Baranduin
+      expect(contractNames(response.text)).toEqual([
+        "WAH - Cardiology - Ambulatory Blood Pressure Monitors",
+        "Vital Signs Monitoring - Aorta",
+        "Blood Pressure Monitoring Equipment",
+      ]);
+    });
+
+    it("GET related trusts from search keeps the search on every link", async () => {
+      const response = await get(
+        `${searchProductPath}/related-trusts?q=heart&page=2`,
+      );
+
+      expect(response.status).toBe(200);
+      expect(response.text).toContain("/search-results?q=heart&amp;page=2");
+      expect(response.text).toContain(
+        `href="${searchProductPath}?q=heart&amp;page=2"`,
+      );
+      expect(response.text).toContain(
+        'href="?q=heart&amp;page=2&amp;sort=trust&amp;order=ascending"',
+      );
+      expect(response.text).toContain(
+        '<input type="hidden" name="q" value="heart">',
+      );
+    });
+
+    it("GET related trusts for a product with none says so", async () => {
+      const response = await get(
+        "/supplier/45273/product/Eye%20Shield/related-trusts",
+      );
+
+      expect(response.status).toBe(200);
+      expect(response.text).toContain(
+        "There are no contracts with Epsilon tech Ltd in the same or related categories.",
+      );
+    });
+
+    it.each([
+      [
+        "the wrong supplier",
+        "/supplier/45123/product/Heart%20Rate%20Monitor/related-trusts",
+      ],
+      ["an unknown product", "/supplier/13455/product/Nothing/related-trusts"],
+      [
+        "a category it isn't in",
+        "/category/10027/device-type/35198/supplier/13455/product/Heart%20Rate%20Monitor/related-trusts",
+      ],
+    ])("GET related trusts with %s returns 404", async (_, path) => {
+      expect((await get(path)).status).toBe(404);
+    });
+  });
+
   describe("product pages", () => {
     const supplierPathFor = `${deviceTypePath}/supplier/13455`;
     const productPath = `${supplierPathFor}/product/Heart%20Rate%20Monitor`;

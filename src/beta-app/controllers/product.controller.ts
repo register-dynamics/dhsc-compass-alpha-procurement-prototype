@@ -6,7 +6,7 @@ import { postAddEvidenceContactSelfSchema } from "../models/request-schemas/post
 import { postMarkUsefulSchema } from "../models/request-schemas/postMarkUsefulSchema.js";
 import { ProductAggregation } from "../models/view-models/productAggregation.js";
 import { ProductTrusts } from "../models/view-models/productTrusts.js";
-import { getContractCountForAggregation } from "../services/atamisService.js";
+import { getRelatedContractsTable } from "../models/view-models/relatedContractsTable.js";
 import {
   getBrowsePathForDevice,
   getGmdnTermForDeviceId,
@@ -14,14 +14,15 @@ import {
 import {
   getAggregationForProductId,
   getAggregationWithName,
-  getCountOfContactsWithExperienceWithAggregation,
-  getCountOfDocumentsByTypeForAggregation,
-  getCountOfOrganisationsWithExperienceWithAggregation,
   getEvidenceCardsForAggregation,
   getProductWithId,
 } from "../services/productsService.js";
 import { getSearchQueryString } from "../services/searchQueryService.js";
 import { getSupplierWithId } from "../services/supplierService.js";
+import {
+  getProductRelatedContracts,
+  getProductTrustData,
+} from "../services/trustDataService.js";
 import { getSupplierInCategory } from "./deviceType.controller.js";
 
 // An aggregation is identified by its name and supplier, as different
@@ -43,6 +44,9 @@ interface ProductRoute {
   deviceType?: string;
   deviceTypeHref?: string;
   productHref: string;
+  relatedTrustsHref: string;
+  // The search the product was reached from, to keep on every link
+  searchQueryString: string;
   supplierHref?: string;
   supplierName?: string;
   trustsHref: string;
@@ -80,6 +84,8 @@ const getSearchProductRoute = (
         : { href: "/search", text: "Search" },
     ],
     productHref: `${productPath}${searchQueryString}`,
+    relatedTrustsHref: `${productPath}/related-trusts${searchQueryString}`,
+    searchQueryString,
     trustsHref: `${productPath}/trusts${searchQueryString}`,
   };
 };
@@ -112,6 +118,8 @@ const getCategoryProductRoute = async (
     deviceType: gmdnTerm,
     deviceTypeHref: deviceTypePath,
     productHref,
+    relatedTrustsHref: `${productHref}/related-trusts`,
+    searchQueryString: "",
     supplierHref: supplierPath,
     supplierName: supplier.manOrganisationName,
     trustsHref: `${productHref}/trusts`,
@@ -165,39 +173,24 @@ const renderProductPage = async (
   const deviceType =
     route.deviceType ?? (await getGmdnTermForDeviceId(aggregation[0].deviceId));
 
-  const trustsWithExperienceCount =
-    await getCountOfOrganisationsWithExperienceWithAggregation(
-      aggregationName,
-      supplierId,
-    );
-  const peopleWithExperienceCount =
-    await getCountOfContactsWithExperienceWithAggregation(
-      aggregationName,
-      supplierId,
-    );
-  const procurementContractCount = await getContractCountForAggregation(
+  const trustData = await getProductTrustData({
     aggregationName,
-    supplierId,
-  );
-  const relevantDocuments = await getCountOfDocumentsByTypeForAggregation(
-    aggregationName,
-    supplierId,
-  );
+    manufacturerId: supplierId,
+  });
 
   const productAggregation: ProductAggregation = {
     aggregationName: aggregation[0].aggregationName ?? "",
     deviceType: deviceType,
-    peopleWithExperienceCount: peopleWithExperienceCount,
-    procurementContractCount: procurementContractCount,
-    relevantDocuments: relevantDocuments,
+    relatedTrustData: trustData.related,
     supplierName,
-    trustsWithExperienceCount: trustsWithExperienceCount,
+    trustData: trustData.exact,
   };
 
   res.render("product", {
     ...(await getProductLinks(route, aggregation[0])),
     breadcrumbs: route.breadcrumbs,
     productAggregation,
+    relatedTrustsHref: route.relatedTrustsHref,
     trustsHref: route.trustsHref,
   });
 };
@@ -663,17 +656,73 @@ export const renderProductTrustsInCategory = async (
   await renderProductTrustsPage(req, res, key, route);
 };
 
-export const renderProductRelatedTrusts = async (
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+// The contracts counted on the product page's related card
+const renderProductRelatedTrustsPage = async (
   req: Request,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  res: Response,
+  { aggregationName, supplierId }: AggregationKey,
+  route: ProductRoute,
+) => {
+  const aggregation = await getAggregationWithName(aggregationName, supplierId);
+
+  if (!aggregation || aggregation.length === 0) {
+    res.status(404).render("not-found");
+    return;
+  }
+
+  const supplierName =
+    route.supplierName ??
+    (await getSupplierWithId(supplierId))?.manOrganisationName ??
+    "";
+  const contracts = await getProductRelatedContracts({
+    aggregationName,
+    manufacturerId: supplierId,
+  });
+
+  res.render("product/related-trusts", {
+    ...getRelatedContractsTable(contracts, req.query, route.searchQueryString),
+    aggregationName,
+    breadcrumbs: [
+      ...route.breadcrumbs,
+      { href: route.productHref, text: aggregationName },
+    ],
+    productHref: route.productHref,
+    supplierName,
+  });
+};
+
+export const renderProductRelatedTrusts = async (
+  req: Request,
   res: Response,
 ) => {
-  await new Promise((resolve) => {
-    console.log("temp async to make linter happy");
-    resolve("");
-  });
-  throw new Error("Not implemented yet");
+  const key = getAggregationKeyFromParams(req);
+
+  if (!key) {
+    res.status(404).render("not-found");
+    return;
+  }
+
+  await renderProductRelatedTrustsPage(
+    req,
+    res,
+    key,
+    getSearchProductRoute(req, key),
+  );
+};
+
+export const renderProductRelatedTrustsInCategory = async (
+  req: Request,
+  res: Response,
+) => {
+  const key = getAggregationKeyFromParams(req);
+  const route = key && (await getCategoryProductRoute(req, key));
+
+  if (!key || !route) {
+    res.status(404).render("not-found");
+    return;
+  }
+
+  await renderProductRelatedTrustsPage(req, res, key, route);
 };
 
 async function createEvidenceCardForOrganisation(

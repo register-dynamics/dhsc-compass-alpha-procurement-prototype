@@ -57,62 +57,6 @@ export const getAggregationWithName = async (
   return aggregation;
 };
 
-export const getCountOfOrganisationsWithExperienceWithAggregation = async (
-  aggregationName: string,
-  manufacturerId: number,
-): Promise<number> => {
-  const result = await db
-    .withSchema("app")
-    .selectFrom("product_evidence as pe")
-    .innerJoin("evidence as e", "e.evidenceId", "pe.evidenceId")
-    .select((eb) =>
-      eb.fn.count<string>("e.organisationId").distinct().as("orgCount"),
-    )
-    .where("pe.aggregationName", "=", aggregationName)
-    .where("pe.manufacturerId", "=", manufacturerId)
-    .executeTakeFirstOrThrow();
-  return Number(result.orgCount);
-};
-
-export const getCountOfContactsWithExperienceWithAggregation = async (
-  aggregationName: string,
-  manufacturerId: number,
-): Promise<number> => {
-  const result = await db
-    .withSchema("app")
-    .selectFrom("product_evidence as pe")
-    .innerJoin("evidence_contacts as ec", "ec.evidenceId", "pe.evidenceId")
-    .select((eb) =>
-      eb.fn.count<string>("ec.contactId").distinct().as("contactCount"),
-    )
-    .where("pe.aggregationName", "=", aggregationName)
-    .where("pe.manufacturerId", "=", manufacturerId)
-    .executeTakeFirstOrThrow();
-  return Number(result.contactCount);
-};
-
-export const getCountOfDocumentsByTypeForAggregation = async (
-  aggregationName: string,
-  manufacturerId: number,
-): Promise<{ count: number; documentType: string }[]> => {
-  const rows = await db
-    .withSchema("app")
-    .selectFrom("product_evidence as pe")
-    .innerJoin("documents as d", "d.evidenceId", "pe.evidenceId")
-    .innerJoin("document_type as dt", "dt.typeOfDocId", "d.typeOfDocId")
-    .select((eb) => [
-      "dt.typeOfDocDesc as documentType",
-      eb.fn.count<string>("d.documentId").distinct().as("count"),
-    ])
-    .where("pe.aggregationName", "=", aggregationName)
-    .where("pe.manufacturerId", "=", manufacturerId)
-    .groupBy(["dt.typeOfDocId", "dt.typeOfDocDesc"])
-    .orderBy("count", "desc")
-    .orderBy("documentType", "asc")
-    .execute();
-  return rows.map((row) => ({ ...row, count: Number(row.count) }));
-};
-
 export const getEvidenceCardsForAggregation = async (
   aggregationName: string,
   manufacturerId: number,

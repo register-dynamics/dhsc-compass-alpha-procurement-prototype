@@ -45,21 +45,15 @@ const {
   getAggregationForProductIdMock,
   getAggregationWithNameMock,
   getBrowsePathForDeviceMock,
-  getContractCountForAggregationMock,
-  getCountOfContactsWithExperienceWithAggregationMock,
-  getCountOfDocumentsByTypeForAggregationMock,
-  getCountOfOrganisationsWithExperienceWithAggregationMock,
   getGmdnTermForDeviceIdMock,
+  getProductTrustDataMock,
   getSupplierWithIdMock,
 } = vi.hoisted(() => ({
   getAggregationForProductIdMock: vi.fn(),
   getAggregationWithNameMock: vi.fn(),
   getBrowsePathForDeviceMock: vi.fn(),
-  getContractCountForAggregationMock: vi.fn(),
-  getCountOfContactsWithExperienceWithAggregationMock: vi.fn(),
-  getCountOfDocumentsByTypeForAggregationMock: vi.fn(),
-  getCountOfOrganisationsWithExperienceWithAggregationMock: vi.fn(),
   getGmdnTermForDeviceIdMock: vi.fn(),
+  getProductTrustDataMock: vi.fn(),
   getSupplierWithIdMock: vi.fn(),
 }));
 
@@ -67,16 +61,10 @@ vi.mock("../services/productsService.js", async (importOriginal) => ({
   ...(await importOriginal<typeof import("../services/productsService.js")>()),
   getAggregationForProductId: getAggregationForProductIdMock,
   getAggregationWithName: getAggregationWithNameMock,
-  getCountOfContactsWithExperienceWithAggregation:
-    getCountOfContactsWithExperienceWithAggregationMock,
-  getCountOfDocumentsByTypeForAggregation:
-    getCountOfDocumentsByTypeForAggregationMock,
-  getCountOfOrganisationsWithExperienceWithAggregation:
-    getCountOfOrganisationsWithExperienceWithAggregationMock,
 }));
 
-vi.mock("../services/atamisService.js", () => ({
-  getContractCountForAggregation: getContractCountForAggregationMock,
+vi.mock("../services/trustDataService.js", () => ({
+  getProductTrustData: getProductTrustDataMock,
 }));
 
 vi.mock("../services/gmdnCategoryService.js", () => ({
@@ -97,10 +85,7 @@ describe("Product controller", () => {
     selectFromMock.mockReset();
     startTransactionMock.mockReset();
     getAggregationWithNameMock.mockReset();
-    getContractCountForAggregationMock.mockReset();
-    getCountOfContactsWithExperienceWithAggregationMock.mockReset();
-    getCountOfDocumentsByTypeForAggregationMock.mockReset();
-    getCountOfOrganisationsWithExperienceWithAggregationMock.mockReset();
+    getProductTrustDataMock.mockReset();
     getBrowsePathForDeviceMock.mockReset();
     getGmdnTermForDeviceIdMock.mockReset();
     getSupplierWithIdMock.mockReset();
@@ -167,7 +152,18 @@ describe("Product controller", () => {
   });
 
   it("GET /supplier/:supplierId/product/:aggregationName renders the product page with aggregation details", async () => {
-    const relevantDocuments = [{ count: 2, documentType: "Business case" }];
+    const trustData = {
+      contractCount: 2,
+      documentCounts: [{ count: 2, documentType: "Business case" }],
+      peopleCount: 7,
+      trustCount: 4,
+    };
+    const relatedTrustData = {
+      contractCount: 5,
+      documentCounts: [],
+      peopleCount: 3,
+      trustCount: 6,
+    };
     getAggregationWithNameMock.mockResolvedValue([
       { aggregationName: "Pump", deviceId: 5, manufacturerId: 3 },
     ]);
@@ -175,14 +171,10 @@ describe("Product controller", () => {
       manOrganisationName: "Acme Medical",
     });
     getGmdnTermForDeviceIdMock.mockResolvedValue("Infusion pump");
-    getCountOfOrganisationsWithExperienceWithAggregationMock.mockResolvedValue(
-      4,
-    );
-    getCountOfContactsWithExperienceWithAggregationMock.mockResolvedValue(7);
-    getContractCountForAggregationMock.mockResolvedValue(2);
-    getCountOfDocumentsByTypeForAggregationMock.mockResolvedValue(
-      relevantDocuments,
-    );
+    getProductTrustDataMock.mockResolvedValue({
+      exact: trustData,
+      related: relatedTrustData,
+    });
 
     const render = vi.fn();
     await renderProduct(
@@ -194,7 +186,10 @@ describe("Product controller", () => {
     );
 
     expect(getAggregationWithNameMock).toHaveBeenCalledWith("Pump", 3);
-    expect(getContractCountForAggregationMock).toHaveBeenCalledWith("Pump", 3);
+    expect(getProductTrustDataMock).toHaveBeenCalledWith({
+      aggregationName: "Pump",
+      manufacturerId: 3,
+    });
     expect(getSupplierWithIdMock).toHaveBeenCalledWith(3);
     expect(getGmdnTermForDeviceIdMock).toHaveBeenCalledWith(5);
     expect(render).toHaveBeenCalledWith("product", {
@@ -205,12 +200,11 @@ describe("Product controller", () => {
       productAggregation: {
         aggregationName: "Pump",
         deviceType: "Infusion pump",
-        peopleWithExperienceCount: 7,
-        procurementContractCount: 2,
-        relevantDocuments,
+        relatedTrustData,
         supplierName: "Acme Medical",
-        trustsWithExperienceCount: 4,
+        trustData,
       },
+      relatedTrustsHref: "/supplier/3/product/Pump/related-trusts",
       trustsHref: "/supplier/3/product/Pump/trusts",
     });
   });
@@ -221,12 +215,16 @@ describe("Product controller", () => {
     ]);
     getSupplierWithIdMock.mockResolvedValue(null);
     getGmdnTermForDeviceIdMock.mockResolvedValue("Infusion pump");
-    getCountOfOrganisationsWithExperienceWithAggregationMock.mockResolvedValue(
-      0,
-    );
-    getCountOfContactsWithExperienceWithAggregationMock.mockResolvedValue(0);
-    getContractCountForAggregationMock.mockResolvedValue(0);
-    getCountOfDocumentsByTypeForAggregationMock.mockResolvedValue([]);
+    const emptyTrustData = {
+      contractCount: 0,
+      documentCounts: [],
+      peopleCount: 0,
+      trustCount: 0,
+    };
+    getProductTrustDataMock.mockResolvedValue({
+      exact: emptyTrustData,
+      related: emptyTrustData,
+    });
 
     const render = vi.fn();
     await renderProduct(

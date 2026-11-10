@@ -1,0 +1,115 @@
+{% extends "layouts/base.html" %}
+
+{#
+  The contracts counted on the product page's related card: the supplier's
+  contracts for GMDN terms related to this device, but not for its own.
+  Based on the alpha prototype's branded-device/related-contracts.html.
+
+  People sift these for the best few leads, so it's a table with 1 row per
+  contract, filtered by category and sorted on the server. The category is
+  the contract's own Atamis category, so people can judge how close it is.
+  There's no hierarchy for those, so they sort A to Z.
+
+  Contract names aren't links yet, as there are no contract pages.
+#}
+
+{% from "breadcrumb/macro.njk" import breadcrumb %}
+{% from "checkboxes/macro.njk" import checkboxes %}
+{% from "details/macro.njk" import details %}
+{% from "tables/macro.njk" import table %}
+
+{% set pageName = "Contracts in the same or related categories – " + aggregationName + " by " + supplierName %}
+
+{% set mainClasses = "nhsuk-main-wrapper--s" %}
+
+{% block beforeContent %}
+
+    {{ breadcrumb({
+        items: breadcrumbs
+    }) }}
+
+{% endblock %}
+
+{% block content %}
+
+    <div class="nhsuk-grid-row">
+        <div class="nhsuk-grid-column-two-thirds">
+
+            <h1 class="nhsuk-heading-l nhsuk-u-margin-bottom-4" id="contracts-heading">
+                <span class="nhsuk-caption-l">{{ aggregationName }} by {{ supplierName }}</span>
+                Contracts in the same or related categories
+            </h1>
+
+        </div>
+    </div>
+
+    <div class="nhsuk-grid-row">
+        <div class="nhsuk-grid-column-full">
+
+            {% if totalCount %}
+
+                {% call details({ summaryText: "Filter by category (" ~ selectedCategoryCount ~ " applied)", classes: "nhsuk-expander" }) %}
+                    <form method="get" novalidate>
+
+                        {{ checkboxes({
+                            name: "category",
+                            idPrefix: "category",
+                            fieldset: { legend: { text: "Category", size: "s" } },
+                            items: categoryItems,
+                            classes: "nhsuk-checkboxes--small",
+                            formGroup: { classes: "nhsuk-u-margin-bottom-3" }
+                        }) }}
+
+                        {% for input in formInputs %}
+                            <input type="hidden" name="{{ input.name }}" value="{{ input.value }}">
+                        {% endfor %}
+
+                        <div class="nhsuk-button-group nhsuk-button-group--small nhsuk-u-margin-bottom-0">
+                            <button class="nhsuk-button nhsuk-button--secondary nhsuk-button--small" data-module="nhsuk-button" type="submit">
+                                Update results
+                            </button>
+                            {% if selectedCategoryCount %}
+                                <a class="nhsuk-link" href="{{ clearFiltersHref }}">Clear filters</a>
+                            {% endif %}
+                        </div>
+
+                    </form>
+                {% endcall %}
+
+                <p class="nhsuk-body">
+                    {%- if selectedCategoryCount -%}
+                        Showing {{ contracts | length }} of {{ totalCount }} contracts.
+                    {%- else -%}
+                        Showing {{ totalCount }} {{ "contract" if totalCount == 1 else "contracts" }}.
+                    {%- endif %}
+                    {{ orderText }}
+                </p>
+
+                {% set rows = [] %}
+                {% for contract in contracts %}
+                    {% set rows = (rows.push([
+                        { header: "Contract", text: contract.contractName },
+                        { header: "Trust", text: contract.trust },
+                        { header: "Category", text: contract.primaryCategory },
+                        { header: "Start date", text: contract.startMonth }
+                    ]), rows) %}
+                {% endfor %}
+
+                {{ table({
+                    attributes: { "aria-labelledby": "contracts-heading" },
+                    responsive: true,
+                    firstCellIsHeader: true,
+                    head: head,
+                    rows: rows
+                }) }}
+
+            {% else %}
+                <p>There are no contracts with {{ supplierName }} in the same or related categories.</p>
+            {% endif %}
+
+            <p><a href="{{ productHref }}">Return to the device</a></p>
+
+        </div>
+    </div>
+
+{% endblock %}

@@ -39,9 +39,15 @@ test("user can search and access product details", async ({ page }) => {
     }),
   ).toBeVisible();
 
-  await expect(page.getByRole("link", { name: "View trusts" })).toHaveAttribute(
+  // 1 for this device's trusts, then 1 for related trusts
+  const viewTrustsLinks = page.getByRole("link", { name: "View trusts" });
+  await expect(viewTrustsLinks.first()).toHaveAttribute(
     "href",
     "/supplier/55623/product/GlucoSense/trusts?q=glucose",
+  );
+  await expect(viewTrustsLinks.last()).toHaveAttribute(
+    "href",
+    "/supplier/55623/product/GlucoSense/related-trusts?q=glucose",
   );
 
   // TODO: Check more content here once it's not hardcoded
