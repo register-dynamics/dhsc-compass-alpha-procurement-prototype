@@ -680,11 +680,7 @@ const renderProductRelatedTrustsPage = async (
   });
 
   res.render("product/related-trusts", {
-    ...getRelatedContractsTable(
-      contracts,
-      req.query,
-      route.searchQueryString,
-    ),
+    ...getRelatedContractsTable(contracts, req.query, route.searchQueryString),
     aggregationName,
     breadcrumbs: [
       ...route.breadcrumbs,
