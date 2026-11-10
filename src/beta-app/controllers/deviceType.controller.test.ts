@@ -85,6 +85,42 @@ describe("Device type controller", () => {
     expect(response.status).toBe(404);
   });
 
+  describe("available trust data", () => {
+    const cardHeadings = (html: string) =>
+      [...html.matchAll(/nhsuk-card__heading[^>]*>\s*([^<]+?)\s*</g)].map(
+        ([, heading]) => heading,
+      );
+
+    it("GET a device type shows trust data for it and similar types", async () => {
+      const response = await get(deviceTypePath);
+
+      expect(cardHeadings(response.text)).toEqual([
+        "9 trusts have experience with this type of device",
+        "6 trusts have experience with similar types of devices",
+      ]);
+    });
+
+    it("GET a device type's supplier shows trust data for that supplier", async () => {
+      const response = await get(`${deviceTypePath}/supplier/13455`);
+
+      expect(cardHeadings(response.text)).toEqual([
+        "7 trusts have Aorta Solutions Heart rate monitor experience",
+        "2 trusts have experience with devices in the same or related categories",
+      ]);
+    });
+
+    it("GET a product shows trust data for it and the supplier's related devices", async () => {
+      const response = await get(
+        `${deviceTypePath}/supplier/13455/product/Heart%20Rate%20Monitor`,
+      );
+
+      expect(cardHeadings(response.text)).toEqual([
+        "3 trusts have experience with Heart Rate Monitor",
+        "7 trusts have experience with Aorta Solutions devices in the same or related categories",
+      ]);
+    });
+  });
+
   describe("product pages", () => {
     const supplierPathFor = `${deviceTypePath}/supplier/13455`;
     const productPath = `${supplierPathFor}/product/Heart%20Rate%20Monitor`;

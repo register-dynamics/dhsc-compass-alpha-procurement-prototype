@@ -137,7 +137,8 @@ INSERT INTO "app"."product_evidence" ("aggregation_name","manufacturer_id","evid
  ('Heart Pro',13455,7891),
  ('Heart Pro',13455,9123),
  ('Heart Pro',13455,13456),
- ('Heart Pro',13455,4321);
+ ('Heart Pro',13455,4321),
+ ('Aorta BP Monitor',13455,9123);
  
 
 -- Seed user for beta app login

@@ -6,7 +6,6 @@ import { postAddEvidenceContactSelfSchema } from "../models/request-schemas/post
 import { postMarkUsefulSchema } from "../models/request-schemas/postMarkUsefulSchema.js";
 import { ProductAggregation } from "../models/view-models/productAggregation.js";
 import { ProductTrusts } from "../models/view-models/productTrusts.js";
-import { getContractCountForAggregation } from "../services/atamisService.js";
 import {
   getBrowsePathForDevice,
   getGmdnTermForDeviceId,
@@ -14,14 +13,12 @@ import {
 import {
   getAggregationForProductId,
   getAggregationWithName,
-  getCountOfContactsWithExperienceWithAggregation,
-  getCountOfDocumentsByTypeForAggregation,
-  getCountOfOrganisationsWithExperienceWithAggregation,
   getEvidenceCardsForAggregation,
   getProductWithId,
 } from "../services/productsService.js";
 import { getSearchQueryString } from "../services/searchQueryService.js";
 import { getSupplierWithId } from "../services/supplierService.js";
+import { getProductTrustData } from "../services/trustDataService.js";
 import { getSupplierInCategory } from "./deviceType.controller.js";
 
 // An aggregation is identified by its name and supplier, as different
@@ -165,33 +162,17 @@ const renderProductPage = async (
   const deviceType =
     route.deviceType ?? (await getGmdnTermForDeviceId(aggregation[0].deviceId));
 
-  const trustsWithExperienceCount =
-    await getCountOfOrganisationsWithExperienceWithAggregation(
-      aggregationName,
-      supplierId,
-    );
-  const peopleWithExperienceCount =
-    await getCountOfContactsWithExperienceWithAggregation(
-      aggregationName,
-      supplierId,
-    );
-  const procurementContractCount = await getContractCountForAggregation(
+  const trustData = await getProductTrustData({
     aggregationName,
-    supplierId,
-  );
-  const relevantDocuments = await getCountOfDocumentsByTypeForAggregation(
-    aggregationName,
-    supplierId,
-  );
+    manufacturerId: supplierId,
+  });
 
   const productAggregation: ProductAggregation = {
     aggregationName: aggregation[0].aggregationName ?? "",
     deviceType: deviceType,
-    peopleWithExperienceCount: peopleWithExperienceCount,
-    procurementContractCount: procurementContractCount,
-    relevantDocuments: relevantDocuments,
+    relatedTrustData: trustData.related,
     supplierName,
-    trustsWithExperienceCount: trustsWithExperienceCount,
+    trustData: trustData.exact,
   };
 
   res.render("product", {

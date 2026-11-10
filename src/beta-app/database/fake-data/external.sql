@@ -200,7 +200,8 @@ INSERT INTO "external"."device_type" ("device_id","gmdn_code","device_risk_sub_t
  (6324,38502,'Class IIa','GMD','General Medical Device',33625),
  (6523,35198,'Class IIa','GMD','General Medical Device',13455),
  (6542,35198,'Class IIa','GMD','General Medical Device',13455),
- (7895,36387,'Class I','GMD','General Medical Device',78546);
+ (7895,36387,'Class I','GMD','General Medical Device',78546),
+ (8801,63088,'Class IIa','GMD','General Medical Device',13455);
 
 INSERT INTO "external"."products" ("product_id","udi_number","device_id","is_model","brand_trade_name","model","product_code","manufacturer_id","aggregation_name","aggregation_type") VALUES (12467896,1324657985,4624,0,'HydroHeal Plus','HydroHeal Plus','751649',73156,'HydroHeal Plus','model'),
  (14236541,4563217896,1596,0,'GlucoSense Flex Reader','GlucoSense','CENK93434',55623,'GlucoSense','model'),
@@ -238,7 +239,8 @@ INSERT INTO "external"."products" ("product_id","udi_number","device_id","is_mod
  (78954612,6632145789,1896,1,'Praxis Knee Plastic Spacer','Praxis Total Knee','DN335',91326,'Praxis Total Knee','model'),
  (84123596,1523455265,4523,0,'Heart Rate Monitor','Heart Rate Monitor','2124-23-66',13455,'Heart Rate Monitor','model'),
  (94621578,2184663215,6324,0,'Insulin Safety Syringe with Fixed Needle','Insulin Kit','7824526',33625,'Insulin Kit','model'),
- (96541235,4561231522,1258,0,'BetaPlex 4000 Static','BetaPlex 4000','RE-190',44622,'BetaPlex 4000','model');
+ (96541235,4561231522,1258,0,'BetaPlex 4000 Static','BetaPlex 4000','RE-190',44622,'BetaPlex 4000','model'),
+ (97123458,1523455266,8801,0,'Aorta Blood Pressure Monitor','Aorta BP Monitor','AB-1200',13455,'Aorta BP Monitor','model');
  
 INSERT INTO "external"."atamis_contracts" ("contract_ref","contract_name","description","owner","status","supplier","company_regestration_number","duns","contracting_authority","business_unit","primary_category","secondary_category","start_date","end_date","contract_finder_url") VALUES ('FAKE0001','FHFT - C- Orthopaedics - Paragon42 Orthopaedic and Trauma Consignments (foot & a','FHFT - C- Orthopaedics - Paragon42 Orthopaedic and Trauma Consignments (foot & ankle)','William Hill','Active - Renewal in Progress','NHS SUPPLY CHAIN COORDINATION LIMITED (NHSSC - SCCL)','10881732','22334455','Frogmorton Health NHS Foundation Trust','FHFT - Procurement','Clinical and Medical Support Services',NULL,'2024-01-16','2025-01-15','www.fake_cf_url.gov.uk'),
  ('FAKE0002','OthoSolutions - Orthopaedic Internal & External Fixation','Orthopaedic Internal & External Fixation - Screw - Plate Fixation, Compression Screws, Cannulated Screws, Foot & Ankle Plates, Staples, IM Nailing Systems, External Fixation Systems, Miscellaneous / Consumables, DHS','William Ford','Active','Otho Solutions Limited','434123','22334466','Great Farthing Hospitals NHS Foundation Trust','GFH - Surgery & Planned Care','Medical equipments pharmaceuticals and personal care products',NULL,'2023-08-30','2027-08-28',NULL),
@@ -257,7 +259,10 @@ INSERT INTO "external"."atamis_contracts" ("contract_ref","contract_name","descr
  ('FAKE0015','Lot 2 Combined Needles and Syringes','Contract for the supply of combined needles and syringes','Alan Wheatley','Active','Needles & Syringe Unlimited UK Ltd','317383',NULL,'Baranduin Teaching Hospitals NHS Foundation Trust','BTHFT - 13 - Specialist Medicine','Medical Consumables',NULL,'2026-03-30','2028-01-31',NULL),
  ('FAKE0016','DGFT - Thermometry - Thermometers and Probe Covers','DGFT - Thermometry - Thermometers and Probe Covers','Alethea Charlton','Active - Renewal in Progress','OmegaAM Solutions','3364789','22334918','Whitwell Acute Hospitals NHS Trust','WAH - Procurement','Tympanic Thermometer Consumables','Thermometers - Patient','2025-11-28','2027-05-29','www.fake_cf_url.gov.uk'),
  ('FAKE0017','Omega Thermometers - RJAH','FOC thermometers using commitment spend of probe covers WHU040','Carol Ann Hartnell','Active','OmegaAM Solutions','3364789','22335078','Waymeet Hospitals University National Health Service Trust','WHU - Procurement','Tympanic Thermometer Consumables','Thermometers - Patient','2024-06-01','2027-05-31',NULL),
- ('FAKE0018','Thermometers & Probe Covers','Supply of Thermometers & Probe Covers.','Howard Lang','Active','Helion Technologies International',NULL,NULL,'University Hospitals of Longcleeve NHS Trust','UHL GBC CBC','Tympanic Thermometer Consumables','Thermometers - Patient','2026-03-30','2030-03-29',NULL);
+ ('FAKE0018','Thermometers & Probe Covers','Supply of Thermometers & Probe Covers.','Howard Lang','Active','Helion Technologies International',NULL,NULL,'University Hospitals of Longcleeve NHS Trust','UHL GBC CBC','Tympanic Thermometer Consumables','Thermometers - Patient','2026-03-30','2030-03-29',NULL),
+ ('FAKE0019','Blood Pressure Monitoring Equipment','Supply of blood pressure monitors and cuffs.','Imogen Bracegirdle','Active','Aorta Solutions Ltd','1360551',NULL,'Baranduin Teaching Hospitals NHS Foundation Trust','BTH Cardiology','Patient Monitoring Equipment',NULL,'2025-04-01','2028-03-31',NULL),
+ ('FAKE0020','Cardiac Monitoring Consumables','Heart rate monitors and associated consumables.','Hamfast Gamgee','Active','Ferrus Technology Solutions',NULL,NULL,'United Lamplighter Teaching Hospitals NHS Trust','ULTH Medical Equipment','Patient Monitoring Equipment',NULL,'2024-09-01','2027-08-31',NULL),
+ ('FAKE0021','Insulin Syringes and Needles','Supply of insulin syringes with fixed needles.','Rosie Cotton','Active','ArcTech (UK) Limited','28638932',NULL,'Great Farthing Hospitals NHS Foundation Trust','GFH Diabetes Service','Medical & Surgical Consumables',NULL,'2025-11-01','2027-10-31',NULL);
 
 INSERT INTO "external"."atamis_pipeline" ("ref_no","workplan_name","contracting_authority","business_unit","bu_contact","description","commercial_lead","existing_supplier","expected_start_date","cpv_category","alt_category","delivery_lead") VALUES ('FAKE1001','FHFT - C- Orthopaedics - Orthopaedic and Trauma Procurement','Frogmorton Health NHS Foundation Trust','FHFT - Procurement','Katharine Schofield','FHFT - C- Orthopaedics - Paragon42 Orthopaedic and Trauma Consignments (hip)','Keith Pyott','Otho Solutions Limited',NULL,'Orthopaedic implants','Surgical Implants and Associated Products','Gordon Wales'),
  ('FAKE1002','Orthopaedic Internal & External Fixations','Great Farthing Hospitals NHS Foundation Trust','GFH - Surgery & Planned Care','Walter Randall','Orthopaedic Internal & External Fixations','John Ringham','Otho Solutions Limited',NULL,'Orthopaedic implants','Surgical Implants and Associated Products',NULL),
@@ -280,7 +285,10 @@ INSERT INTO "external"."contracts_to_mhra_manufacturers" ("contract_ref","manufa
  ('FAKE0013',78546),
  ('FAKE0014',33625),
  ('FAKE0016',65283),
- ('FAKE0017',65283);
+ ('FAKE0017',65283),
+ ('FAKE0019',13455),
+ ('FAKE0020',45123),
+ ('FAKE0021',95632);
  
 INSERT INTO "external"."atamis_to_gmdn" ("atamis_ref","gmdn_code") VALUES ('FAKE0007',35839),
  ('FAKE0008',63088),
@@ -320,7 +328,11 @@ INSERT INTO "external"."atamis_to_gmdn" ("atamis_ref","gmdn_code") VALUES ('FAKE
  ('FAKE1006',36387),
  ('FAKE1007',38502),
  ('FAKE1008',14035),
- ('FAKE1009',14035);
+ ('FAKE1009',14035),
+ ('FAKE0006',35198),
+ ('FAKE0019',63088),
+ ('FAKE0020',35198),
+ ('FAKE0021',38502);
 
 REFRESH MATERIALIZED VIEW "external"."search";
 REFRESH MATERIALIZED VIEW "external"."aggregation_search";

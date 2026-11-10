@@ -1,6 +1,7 @@
 {% extends "layouts/base.html" %}
 
 {% from "breadcrumb/macro.njk" import breadcrumb %}
+{% from "includes/trust-data-card.njk" import trust_data_card %}
 {% from "tables/macro.njk" import table %}
 
 {% set pageName = gmdnTerm %}
@@ -55,5 +56,27 @@
 
         </div>
     </div>
+
+    <h2 class="nhsuk-heading-m nhsuk-u-margin-top-5">Available trust data</h2>
+
+    <ul class="nhsuk-grid-row nhsuk-card-group">
+        <li class="nhsuk-grid-column-one-half nhsuk-card-group__item">
+            {{ trust_data_card({
+                trustData: trustData.exact,
+                experience: "experience with this type of device",
+                showDocuments: true,
+                headingLevel: 3,
+                headingClasses: "nhsuk-heading-s"
+            }) }}
+        </li>
+        <li class="nhsuk-grid-column-one-half nhsuk-card-group__item">
+            {{ trust_data_card({
+                trustData: trustData.related,
+                experience: "experience with similar types of devices",
+                headingLevel: 3,
+                headingClasses: "nhsuk-heading-s"
+            }) }}
+        </li>
+    </ul>
 
 {% endblock %}

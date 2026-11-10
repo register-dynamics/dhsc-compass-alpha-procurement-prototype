@@ -10,6 +10,7 @@ import {
   getSuppliersForDeviceType,
   getSupplierWithId,
 } from "../services/supplierService.js";
+import { getDeviceTypeTrustData } from "../services/trustDataService.js";
 
 const getCategoryTrail = async (categoryId: number) => {
   if (!Number.isInteger(categoryId)) {
@@ -67,13 +68,17 @@ export const renderDeviceType = async (req: Request, res: Response) => {
   }
 
   const { breadcrumbs, deviceTypeId, deviceTypePath, gmdnTerm } = deviceType;
-  const suppliers = await getSuppliersForDeviceType(deviceTypeId);
+  const [suppliers, trustData] = await Promise.all([
+    getSuppliersForDeviceType(deviceTypeId),
+    getDeviceTypeTrustData(deviceTypeId),
+  ]);
 
   res.render("device-type", {
     breadcrumbs,
     deviceTypePath,
     gmdnTerm,
     suppliers,
+    trustData,
   });
 };
 
@@ -101,6 +106,7 @@ export const getSupplierInCategory = async (req: Request) => {
   return {
     breadcrumbs: [...breadcrumbs, { href: deviceTypePath, text: gmdnTerm }],
     devices,
+    deviceTypeId,
     deviceTypePath,
     gmdnTerm,
     supplier,
@@ -116,5 +122,10 @@ export const renderDeviceTypeSupplier = async (req: Request, res: Response) => {
     return;
   }
 
-  res.render("device-type/supplier", supplierInCategory);
+  const trustData = await getDeviceTypeTrustData(
+    supplierInCategory.deviceTypeId,
+    supplierInCategory.supplier.manufacturerId,
+  );
+
+  res.render("device-type/supplier", { ...supplierInCategory, trustData });
 };
