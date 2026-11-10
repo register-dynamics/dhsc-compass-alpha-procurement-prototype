@@ -13,7 +13,7 @@ test("homepage loads and shows the main service heading", async ({ page }) => {
   await expect(
     page.getByRole("heading", {
       level: 1,
-      name: "Search and evaluate medical technology based on good clinical outcomes",
+      name: "Search and evaluate medical technology",
     }),
   ).toBeVisible();
 
