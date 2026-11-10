@@ -12,7 +12,7 @@ import {
   getGmdnTermForDeviceId,
 } from "../services/gmdnCategoryService.js";
 import {
-  getAggregationNameForProductId,
+  getAggregationForProductId,
   getAggregationWithName,
   getCountOfContactsWithExperienceWithAggregation,
   getCountOfDocumentsByTypeForAggregation,
@@ -23,6 +23,13 @@ import {
 import { getSearchQueryString } from "../services/searchQueryService.js";
 import { getSupplierWithId } from "../services/supplierService.js";
 import { getSupplierInCategory } from "./deviceType.controller.js";
+
+// An aggregation is identified by its name and supplier, as different
+// suppliers can use the same aggregation name for unrelated products
+interface AggregationKey {
+  aggregationName: string;
+  supplierId: number;
+}
 
 interface Breadcrumb {
   href: string;
@@ -41,11 +48,25 @@ interface ProductRoute {
   trustsHref: string;
 }
 
+// Returns undefined if the URL doesn't name an aggregation and supplier
+const getAggregationKeyFromParams = (
+  req: Request,
+): AggregationKey | undefined => {
+  const aggregationName = req.params.aggregationName as string | undefined;
+  const supplierId = Number(req.params.supplierId);
+
+  if (!aggregationName || !Number.isInteger(supplierId)) {
+    return undefined;
+  }
+
+  return { aggregationName, supplierId };
+};
+
 const getSearchProductRoute = (
   req: Request,
-  aggregationName: string,
+  { aggregationName, supplierId }: AggregationKey,
 ): ProductRoute => {
-  const productPath = `/product/${encodeURIComponent(aggregationName)}`;
+  const productPath = `/supplier/${String(supplierId)}/product/${encodeURIComponent(aggregationName)}`;
   const searchQueryString = getSearchQueryString(req.query);
 
   return {
@@ -67,7 +88,7 @@ const getSearchProductRoute = (
 // in the URL.
 const getCategoryProductRoute = async (
   req: Request,
-  aggregationName: string,
+  { aggregationName }: AggregationKey,
 ): Promise<ProductRoute | undefined> => {
   const supplierInCategory = await getSupplierInCategory(req);
 
@@ -126,10 +147,10 @@ const getProductLinks = async (
 
 const renderProductPage = async (
   res: Response,
-  aggregationName: string,
+  { aggregationName, supplierId }: AggregationKey,
   route: ProductRoute,
 ) => {
-  const aggregation = await getAggregationWithName(aggregationName);
+  const aggregation = await getAggregationWithName(aggregationName, supplierId);
 
   if (!aggregation || aggregation.length === 0) {
     res.status(404).render("not-found");
@@ -138,21 +159,30 @@ const renderProductPage = async (
 
   const supplierName =
     route.supplierName ??
-    (await getSupplierWithId(aggregation[0].manufacturerId))
-      ?.manOrganisationName ??
+    (await getSupplierWithId(supplierId))?.manOrganisationName ??
     "";
 
   const deviceType =
     route.deviceType ?? (await getGmdnTermForDeviceId(aggregation[0].deviceId));
 
   const trustsWithExperienceCount =
-    await getCountOfOrganisationsWithExperienceWithAggregation(aggregationName);
+    await getCountOfOrganisationsWithExperienceWithAggregation(
+      aggregationName,
+      supplierId,
+    );
   const peopleWithExperienceCount =
-    await getCountOfContactsWithExperienceWithAggregation(aggregationName);
-  const procurementContractCount =
-    await getContractCountForAggregation(aggregationName);
-  const relevantDocuments =
-    await getCountOfDocumentsByTypeForAggregation(aggregationName);
+    await getCountOfContactsWithExperienceWithAggregation(
+      aggregationName,
+      supplierId,
+    );
+  const procurementContractCount = await getContractCountForAggregation(
+    aggregationName,
+    supplierId,
+  );
+  const relevantDocuments = await getCountOfDocumentsByTypeForAggregation(
+    aggregationName,
+    supplierId,
+  );
 
   const productAggregation: ProductAggregation = {
     aggregationName: aggregation[0].aggregationName ?? "",
@@ -173,30 +203,26 @@ const renderProductPage = async (
 };
 
 export const renderProduct = async (req: Request, res: Response) => {
-  const aggregationName = req.params.aggregationName as string;
+  const key = getAggregationKeyFromParams(req);
 
-  if (!aggregationName) {
+  if (!key) {
     res.status(404).render("not-found");
     return;
   }
 
-  await renderProductPage(
-    res,
-    aggregationName,
-    getSearchProductRoute(req, aggregationName),
-  );
+  await renderProductPage(res, key, getSearchProductRoute(req, key));
 };
 
 export const renderProductInCategory = async (req: Request, res: Response) => {
-  const aggregationName = req.params.aggregationName as string;
-  const route = await getCategoryProductRoute(req, aggregationName);
+  const key = getAggregationKeyFromParams(req);
+  const route = key && (await getCategoryProductRoute(req, key));
 
-  if (!route) {
+  if (!key || !route) {
     res.status(404).render("not-found");
     return;
   }
 
-  await renderProductPage(res, aggregationName, route);
+  await renderProductPage(res, key, route);
 };
 
 export const postMarkUseful = async (req: Request, res: Response) => {
@@ -205,10 +231,10 @@ export const postMarkUseful = async (req: Request, res: Response) => {
   if (!result.success) {
     return res
       .status(400)
-      .send("Aggregation name and Evidence ID are required");
+      .send("Aggregation name, supplier ID and evidence ID are required");
   }
 
-  const { aggregationName, evidenceId } = result.data;
+  const { aggregationName, evidenceId, supplierId } = result.data;
 
   // Get the user ID from the session or request context
   const userId = req.user?.id;
@@ -228,6 +254,7 @@ export const postMarkUseful = async (req: Request, res: Response) => {
         // Should be fixed when we switch from SQLite to Postgres
         dateMarkedUseful: new Date().toUTCString(),
         evidenceId: evidenceId,
+        manufacturerId: supplierId,
         userId,
       })
       .execute();
@@ -238,6 +265,7 @@ export const postMarkUseful = async (req: Request, res: Response) => {
       .select(db.fn.count("evidenceId").as("count"))
       .where("evidenceId", "=", evidenceId)
       .where("aggregationName", "=", aggregationName)
+      .where("manufacturerId", "=", supplierId)
       .execute();
 
     // This gets type "string | number | bigint" for some reason
@@ -257,10 +285,10 @@ export const postUnmarkUseful = async (req: Request, res: Response) => {
   if (!result.success) {
     return res
       .status(400)
-      .send("Aggregation name and Evidence ID are required");
+      .send("Aggregation name, supplier ID and evidence ID are required");
   }
 
-  const { aggregationName, evidenceId } = result.data;
+  const { aggregationName, evidenceId, supplierId } = result.data;
 
   // Get the user ID from the session or request context
   const userId = req.user?.id;
@@ -276,6 +304,7 @@ export const postUnmarkUseful = async (req: Request, res: Response) => {
       .deleteFrom("product_evidence_useful")
       .where("evidenceId", "=", evidenceId)
       .where("aggregationName", "=", aggregationName)
+      .where("manufacturerId", "=", supplierId)
       .where("userId", "=", userId)
       .execute();
 
@@ -284,6 +313,7 @@ export const postUnmarkUseful = async (req: Request, res: Response) => {
       .selectFrom("product_evidence_useful")
       .select(db.fn.count("evidenceId").as("count"))
       .where("aggregationName", "=", aggregationName)
+      .where("manufacturerId", "=", supplierId)
       .where("evidenceId", "=", evidenceId)
       .execute();
 
@@ -570,10 +600,10 @@ export const postAddEvidenceContactSelf = async (
 const renderProductTrustsPage = async (
   req: Request,
   res: Response,
-  aggregationName: string,
+  { aggregationName, supplierId }: AggregationKey,
   route: ProductRoute,
 ) => {
-  const aggregation = await getAggregationWithName(aggregationName);
+  const aggregation = await getAggregationWithName(aggregationName, supplierId);
 
   if (!aggregation || aggregation.length === 0) {
     res.status(404).render("not-found");
@@ -582,17 +612,18 @@ const renderProductTrustsPage = async (
 
   const supplierName =
     route.supplierName ??
-    (await getSupplierWithId(aggregation[0].manufacturerId))
-      ?.manOrganisationName ??
+    (await getSupplierWithId(supplierId))?.manOrganisationName ??
     "";
   const evidenceCards = await getEvidenceCardsForAggregation(
     aggregationName,
+    supplierId,
     req.user?.id,
   );
 
   const viewModel: ProductTrusts = {
     aggregationName: aggregation[0].aggregationName ?? "",
     evidenceCards: evidenceCards,
+    supplierId,
     supplierName,
   };
 
@@ -607,34 +638,29 @@ const renderProductTrustsPage = async (
 };
 
 export const renderProductTrusts = async (req: Request, res: Response) => {
-  const aggregationName = req.params.aggregationName as string;
+  const key = getAggregationKeyFromParams(req);
 
-  if (!aggregationName) {
+  if (!key) {
     res.status(404).render("not-found");
     return;
   }
 
-  await renderProductTrustsPage(
-    req,
-    res,
-    aggregationName,
-    getSearchProductRoute(req, aggregationName),
-  );
+  await renderProductTrustsPage(req, res, key, getSearchProductRoute(req, key));
 };
 
 export const renderProductTrustsInCategory = async (
   req: Request,
   res: Response,
 ) => {
-  const aggregationName = req.params.aggregationName as string;
-  const route = await getCategoryProductRoute(req, aggregationName);
+  const key = getAggregationKeyFromParams(req);
+  const route = key && (await getCategoryProductRoute(req, key));
 
-  if (!route) {
+  if (!key || !route) {
     res.status(404).render("not-found");
     return;
   }
 
-  await renderProductTrustsPage(req, res, aggregationName, route);
+  await renderProductTrustsPage(req, res, key, route);
 };
 
 export const renderProductRelatedTrusts = async (
@@ -657,9 +683,9 @@ async function createEvidenceCardForOrganisation(
   const genericEvidenceType = 8;
 
   // Evidence is linked to the product's aggregation rather than the product itself
-  const aggregationName = await getAggregationNameForProductId(productId);
+  const aggregation = await getAggregationForProductId(productId);
 
-  if (!aggregationName) {
+  if (!aggregation) {
     throw new Error(`No aggregation found for product ID ${String(productId)}`);
   }
 
@@ -680,8 +706,9 @@ async function createEvidenceCardForOrganisation(
       .withSchema("app")
       .insertInto("product_evidence")
       .values({
-        aggregationName,
+        aggregationName: aggregation.aggregationName,
         evidenceId: evidence.evidenceId,
+        manufacturerId: aggregation.manufacturerId,
       })
       .executeTakeFirstOrThrow();
 

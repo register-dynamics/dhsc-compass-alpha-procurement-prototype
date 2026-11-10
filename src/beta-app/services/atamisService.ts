@@ -2,6 +2,7 @@ import { db } from "../database/client.js";
 
 export const getContractCountForAggregation = async (
   aggregationName: string,
+  manufacturerId: number,
 ): Promise<number> => {
   const result = await db
     .withSchema("external")
@@ -13,12 +14,14 @@ export const getContractCountForAggregation = async (
       eb.fn.count<string>("ac.contractRef").distinct().as("contractCount"),
     )
     .where("p.aggregationName", "=", aggregationName)
+    .where("p.manufacturerId", "=", manufacturerId)
     .executeTakeFirstOrThrow();
   return Number(result.contractCount);
 };
 
 export const getContractCountsByContractingAuthorityForAggregation = async (
   aggregationName: string,
+  manufacturerId: number,
   contractingAuthorities: string[],
 ): Promise<Map<string, number>> => {
   if (contractingAuthorities.length === 0) {
@@ -36,6 +39,7 @@ export const getContractCountsByContractingAuthorityForAggregation = async (
       eb.fn.count<string>("ac.contractRef").distinct().as("contractCount"),
     ])
     .where("p.aggregationName", "=", aggregationName)
+    .where("p.manufacturerId", "=", manufacturerId)
     .where("ac.contractingAuthority", "in", contractingAuthorities)
     .groupBy("ac.contractingAuthority")
     .execute();

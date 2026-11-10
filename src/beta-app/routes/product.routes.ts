@@ -13,14 +13,16 @@ import { registerRoutes, type RouteDefinition } from "./route-definitions.js";
 
 const router = Router();
 
-const categoryProductPath =
-  "/category/:categoryId/device-type/:deviceTypeId/supplier/:supplierId/product/:aggregationName";
+// An aggregation is identified by its name and supplier, as different
+// suppliers can use the same aggregation name for unrelated products
+const searchProductPath = "/supplier/:supplierId/product/:aggregationName";
+const categoryProductPath = `/category/:categoryId/device-type/:deviceTypeId${searchProductPath}`;
 
 const routeDefinitions: RouteDefinition[] = [
   {
     handler: renderProduct,
     method: "get",
-    path: "/product/:aggregationName",
+    path: searchProductPath,
   },
   {
     handler: renderProductInCategory,
@@ -65,7 +67,7 @@ const routeDefinitions: RouteDefinition[] = [
   {
     handler: renderProductTrusts,
     method: "get",
-    path: "/product/:aggregationName/trusts",
+    path: `${searchProductPath}/trusts`,
   },
   {
     handler: renderProductRelatedTrusts,

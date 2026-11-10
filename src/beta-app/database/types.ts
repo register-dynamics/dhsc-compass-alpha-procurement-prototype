@@ -48,6 +48,7 @@ export type ProductEvidence = Selectable<ProductEvidenceTable>;
 
 export interface ProductEvidenceTable {
   aggregationName: string;
+  manufacturerId: number;
   evidenceId: number;
 }
 
@@ -121,6 +122,7 @@ export type ProductEvidenceUseful = Selectable<ProductEvidenceUsefulTable>;
 
 export interface ProductEvidenceUsefulTable {
   aggregationName: string;
+  manufacturerId: number;
   evidenceId: number;
   userId: number;
   dateMarkedUseful: Date;
@@ -150,13 +152,14 @@ export type AggregationSearch = Selectable<AggregationSearchTable>;
 
 export interface AggregationSearchTable {
   aggregationName: string;
+  manufacturerId: number;
+  manufacturerName: null | string;
+  manufacturerCountry: null | string;
   aggregationType: null | string;
   productCount: number;
   productNames: string[];
   models: string[];
   productCodes: string[];
-  manufacturers: string[];
-  countries: string[];
   gmdnCodes: number[];
   gmdnNames: string[];
   types: string[];

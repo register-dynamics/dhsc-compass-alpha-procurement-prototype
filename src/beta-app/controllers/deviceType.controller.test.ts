@@ -114,6 +114,7 @@ describe("Device type controller", () => {
       expect(response.status).toBe(200);
       expect(response.text).toContain(`href="${supplierPathFor}"`);
       expect(response.text).toContain(`href="${productPath}"`);
+      expect(response.text).toContain('data-supplier-id="13455"');
     });
 
     it.each([
@@ -139,9 +140,9 @@ describe("Device type controller", () => {
       expect((await get(`${path}/trusts`)).status).toBe(404);
     });
 
-    it("GET /product/:aggregationName from search links back to those results", async () => {
+    it("GET /supplier/:supplierId/product/:aggregationName from search links back to those results", async () => {
       const response = await get(
-        "/product/Blood%20Pressure%20Kit?q=blood%20kit&page=2&evil=1",
+        "/supplier/45123/product/Blood%20Pressure%20Kit?q=blood%20kit&page=2&evil=1",
       );
 
       expect(response.status).toBe(200);
@@ -150,13 +151,15 @@ describe("Device type controller", () => {
         "/search-results?q=blood%20kit&amp;page=2",
       );
       expect(response.text).toContain(
-        "/product/Blood%20Pressure%20Kit/trusts?q=blood%20kit&amp;page=2",
+        "/supplier/45123/product/Blood%20Pressure%20Kit/trusts?q=blood%20kit&amp;page=2",
       );
       expect(response.text).not.toContain("evil");
     });
 
-    it("GET /product/:aggregationName without a search falls back to search", async () => {
-      const response = await get("/product/Blood%20Pressure%20Kit");
+    it("GET /supplier/:supplierId/product/:aggregationName without a search falls back to search", async () => {
+      const response = await get(
+        "/supplier/45123/product/Blood%20Pressure%20Kit",
+      );
 
       expect(response.status).toBe(200);
       expect(response.text).toContain('href="/search"');
@@ -174,7 +177,9 @@ describe("Device type controller", () => {
     });
 
     it("GET a product from search links to its device type and supplier", async () => {
-      const response = await get("/product/Blood%20Pressure%20Kit?q=kit");
+      const response = await get(
+        "/supplier/45123/product/Blood%20Pressure%20Kit?q=kit",
+      );
       const hrefs = /nhsuk-summary-list[\s\S]*?<\/dl>/
         .exec(response.text)?.[0]
         .match(/href="[^"]+"/g);
@@ -192,7 +197,9 @@ describe("Device type controller", () => {
     });
 
     it("GET a product only in the Anatomical Specialty tree still links to its device type", async () => {
-      const response = await get("/product/Praxis%20Total%20Knee");
+      const response = await get(
+        "/supplier/91326/product/Praxis%20Total%20Knee",
+      );
 
       expect(response.text).toMatch(
         /href="\/category\/\d+\/device-type\/33665"/,
@@ -202,7 +209,16 @@ describe("Device type controller", () => {
     it("GET /search-results passes the search on to product links", async () => {
       const response = await get("/search-results?q=blood");
 
-      expect(response.text).toMatch(/href="product\/[^"]+\?q=blood"/);
+      expect(response.text).toMatch(
+        /href="\/supplier\/\d+\/product\/[^"]+\?q=blood"/,
+      );
+    });
+
+    it("GET a product from search with the wrong supplier returns 404", async () => {
+      const path = "/supplier/13455/product/Blood%20Pressure%20Kit";
+
+      expect((await get(path)).status).toBe(404);
+      expect((await get(`${path}/trusts`)).status).toBe(404);
     });
   });
 });

@@ -24,32 +24,42 @@ export const getProductWithId = async (
   return product ?? null;
 };
 
-export const getAggregationNameForProductId = async (
+export const getAggregationForProductId = async (
   productId: number,
-): Promise<null | string> => {
+): Promise<null | { aggregationName: string; manufacturerId: number }> => {
   const product = await db
     .withSchema("external")
     .selectFrom("products")
-    .select("aggregationName")
+    .select(["aggregationName", "manufacturerId"])
     .where("productId", "=", productId)
     .executeTakeFirst();
-  return product?.aggregationName ?? null;
+  return product?.aggregationName
+    ? {
+        aggregationName: product.aggregationName,
+        manufacturerId: product.manufacturerId,
+      }
+    : null;
 };
 
+// Different suppliers can use the same aggregation name for unrelated
+// products, so an aggregation is identified by its name and supplier.
 export const getAggregationWithName = async (
   aggregationName: string,
+  manufacturerId: number,
 ): Promise<null | Product[]> => {
   const aggregation = await db
     .withSchema("external")
     .selectFrom("products")
     .selectAll()
     .where("aggregationName", "=", aggregationName)
+    .where("manufacturerId", "=", manufacturerId)
     .execute();
   return aggregation;
 };
 
 export const getCountOfOrganisationsWithExperienceWithAggregation = async (
   aggregationName: string,
+  manufacturerId: number,
 ): Promise<number> => {
   const result = await db
     .withSchema("app")
@@ -59,12 +69,14 @@ export const getCountOfOrganisationsWithExperienceWithAggregation = async (
       eb.fn.count<string>("e.organisationId").distinct().as("orgCount"),
     )
     .where("pe.aggregationName", "=", aggregationName)
+    .where("pe.manufacturerId", "=", manufacturerId)
     .executeTakeFirstOrThrow();
   return Number(result.orgCount);
 };
 
 export const getCountOfContactsWithExperienceWithAggregation = async (
   aggregationName: string,
+  manufacturerId: number,
 ): Promise<number> => {
   const result = await db
     .withSchema("app")
@@ -74,12 +86,14 @@ export const getCountOfContactsWithExperienceWithAggregation = async (
       eb.fn.count<string>("ec.contactId").distinct().as("contactCount"),
     )
     .where("pe.aggregationName", "=", aggregationName)
+    .where("pe.manufacturerId", "=", manufacturerId)
     .executeTakeFirstOrThrow();
   return Number(result.contactCount);
 };
 
 export const getCountOfDocumentsByTypeForAggregation = async (
   aggregationName: string,
+  manufacturerId: number,
 ): Promise<{ count: number; documentType: string }[]> => {
   const rows = await db
     .withSchema("app")
@@ -91,6 +105,7 @@ export const getCountOfDocumentsByTypeForAggregation = async (
       eb.fn.count<string>("d.documentId").distinct().as("count"),
     ])
     .where("pe.aggregationName", "=", aggregationName)
+    .where("pe.manufacturerId", "=", manufacturerId)
     .groupBy(["dt.typeOfDocId", "dt.typeOfDocDesc"])
     .orderBy("count", "desc")
     .orderBy("documentType", "asc")
@@ -100,6 +115,7 @@ export const getCountOfDocumentsByTypeForAggregation = async (
 
 export const getEvidenceCardsForAggregation = async (
   aggregationName: string,
+  manufacturerId: number,
   userId?: number,
 ): Promise<EvidenceCard[]> => {
   // Contacts and documents are counted in separate queries so the joins
@@ -118,6 +134,7 @@ export const getEvidenceCardsForAggregation = async (
       eb.fn.count<string>("ec.contactId").distinct().as("contactCount"),
     ])
     .where("pe.aggregationName", "=", aggregationName)
+    .where("pe.manufacturerId", "=", manufacturerId)
     .groupBy(["e.evidenceId", "o.organisationName"])
     .orderBy("o.organisationName", "asc")
     .execute();
@@ -157,6 +174,7 @@ export const getEvidenceCardsForAggregation = async (
         .as("markedCount"),
     ])
     .where("aggregationName", "=", aggregationName)
+    .where("manufacturerId", "=", manufacturerId)
     .where(
       "evidenceId",
       "in",
@@ -169,6 +187,7 @@ export const getEvidenceCardsForAggregation = async (
   const contractCounts =
     await getContractCountsByContractingAuthorityForAggregation(
       aggregationName,
+      manufacturerId,
       [...new Set(evidenceRows.map((row) => row.organisationName))],
     );
 

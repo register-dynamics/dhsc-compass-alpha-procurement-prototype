@@ -46,8 +46,8 @@ export const renderSearchResults = async (req: Request, res: Response) => {
     offset: pageSize * currentPage,
   };
 
-  // Each aggregation can span several GMDN categories, so match any
-  // aggregation with at least one of the selected categories. The "No
+  // Each result can span several GMDN categories, so match any
+  // result with at least one of the selected categories. The "No
   // category" checkbox has an empty value and matches aggregations with no
   // GMDN categories at all.
   const selectedGmdnNames = queryCategories.filter((c) => c !== "");
@@ -108,20 +108,23 @@ export const renderSearchResults = async (req: Request, res: Response) => {
     );
 
   // Perform the search query with pagination and render the results page.
-  // Order by name so pages are stable.
+  // Each result is an aggregation from one supplier. Order by name and
+  // supplier so pages are stable.
   const results = await filteredSearchResultsQuery
     .select([
       "aggregationName",
+      "manufacturerId",
+      "manufacturerName",
       "aggregationType",
       "productCount",
       "productNames",
       "models",
-      "manufacturers",
-      "countries",
       "gmdnNames",
       "types",
     ])
     .orderBy("aggregationName")
+    .orderBy("manufacturerName")
+    .orderBy("manufacturerId")
     .limit(queryParams.limit)
     .offset(queryParams.offset)
     .execute()
