@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   getDeviceTypeTrustData,
+  getProductRelatedContracts,
   getProductTrustData,
   getRelatedGmdnCodes,
 } from "./trustDataService.js";
@@ -57,9 +58,34 @@ describe("Trust data service", () => {
       });
       // Heart Pro and Pacemaker have the same term, Aorta BP Monitor a related one
       expect(related).toMatchObject({
-        contractCount: 1,
+        contractCount: 3,
         peopleCount: 10,
-        trustCount: 7,
+        trustCount: 9,
+      });
+    });
+  });
+
+  describe("getProductRelatedContracts", () => {
+    it("lists the contracts counted on the related card", async () => {
+      const aggregation = {
+        aggregationName: "Heart Rate Monitor",
+        manufacturerId: 13455,
+      };
+      const contracts = await getProductRelatedContracts(aggregation);
+      const { related } = await getProductTrustData(aggregation);
+
+      expect(contracts.map((c) => c.contractRef).sort()).toEqual([
+        "FAKE0019",
+        "FAKE0022",
+        "FAKE0023",
+      ]);
+      expect(contracts).toHaveLength(related.contractCount);
+      expect(contracts).toContainEqual({
+        contractName: "Blood Pressure Monitoring Equipment",
+        contractRef: "FAKE0019",
+        primaryCategory: "Patient Monitoring Equipment",
+        startDate: expect.any(Date) as Date,
+        trust: "Baranduin Teaching Hospitals NHS Foundation Trust",
       });
     });
   });
@@ -70,7 +96,7 @@ describe("Trust data service", () => {
 
       // FAKE0008 is for both terms, so it's only on the exact card
       expect(exact.contractCount).toBe(3);
-      expect(related.contractCount).toBe(4);
+      expect(related.contractCount).toBe(6);
     });
 
     it("only counts the supplier's evidence and contracts when given one", async () => {
@@ -78,9 +104,9 @@ describe("Trust data service", () => {
 
       expect(exact).toMatchObject({ contractCount: 1, trustCount: 7 });
       expect(related).toMatchObject({
-        contractCount: 1,
+        contractCount: 3,
         peopleCount: 1,
-        trustCount: 2,
+        trustCount: 4,
       });
     });
   });

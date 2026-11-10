@@ -20,6 +20,14 @@ import { db } from "../database/client.js";
 // for its GMDN terms, and its related contracts are its supplier's contracts
 // for related terms that aren't also for its own.
 
+export interface RelatedContract {
+  contractName: string;
+  contractRef: string;
+  primaryCategory: string;
+  startDate: Date;
+  trust: string;
+}
+
 // An aggregation is identified by its name and supplier, as different
 // suppliers can use the same aggregation name for unrelated products
 export interface SupplierAggregation {
@@ -54,6 +62,33 @@ interface TrustDataScope {
 export const getProductTrustData = async (
   aggregation: SupplierAggregation,
 ): Promise<TrustDataCards> => {
+  const scopes = await getProductScopes(aggregation);
+
+  const [exact, related] = await Promise.all([
+    getTrustData(scopes.exact),
+    getTrustData(scopes.related),
+  ]);
+
+  return { exact, related };
+};
+
+// The contracts counted on the product page's related card
+export const getProductRelatedContracts = async (
+  aggregation: SupplierAggregation,
+): Promise<RelatedContract[]> => {
+  const { related } = await getProductScopes(aggregation);
+
+  return (await getContracts(related)).map(
+    ({ contractingAuthority, ...contract }) => ({
+      ...contract,
+      trust: contractingAuthority,
+    }),
+  );
+};
+
+const getProductScopes = async (
+  aggregation: SupplierAggregation,
+): Promise<{ exact: TrustDataScope; related: TrustDataScope }> => {
   const gmdnCodes = await getGmdnCodesForAggregation(aggregation);
   const relatedGmdnCodes = await getRelatedGmdnCodes(gmdnCodes);
   const supplierAggregations = await getAggregationsWithGmdnCodes(
@@ -61,13 +96,13 @@ export const getProductTrustData = async (
     aggregation.manufacturerId,
   );
 
-  const [exact, related] = await Promise.all([
-    getTrustData({
+  return {
+    exact: {
       contractGmdnCodes: gmdnCodes,
       evidenceAggregations: [aggregation],
       manufacturerId: aggregation.manufacturerId,
-    }),
-    getTrustData({
+    },
+    related: {
       contractGmdnCodes: relatedGmdnCodes,
       evidenceAggregations: supplierAggregations.filter(
         ({ aggregationName }) =>
@@ -75,10 +110,8 @@ export const getProductTrustData = async (
       ),
       excludedContractGmdnCodes: gmdnCodes,
       manufacturerId: aggregation.manufacturerId,
-    }),
-  ]);
-
-  return { exact, related };
+    },
+  };
 };
 
 // Leave out manufacturerId for every supplier of the device type
@@ -344,7 +377,13 @@ const getContracts = async ({
     .withSchema("external")
     .selectFrom("atamis_contracts as ac")
     .innerJoin("atamis_to_gmdn as atg", "atg.atamisRef", "ac.contractRef")
-    .select(["ac.contractRef", "ac.contractingAuthority"])
+    .select([
+      "ac.contractRef",
+      "ac.contractName",
+      "ac.contractingAuthority",
+      "ac.primaryCategory",
+      "ac.startDate",
+    ])
     .distinct()
     .where("atg.gmdnCode", "in", contractGmdnCodes);
 

@@ -60,10 +60,10 @@
             }) }} #}
         </li>
         <li class="nhsuk-grid-column-one-half nhsuk-card-group__item">
-            {# No "View trusts" link until there's a page for related trusts #}
             {{ trust_data_card({
                 trustData: productAggregation.relatedTrustData,
                 experience: "experience with " + productAggregation.supplierName + " devices in the same or related categories",
+                href: relatedTrustsHref,
                 headingClasses: "nhsuk-heading-m"
             }) }}
         </li>

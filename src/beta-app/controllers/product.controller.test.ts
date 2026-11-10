@@ -204,6 +204,7 @@ describe("Product controller", () => {
         supplierName: "Acme Medical",
         trustData,
       },
+      relatedTrustsHref: "/supplier/3/product/Pump/related-trusts",
       trustsHref: "/supplier/3/product/Pump/trusts",
     });
   });
