@@ -1,0 +1,57 @@
+{#
+  Add your trust's experience, 2 of 3. Rebuilt from sketchpad/experience-acquisition.html.
+#}
+
+{% extends "mvp/branded-device/_layout.html" %}
+
+{% from "back-link/macro.njk" import backLink %}
+{% from "button/macro.njk" import button %}
+{% from "radios/macro.njk" import radios %}
+
+{% set pageName = "What happened when your trust looked at this device?" %}
+{% set mainClasses = "nhsuk-main-wrapper--s" %}
+
+{% block beforeContent %}
+
+{{ backLink({ href: "/mvp/branded-device/experience-contact", text: "Back" }) }}
+
+{% endblock %}
+
+{% block content %}
+
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+
+    <span class="nhsuk-caption-l">2 of 3</span>
+
+    <form action="/mvp/branded-device/experience-document" method="get" novalidate>
+
+      {{ radios({
+        name: "exp-acquisition",
+        idPrefix: "exp-a",
+        fieldset: {
+          legend: {
+            text: pageName,
+            classes: "nhsuk-fieldset__legend--l",
+            isPageHeading: true
+          }
+        },
+        items: [
+          { value: "procured", text: "We procured it" },
+          { value: "in-progress", text: "We chose it, procurement is still going on" },
+          { value: "under-review", text: "We are still reviewing it" },
+          { value: "not-procured", text: "We did not procure it" },
+          { value: "not-sure", text: "I am not sure" }
+        ]
+      }) }}
+
+      {{ button({ text: "Continue" }) }}
+
+      <p><a href="/mvp/branded-device/experience-document">Skip this step</a></p>
+
+    </form>
+
+  </div>
+</div>
+
+{% endblock %}

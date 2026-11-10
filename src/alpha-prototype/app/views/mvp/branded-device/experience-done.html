@@ -1,0 +1,58 @@
+{#
+  Add your trust's experience, end of the flow. Rebuilt from sketchpad/experience-done.html.
+  Static: the rows do not reflect what was entered, as in the sketchpad.
+#}
+
+{% extends "mvp/branded-device/_layout.html" %}
+
+{% from "panel/macro.njk" import panel %}
+{% from "summary-list/macro.njk" import summaryList %}
+
+{% set brand = "InsuFlow Pro" %}
+{% set trust = "Manchester University NHS Foundation Trust" %}
+{% set pageName = "Thank you" %}
+{% set mainClasses = "nhsuk-main-wrapper--s" %}
+
+{% block content %}
+
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+
+    {{ panel({
+      titleText: pageName,
+      headingLevel: 1,
+      text: "Your trust now appears on " + brand
+    }) }}
+
+    <h2 class="nhsuk-heading-s nhsuk-u-margin-top-5">What you added</h2>
+
+    {{ summaryList({
+      rows: [
+        {
+          key: { text: "Trust experience" },
+          value: { text: trust }
+        },
+        {
+          key: { text: "Contact" },
+          value: { text: "Kelvin Simpson" },
+          actions: { items: [{ href: "/mvp/branded-device/experience-contact", text: "Change contact" }] }
+        },
+        {
+          key: { text: "Acquisition" },
+          value: { text: "Not added" },
+          actions: { items: [{ href: "/mvp/branded-device/experience-acquisition", text: "Add acquisition" }] }
+        },
+        {
+          key: { text: "Document" },
+          value: { text: "Not added" },
+          actions: { items: [{ href: "/mvp/branded-device/experience-document", text: "Add document" }] }
+        }
+      ]
+    }) }}
+
+    <p><a href="/mvp/branded-device">Return to the device</a></p>
+
+  </div>
+</div>
+
+{% endblock %}

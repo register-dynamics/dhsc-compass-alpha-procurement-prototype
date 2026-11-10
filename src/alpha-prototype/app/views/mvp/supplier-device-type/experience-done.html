@@ -1,0 +1,61 @@
+{#
+  Add your trust's experience, end of the flow. Based on branded-device/experience-done.html, with no device or outcome questions.
+  Static: the rows do not reflect what was entered, as in the sketchpad.
+#}
+
+{% extends "mvp/branded-device/_layout.html" %}
+
+{% from "panel/macro.njk" import panel %}
+{% from "summary-list/macro.njk" import summaryList %}
+
+{% set listingName = "Bone-screw internal spinal fixation system by Nuvasive" %}
+{% set trust = "Manchester University NHS Foundation Trust" %}
+{% set pageName = "Thank you" %}
+{% set mainClasses = "nhsuk-main-wrapper--s" %}
+
+{% block content %}
+
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+
+    {{ panel({
+      titleText: pageName,
+      headingLevel: 1,
+      text: "Your trust now appears on " + listingName
+    }) }}
+
+    <h2 class="nhsuk-heading-s nhsuk-u-margin-top-5">What you added</h2>
+
+    {{ summaryList({
+      rows: [
+        {
+          key: { text: "Trust experience" },
+          value: { text: trust }
+        },
+        {
+          key: { text: "Supplier" },
+          value: { text: "Nuvasive" }
+        },
+        {
+          key: { text: "Device type" },
+          value: { text: "Bone-screw internal spinal fixation system" }
+        },
+        {
+          key: { text: "Contact" },
+          value: { text: "Kelvin Simpson" },
+          actions: { items: [{ href: "/mvp/supplier-device-type/experience-contact", text: "Change contact" }] }
+        },
+        {
+          key: { text: "Document" },
+          value: { text: "Not added" },
+          actions: { items: [{ href: "/mvp/supplier-device-type/experience-document", text: "Add document" }] }
+        }
+      ]
+    }) }}
+
+    <p><a href="/mvp/supplier-device-type">Return to the supplier page</a></p>
+
+  </div>
+</div>
+
+{% endblock %}

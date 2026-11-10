@@ -43,13 +43,9 @@
         <div class="nice-hero__inner">
           <div class="nice-hero__text">
             {% block heroHeading %}
-              <h1 class="nhsuk-heading-l nhsuk-u-margin-bottom-4">
-                Search and evaluate medical technology based on good clinical outcomes
+              <h1 class="nhsuk-heading-xl nhsuk-u-margin-bottom-4">
+                Search and evaluate medical technology
               </h1>
-
-              <p class="nhsuk-body-l">Used by
-                <strong>###</strong>
-                NHS trusts</p>
             {% endblock %}
             {% block heroActions %}
               {% if currentUser == null %}
@@ -88,9 +84,16 @@
       {{ card({ heading: "Centralised information", headingSize: "s",
     descriptionHtml: "
     <p>
-      Access data from multiple trusted sources in one place. This includes NICE
-      HealthTech guidance, ODEP Accreditation, NHS documents and MHRA
-      Registration data.
+      Access data from trusted sources in one place, including NICE, ODEP, MHRA and Atamis.
+    </p>
+    " }) }}
+    </li>
+     <li class="nhsuk-grid-column-one-third nhsuk-card-group__item">
+      {{ card({ heading: "Peer contact support", headingSize: "s",
+    descriptionHtml: "
+    <p>
+      Connect directly with trusts that have experience with devices you're
+      considering.
     </p>
     " }) }}
     </li>
@@ -99,17 +102,7 @@
     descriptionHtml: "
     <p>
       Read and share evaluations from NHS trusts that are using technology in
-      practice. Get insights beyond formal guidance, with a focus on clinical
-      outomes.
-    </p>
-    " }) }}
-    </li>
-    <li class="nhsuk-grid-column-one-third nhsuk-card-group__item">
-      {{ card({ heading: "Peer contact support", headingSize: "s",
-    descriptionHtml: "
-    <p>
-      Connect directly with trusts who have evaluated devices you're
-      considering. Learn from their experience before making decisions.
+      practice.
     </p>
     " }) }}
     </li>
@@ -127,7 +120,7 @@
       {{ card({ "heading": "Procurement professionals", "headingLevel": 3,
     "descriptionHtml": "
     <p>
-      Improve tendering, supplier evaluation, and business case development for medical technology purchases.
+      Improve tendering, supplier evaluation and business case development for medical technology purchases.
     </p>
     " }) }}
     </div>

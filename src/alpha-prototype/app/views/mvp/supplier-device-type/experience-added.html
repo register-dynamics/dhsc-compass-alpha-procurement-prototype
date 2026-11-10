@@ -1,0 +1,35 @@
+{#
+  Add your trust's experience, step 2. Based on branded-device/experience-added.html, with no device or outcome questions.
+#}
+
+{% extends "mvp/branded-device/_layout.html" %}
+
+{% from "panel/macro.njk" import panel %}
+{% from "button/macro.njk" import button %}
+
+{% set listingName = "Bone-screw internal spinal fixation system by Nuvasive" %}
+{% set trust = "Manchester University NHS Foundation Trust" %}
+{% set pageName = "Your trust is now listed" %}
+{% set mainClasses = "nhsuk-main-wrapper--s" %}
+
+{% block content %}
+
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+
+    {{ panel({
+      titleText: pageName,
+      headingLevel: 1,
+      text: trust + " has experience with " + listingName
+    }) }}
+
+    <form action="/mvp/supplier-device-type/experience-contact" method="get" novalidate>
+      {{ button({ text: "Add contact details" }) }}
+    </form>
+
+    <p><a href="/mvp/supplier-device-type">Return to the supplier page</a></p>
+
+  </div>
+</div>
+
+{% endblock %}

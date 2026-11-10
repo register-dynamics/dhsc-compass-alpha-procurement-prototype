@@ -14,7 +14,9 @@ import {
 } from "./middleware/auth.js";
 import { helmetConfig } from "./middleware/helmetConfig.js";
 import { permissionsPolicy } from "./middleware/helmetConfig.js";
-import deviceTypeRoutes, { deviceTypeRouteDefinitions } from "./routes/deviceType.routes.js";
+import deviceTypeRoutes, {
+  deviceTypeRouteDefinitions,
+} from "./routes/deviceType.routes.js";
 import indexRoutes, { indexRouteDefinitions } from "./routes/index.routes.js";
 import productRoutes, {
   productRouteDefinitions,
@@ -121,7 +123,7 @@ const routeModules = [
     definitions: deviceTypeRouteDefinitions,
     mountPath: "/",
     router: deviceTypeRoutes,
-  }
+  },
 ];
 
 // Require authentication for all routes not marked as public
