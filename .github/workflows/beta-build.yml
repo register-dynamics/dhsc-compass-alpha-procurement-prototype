@@ -11,14 +11,14 @@ permissions:
   artifact-metadata: write
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: cmps-selfhosted-runner
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
       - name: Setup Carvel ytt
         uses: carvel-dev/setup-action@v2
         with:
-          token: ${ github.token }}
+          token: ${{ github.token }}
           only: ytt
       - name: Set up environment variables
         shell: bash
@@ -32,7 +32,7 @@ jobs:
           echo "REVISION_SUFFIX=${{ github.run_number }}-${{ github.run_attempt }}" >> "$GITHUB_ENV"
           echo "APP_NAME=${{ github.ref_name }}" >> "$GITHUB_ENV"
           echo "LOCATION=${{ vars.AZURE_LOCATION }}" >> "$GITHUB_ENV"
-          echo "MANAGED_IDENTITY_RESOURCE_ID=${{ vars.AZURE_MANAGED_IDENTITY_RESOURCE_ID }} >> "$GITHUB_ENV"
+          echo "MANAGED_IDENTITY_RESOURCE_ID=${{ vars.AZURE_MANAGED_IDENTITY_RESOURCE_ID }}" >> "$GITHUB_ENV"
           echo "MANAGED_ENVIRONMENT_ID=${{ vars.AZURE_MANAGED_ENVIRONMENT_ID }}" >> "$GITHUB_ENV"
       - name: Set up database
         shell: bash
