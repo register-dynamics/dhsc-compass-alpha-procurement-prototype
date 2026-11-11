@@ -1,8 +1,8 @@
-name: Beta container build
+name: Beta deploy
 on:
-  push:
-    tags:
-      - "*"
+  pull_request:
+    paths:
+      - 'src/beta-app/**'
 permissions:
   contents: read
   id-token: write
