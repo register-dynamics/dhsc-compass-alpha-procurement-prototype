@@ -29,17 +29,33 @@ jobs:
           echo "ENV=${ENV}" >> "$GITHUB_ENV"
           echo "IMAGE_PATH=${IMAGE_PATH}" >> "$GITHUB_ENV"
           echo "FULL_IMAGE=${{ vars.AZURE_CONTAINER_REGISTRY}}.azurecr.io/${IMAGE_PATH}" >> "$GITHUB_ENV"
-          echo "REVISION_SUFFIX=${{ github.run_number }}-${{ github.run_attemp }}" >> "$GITHUB_ENV"
+          echo "REVISION_SUFFIX=${{ github.run_number }}-${{ github.run_attempt }}" >> "$GITHUB_ENV"
           echo "APP_NAME=${{ github.ref_name }}" >> "$GITHUB_ENV"
-      - name: Obtain database access token
+          echo "LOCATION=${{ vars.AZURE_LOCATION }}" >> "$GITHUB_ENV"
+          echo "MANAGED_IDENTITY_RESOURCE_ID=${{ vars.AZURE_MANAGED_IDENTITY_RESOURCE_ID }} >> "$GITHUB_ENV"
+          echo "MANAGED_ENVIRONMENT_ID=${{ vars.AZURE_MANAGED_ENVIRONMENT_ID }}" >> "$GITHUB_ENV"
+      - name: Set up database
         shell: bash
         run: |
           set -euo pipefail
-          PG_TOKEN=`az account get-access-token --resource-type oss-rdbms | jq .accessToken`
-          echo "DATABASE_NAME=${APP_NAME}"
           echo "DATABASE_HOST=${{ vars.AZURE_DATABASE_HOST }}"
-          echo "DATABASE_USER=${{ vars.AZURE_DATABASE_USER }}"
-          echo "DATABASE_PASSWORD=${PG_TOKEN}" >> "$GITHUB_ENV"
+          # Pick a password
+          DATABASE_PASSWORD="`dd if=/dev/random bs=16 count=1 | sha1sum`"
+          # Drop any existing database/user
+          echo "DROP DATABASE IF EXISTS $APP_NAME; DROP USER IF EXISTS $APP_NAME;" | psql -h ${{ vars.AZURE_DATABASE_HOST }} template1
+          # Create new database/user
+          echo "CREATE USER $APP_NAME WITH PASSWORD '$DATABASE_PASSWORD'; CREATE DATABASE $APP_NAME OWNER $APP_NAME;" | psql -h ${{ vars.AZURE_DATABASE_HOST }} template1
+          # Apply migrations
+          export DATABASE_HOST=${{ vars.AZURE_DATABASE_HOST }}
+          export DATABASE_NAME=$APP_NAME
+          export DATABASE_USER=$APP_NAME
+          export DATABASE_PASSWORD
+          (cd src/beta-app; npm run db:migrate)
+          # Load fake data
+          psql -U $DATABASE_USER -h $DATABASE_HOST -p $DATABASE_PASSWORD $DATABASE_NAME < src/beta-app/database/fake-data/external.sql
+          psql -U $DATABASE_USER -h $DATABASE_HOST -p $DATABASE_PASSWORD $DATABASE_NAME < src/beta-app/database/fake-data/app.sql
+          # Save password for later steps
+          echo "DATABASE_PASSWORD=$DATABASE_PASSWORD" >> "$GITHUB_ENV"
       - name: Instantiate container YAML
         shell: bash
         run: |
@@ -50,6 +66,13 @@ jobs:
             --data-value acr_login_server="${{ vars.AZURE_CONTAINER_REGISTRY }}.azurecr.io" \
             --data-value image="${FULL_IMAGE}" \
             --data-value revision_suffix="${REVISION_SUFFIX}" \
+            --data-value environment="${ENV}" \
+            --data-value location="${LOCATION}" \
+            --data-value app_name="${APP_NAME}" \
+            --data-value managed_identity_resource_id="${MANAGED_IDENTITY_RESOURCE_ID}" \
+            --data-value managed_environment_id="${MANAGED_ENVIRONMENT_ID}" \
+            --data-value database_host="${DATABASE_HOST}" \
+            --data-value database_password="${DATABASE_PASSWORD}" \
             > "deploy/rendered.yaml"
           echo "YAML=deploy/rendered.yaml" >> "$GITHUB_ENV"
       - name: Validate YAML
@@ -106,7 +129,7 @@ jobs:
         with:
           client-id: ${{ vars.AZURE_CLIENT_ID }}
           tenant-id: ${{ vars.AZURE_TENANT_ID }}
-          subscription-id: ${{ vars.AZURE_RTL_SUBSCRIPTION_ID }}
+          subscription-id: ${{ vars.AZURE_SHARED_SUBSCRIPTION_ID }}
 
       - name: Build image in ACR
         shell: bash
@@ -114,7 +137,7 @@ jobs:
           set -euo pipefail
 
           az acr build \
-            --subscription "${{ vars.AZURE_RTL_SUBSCRIPTION_ID }}" \
+            --subscription "${{ vars.AZURE_SHARED_SUBSCRIPTION_ID }}" \
             --registry "${{ vars.AZURE_CONTAINER_REGISTRY }}" \
             --source-acr-auth-id '[caller]' \
             --image "${IMAGE_PATH}" \
@@ -129,7 +152,7 @@ jobs:
           if az containerapp show \
             --name "${APP_NAME}" \
             --resource-group "${{ vars.AZURE_RESOURCE_GROUP }}" \
-            --subscription "${{ vars.AZURE_RTL_SUBSCRIPTION_ID }}" > /dev/null 2>&1; then
+            --subscription "${{ vars.AZURE_SHARED_SUBSCRIPTION_ID }}" > /dev/null 2>&1; then
             echo "exists=true" >> "$GITHUB_OUTPUT"
           else
             echo "exists=false" >> "$GITHUB_OUTPUT"
@@ -144,7 +167,7 @@ jobs:
           az containerapp create \
             --name "${APP_NAME}" \
             --resource-group "${{ vars.AZURE_RESOURCE_GROUP }}" \
-            --subscription "${{ vars.AZURE_RTL_SUBSCRIPTION_ID }}" \
+            --subscription "${{ vars.AZURE_SHARED_SUBSCRIPTION_ID }}" \
             --environment "${{ steps.rendered_bootstrap.outputs.managed_environment_id }}" \
             --user-assigned "${{ steps.rendered_bootstrap.outputs.managed_identity_resource_id }}" \
             --workload-profile-name "${{ steps.rendered_bootstrap.outputs.workload_profile_name }}" \
@@ -159,7 +182,7 @@ jobs:
           az containerapp registry set \
             --name "${APP_NAME}" \
             --resource-group "${{ vars.AZURE_RESOURCE_GROUP }}" \
-            --subscription "${{ vars.AZURE_RTL_SUBSCRIPTION_ID }}" \
+            --subscription "${{ vars.AZURE_SHARED_SUBSCRIPTION_ID }}" \
             --server "${{ vars.AZURE_CONTAINER_REGISTRY }}.azurecr.io" \
             --identity "${{ steps.rendered_bootstrap.outputs.managed_identity_resource_id }}" \
             --output none
@@ -173,12 +196,12 @@ jobs:
           image_to_deploy: ${{ env.FULL_IMAGE }}
           azure_client_id: ${{ vars.AZURE_CLIENT_ID }}
           azure_tenant_id: ${{ vars.AZURE_TENANT_ID }}
-          azure_subscription_id: ${{ vars.AZURE_RTL_SUBSCRIPTION_ID }}
+          azure_subscription_id: ${{ vars.AZURE_SHARED_SUBSCRIPTION_ID }}
 
       - name: Add deployment summary
         shell: bash
         run: |
-          fqdn="$(az containerapp show --name "${APP_NAME}" --resource-group "${{ vars.AZURE_RESOURCE_GROUP }}" --subscription "${{ vars.AZURE_RTL_SUBSCRIPTION_ID }}" --query "properties.configuration.ingress.fqdn" -o tsv)"
+          fqdn="$(az containerapp show --name "${APP_NAME}" --resource-group "${{ vars.AZURE_RESOURCE_GROUP }}" --subscription "${{ vars.AZURE_SHARED_SUBSCRIPTION_ID }}" --query "properties.configuration.ingress.fqdn" -o tsv)"
           {
             echo "### ${APP_NAME} deployment"
             echo

@@ -1,0 +1,59 @@
+#@ load("@ytt:data", "data")
+---
+apiVersion: 2024-02-02-preview
+name: #@ data.values.app_name
+type: microsoft.app/containerapps
+location: #@ data.values.location
+tags:
+  Compliance: "NHS Official"
+  Environment: #@ data.values.environment
+  Lifecycle: "Active"
+  Project: "Compass"
+  Team: "Compass"
+identity:
+  type: SystemAssigned,UserAssigned
+  userAssignedIdentities:
+    #@yaml/text-templated-strings
+    (@= data.values.managed_identity_resource_id @): {}
+properties:
+  managedEnvironmentId: #@ data.values.managed_environment_id
+  workloadProfileName: "dedicated-d4"
+  configuration:
+    activeRevisionsMode: Single
+    maxInactiveRevisions: 0
+    #@ if/end len(data.values.secrets) > 0:
+    secrets:
+      #@ for secret in data.values.secrets:
+      - name: #@ secret.name
+        keyVaultUrl: #@ secret.keyVaultUrl
+        identity: #@ data.values.managed_identity_resource_id
+      #@ end
+    registries:
+      - server: #@ data.values.acr_login_server
+        identity: #@ data.values.managed_identity_resource_id
+    ingress:
+      external: true
+      targetPort: 3001
+      transport: "http"
+      allowInsecure: false
+  template:
+    revisionSuffix: #@ data.values.revision_suffix
+    containers:
+      - name: #@ data.values.app_name
+        image: #@ data.values.image
+        env:
+         - name: DATABASE_NAME
+           value: #@ data.values.app_name
+         - name: DATABASE_HOST
+           value: #@ data.values.database_host
+         - name: DATABASE_USER
+           value: #@ data.values.app_name
+         - name: DATABASE_PASSWORD
+           value: #@ data.values.database_password
+        resources:
+          cpu: 0.5
+          memory: "1Gi"
+          ephemeralStorage: "1Gi"
+    scale:
+      minReplicas: 1
+      maxReplicas: 2
