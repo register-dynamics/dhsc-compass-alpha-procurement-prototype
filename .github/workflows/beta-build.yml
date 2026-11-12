@@ -26,29 +26,33 @@ jobs:
           set -euo pipefail
           ENV=dev # FIXME make this depend on the tag name
           IMAGE_PATH=compass:${{ github.sha }}
+          APP_NAME="`echo ${{ github.ref_name }} | sed s_/_-_`"
           echo "ENV=${ENV}" >> "$GITHUB_ENV"
           echo "IMAGE_PATH=${IMAGE_PATH}" >> "$GITHUB_ENV"
           echo "FULL_IMAGE=${{ vars.AZURE_CONTAINER_REGISTRY}}.azurecr.io/${IMAGE_PATH}" >> "$GITHUB_ENV"
           echo "REVISION_SUFFIX=${{ github.run_number }}-${{ github.run_attempt }}" >> "$GITHUB_ENV"
-          echo "APP_NAME=${{ github.ref_name }}" >> "$GITHUB_ENV"
+          echo "APP_NAME=$APP_NAME" >> "$GITHUB_ENV"
           echo "LOCATION=${{ vars.AZURE_LOCATION }}" >> "$GITHUB_ENV"
           echo "MANAGED_IDENTITY_RESOURCE_ID=${{ vars.AZURE_MANAGED_IDENTITY_RESOURCE_ID }}" >> "$GITHUB_ENV"
           echo "MANAGED_ENVIRONMENT_ID=${{ vars.AZURE_MANAGED_ENVIRONMENT_ID }}" >> "$GITHUB_ENV"
-      - name: Setup PostgreSQL
-        uses: tj-actions/install-postgresql@a889ed6c6fa05022333ed4101295bb1d604f97a8 # tag v3
-        with:
-          postgresql-version: 18
-      - name: Set up database
+      - name: Set up database configuration
         shell: bash
         run: |
           set -euo pipefail
           echo "DATABASE_HOST=${{ vars.AZURE_DATABASE_HOST }}"
           # Pick a password
-          DATABASE_PASSWORD="`dd if=/dev/random bs=16 count=1 | base64`"
-          # Drop any existing database/user
-          echo "DROP DATABASE IF EXISTS $APP_NAME; DROP USER IF EXISTS $APP_NAME;" | psql -h ${{ vars.AZURE_DATABASE_HOST }} template1
-          # Create new database/user
-          echo "CREATE USER $APP_NAME WITH PASSWORD '$DATABASE_PASSWORD'; CREATE DATABASE $APP_NAME OWNER $APP_NAME;" | psql -h ${{ vars.AZURE_DATABASE_HOST }} template1
+          DATABASE_PASSWORD="`dd if=/dev/random bs=16 count=1 | base64 | sed s/[^a-zA-Z0-9]//g`"
+          # Prepare database setup SQL
+          cat src/beta-app/deploy/db_setup.sql | sed s/_NAME_/$APP_NAME/ | sed s/_PASSWORD_/$DATABASE_PASSWORD/ > db_setup.sql
+      - name: Create user and database
+        uses: azure/postgresql@v1.2.0
+        with:
+          connection-string: "host=${{ vars.AZURE_DATABASE_HOST }} dbname=template1"
+          server-name: ${{ vars.AZURE_DATABASE_HOST }}
+          plsql-file: "db_setup.sql"
+      - name: Complete database setup
+        shell: bash
+        run: |
           # Apply migrations
           export DATABASE_HOST=${{ vars.AZURE_DATABASE_HOST }}
           export DATABASE_NAME=$APP_NAME
