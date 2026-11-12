@@ -34,6 +34,10 @@ jobs:
           echo "LOCATION=${{ vars.AZURE_LOCATION }}" >> "$GITHUB_ENV"
           echo "MANAGED_IDENTITY_RESOURCE_ID=${{ vars.AZURE_MANAGED_IDENTITY_RESOURCE_ID }}" >> "$GITHUB_ENV"
           echo "MANAGED_ENVIRONMENT_ID=${{ vars.AZURE_MANAGED_ENVIRONMENT_ID }}" >> "$GITHUB_ENV"
+      - name: Setup PostgreSQL
+        uses: tj-actions/install-postgresql@v3
+        with:
+          postgresql-version: 18
       - name: Set up database
         shell: bash
         run: |
