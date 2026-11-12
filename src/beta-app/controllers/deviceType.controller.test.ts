@@ -85,6 +85,72 @@ describe("Device type controller", () => {
     expect(response.status).toBe(404);
   });
 
+  describe("a device type's supplier reached from search", () => {
+    const searchSupplierPath = `/device-type/${deviceTypeId}/supplier/13455`;
+
+    it("GET leads back to the search in the breadcrumbs, not the categories", async () => {
+      const response = await get(`${searchSupplierPath}?q=heart&page=2`);
+
+      expect(response.status).toBe(200);
+      expect(response.text).toContain(
+        'href="/search-results?q=heart&amp;page=2"',
+      );
+      // No category trail, which would start with "Search and browse"
+      expect(response.text).not.toContain("Search and browse");
+      expect(response.text).not.toContain('href="/category/9990"');
+      expect(response.text).toContain("Aorta Solutions");
+      expect(response.text).toContain("Heart rate monitor");
+    });
+
+    it("GET without a search leads back to the search page", async () => {
+      const response = await get(searchSupplierPath);
+
+      expect(response.status).toBe(200);
+      expect(response.text).toContain('href="/search"');
+    });
+
+    it("GET links its products by their search path, keeping the search", async () => {
+      const response = await get(`${searchSupplierPath}?q=heart`);
+
+      expect(response.text).toContain(
+        'href="/supplier/13455/product/Heart%20Rate%20Monitor?q=heart"',
+      );
+    });
+
+    it("GET links to the device type through a category picked for it", async () => {
+      const response = await get(searchSupplierPath);
+
+      expect(response.text).toMatch(
+        new RegExp(`href="/category/\\d+/device-type/${deviceTypeId}"`),
+      );
+    });
+
+    it("GET shows the same trust data as when browsing", async () => {
+      const [fromSearch, fromBrowse] = await Promise.all([
+        get(searchSupplierPath),
+        get(`${deviceTypePath}/supplier/13455`),
+      ]);
+
+      expect(fromSearch.text).toContain(
+        "7 trusts have Aorta Solutions Heart rate monitor experience",
+      );
+      expect(fromBrowse.text).toContain(
+        "7 trusts have Aorta Solutions Heart rate monitor experience",
+      );
+    });
+
+    it.each([
+      ["an unknown device type", "/device-type/999999/supplier/13455"],
+      ["a non-numeric device type", "/device-type/abc/supplier/13455"],
+      ["an unknown supplier", `/device-type/${deviceTypeId}/supplier/999999`],
+      ["a non-numeric supplier", `/device-type/${deviceTypeId}/supplier/abc`],
+    ])("GET with %s returns 404", async (_, path) => {
+      const response = await get(path);
+
+      expect(response.status).toBe(404);
+    });
+  });
+
   describe("available trust data", () => {
     const cardHeadings = (html: string) =>
       [...html.matchAll(/nhsuk-card__heading[^>]*>\s*([^<]+?)\s*</g)].map(
@@ -351,11 +417,11 @@ describe("Device type controller", () => {
       );
     });
 
-    it("GET /search-results passes the search on to product links", async () => {
+    it("GET /search-results passes the search on to supplier links", async () => {
       const response = await get("/search-results?q=blood");
 
       expect(response.text).toMatch(
-        /href="\/supplier\/\d+\/product\/[^"]+\?q=blood"/,
+        /href="\/device-type\/\d+\/supplier\/\d+\?q=blood"/,
       );
     });
 

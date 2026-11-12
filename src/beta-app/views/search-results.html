@@ -62,8 +62,8 @@
                                             <div class="nhsuk-checkboxes__item">
                                                 {% set categoryChecked = "checked" if category.checked else 
                                                     "" %}
-                                                <input class="nhsuk-checkboxes__input" id="category-{{ category.name }}" name="[category]" type="checkbox" value="{{ category.name }}" {{ categoryChecked }}>
-                                                <label class="nhsuk-label nhsuk-checkboxes__label" for="category-{{ category.name }}">
+                                                <input class="nhsuk-checkboxes__input" id="category-{{ category.code }}" name="[category]" type="checkbox" value="{{ category.code }}" {{ categoryChecked }}>
+                                                <label class="nhsuk-label nhsuk-checkboxes__label" for="category-{{ category.code }}">
                                                     {% if category.name %}
                                                         {{ category.name }}
                                                     {% else %}
@@ -98,43 +98,22 @@
                 {% else %}
                     <strong>0</strong>
                 {% endif %}
-                of <strong>{{ searchResultsCount }}</strong> products
+                of <strong>{{ searchResultsCount }}</strong> results
                 </p>
 
                 {% for result in searchResults %}
                     <div class="nhsuk-card nhsuk-card--clickable app-card--compact">
                         <div class="nhsuk-card__content">
                             <h4 class="nhsuk-card__heading nhsuk-heading-s">
-                                <a class="nhsuk-card__link" href="/supplier/{{ result.manufacturerId }}/product/{{ result.aggregationName | urlencode }}{{ searchQueryString }}">
-                                    {{ result.aggregationName }}
+                                <a class="nhsuk-card__link" href="/device-type/{{ result.gmdnCode }}/supplier/{{ result.manufacturerId }}{{ searchQueryString }}">
+                                    {{ result.gmdnTermName }}
+                                    <span class="nhsuk-u-visually-hidden">by {{ result.manufacturerName }}</span>
                                 </a>
                             </h4>
-                            <p class="nhsuk-body-s nhsuk-u-secondary-text-color nhsuk-u-margin-bottom-2">
+                            <p class="nhsuk-body-s nhsuk-u-secondary-text-color nhsuk-u-margin-bottom-0">
                                 {{ result.manufacturerName }}
-                                {% if result.productCount > 1 %}
-                                    · {{ result.productCount }} products
-                                {% endif %}
+                                · {{ result.deviceCount }} {{ "device" if result.deviceCount == 1 else "devices" }}
                             </p>
-
-                            <dl class="nhsuk-summary-list">
-                                <div class="nhsuk-summary-list__row">
-                                    <dt class="nhsuk-summary-list__key">
-                                        Category (GMDN)
-                                    </dt>
-                                    <dd class="nhsuk-summary-list__value">
-                                        {{ result.gmdnNames | join(", ") }}
-                                    </dd>
-                                </div>
-
-                                <div class="nhsuk-summary-list__row">
-                                    <dt class="nhsuk-summary-list__key">
-                                        Type
-                                    </dt>
-                                    <dd class="nhsuk-summary-list__value">
-                                        {{ result.types | join(", ") }}
-                                    </dd>
-                                </div>
-                            </dl>
                         </div>
                     </div>
                 {% endfor %}
@@ -148,7 +127,7 @@
                         ) %}
                         {% for page in range(min_page, max_page + 1) %}
                             <li class="nhsuk-pagination__item {{ 'nhsuk-pagination__item--current' if page == searchPage else '' }}">
-                                <a class="nhsuk-pagination__link" href="?q={{ searchTerm }}&page={{ page }}{{ categoriesQueryString | default('') }}" aria-label="Page {{ page }}" {{ 'aria-current="page"' if page == searchPage else '' }}>
+                                <a class="nhsuk-pagination__link" href="?q={{ searchTerm | urlencode }}&page={{ page }}{{ categoriesQueryString | default('') }}" aria-label="Page {{ page }}" {{ 'aria-current="page"' if page == searchPage else '' }}>
                                     {{ page }}
                                 </a>
                             </li>
@@ -156,7 +135,7 @@
                     </ul>
 
                     {% if searchPage < searchMaxPages %}
-                        <a href="?q={{ searchTerm }}&page={{ searchPage + 1 }}{{ categoriesQueryString | default('') }}" class="nhsuk-pagination__next" rel="next">
+                        <a href="?q={{ searchTerm | urlencode }}&page={{ searchPage + 1 }}{{ categoriesQueryString | default('') }}" class="nhsuk-pagination__next" rel="next">
                             <span class="nhsuk-pagination__title">
                                 Next<span class="nhsuk-u-visually-hidden">
                                     page</span>

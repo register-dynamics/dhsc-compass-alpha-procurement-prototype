@@ -27,16 +27,22 @@
       {{ gmdnTerm }}
     </h1>
 
+    {% if deviceTypePath %}
+      {% set deviceTypeValue = { html: '<a href="' ~ deviceTypePath ~ '">' ~ (gmdnTerm | escape) ~ '</a>' } %}
+    {% else %}
+      {% set deviceTypeValue = { text: gmdnTerm } %}
+    {% endif %}
+
     {{ summaryList({
       rows: [
-        { key: { text: "Device type" }, value: { html: '<a href="' ~ deviceTypePath ~ '">' ~ (gmdnTerm | escape) ~ '</a>' } }
+        { key: { text: "Device type" }, value: deviceTypeValue }
       ]
     }) }}
 
     {% set deviceRows = [] %}
     {% for device in devices %}
       {% set deviceRows = deviceRows.concat([[
-        { html: '<a href="' ~ supplierPath ~ '/product/' ~ (device.aggregationName | urlencode) ~ '">' ~ (device.aggregationName | escape) ~ '</a>' },
+        { html: '<a href="' ~ (device.href | escape) ~ '">' ~ (device.aggregationName | escape) ~ '</a>' },
         { text: device.trustCount, format: "numeric" }
       ]]) %}
     {% endfor %}
