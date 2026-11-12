@@ -4,6 +4,7 @@ import { db } from "../database/client.js";
 import { Contact, Organisations } from "../database/types.js";
 import { postAddEvidenceContactSelfSchema } from "../models/request-schemas/postAddEvidenceContactSelfSchema.js";
 import { postMarkUsefulSchema } from "../models/request-schemas/postMarkUsefulSchema.js";
+import { Breadcrumb } from "../models/view-models/breadcrumb.js";
 import { ProductAggregation } from "../models/view-models/productAggregation.js";
 import { ProductTrusts } from "../models/view-models/productTrusts.js";
 import { getRelatedContractsTable } from "../models/view-models/relatedContractsTable.js";
@@ -30,11 +31,6 @@ import { getSupplierInCategory } from "./deviceType.controller.js";
 interface AggregationKey {
   aggregationName: string;
   supplierId: number;
-}
-
-interface Breadcrumb {
-  href: string;
-  text: string;
 }
 
 // What differs between reaching a product by search and by browsing

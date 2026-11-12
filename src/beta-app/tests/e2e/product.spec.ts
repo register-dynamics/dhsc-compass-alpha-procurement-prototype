@@ -21,6 +21,17 @@ test("user can search and access product details", async ({ page }) => {
 
   await expect(page.locator("#q")).toHaveValue("glucose");
 
+  // Results are device types by supplier
+  await page
+    .getByRole("link", {
+      name: "Blood glucose/blood pressure monitoring system by Saccharine & Sons",
+    })
+    .click();
+
+  await expect(page).toHaveURL(
+    /\/device-type\/63088\/supplier\/55623\?q=glucose$/,
+  );
+
   // Access product details
   await page.getByRole("link", { exact: true, name: "GlucoSense" }).click();
 

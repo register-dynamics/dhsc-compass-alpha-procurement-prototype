@@ -15,6 +15,7 @@ export interface Database {
   product_evidence_useful: ProductEvidenceUsefulTable;
   search: SearchTable;
   aggregation_search: AggregationSearchTable;
+  device_type_search: DeviceTypeSearchTable;
   users: UserTable;
   organisation_user: OrganisationUserTable;
   organisation_contact: OrganisationContactTable;
@@ -164,6 +165,17 @@ export interface AggregationSearchTable {
   gmdnCodes: number[];
   gmdnNames: string[];
   types: string[];
+  searchDoc: string;
+}
+
+export type DeviceTypeSearch = Selectable<DeviceTypeSearchTable>;
+
+export interface DeviceTypeSearchTable {
+  gmdnCode: number;
+  gmdnTermName: string;
+  manufacturerId: number;
+  manufacturerName: string;
+  deviceCount: number;
   searchDoc: string;
 }
 

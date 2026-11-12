@@ -193,21 +193,19 @@ export const getGmdnTermForDeviceId = async (deviceTypeId: number) => {
   return result.gmdnTermName;
 };
 
-// A device's GMDN term sits in many categories, so a page without a browsing
-// path of its own needs one picked for it. This is the most specific category,
-// preferring the Device Function tree, and is the same each time.
-export const getBrowsePathForDevice = async (deviceId: number) => {
-  const device = await db
+export const getGmdnTermWithCode = async (gmdnCode: number) => {
+  return await db
     .withSchema("external")
-    .selectFrom("device_type")
-    .where("deviceId", "=", deviceId)
-    .select("gmdnCode")
+    .selectFrom("gmdn")
+    .where("gmdnCode", "=", gmdnCode)
+    .selectAll()
     .executeTakeFirst();
+};
 
-  if (!device) {
-    return undefined;
-  }
-
+// A GMDN term sits in many categories, so a page without a browsing path of
+// its own needs one picked for it. This is the most specific category,
+// preferring the Device Function tree, and is the same each time.
+export const getBrowsePathForDeviceType = async (gmdnCode: number) => {
   const topLevelCategories = await getTopLevelCategories();
 
   const categories = await withCategorySubtrees(
@@ -219,7 +217,7 @@ export const getBrowsePathForDevice = async (deviceId: number) => {
       "ct.categoryCode",
       "subtree.categoryCode",
     )
-    .where("ct.termCode", "=", device.gmdnCode)
+    .where("ct.termCode", "=", gmdnCode)
     .select(["subtree.nodeId", "subtree.rootId"])
     .orderBy("subtree.depth", "desc")
     .orderBy("subtree.nodeId", "asc")
@@ -232,5 +230,21 @@ export const getBrowsePathForDevice = async (deviceId: number) => {
     categories.find(({ rootId }) => rootId === deviceFunctionId) ??
     categories.at(0);
 
-  return category && { categoryId: category.nodeId, gmdnCode: device.gmdnCode };
+  return category && { categoryId: category.nodeId, gmdnCode };
+};
+
+// As getBrowsePathForDeviceType, for the GMDN term of a device
+export const getBrowsePathForDevice = async (deviceId: number) => {
+  const device = await db
+    .withSchema("external")
+    .selectFrom("device_type")
+    .where("deviceId", "=", deviceId)
+    .select("gmdnCode")
+    .executeTakeFirst();
+
+  if (device?.gmdnCode == null) {
+    return undefined;
+  }
+
+  return await getBrowsePathForDeviceType(device.gmdnCode);
 };

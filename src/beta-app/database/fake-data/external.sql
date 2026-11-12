@@ -342,3 +342,4 @@ INSERT INTO "external"."atamis_to_gmdn" ("atamis_ref","gmdn_code") VALUES ('FAKE
 
 REFRESH MATERIALIZED VIEW "external"."search";
 REFRESH MATERIALIZED VIEW "external"."aggregation_search";
+REFRESH MATERIALIZED VIEW "external"."device_type_search";
