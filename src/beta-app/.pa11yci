@@ -46,6 +46,7 @@
     "http://localhost:3001/product/Blood%20Pressure%20Kit",
     "http://localhost:3001/product/Blood%20Pressure%20Kit/related-trusts",
     "http://localhost:3001/product/Blood%20Pressure%20Kit/trusts",
+    "http://localhost:3001/help",
     "http://localhost:3001/search",
     "http://localhost:3001/search-results?q=glucose",
     "http://localhost:3001/sign-in",

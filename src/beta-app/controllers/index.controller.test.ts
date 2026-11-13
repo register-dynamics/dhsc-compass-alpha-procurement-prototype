@@ -52,5 +52,13 @@ describe("Index controller", () => {
     expect(response.headers["x-xss-protection"]).toBeDefined();
   });
 
+  it("GET /help should return the help page", async () => {
+    const response = await request(app).get("/help");
+
+    expect(response.status).toBe(200);
+    expect(response.text).toContain("Help and support");
+    expect(response.headers["content-type"]).toMatch(/html/);
+  });
+
   // NB: We can't test the 500 error page directly because it requires triggering a server-side error, which is not feasible in our unit test environment (at the moment).
 });

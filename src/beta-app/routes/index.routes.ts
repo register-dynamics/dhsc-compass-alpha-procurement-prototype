@@ -2,6 +2,7 @@ import { Router } from "express";
 
 import {
   renderDashboard,
+  renderHelp,
   renderIndex,
 } from "../controllers/index.controller.js";
 import { registerRoutes, type RouteDefinition } from "./route-definitions.js";
@@ -19,6 +20,12 @@ const routeDefinitions: RouteDefinition[] = [
     handler: renderDashboard,
     method: "get",
     path: "/dashboard",
+  },
+  {
+    auth: false,
+    handler: renderHelp,
+    method: "get",
+    path: "/help",
   },
 ];
 
