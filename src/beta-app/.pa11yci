@@ -36,21 +36,22 @@
       ]
     },
     "http://localhost:3001/",
-    "http://localhost:3001/categories",
-    "http://localhost:3001/category/4941",
-    "http://localhost:3001/dashboard",
     "http://localhost:3001/category/10027/device-type/14035",
     "http://localhost:3001/category/10027/device-type/14035/supplier/65283",
     "http://localhost:3001/category/10027/device-type/14035/supplier/65283/product/Thermometer%20tympanic%20device",
+    "http://localhost:3001/category/10027/device-type/14035/supplier/65283/product/Thermometer%20tympanic%20device/related-trusts",
     "http://localhost:3001/category/10027/device-type/14035/supplier/65283/product/Thermometer%20tympanic%20device/trusts",
-    "http://localhost:3001/product/Blood%20Pressure%20Kit",
-    "http://localhost:3001/product/Blood%20Pressure%20Kit/related-trusts",
-    "http://localhost:3001/product/Blood%20Pressure%20Kit/trusts",
+    "http://localhost:3001/category/4941",
+    "http://localhost:3001/dashboard",
+    "http://localhost:3001/device-type/14035/supplier/65283",
     "http://localhost:3001/search",
     "http://localhost:3001/search-results?q=glucose",
     "http://localhost:3001/sign-in",
-    "http://localhost:3001/sign-out",
+    "http://localhost:3001/supplier/65283/product/Thermometer%20tympanic%20device",
+    "http://localhost:3001/supplier/65283/product/Thermometer%20tympanic%20device/related-trusts",
+    "http://localhost:3001/supplier/65283/product/Thermometer%20tympanic%20device/trusts",
     "http://localhost:3001/not-found",
-    "http://localhost:3001/error"
+    "http://localhost:3001/error",
+    "http://localhost:3001/sign-out"
   ]
 }
