@@ -7,3 +7,7 @@ export const renderIndex = (req: Request, res: Response) => {
 export const renderDashboard = (req: Request, res: Response) => {
   res.render("dashboard");
 };
+
+export const renderHelp = (req: Request, res: Response) => {
+  res.render("help");
+};

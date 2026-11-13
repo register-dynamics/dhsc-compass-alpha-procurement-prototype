@@ -6,13 +6,6 @@
 
 {% set pageName = "Welcome" %}
 
-{% set navItems = [
-  { text: "About this service", href: "#" },
-  { text: "Latest news", href: "#" },
-  { text: "Data standards", href: "#" },
-  { text: "Case studies", href: "#" }
-] %}
-
 {% if currentUser %}
 
   {% set navItems = [{ text: "Dashboard", href: "/dashboard" }].concat(navItems) %}

@@ -44,6 +44,7 @@
     "http://localhost:3001/category/4941",
     "http://localhost:3001/dashboard",
     "http://localhost:3001/device-type/14035/supplier/65283",
+    "http://localhost:3001/help",
     "http://localhost:3001/search",
     "http://localhost:3001/search-results?q=glucose",
     "http://localhost:3001/sign-in",
