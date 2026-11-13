@@ -27,11 +27,23 @@ function readPasswordFile(path: string) {
 if (!(
   config.database.database &&
   config.database.user &&
-  config.database.password_file &&
   config.database.host
 )) {
   console.error(
-    "All of the DATABASE_NAME, DATABASE_HOST, DATABASE_USER and DATABASE_PASSWORD_FILE environment variables must be set",
+    "All of the DATABASE_NAME, DATABASE_HOST, and DATABASE_USER environment variables must be set",
+  );
+  process.exit(1);
+}
+
+let dbPassword: string;
+
+if (config.database.password) {
+  dbPassword = config.database.password;
+} else if (config.database.password_file) {
+  dbPassword = readPasswordFile(config.database.password_file);
+} else {
+  console.error(
+    "Either of the DATABASE_PASSWORD or DATABASE_PASSWORD_FILE environment variables must be set",
   );
   process.exit(1);
 }
@@ -39,7 +51,7 @@ if (!(
 const dbConfig = {
   database: config.database.database,
   host: config.database.host,
-  password: readPasswordFile(config.database.password_file),
+  password: dbPassword,
   user: config.database.user,
 };
 

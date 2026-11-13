@@ -53,7 +53,7 @@ export async function up(db: Kysely<any>): Promise<void> {
           sql<string>`
             to_tsvector(
               'english',
-              concat_ws(
+              left(concat_ws(
                 ' ',
                 p.aggregation_name,
                 string_agg(
@@ -73,7 +73,7 @@ export async function up(db: Kysely<any>): Promise<void> {
                   ),
                   ' '
                 )
-              )
+              ), 1024*1024)
             )
           `.as("search_doc"),
         ),
