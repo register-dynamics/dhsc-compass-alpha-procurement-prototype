@@ -89,7 +89,7 @@ jobs:
           set -euo pipefail
           mkdir -p "deploy/rendered"
           ytt \
-            -f "deploy/template/yaml" \
+            -f "src/beta-app/deploy/template.yaml" \
             --data-value acr_login_server="${{ vars.AZURE_CONTAINER_REGISTRY }}.azurecr.io" \
             --data-value image="${FULL_IMAGE}" \
             --data-value revision_suffix="${REVISION_SUFFIX}" \
