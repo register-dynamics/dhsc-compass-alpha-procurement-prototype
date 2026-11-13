@@ -37,6 +37,8 @@
     },
     "http://localhost:3001/",
     "http://localhost:3001/categories",
+    "http://localhost:3001/category/4941",
+    "http://localhost:3001/dashboard",
     "http://localhost:3001/category/10027/device-type/14035",
     "http://localhost:3001/category/10027/device-type/14035/supplier/65283",
     "http://localhost:3001/category/10027/device-type/14035/supplier/65283/product/Thermometer%20tympanic%20device",
