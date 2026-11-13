@@ -12,51 +12,54 @@ permissions:
 jobs:
   deploy:
     runs-on: cmps-selfhosted-runner
-    environment: dev
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
-
       - name: Setup Carvel ytt
         uses: carvel-dev/setup-action@a173dc9b83a0de22af92463294fb66b904d8b2a3 # tag v2
         with:
           token: ${{ github.token }}
           only: ytt
-
+      - name: Install psql
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm install @embedded-postgres/linux-x64 --no-save --silent --prefix "$RUNNER_TEMP/pg"
+          BIN="$(dirname "$(find "$RUNNER_TEMP/pg" -type f -name psql | head -1)")"
+          echo "$BIN" >> "$GITHUB_PATH"
+          echo "LD_LIBRARY_PATH=$(dirname "$BIN")/lib" >> "$GITHUB_ENV"
       - name: Azure Login
         uses: azure/login@7184910d9eb2b1c5e48f7073824a90609bb9b6d6 # tag v2
         with:
           client-id: ${{ vars.AZURE_CLIENT_ID }}
           tenant-id: ${{ vars.AZURE_TENANT_ID }}
-          subscription-id: ${{ vars.AZURE_RTL_SUBSCRIPTION_ID }}
-
+          subscription-id: ${{ vars.AZURE_SHARED_SUBSCRIPTION_ID }}
       - name: Set up environment variables
         shell: bash
         run: |
           set -euo pipefail
-          ENV=dev
-          APP_NAME="pr-${{ github.event.pull_request.number }}"
+          ENV=dev # FIXME make this depend on the tag name
           IMAGE_PATH=compass:${{ github.sha }}
+          APP_NAME="`echo ${{ github.ref_name }} | sed s_/_-_`"
           echo "ENV=${ENV}" >> "$GITHUB_ENV"
-          echo "APP_NAME=${APP_NAME}" >> "$GITHUB_ENV"
           echo "IMAGE_PATH=${IMAGE_PATH}" >> "$GITHUB_ENV"
-          echo "FULL_IMAGE=${{ vars.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${IMAGE_PATH}" >> "$GITHUB_ENV"
+          echo "FULL_IMAGE=${{ vars.AZURE_CONTAINER_REGISTRY}}.azurecr.io/${IMAGE_PATH}" >> "$GITHUB_ENV"
           echo "REVISION_SUFFIX=${{ github.run_number }}-${{ github.run_attempt }}" >> "$GITHUB_ENV"
+          echo "APP_NAME=$APP_NAME" >> "$GITHUB_ENV"
           echo "LOCATION=${{ vars.AZURE_LOCATION }}" >> "$GITHUB_ENV"
-          echo "DATABASE_HOST=${{ vars.AZURE_DATABASE_HOST }}" >> "$GITHUB_ENV"
           echo "MANAGED_IDENTITY_RESOURCE_ID=${{ vars.AZURE_MANAGED_IDENTITY_RESOURCE_ID }}" >> "$GITHUB_ENV"
           echo "MANAGED_ENVIRONMENT_ID=${{ vars.AZURE_MANAGED_ENVIRONMENT_ID }}" >> "$GITHUB_ENV"
-
       - name: Set up database configuration
         shell: bash
         run: |
           set -euo pipefail
-          DATABASE_PASSWORD="$(openssl rand -base64 32 | tr -dc 'a-zA-Z0-9' | head -c 24)"
+          echo "DATABASE_HOST=${{ vars.AZURE_DATABASE_HOST }}" >> "$GITHUB_ENV"
+          # Pick a password
+          DATABASE_PASSWORD="`dd if=/dev/urandom bs=32 count=1 2>/dev/null | base64 | sed s/[^a-zA-Z0-9]//g | head -c 24`"
           echo "::add-mask::$DATABASE_PASSWORD"
-          echo "DATABASE_PASSWORD=${DATABASE_PASSWORD}" >> "$GITHUB_ENV"
-          sed -e "s/_NAME_/${APP_NAME}/g" -e "s/_PASSWORD_/${DATABASE_PASSWORD}/g" \
-            src/beta-app/deploy/db_setup.sql > db_setup.sql
-
+          echo "DATABASE_PASSWORD=$DATABASE_PASSWORD" >> "$GITHUB_ENV"
+          # Prepare database setup SQL
+          cat src/beta-app/deploy/db_setup.sql | sed s/_NAME_/$APP_NAME/ | sed s/_PASSWORD_/$DATABASE_PASSWORD/ > db_setup.sql
       - name: Get Postgres admin token
         shell: bash
         run: |
@@ -64,37 +67,28 @@ jobs:
           T="$(az account get-access-token --resource https://ossrdbms-aad.database.windows.net --query accessToken -o tsv)"
           echo "::add-mask::$T"
           echo "PGTOKEN=$T" >> "$GITHUB_ENV"
-
       - name: Create user and database
         uses: azure/postgresql@v1.2.0
         with:
           server-name: ${{ vars.AZURE_DATABASE_HOST }}
           connection-string: "host=${{ vars.AZURE_DATABASE_HOST }} port=5432 dbname=postgres user=sp-dhscacp-ghr-cmps-dev password=${{ env.PGTOKEN }} sslmode=require"
-          plsql-file: db_setup.sql
-
-      - name: Apply migrations
+          plsql-file: "db_setup.sql"
+      - name: Complete database setup
         shell: bash
+        env:
+          PGPASSWORD: ${{ env.DATABASE_PASSWORD }}
+          PGSSLMODE: require
         run: |
           set -euo pipefail
-          export DATABASE_HOST DATABASE_PASSWORD
-          export DATABASE_NAME="${APP_NAME}"
-          export DATABASE_USER="${APP_NAME}"
+          # Apply migrations
+          export DATABASE_HOST=${{ vars.AZURE_DATABASE_HOST }}
+          export DATABASE_NAME=$APP_NAME
+          export DATABASE_USER=$APP_NAME
+          export DATABASE_PASSWORD
           (cd src/beta-app; npm ci; npm run db:migrate)
-
-      - name: Load fake data (external)
-        uses: azure/postgresql@v1.2.0
-        with:
-          server-name: ${{ vars.AZURE_DATABASE_HOST }}
-          connection-string: "host=${{ vars.AZURE_DATABASE_HOST }} port=5432 dbname=${{ env.APP_NAME }} user=${{ env.APP_NAME }} password=${{ env.DATABASE_PASSWORD }} sslmode=require"
-          plsql-file: src/beta-app/database/fake-data/external.sql
-
-      - name: Load fake data (app)
-        uses: azure/postgresql@v1.2.0
-        with:
-          server-name: ${{ vars.AZURE_DATABASE_HOST }}
-          connection-string: "host=${{ vars.AZURE_DATABASE_HOST }} port=5432 dbname=${{ env.APP_NAME }} user=${{ env.APP_NAME }} password=${{ env.DATABASE_PASSWORD }} sslmode=require"
-          plsql-file: src/beta-app/database/fake-data/app.sql
-
+          # Load fake data
+          psql -U $DATABASE_USER -h $DATABASE_HOST -d $DATABASE_NAME < src/beta-app/database/fake-data/external.sql
+          psql -U $DATABASE_USER -h $DATABASE_HOST -d $DATABASE_NAME < src/beta-app/database/fake-data/app.sql
       - name: Instantiate container YAML
         shell: bash
         run: |
@@ -114,7 +108,6 @@ jobs:
             --data-value database_password="${DATABASE_PASSWORD}" \
             > "deploy/rendered.yaml"
           echo "YAML=deploy/rendered.yaml" >> "$GITHUB_ENV"
-
       - name: Validate YAML
         shell: bash
         run: |
@@ -123,7 +116,6 @@ jobs:
             echo "Rendered YAML still contains placeholder values."
             exit 1
           fi
-
       - name: Extract bootstrap config from rendered YAML
         id: rendered_bootstrap
         shell: bash
@@ -160,7 +152,6 @@ jobs:
             echo "workload_profile_name=${workload_profile_name}"
             echo "managed_identity_resource_id=${managed_identity_resource_id}"
           } >> "$GITHUB_OUTPUT"
-
       - name: Build image in ACR
         shell: bash
         run: |
@@ -172,7 +163,6 @@ jobs:
             --image "${IMAGE_PATH}" \
             --file "./src/beta-app/Dockerfile" \
             ./src/beta-app
-
       - name: Check whether Container App exists
         id: app_exists
         shell: bash
@@ -181,12 +171,11 @@ jobs:
           if az containerapp show \
             --name "${APP_NAME}" \
             --resource-group "${{ vars.AZURE_RESOURCE_GROUP }}" \
-            --subscription "${{ vars.AZURE_RTL_SUBSCRIPTION_ID }}" > /dev/null 2>&1; then
+            --subscription "${{ vars.AZURE_SHARED_SUBSCRIPTION_ID }}" > /dev/null 2>&1; then
             echo "exists=true" >> "$GITHUB_OUTPUT"
           else
             echo "exists=false" >> "$GITHUB_OUTPUT"
           fi
-
       - name: Bootstrap Container App with public image
         if: ${{ steps.app_exists.outputs.exists == 'false' }}
         shell: bash
@@ -195,13 +184,12 @@ jobs:
           az containerapp create \
             --name "${APP_NAME}" \
             --resource-group "${{ vars.AZURE_RESOURCE_GROUP }}" \
-            --subscription "${{ vars.AZURE_RTL_SUBSCRIPTION_ID }}" \
+            --subscription "${{ vars.AZURE_SHARED_SUBSCRIPTION_ID }}" \
             --environment "${{ steps.rendered_bootstrap.outputs.managed_environment_id }}" \
             --user-assigned "${{ steps.rendered_bootstrap.outputs.managed_identity_resource_id }}" \
             --workload-profile-name "${{ steps.rendered_bootstrap.outputs.workload_profile_name }}" \
             --image "mcr.microsoft.com/k8se/quickstart:latest" \
             --output none
-
       - name: Configure Container App registry auth
         shell: bash
         run: |
@@ -209,11 +197,10 @@ jobs:
           az containerapp registry set \
             --name "${APP_NAME}" \
             --resource-group "${{ vars.AZURE_RESOURCE_GROUP }}" \
-            --subscription "${{ vars.AZURE_RTL_SUBSCRIPTION_ID }}" \
+            --subscription "${{ vars.AZURE_SHARED_SUBSCRIPTION_ID }}" \
             --server "${{ vars.AZURE_CONTAINER_REGISTRY }}.azurecr.io" \
             --identity "${{ steps.rendered_bootstrap.outputs.managed_identity_resource_id }}" \
             --output none
-
       - name: Update Container App via dac-shared action
         uses: dhsc-govuk-infrastructure/dac-shared/.github/actions/containerapp-update-from-yaml@main
         with:
@@ -223,12 +210,11 @@ jobs:
           image_to_deploy: ${{ env.FULL_IMAGE }}
           azure_client_id: ${{ vars.AZURE_CLIENT_ID }}
           azure_tenant_id: ${{ vars.AZURE_TENANT_ID }}
-          azure_subscription_id: ${{ vars.AZURE_RTL_SUBSCRIPTION_ID }}
-
+          azure_subscription_id: ${{ vars.AZURE_SHARED_SUBSCRIPTION_ID }}
       - name: Add deployment summary
         shell: bash
         run: |
-          fqdn="$(az containerapp show --name "${APP_NAME}" --resource-group "${{ vars.AZURE_RESOURCE_GROUP }}" --subscription "${{ vars.AZURE_RTL_SUBSCRIPTION_ID }}" --query "properties.configuration.ingress.fqdn" -o tsv)"
+          fqdn="$(az containerapp show --name "${APP_NAME}" --resource-group "${{ vars.AZURE_RESOURCE_GROUP }}" --subscription "${{ vars.AZURE_SHARED_SUBSCRIPTION_ID }}" --query "properties.configuration.ingress.fqdn" -o tsv)"
           {
             echo "### ${APP_NAME} deployment"
             echo
