@@ -7,8 +7,11 @@
 {% endblock %}
 
 {% block pageTitle -%}
-  {%- if pageName %}{{ pageName }} – {% endif -%}
-  {{ serviceName }} – NHS 
+  {%- if pageName %}{{ pageName }}
+    –
+  {% endif -%}
+  {{ serviceName }}
+  – NHS
 {%- endblock %}
 
 {# Set account items for the current user to be used in headers #}
@@ -17,30 +20,35 @@
     { text: currentUser.givenName ~ " " ~ currentUser.lastName, icon: true },
     { text: "Log out", href: "/sign-out" }
   ] %}
+  {% set navItems = [
+    {
+      text: "Dashboard",
+      href: "/dashboard"
+    }, {
+      text: "Search",
+      href: "/search"
+    }
+  ] %}
 {% else %}
   {% set accountItems = [
     { text: "Log in", href: "/sign-in" }
   ] %}
+  {% set navItems = [] %}
 {% endif %}
-
 
 {% block header %}
   {{ header({
     logo: { href: "/", ariaLabel: "Search and evaluate medical technology" },
     service: { text: "Search and evaluate medical technology", href: "/" },
     navigation: {
-      items: [
-        { text: "Dashboard", href: "/dashboard" },
-        { text: "Search", href: "/search" }
-      ]
+      items: navItems
     },
     account: {
       items: accountItems
     }
   }) }}
 
-  {% block headerEnd %}
-  {% endblock %}
+  {% block headerEnd %}{% endblock %}
 
 {% endblock %}
 
