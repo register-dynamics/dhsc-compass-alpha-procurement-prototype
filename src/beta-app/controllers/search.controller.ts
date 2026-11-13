@@ -19,8 +19,9 @@ import {
   getSearchQueryString,
 } from "../services/searchQueryService.js";
 
-export const renderSearch = (req: Request, res: Response) => {
-  res.render("search");
+export const renderSearch = async (req: Request, res: Response) => {
+  const categories = await getTopLevelCategories();
+  res.render("search", { categories });
 };
 
 // Searches GMDN term (device type) names, and lists every supplier of each
@@ -175,11 +176,6 @@ export const renderSearchResults = async (req: Request, res: Response) => {
     searchResultsCount,
     searchTerm,
   });
-};
-
-export const renderCategories = async (req: Request, res: Response) => {
-  const categories = await getTopLevelCategories();
-  res.render("categories.html", { categories });
 };
 
 export const renderCategory = async (

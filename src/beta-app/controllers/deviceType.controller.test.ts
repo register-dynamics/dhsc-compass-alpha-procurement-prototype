@@ -32,7 +32,7 @@ describe("Device type controller", () => {
     const response = await get(deviceTypePath);
 
     expect(response.status).toBe(200);
-    expect(response.text).toContain('href="/categories"');
+    expect(response.text).toContain('href="/search"');
     expect(response.text).toContain('href="/category/9986"');
     expect(response.text).toContain('href="/category/9990"');
   });
