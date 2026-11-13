@@ -26,7 +26,7 @@ const routeDefinitions: RouteDefinition[] = [
     handler: renderHelp,
     method: "get",
     path: "/help",
-  }
+  },
 ];
 
 registerRoutes(router, routeDefinitions);
