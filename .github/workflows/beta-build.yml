@@ -66,6 +66,7 @@ jobs:
           server-name: ${{ vars.AZURE_DATABASE_HOST }}
           connection-string: "host=${{ vars.AZURE_DATABASE_HOST }} port=5432 dbname=postgres user=sp-dhscacp-ghr-cmps-dev password=${{ env.PGTOKEN }} sslmode=require"
           plsql-file: "db_setup.sql"
+        continue-on-error: true # NOTICEs psql emits - such as "NOTICE:  database "18-merge" does not exist, skipping" - are interpreted as errors by the action, so we need to skip errors - see https://github.com/Azure/postgresql/issues/33
       - name: Complete database setup
         shell: bash
         env:
