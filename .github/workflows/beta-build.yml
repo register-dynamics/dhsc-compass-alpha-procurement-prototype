@@ -52,7 +52,7 @@ jobs:
           echo "::add-mask::$DATABASE_PASSWORD"
           echo "DATABASE_PASSWORD=$DATABASE_PASSWORD" >> "$GITHUB_ENV"
           # Prepare database setup SQL
-          cat src/beta-app/deploy/db_setup.sql | sed s/_NAME_/$APP_NAME/ | sed s/_PASSWORD_/$DATABASE_PASSWORD/ > db_setup.sql
+          cat src/beta-app/deploy/db_setup.sql | sed s/_NAME_/$APP_NAME/g | sed s/_PASSWORD_/$DATABASE_PASSWORD/g > db_setup.sql
       - name: Get Postgres admin token
         shell: bash
         run: |
