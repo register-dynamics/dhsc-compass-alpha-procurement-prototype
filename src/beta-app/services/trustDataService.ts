@@ -16,9 +16,16 @@ import { db } from "../database/client.js";
 //
 // Contracts are matched to devices by GMDN term (atamis_to_gmdn) and to
 // suppliers by contracts_to_mhra_manufacturers. Contracts aren't linked to
-// aggregations, so a product's exact contracts are its supplier's contracts
-// for its GMDN terms, and its related contracts are its supplier's contracts
-// for related terms that aren't also for its own.
+// aggregations, so a contract is only a direct match - on the exact card -
+// when nothing else it could be for is in doubt:
+//
+// - it's for exactly one GMDN term, and that's the page's term
+// - one of its suppliers has a supplier + device type page for that term
+//   (on the supplier and product pages, that supplier is the page's)
+// - on the product page, that supplier has no other aggregation for the term
+//
+// Every other contract for the page's term or a related term - with the
+// page's supplier, if it has one - is a possible match, on the related card.
 
 export interface RelatedContract {
   contractName: string;
@@ -48,37 +55,73 @@ export interface TrustDataCards {
   related: TrustData;
 }
 
-interface TrustDataScope {
-  // Contracts for any of these GMDN terms, unless they're also for one of
-  // the excluded terms
-  contractGmdnCodes: number[];
-  // Evidence linked to any of these aggregations
-  evidenceAggregations: SupplierAggregation[];
-  excludedContractGmdnCodes?: number[];
+interface Contract {
+  contractingAuthority: string;
+  contractName: string;
+  contractRef: string;
+  primaryCategory: string;
+  startDate: Date;
+}
+
+interface ContractCards {
+  exact: Contract[];
+  related: Contract[];
+}
+
+interface ContractScope {
+  // The page's own GMDN terms
+  gmdnCodes: number[];
   // Only contracts with this supplier
   manufacturerId?: number;
+  relatedGmdnCodes: number[];
+  // Only a direct match if the supplier has a single aggregation for the term
+  soleAggregation?: boolean;
 }
 
 export const getProductTrustData = async (
   aggregation: SupplierAggregation,
 ): Promise<TrustDataCards> => {
-  const scopes = await getProductScopes(aggregation);
+  const { contractScope, gmdnCodes, relatedGmdnCodes } =
+    await getProductScope(aggregation);
+
+  const [supplierAggregations, contracts] = await Promise.all([
+    getAggregationsWithGmdnCodes(
+      [...gmdnCodes, ...relatedGmdnCodes],
+      aggregation.manufacturerId,
+    ),
+    getContracts(contractScope),
+  ]);
 
   const [exact, related] = await Promise.all([
-    getTrustData(scopes.exact),
-    getTrustData(scopes.related),
+    getTrustData([aggregation], contracts.exact),
+    getTrustData(
+      supplierAggregations.filter(
+        ({ aggregationName }) =>
+          aggregationName !== aggregation.aggregationName,
+      ),
+      contracts.related,
+    ),
   ]);
 
   return { exact, related };
+};
+
+// The contracts counted on the product page's exact card
+export const getProductContracts = async (
+  aggregation: SupplierAggregation,
+): Promise<Contract[]> => {
+  const { contractScope } = await getProductScope(aggregation);
+
+  return (await getContracts(contractScope)).exact;
 };
 
 // The contracts counted on the product page's related card
 export const getProductRelatedContracts = async (
   aggregation: SupplierAggregation,
 ): Promise<RelatedContract[]> => {
-  const { related } = await getProductScopes(aggregation);
+  const { contractScope } = await getProductScope(aggregation);
 
-  return (await getContracts(related)).map(
+  return (await getContracts(contractScope)).related.map(
     ({ contractingAuthority, ...contract }) => ({
       ...contract,
       trust: contractingAuthority,
@@ -86,31 +129,19 @@ export const getProductRelatedContracts = async (
   );
 };
 
-const getProductScopes = async (
-  aggregation: SupplierAggregation,
-): Promise<{ exact: TrustDataScope; related: TrustDataScope }> => {
+const getProductScope = async (aggregation: SupplierAggregation) => {
   const gmdnCodes = await getGmdnCodesForAggregation(aggregation);
   const relatedGmdnCodes = await getRelatedGmdnCodes(gmdnCodes);
-  const supplierAggregations = await getAggregationsWithGmdnCodes(
-    [...gmdnCodes, ...relatedGmdnCodes],
-    aggregation.manufacturerId,
-  );
 
   return {
-    exact: {
-      contractGmdnCodes: gmdnCodes,
-      evidenceAggregations: [aggregation],
+    contractScope: {
+      gmdnCodes,
       manufacturerId: aggregation.manufacturerId,
+      relatedGmdnCodes,
+      soleAggregation: true,
     },
-    related: {
-      contractGmdnCodes: relatedGmdnCodes,
-      evidenceAggregations: supplierAggregations.filter(
-        ({ aggregationName }) =>
-          aggregationName !== aggregation.aggregationName,
-      ),
-      excludedContractGmdnCodes: gmdnCodes,
-      manufacturerId: aggregation.manufacturerId,
-    },
+    gmdnCodes,
+    relatedGmdnCodes,
   };
 };
 
@@ -121,28 +152,25 @@ export const getDeviceTypeTrustData = async (
 ): Promise<TrustDataCards> => {
   const relatedGmdnCodes = await getRelatedGmdnCodes([gmdnCode]);
 
-  const [exactAggregations, relatedAggregations] = await Promise.all([
-    getAggregationsWithGmdnCodes([gmdnCode], manufacturerId),
-    getAggregationsWithGmdnCodes(relatedGmdnCodes, manufacturerId),
-  ]);
+  const [exactAggregations, relatedAggregations, contracts] = await Promise.all(
+    [
+      getAggregationsWithGmdnCodes([gmdnCode], manufacturerId),
+      getAggregationsWithGmdnCodes(relatedGmdnCodes, manufacturerId),
+      getContracts({ gmdnCodes: [gmdnCode], manufacturerId, relatedGmdnCodes }),
+    ],
+  );
 
   const [exact, related] = await Promise.all([
-    getTrustData({
-      contractGmdnCodes: [gmdnCode],
-      evidenceAggregations: exactAggregations,
-      manufacturerId,
-    }),
-    getTrustData({
-      contractGmdnCodes: relatedGmdnCodes,
+    getTrustData(exactAggregations, contracts.exact),
+    getTrustData(
       // An aggregation can span several GMDN terms, so one that's also for
       // this term is on the exact card
-      evidenceAggregations: relatedAggregations.filter(
+      relatedAggregations.filter(
         (related) =>
           !exactAggregations.some((exact) => isSameAggregation(exact, related)),
       ),
-      excludedContractGmdnCodes: [gmdnCode],
-      manufacturerId,
-    }),
+      contracts.related,
+    ),
   ]);
 
   return { exact, related };
@@ -280,11 +308,12 @@ const isSameAggregation = (a: SupplierAggregation, b: SupplierAggregation) =>
   a.aggregationName === b.aggregationName &&
   a.manufacturerId === b.manufacturerId;
 
-const getTrustData = async (scope: TrustDataScope): Promise<TrustData> => {
-  const [evidence, contracts] = await Promise.all([
-    getEvidenceData(scope.evidenceAggregations),
-    getContracts(scope),
-  ]);
+// Evidence linked to any of the aggregations, and the given contracts
+const getTrustData = async (
+  evidenceAggregations: SupplierAggregation[],
+  contracts: Contract[],
+): Promise<TrustData> => {
+  const evidence = await getEvidenceData(evidenceAggregations);
 
   // Atamis names trusts as contracting authorities, which are matched to
   // organisations by name
@@ -364,54 +393,80 @@ const getEvidenceData = async (aggregations: SupplierAggregation[]) => {
   };
 };
 
+// The contracts for the scope's own or related GMDN terms, split into direct
+// matches (exact card) and possible matches (related card)
 const getContracts = async ({
-  contractGmdnCodes,
-  excludedContractGmdnCodes = [],
+  gmdnCodes,
   manufacturerId,
-}: TrustDataScope) => {
-  if (contractGmdnCodes.length === 0) {
-    return [];
+  relatedGmdnCodes,
+  soleAggregation = false,
+}: ContractScope): Promise<ContractCards> => {
+  if (gmdnCodes.length === 0 && relatedGmdnCodes.length === 0) {
+    return { exact: [], related: [] };
   }
 
-  let query = db
-    .withSchema("external")
-    .selectFrom("atamis_contracts as ac")
-    .innerJoin("atamis_to_gmdn as atg", "atg.atamisRef", "ac.contractRef")
-    .select([
-      "ac.contractRef",
-      "ac.contractName",
-      "ac.contractingAuthority",
-      "ac.primaryCategory",
-      "ac.startDate",
-    ])
-    .distinct()
-    .where("atg.gmdnCode", "in", contractGmdnCodes);
+  const codes = sql`${gmdnCodes}::integer[]`;
+  const allCodes = sql`${[...gmdnCodes, ...relatedGmdnCodes]}::integer[]`;
+  const supplier = sql`${manufacturerId ?? null}::integer`;
+  // The supplier has a supplier + device type page for the term if it has an
+  // aggregation of that type, and the product page needs it to have only one
+  const aggregationCount = soleAggregation ? sql`= 1` : sql`> 0`;
 
-  if (excludedContractGmdnCodes.length > 0) {
-    query = query.where((eb) =>
-      eb.not(
-        eb.exists(
-          eb
-            .selectFrom("atamis_to_gmdn as excluded")
-            .select("excluded.atamisRef")
-            .whereRef("excluded.atamisRef", "=", "ac.contractRef")
-            .where("excluded.gmdnCode", "in", excludedContractGmdnCodes),
-        ),
-      ),
-    );
+  const { rows } = await sql<Contract & { isExact: boolean }>`
+    WITH contract_terms AS (
+      SELECT
+        atamis_ref,
+        count(DISTINCT gmdn_code) AS term_count,
+        min(gmdn_code) AS gmdn_code
+      FROM external.atamis_to_gmdn
+      GROUP BY atamis_ref
+    )
+    SELECT DISTINCT
+      ac.contract_ref,
+      ac.contract_name,
+      ac.contracting_authority,
+      ac.primary_category,
+      ac.start_date,
+      (
+        ct.term_count = 1
+        AND ct.gmdn_code = ANY(${codes})
+        AND EXISTS (
+          SELECT 1
+          FROM external.contracts_to_mhra_manufacturers cm
+          WHERE cm.contract_ref = ac.contract_ref
+            AND (${supplier} IS NULL OR cm.manufacturer_id = ${supplier})
+            AND (
+              SELECT count(DISTINCT p.aggregation_name)
+              FROM external.device_type dt
+              INNER JOIN external.products p ON p.device_id = dt.device_id
+              WHERE dt.gmdn_code = ct.gmdn_code
+                AND dt.manufacturer_id = cm.manufacturer_id
+            ) ${aggregationCount}
+        )
+      ) AS is_exact
+    FROM external.atamis_contracts ac
+    INNER JOIN contract_terms ct ON ct.atamis_ref = ac.contract_ref
+    WHERE EXISTS (
+      SELECT 1
+      FROM external.atamis_to_gmdn atg
+      WHERE atg.atamis_ref = ac.contract_ref
+        AND atg.gmdn_code = ANY(${allCodes})
+    )
+    AND (
+      ${supplier} IS NULL
+      OR EXISTS (
+        SELECT 1
+        FROM external.contracts_to_mhra_manufacturers cm
+        WHERE cm.contract_ref = ac.contract_ref
+          AND cm.manufacturer_id = ${supplier}
+      )
+    )
+  `.execute(db);
+
+  const cards: ContractCards = { exact: [], related: [] };
+  for (const { isExact, ...contract } of rows) {
+    cards[isExact ? "exact" : "related"].push(contract);
   }
 
-  if (manufacturerId !== undefined) {
-    query = query.where((eb) =>
-      eb.exists(
-        eb
-          .selectFrom("contracts_to_mhra_manufacturers as cm")
-          .select("cm.contractRef")
-          .whereRef("cm.contractRef", "=", "ac.contractRef")
-          .where("cm.manufacturerId", "=", manufacturerId),
-      ),
-    );
-  }
-
-  return await query.execute();
+  return cards;
 };

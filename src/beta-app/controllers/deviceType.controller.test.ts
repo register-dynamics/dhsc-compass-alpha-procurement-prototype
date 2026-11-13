@@ -161,8 +161,8 @@ describe("Device type controller", () => {
       const response = await get(deviceTypePath);
 
       expect(cardHeadings(response.text)).toEqual([
-        "9 trusts have experience with this type of device",
-        "8 trusts have experience with similar types of devices",
+        "7 trusts have experience with this type of device",
+        "9 trusts have experience with similar types of devices",
       ]);
     });
 
@@ -181,7 +181,7 @@ describe("Device type controller", () => {
       );
 
       expect(cardHeadings(response.text)).toEqual([
-        "3 trusts have experience with Heart Rate Monitor",
+        "2 trusts have experience with Heart Rate Monitor",
         "9 trusts have experience with Aorta Solutions devices in the same or related categories",
       ]);
     });
@@ -209,13 +209,14 @@ describe("Device type controller", () => {
       const response = await get(`${productPath}/related-trusts`);
 
       expect(response.status).toBe(200);
-      expect(response.text).toContain("Showing 3 contracts.");
+      expect(response.text).toContain("Showing 4 contracts.");
       expect(response.text).toContain(
         "Most recent contracts are listed first.",
       );
       expect(contractNames(response.text)).toEqual([
         "WAH - Cardiology - Ambulatory Blood Pressure Monitors",
         "Blood Pressure Monitoring Equipment",
+        "T&amp;O - Aorta Implants (Consignment)",
         "Vital Signs Monitoring - Aorta",
       ]);
       expect(response.text).toContain("February 2026");
@@ -228,7 +229,7 @@ describe("Device type controller", () => {
       );
 
       expect(response.text).toContain("Filter by category (1 applied)");
-      expect(response.text).toContain("Showing 2 of 3 contracts.");
+      expect(response.text).toContain("Showing 2 of 4 contracts.");
       expect(contractNames(response.text)).toEqual([
         "Blood Pressure Monitoring Equipment",
         "Vital Signs Monitoring - Aorta",
@@ -247,6 +248,7 @@ describe("Device type controller", () => {
       // Whitwell, Waymeet, then Baranduin
       expect(contractNames(response.text)).toEqual([
         "WAH - Cardiology - Ambulatory Blood Pressure Monitors",
+        "T&amp;O - Aorta Implants (Consignment)",
         "Vital Signs Monitoring - Aorta",
         "Blood Pressure Monitoring Equipment",
       ]);
