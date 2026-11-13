@@ -1,7 +1,6 @@
 import { Router } from "express";
 
 import {
-  renderCategories,
   renderCategory,
   renderSearch,
   renderSearchResults,
@@ -20,11 +19,6 @@ const routeDefinitions: RouteDefinition[] = [
     handler: renderSearchResults,
     method: "get",
     path: "/search-results",
-  },
-  {
-    handler: renderCategories,
-    method: "get",
-    path: "/categories",
   },
   {
     handler: renderCategory,

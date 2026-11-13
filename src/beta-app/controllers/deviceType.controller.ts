@@ -52,7 +52,7 @@ const getDeviceTypeInCategory = async (req: Request) => {
 
   return {
     breadcrumbs: [
-      { href: "/categories", text: "Search and browse" },
+      { href: "/search", text: "Search and browse" },
       ...trail.map(({ name, nodeId }) => ({
         href: `/category/${String(nodeId)}`,
         text: name,
