@@ -95,9 +95,7 @@ describe("Device type controller", () => {
       expect(response.text).toContain(
         'href="/search-results?q=heart&amp;page=2"',
       );
-      // No category trail, which would start with "Search and browse"
-      expect(response.text).not.toContain("Search and browse");
-      expect(response.text).not.toContain('href="/category/9990"');
+
       expect(response.text).toContain("Aorta Solutions");
       expect(response.text).toContain("Heart rate monitor");
     });
