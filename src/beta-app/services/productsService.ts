@@ -84,13 +84,57 @@ export const getEvidenceCardsForAggregation = async (
     .where("pe.aggregationName", "=", aggregationName)
     .where("pe.manufacturerId", "=", manufacturerId)
     .groupBy(["e.evidenceId", "o.organisationName"])
-    .orderBy("o.organisationName", "asc")
     .execute();
 
-  if (evidenceRows.length === 0) {
-    return [];
-  }
+  // Atamis contracts are related to trusts by name, as contracting authority
+  const contractCounts =
+    await getContractCountsByContractingAuthorityForAggregation(
+      aggregationName,
+      manufacturerId,
+    );
 
+  const evidenceCards =
+    evidenceRows.length > 0
+      ? await getCardsForEvidence(
+          evidenceRows,
+          contractCounts,
+          aggregationName,
+          manufacturerId,
+          userId,
+        )
+      : [];
+
+  // Trusts with a contract for the device but no evidence also get a card, so
+  // the list has every trust the product page counts
+  const evidenceTrusts = new Set(
+    evidenceRows.map((row) => row.organisationName),
+  );
+  const contractOnlyTrusts = [...contractCounts.keys()].filter(
+    (name) => !evidenceTrusts.has(name),
+  );
+  const contractCards = await getCardsForContractOnlyTrusts(
+    contractOnlyTrusts,
+    contractCounts,
+  );
+
+  return [...evidenceCards, ...contractCards].sort((a, b) =>
+    a.organisationName.localeCompare(b.organisationName, "en-GB"),
+  );
+};
+
+const getCardsForEvidence = async (
+  evidenceRows: {
+    contactCount: string;
+    evidenceId: number;
+    organisationId: number;
+    organisationName: string;
+    procured: boolean | null;
+  }[],
+  contractCounts: Map<string, number>,
+  aggregationName: string,
+  manufacturerId: number,
+  userId?: number,
+): Promise<EvidenceCard[]> => {
   const documentRows = await db
     .withSchema("app")
     .selectFrom("documents as d")
@@ -131,14 +175,6 @@ export const getEvidenceCardsForAggregation = async (
     .groupBy("evidenceId")
     .execute();
 
-  // Atamis contracts are related to trusts by name, as contracting authority
-  const contractCounts =
-    await getContractCountsByContractingAuthorityForAggregation(
-      aggregationName,
-      manufacturerId,
-      [...new Set(evidenceRows.map((row) => row.organisationName))],
-    );
-
   return evidenceRows.map((row) => {
     const useful = usefulRows.find((u) => u.evidenceId === row.evidenceId);
     return {
@@ -158,6 +194,38 @@ export const getEvidenceCardsForAggregation = async (
       usefulCount: Number(useful?.count ?? 0),
     };
   });
+};
+
+// A contracting authority might not be an organisation in the app, in which
+// case the card has no organisation ID and so no trust page to link to
+const getCardsForContractOnlyTrusts = async (
+  trustNames: string[],
+  contractCounts: Map<string, number>,
+): Promise<EvidenceCard[]> => {
+  if (trustNames.length === 0) {
+    return [];
+  }
+
+  const organisations = await db
+    .withSchema("app")
+    .selectFrom("organisations")
+    .select(["organisationId", "organisationName"])
+    .where("organisationName", "in", trustNames)
+    .execute();
+
+  return trustNames.map((organisationName) => ({
+    contactCount: 0,
+    evidenceId: null,
+    markedUseful: false,
+    organisationId:
+      organisations.find((o) => o.organisationName === organisationName)
+        ?.organisationId ?? null,
+    organisationName,
+    procured: null,
+    procurementContractCount: contractCounts.get(organisationName) ?? 0,
+    sharedDocuments: [],
+    usefulCount: 0,
+  }));
 };
 
 // What a person on the evidence is happy to discuss, in the order they're

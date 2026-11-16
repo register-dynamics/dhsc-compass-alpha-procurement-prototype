@@ -621,7 +621,10 @@ const renderProductTrustsPage = async (
     aggregationName: aggregation[0].aggregationName ?? "",
     evidenceCards: evidenceCards.map((evidenceCard) => ({
       ...evidenceCard,
-      href: route.getTrustHref(evidenceCard.organisationId),
+      href:
+        evidenceCard.organisationId === null
+          ? null
+          : route.getTrustHref(evidenceCard.organisationId),
     })),
     supplierId,
     supplierName,

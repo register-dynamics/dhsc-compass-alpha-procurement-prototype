@@ -6,12 +6,7 @@ import { getProductContracts } from "./trustDataService.js";
 export const getContractCountsByContractingAuthorityForAggregation = async (
   aggregationName: string,
   manufacturerId: number,
-  contractingAuthorities: string[],
 ): Promise<Map<string, number>> => {
-  if (contractingAuthorities.length === 0) {
-    return new Map();
-  }
-
   const contracts = await getProductContracts({
     aggregationName,
     manufacturerId,
@@ -19,12 +14,10 @@ export const getContractCountsByContractingAuthorityForAggregation = async (
 
   const counts = new Map<string, number>();
   for (const { contractingAuthority } of contracts) {
-    if (contractingAuthorities.includes(contractingAuthority)) {
-      counts.set(
-        contractingAuthority,
-        (counts.get(contractingAuthority) ?? 0) + 1,
-      );
-    }
+    counts.set(
+      contractingAuthority,
+      (counts.get(contractingAuthority) ?? 0) + 1,
+    );
   }
 
   return counts;
