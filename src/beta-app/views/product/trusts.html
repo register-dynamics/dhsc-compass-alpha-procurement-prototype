@@ -64,10 +64,13 @@
 
                 {% call card({
                     heading: evidenceCard.organisationName,
-                    href: "#",
+                    href: evidenceCard.href,
                     headingClasses: "nhsuk-heading-m"
                 }) %}
-                {{ mark_useful_button(evidenceCard.usefulCount, aggregationName, supplierId, evidenceCard.evidenceId, evidenceCard.markedUseful) }}
+                {# Trusts with a contract but no evidence have nothing to mark as useful #}
+                {% if evidenceCard.evidenceId %}
+                    {{ mark_useful_button(evidenceCard.usefulCount, aggregationName, supplierId, evidenceCard.evidenceId, evidenceCard.markedUseful) }}
+                {% endif %}
                 {{ summaryList({
                     classes: "nhsuk-u-margin-bottom-0",
                     rows: [

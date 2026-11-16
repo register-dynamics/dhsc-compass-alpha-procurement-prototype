@@ -64,7 +64,15 @@ INSERT INTO "app"."organisations" ("organisation_id","organisation_name","org_ty
  (4,'Portsmouth Hospitals University NHS Trust',2,1),
  (5,'Guys & St Thomas'' NHS Foundation Trust',2,1),
  (6,'University Hospitals Birmingham NHS Foundation Trust',2,1),
- (7,'Northumbria Healthcare NHS Foundation Trust',2,1);
+ (7,'Northumbria Healthcare NHS Foundation Trust',2,1),
+ -- Contracting authorities on the fake Atamis contracts, so their trust pages can be reached
+ (8,'Baranduin Teaching Hospitals NHS Foundation Trust',2,1),
+ (9,'Frogmorton Health NHS Foundation Trust',2,1),
+ (10,'Great Farthing Hospitals NHS Foundation Trust',2,1),
+ (11,'United Lamplighter Teaching Hospitals NHS Trust',2,1),
+ (12,'University Hospitals of Longcleeve NHS Trust',2,1),
+ (13,'Waymeet Hospitals University National Health Service Trust',2,1),
+ (14,'Whitwell Acute Hospitals NHS Trust',2,1);
 
 INSERT INTO "app"."contacts" ("contact_id","title","given_name","surname","email","phone_no","role") VALUES
  (1,NULL,'Jeana','Somerfield','jsomerfield0@nhs.net','1373644493','Staff Scientist, Clinical Research'),

@@ -8,6 +8,7 @@ import { Breadcrumb } from "../models/view-models/breadcrumb.js";
 import { ProductAggregation } from "../models/view-models/productAggregation.js";
 import { ProductTrusts } from "../models/view-models/productTrusts.js";
 import { getRelatedContractsTable } from "../models/view-models/relatedContractsTable.js";
+import { getContractsForTrustAndAggregation } from "../services/atamisService.js";
 import {
   getBrowsePathForDevice,
   getGmdnTermForDeviceId,
@@ -17,6 +18,7 @@ import {
   getAggregationWithName,
   getEvidenceCardsForAggregation,
   getProductWithId,
+  getTrustExperienceForAggregation,
 } from "../services/productsService.js";
 import { getSearchQueryString } from "../services/searchQueryService.js";
 import { getSupplierWithId } from "../services/supplierService.js";
@@ -39,6 +41,8 @@ interface ProductRoute {
   // Taken from the URL when browsing, so the page can't contradict its own path
   deviceType?: string;
   deviceTypeHref?: string;
+  // 1 trust's experience of the product
+  getTrustHref: (organisationId: number) => string;
   productHref: string;
   relatedTrustsHref: string;
   // The search the product was reached from, to keep on every link
@@ -79,6 +83,8 @@ const getSearchProductRoute = (
           }
         : { href: "/search", text: "Search" },
     ],
+    getTrustHref: (organisationId) =>
+      `${productPath}/trust/${String(organisationId)}${searchQueryString}`,
     productHref: `${productPath}${searchQueryString}`,
     relatedTrustsHref: `${productPath}/related-trusts${searchQueryString}`,
     searchQueryString,
@@ -113,6 +119,8 @@ const getCategoryProductRoute = async (
     ],
     deviceType: gmdnTerm,
     deviceTypeHref: deviceTypePath,
+    getTrustHref: (organisationId) =>
+      `${productHref}/trust/${String(organisationId)}`,
     productHref,
     relatedTrustsHref: `${productHref}/related-trusts`,
     searchQueryString: "",
@@ -611,7 +619,13 @@ const renderProductTrustsPage = async (
 
   const viewModel: ProductTrusts = {
     aggregationName: aggregation[0].aggregationName ?? "",
-    evidenceCards: evidenceCards,
+    evidenceCards: evidenceCards.map((evidenceCard) => ({
+      ...evidenceCard,
+      href:
+        evidenceCard.organisationId === null
+          ? null
+          : route.getTrustHref(evidenceCard.organisationId),
+    })),
     supplierId,
     supplierName,
   };
@@ -719,6 +733,96 @@ export const renderProductRelatedTrustsInCategory = async (
   }
 
   await renderProductRelatedTrustsPage(req, res, key, route);
+};
+
+const renderProductTrustExperiencePage = async (
+  req: Request,
+  res: Response,
+  { aggregationName, supplierId }: AggregationKey,
+  route: ProductRoute,
+) => {
+  const organisationId = Number(req.params.trustId);
+
+  if (!Number.isInteger(organisationId)) {
+    res.status(404).render("not-found");
+    return;
+  }
+
+  const aggregation = await getAggregationWithName(aggregationName, supplierId);
+  const trustExperience =
+    aggregation &&
+    aggregation.length > 0 &&
+    (await getTrustExperienceForAggregation(
+      aggregationName,
+      supplierId,
+      organisationId,
+      req.user?.id,
+    ));
+
+  if (!aggregation || !trustExperience) {
+    res.status(404).render("not-found");
+    return;
+  }
+
+  const supplierName =
+    route.supplierName ??
+    (await getSupplierWithId(supplierId))?.manOrganisationName ??
+    "";
+  const contracts = await getContractsForTrustAndAggregation(
+    aggregationName,
+    supplierId,
+    trustExperience.organisationName,
+  );
+
+  res.render("product/trust", {
+    aggregationName: aggregation[0].aggregationName ?? "",
+    breadcrumbs: [
+      ...route.breadcrumbs,
+      { href: route.productHref, text: aggregationName },
+      {
+        href: route.trustsHref,
+        text: "Trusts sharing experience with this device",
+      },
+    ],
+    contracts,
+    supplierId,
+    supplierName,
+    trustExperience,
+  });
+};
+
+export const renderProductTrustExperience = async (
+  req: Request,
+  res: Response,
+) => {
+  const key = getAggregationKeyFromParams(req);
+
+  if (!key) {
+    res.status(404).render("not-found");
+    return;
+  }
+
+  await renderProductTrustExperiencePage(
+    req,
+    res,
+    key,
+    getSearchProductRoute(req, key),
+  );
+};
+
+export const renderProductTrustExperienceInCategory = async (
+  req: Request,
+  res: Response,
+) => {
+  const key = getAggregationKeyFromParams(req);
+  const route = key && (await getCategoryProductRoute(req, key));
+
+  if (!key || !route) {
+    res.status(404).render("not-found");
+    return;
+  }
+
+  await renderProductTrustExperiencePage(req, res, key, route);
 };
 
 async function createEvidenceCardForOrganisation(

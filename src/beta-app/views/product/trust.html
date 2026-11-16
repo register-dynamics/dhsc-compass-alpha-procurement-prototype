@@ -1,0 +1,138 @@
+{% extends "layouts/base.html" %}
+
+{% from "breadcrumb/macro.njk" import breadcrumb %}
+{% from "summary-list/macro.njk" import summaryList %}
+{% from "card/macro.njk" import card %}
+{% from "includes/mark-useful-button.njk" import mark_useful_button %}
+
+{% set trust = trustExperience.organisationName %}
+{% set pageName = trust + " – experience with " + aggregationName + " by " + supplierName %}
+{% set mainClasses = "nhsuk-main-wrapper--s" %}
+
+{% if trustExperience.procured === true %}
+    {% set outcome = "Procured it" %}
+{% elif trustExperience.procured === false %}
+    {% set outcome = "Did not procure it" %}
+{% else %}
+    {% set outcome = "Not reported" %}
+{% endif %}
+
+{% block beforeContent %}
+
+    {{ breadcrumb({
+        items: breadcrumbs
+    }) }}
+
+{% endblock %}
+
+{% block content %}
+
+    <div class="nhsuk-grid-row">
+        <div class="nhsuk-grid-column-two-thirds">
+
+            <h1 class="nhsuk-heading-l nhsuk-u-margin-bottom-4">
+                <span class="nhsuk-caption-l">{{ aggregationName }}</span>
+                {{ trust }}
+            </h1>
+
+            {{ summaryList({
+                rows: [
+                    { key: { text: "Outcome reported by the trust" }, value: { text: outcome } }
+                ]
+            }) }}
+
+            <h2 class="nhsuk-heading-m nhsuk-u-margin-top-5">People you can contact</h2>
+            {% for person in trustExperience.people %}
+
+                {# Only rows with something in them are shown #}
+                {% set rows = [
+                    { key: { text: "Role" }, value: { text: person.role } }
+                ] %}
+                {% if person.email %}
+                    {% set rows = (rows.push({ key: { text: "Email" }, value: { text: person.email } }), rows) %}
+                {% endif %}
+                {% if person.phoneNo %}
+                    {% set rows = (rows.push({ key: { text: "Phone" }, value: { text: person.phoneNo } }), rows) %}
+                {% endif %}
+                {% if person.happyToDiscuss | length %}
+                    {# Lowercase the first letter of all but the first topic, unless it's an acronym, e.g. "Training, real world use, EHR integration" #}
+                    {% set topics = [] %}
+                    {% for topic in person.happyToDiscuss %}
+                        {% if not loop.first and topic.slice(0, 2) != topic.slice(0, 2) | upper %}
+                            {% set topic = topic[0] | lower + topic.slice(1) %}
+                        {% endif %}
+                        {% set topics = (topics.push(topic), topics) %}
+                    {% endfor %}
+                    {% set rows = (rows.push({ key: { text: "Happy to discuss" }, value: { text: topics | join(", ") } }), rows) %}
+                {% endif %}
+                {% if person.documents | length %}
+                    {% set documentsHtml %}
+                        {% for document in person.documents %}
+                            <p class="nhsuk-u-margin-bottom-{{ '0' if loop.last else '2' }}">
+                                {{ document.documentType }}{% if document.assessmentDate %}, {{ document.assessmentDate }}{% endif %}
+                                {% if document.wardDepartment %}<br>Ward or department: {{ document.wardDepartment }}{% endif %}
+                            </p>
+                        {% endfor %}
+                    {% endset %}
+                    {% set rows = (rows.push({ key: { text: "Shared documents" }, value: { html: documentsHtml }, classes: "nhsuk-summary-list__row--no-border" }), rows) %}
+                {% endif %}
+                {% set foundUsefulHtml %}
+                    {{ mark_useful_button(person.usefulCount, aggregationName, supplierId, person.evidenceId, person.markedUseful) }}
+                {% endset %}
+                {% set rows = (rows.push({ key: { text: "People who found this useful" }, value: { html: foundUsefulHtml }, classes: "nhsuk-summary-list__row--no-border" }), rows) %}
+
+                {% call card({
+                    heading: person.name,
+                    headingLevel: 3,
+                    headingClasses: "nhsuk-heading-s"
+                }) %}
+                {{ summaryList({ classes: "nhsuk-u-margin-bottom-0", rows: rows }) }}
+                {% endcall %}
+            {% else %}
+                <p>No one at this trust has shared their details for this device yet.</p>
+            {% endfor %}
+
+            <h2 class="nhsuk-heading-m nhsuk-u-margin-top-5">Procurement contracts</h2>
+            {% for contract in contracts %}
+
+                {% set rows = [] %}
+                {% if contract.businessUnit %}
+                    {% set rows = (rows.push({ key: { text: "Business unit" }, value: { text: contract.businessUnit } }), rows) %}
+                {% endif %}
+                {% if contract.owner %}
+                    {% set rows = (rows.push({ key: { text: "Procurement contract owner" }, value: { text: contract.owner } }), rows) %}
+                {% endif %}
+
+                {# TODO: Procurement lead #}
+                {% set rows = (rows.push({ key: { text: "Procurement lead" }, value: { text: "TODO" } }), rows) %}
+
+                {% call card({
+                    heading: contract.contractName,
+                    headingLevel: 3,
+                    headingClasses: "nhsuk-heading-s"
+                }) %}
+                <p class="nhsuk-body-s nhsuk-u-margin-bottom-2">From Atamis contract records</p>
+                {% if rows | length %}
+                    {{ summaryList({ classes: "nhsuk-u-margin-bottom-0", rows: rows }) }}
+                {% endif %}
+                {% endcall %}
+            {% else %}
+                <p>There are no procurement contracts for this device with this trust.</p>
+            {% endfor %}
+
+        </div>
+    </div>
+
+    <div class="nhsuk-grid-row nhsuk-u-margin-top-5">
+        <div class="nhsuk-grid-column-two-thirds">
+            <p class="nhsuk-u-margin-bottom-2">You can contact our team if you:</p>
+            <ul>
+                <li>have a question</li>
+                <li>disagree with information you find on these pages</li>
+                <li>would like us to update something or make a change</li>
+            </ul>
+            <p>Email <a href="mailto:CompassHelp@dhsc.gov.uk">CompassHelp@dhsc.gov.uk</a></p>
+        </div>
+    </div>
+
+{% endblock %}

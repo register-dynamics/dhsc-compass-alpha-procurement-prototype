@@ -14,6 +14,15 @@ const paramValues = {
   deviceTypeId: "14035",
   supplierId: "65283",
   aggregationName: "Thermometer tympanic device",
+  // University Hospitals Birmingham, which has evidence for the product
+  trustId: "6",
+};
+
+// Extra values to test a route with as well, keyed by param name, for pages
+// laid out differently depending on the data
+const extraParamValues = {
+  // Waymeet, which has a contract for the product but no evidence
+  trustId: ["13"],
 };
 
 // Routes whose populated URL should differ from the default param substitution,
@@ -105,19 +114,34 @@ function getRoutes(router, prefix = "") {
 
 // Replace dynamic segments (e.g. ":supplierId") with actual values,
 // applying any route-specific overrides first
-function populateRoute(route) {
+function populateRoute(route, values = paramValues) {
   if (routeOverrides[route]) {
     return routeOverrides[route];
   }
 
   return route.replace(/:(\w+)/g, (segment, name) => {
-    if (!(name in paramValues)) {
+    if (!(name in values)) {
       throw new Error(
         `No value defined for route param "${segment}" in "${route}". Add it to paramValues in generate-sitemap.mjs`,
       );
     }
-    return encodeURIComponent(paramValues[name]);
+    return encodeURIComponent(values[name]);
   });
+}
+
+// The route populated with paramValues, then once for each of its extra values
+function populateRouteVariants(route) {
+  const variants = [populateRoute(route)];
+
+  for (const [name, values] of Object.entries(extraParamValues)) {
+    if (route.includes(`:${name}`)) {
+      for (const value of values) {
+        variants.push(populateRoute(route, { ...paramValues, [name]: value }));
+      }
+    }
+  }
+
+  return variants;
 }
 
 // Get all route patterns from the app (deduplicated, as GET and HEAD etc. may repeat)
@@ -128,7 +152,8 @@ const routes = [...new Set(getRoutes(app))];
 // and "/supplier/:supplierId" becomes "/supplier/65283"
 const urls = routes
   .filter((route) => !deferredRoutes.includes(route))
-  .map((route) => `${BASE_URL}${populateRoute(route)}`)
+  .flatMap(populateRouteVariants)
+  .map((url) => `${BASE_URL}${url}`)
   .sort();
 
 // Add the initial login URL to the start of the list of URLs
@@ -148,9 +173,9 @@ urls.push(
 if (fs.existsSync(pa11yciFile)) {
   const pa11yciConfig = JSON.parse(fs.readFileSync(pa11yciFile, "utf-8"));
   pa11yciConfig.urls = urls;
-  fs.writeFileSync(pa11yciFile, JSON.stringify(pa11yciConfig, null, 2));
+  fs.writeFileSync(pa11yciFile, `${JSON.stringify(pa11yciConfig, null, 2)}\n`);
 } else {
-  fs.writeFileSync(pa11yciFile, JSON.stringify({ urls }, null, 2));
+  fs.writeFileSync(pa11yciFile, `${JSON.stringify({ urls }, null, 2)}\n`);
 }
 
 console.log(`Found ${urls.length} routes`);
