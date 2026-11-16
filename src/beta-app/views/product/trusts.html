@@ -64,7 +64,7 @@
 
                 {% call card({
                     heading: evidenceCard.organisationName,
-                    href: "#",
+                    href: evidenceCard.href,
                     headingClasses: "nhsuk-heading-m"
                 }) %}
                 {{ mark_useful_button(evidenceCard.usefulCount, aggregationName, supplierId, evidenceCard.evidenceId, evidenceCard.markedUseful) }}
