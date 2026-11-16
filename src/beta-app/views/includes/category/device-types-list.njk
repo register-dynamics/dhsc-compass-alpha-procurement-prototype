@@ -44,7 +44,7 @@
         {% if subcategories | length %}
             <div class="nhsuk-grid-column-one-third">
                 <nav aria-labelledby="category-nav-heading">
-                    <h2 class="app-side-nav__heading nhsuk-heading-s nhsuk-u-margin-bottom-3" id="category-nav-heading">{{ category.name }}</h2>
+                    <h2 class="app-side-nav__heading nhsuk-heading-s nhsuk-u-margin-bottom-3" id="category-nav-heading">Subcategories of {{ category.name }}</h2>
                     <ul class="app-side-nav__list">
                         {% for subcategory in subcategories %}
                             <li class="app-side-nav__item">
