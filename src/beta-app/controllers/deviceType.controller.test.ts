@@ -155,12 +155,12 @@ describe("Device type controller", () => {
         ([, heading]) => heading,
       );
 
-    it("GET a device type shows trust data for it and similar types", async () => {
+    it("GET a device type shows trust data for it and related types", async () => {
       const response = await get(deviceTypePath);
 
       expect(cardHeadings(response.text)).toEqual([
         "7 trusts have experience with this type of device",
-        "9 trusts have experience with similar types of devices",
+        "9 trusts have experience with devices in the same or related categories",
       ]);
     });
 
@@ -169,7 +169,7 @@ describe("Device type controller", () => {
 
       expect(cardHeadings(response.text)).toEqual([
         "7 trusts have Aorta Solutions Heart rate monitor experience",
-        "4 trusts have experience with devices in the same or related categories",
+        "4 trusts have experience with Aorta Solutions devices in the same or related categories",
       ]);
     });
 
@@ -293,6 +293,70 @@ describe("Device type controller", () => {
       ],
     ])("GET related trusts with %s returns 404", async (_, path) => {
       expect((await get(path)).status).toBe(404);
+    });
+  });
+
+  describe("device type trusts pages", () => {
+    const cardHeadings = (html: string) =>
+      [...html.matchAll(/nhsuk-card__heading[^>]*>\s*([^<]+?)\s*</g)].map(
+        ([, heading]) => heading,
+      );
+
+    it("GET a device type links to its trusts and related trusts", async () => {
+      const response = await get(deviceTypePath);
+
+      expect(response.text).toContain(`href="${deviceTypePath}/trusts"`);
+      expect(response.text).toContain(
+        `href="${deviceTypePath}/related-trusts"`,
+      );
+    });
+
+    it("GET trusts has a card for each trust on the device type page's card", async () => {
+      const response = await get(`${deviceTypePath}/trusts`);
+      const headings = cardHeadings(response.text);
+
+      expect(response.status).toBe(200);
+      expect(headings).toHaveLength(7);
+      expect(headings).toContain("Barts Health NHS Trust");
+      expect(response.text).toContain("A to Z by trust");
+      // Marking as useful is for 1 device
+      expect(response.text).not.toContain("mark-useful-button");
+      expect(response.text).toContain(`href="${deviceTypePath}"`);
+    });
+
+    it("GET related trusts lists the device type page's related contracts", async () => {
+      const response = await get(`${deviceTypePath}/related-trusts`);
+
+      expect(response.status).toBe(200);
+      expect(response.text).toContain("Showing 8 contracts.");
+      expect(response.text).toContain(
+        "Most recent contracts are listed first.",
+      );
+      expect(response.text).toContain(`href="${deviceTypePath}"`);
+    });
+
+    it("GET related trusts keeps the filter when sorting", async () => {
+      const response = await get(
+        `${deviceTypePath}/related-trusts?category=Patient%20Monitoring%20Equipment`,
+      );
+
+      expect(response.text).toContain("Filter by category (1 applied)");
+      expect(response.text).toContain(
+        'href="?category=Patient+Monitoring+Equipment&amp;sort=trust&amp;order=ascending"',
+      );
+    });
+
+    it.each([
+      ["trusts", "an unknown category", "/category/999999"],
+      ["trusts", "a category it isn't in", "/category/10027"],
+      ["related-trusts", "an unknown category", "/category/999999"],
+      ["related-trusts", "a category it isn't in", "/category/10027"],
+    ])("GET %s with %s returns 404", async (page, _, categoryPath) => {
+      const response = await get(
+        `${categoryPath}/device-type/${deviceTypeId}/${page}`,
+      );
+
+      expect(response.status).toBe(404);
     });
   });
 

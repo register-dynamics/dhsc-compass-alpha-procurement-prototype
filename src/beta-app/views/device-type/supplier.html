@@ -27,16 +27,7 @@
       {{ gmdnTerm }}
     </h1>
 
-    {% if deviceTypePath %}
-      {% set deviceTypeValue = { html: '<a href="' ~ deviceTypePath ~ '">' ~ (gmdnTerm | escape) ~ '</a>' } %}
-    {% else %}
-      {% set deviceTypeValue = { text: gmdnTerm } %}
-    {% endif %}
-
     {{ summaryList({
-      rows: [
-        { key: { text: "Device type" }, value: deviceTypeValue }
-      ]
     }) }}
 
     {% set deviceRows = [] %}

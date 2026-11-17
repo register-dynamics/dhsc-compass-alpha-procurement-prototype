@@ -3,6 +3,12 @@ import { NoResultError } from "kysely";
 
 import { Breadcrumb } from "../models/view-models/breadcrumb.js";
 import {
+  DeviceTypeRelatedTrusts,
+  DeviceTypeTrusts,
+  DeviceTypeTrustsScope,
+} from "../models/view-models/deviceTypeTrusts.js";
+import { getRelatedContractsTable } from "../models/view-models/relatedContractsTable.js";
+import {
   getBrowsePathForDeviceType,
   getGmdnTermsBeneathCategory,
   getGmdnTermWithCode,
@@ -15,7 +21,11 @@ import {
   getSupplierWithId,
   type SupplierDeviceForDeviceType,
 } from "../services/supplierService.js";
-import { getDeviceTypeTrustData } from "../services/trustDataService.js";
+import {
+  getDeviceTypeRelatedContracts,
+  getDeviceTypeTrustCards,
+  getDeviceTypeTrustData,
+} from "../services/trustDataService.js";
 
 const getCategoryTrail = async (categoryId: number) => {
   if (!Number.isInteger(categoryId)) {
@@ -82,9 +92,92 @@ export const renderDeviceType = async (req: Request, res: Response) => {
     breadcrumbs,
     deviceTypePath,
     gmdnTerm,
+    relatedTrustsHref: `${deviceTypePath}/related-trusts`,
     suppliers,
     trustData,
+    trustsHref: `${deviceTypePath}/trusts`,
   });
+};
+
+// Returns undefined if the device type isn't in the category in the URL
+const getDeviceTypeTrustsScope = async (
+  req: Request,
+): Promise<DeviceTypeTrustsScope | undefined> => {
+  const deviceType = await getDeviceTypeInCategory(req);
+
+  if (!deviceType) {
+    return undefined;
+  }
+
+  const { breadcrumbs, deviceTypeId, deviceTypePath, gmdnTerm } = deviceType;
+
+  return {
+    breadcrumbs: [...breadcrumbs, { href: deviceTypePath, text: gmdnTerm }],
+    gmdnCode: deviceTypeId,
+    gmdnTerm,
+    parentHref: deviceTypePath,
+    searchQueryString: "",
+  };
+};
+
+// The trusts counted on the exact "Available trust data" card
+const renderTrustsPage = async (
+  res: Response,
+  scope: DeviceTypeTrustsScope | undefined,
+) => {
+  if (!scope) {
+    res.status(404).render("not-found");
+    return;
+  }
+
+  const viewModel: DeviceTypeTrusts = {
+    ...scope,
+    trustCards: await getDeviceTypeTrustCards(
+      scope.gmdnCode,
+      scope.manufacturerId,
+    ),
+  };
+
+  res.render("device-type/trusts", viewModel);
+};
+
+// The contracts counted on the related "Available trust data" card
+const renderRelatedTrustsPage = async (
+  req: Request,
+  res: Response,
+  scope: DeviceTypeTrustsScope | undefined,
+) => {
+  if (!scope) {
+    res.status(404).render("not-found");
+    return;
+  }
+
+  const contracts = await getDeviceTypeRelatedContracts(
+    scope.gmdnCode,
+    scope.manufacturerId,
+  );
+
+  const viewModel: DeviceTypeRelatedTrusts = {
+    ...scope,
+    contractsTable: getRelatedContractsTable(
+      contracts,
+      req.query,
+      scope.searchQueryString,
+    ),
+  };
+
+  res.render("device-type/related-trusts", viewModel);
+};
+
+export const renderDeviceTypeTrusts = async (req: Request, res: Response) => {
+  await renderTrustsPage(res, await getDeviceTypeTrustsScope(req));
+};
+
+export const renderDeviceTypeRelatedTrusts = async (
+  req: Request,
+  res: Response,
+) => {
+  await renderRelatedTrustsPage(req, res, await getDeviceTypeTrustsScope(req));
 };
 
 // A supplier's devices of one type, wherever the page was reached from.

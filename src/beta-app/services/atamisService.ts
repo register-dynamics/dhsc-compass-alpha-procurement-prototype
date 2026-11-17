@@ -1,5 +1,6 @@
 import { db } from "../database/client.js";
 import { TrustExperienceContract } from "../models/trustExperience.js";
+import { countContractsByTrust } from "../utils/trustEvidence.js";
 import { getProductContracts } from "./trustDataService.js";
 
 // The contracts on the product page's exact card, counted for each trust
@@ -12,15 +13,7 @@ export const getContractCountsByContractingAuthorityForAggregation = async (
     manufacturerId,
   });
 
-  const counts = new Map<string, number>();
-  for (const { contractingAuthority } of contracts) {
-    counts.set(
-      contractingAuthority,
-      (counts.get(contractingAuthority) ?? 0) + 1,
-    );
-  }
-
-  return counts;
+  return countContractsByTrust(contracts);
 };
 
 // The contracts on the product page's exact card with the trust as

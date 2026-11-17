@@ -5,6 +5,7 @@ import {
   TrustExperience,
   TrustExperiencePerson,
 } from "../models/trustExperience.js";
+import { combineOutcomes } from "../utils/trustEvidence.js";
 import { getContractCountsByContractingAuthorityForAggregation } from "./atamisService.js";
 
 export const getProductsByDeviceId = async (deviceId: number) => {
@@ -364,13 +365,7 @@ export const getTrustExperienceForAggregation = async (
     };
   });
 
-  // The trust procured it if any of its evidence says so
-  const outcomes = evidenceRows.map((row) => row.procured);
-  const procured = outcomes.includes(true)
-    ? true
-    : outcomes.includes(false)
-      ? false
-      : null;
+  const procured = combineOutcomes(evidenceRows.map((row) => row.procured));
 
   return { ...organisation, people, procured };
 };

@@ -2,8 +2,10 @@ import { Router } from "express";
 
 import {
   renderDeviceType,
+  renderDeviceTypeRelatedTrusts,
   renderDeviceTypeSupplier,
   renderDeviceTypeSupplierFromSearch,
+  renderDeviceTypeTrusts,
 } from "../controllers/deviceType.controller.js";
 import { registerRoutes, type RouteDefinition } from "./route-definitions.js";
 
@@ -14,6 +16,16 @@ const routeDefinitions: RouteDefinition[] = [
     handler: renderDeviceType,
     method: "get",
     path: "/category/:categoryId/device-type/:deviceTypeId",
+  },
+  {
+    handler: renderDeviceTypeTrusts,
+    method: "get",
+    path: "/category/:categoryId/device-type/:deviceTypeId/trusts",
+  },
+  {
+    handler: renderDeviceTypeRelatedTrusts,
+    method: "get",
+    path: "/category/:categoryId/device-type/:deviceTypeId/related-trusts",
   },
   {
     // Device type x supplier from GMDN category browse
