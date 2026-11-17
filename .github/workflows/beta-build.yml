@@ -151,7 +151,7 @@ jobs:
         run: |
           set -euo pipefail
           az acr build \
-            --subscription "${{ vars.AZURE_SHARED_SUBSCRIPTION_ID }}" \
+            --subscription "${{ vars.AZURE_RTL_SUBSCRIPTION_ID }}" \
             --registry "${{ vars.AZURE_CONTAINER_REGISTRY }}" \
             --source-acr-auth-id '[caller]' \
             --image "${IMAGE_PATH}" \
