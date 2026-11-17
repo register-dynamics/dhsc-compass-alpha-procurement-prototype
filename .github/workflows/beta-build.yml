@@ -153,7 +153,6 @@ jobs:
           az acr build \
             --subscription "${{ vars.AZURE_RTL_SUBSCRIPTION_ID }}" \
             --registry "${{ vars.AZURE_CONTAINER_REGISTRY }}" \
-            --source-acr-auth-id '[caller]' \
             --image "${IMAGE_PATH}" \
             --file "./src/beta-app/Dockerfile" \
             ./src/beta-app
