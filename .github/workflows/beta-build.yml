@@ -164,7 +164,7 @@ jobs:
           if az containerapp show \
             --name "app-${APP_NAME}" \
             --resource-group "${{ vars.AZURE_RESOURCE_GROUP }}" \
-            --subscription "${{ vars.AZURE_SHARED_SUBSCRIPTION_ID }}" > /dev/null 2>&1; then
+            --subscription "${{ vars.AZURE_RTL_SUBSCRIPTION_ID }}" > /dev/null 2>&1; then
             echo "exists=true" >> "$GITHUB_OUTPUT"
           else
             echo "exists=false" >> "$GITHUB_OUTPUT"
@@ -177,7 +177,7 @@ jobs:
           az containerapp create \
             --name "app-${APP_NAME}" \
             --resource-group "${{ vars.AZURE_RESOURCE_GROUP }}" \
-            --subscription "${{ vars.AZURE_SHARED_SUBSCRIPTION_ID }}" \
+            --subscription "${{ vars.AZURE_RTL_SUBSCRIPTION_ID }}" \
             --environment "${{ steps.rendered_bootstrap.outputs.managed_environment_id }}" \
             --user-assigned "${{ steps.rendered_bootstrap.outputs.managed_identity_resource_id }}" \
             --workload-profile-name "${{ steps.rendered_bootstrap.outputs.workload_profile_name }}" \
@@ -190,7 +190,7 @@ jobs:
           az containerapp registry set \
             --name "app-${APP_NAME}" \
             --resource-group "${{ vars.AZURE_RESOURCE_GROUP }}" \
-            --subscription "${{ vars.AZURE_SHARED_SUBSCRIPTION_ID }}" \
+            --subscription "${{ vars.AZURE_RTL_SUBSCRIPTION_ID }}" \
             --server "${{ vars.AZURE_CONTAINER_REGISTRY }}.azurecr.io" \
             --identity "${{ steps.rendered_bootstrap.outputs.managed_identity_resource_id }}" \
             --output none
@@ -203,11 +203,11 @@ jobs:
           image_to_deploy: ${{ env.FULL_IMAGE }}
           azure_client_id: ${{ vars.AZURE_CLIENT_ID }}
           azure_tenant_id: ${{ vars.AZURE_TENANT_ID }}
-          azure_subscription_id: ${{ vars.AZURE_SHARED_SUBSCRIPTION_ID }}
+          azure_subscription_id: ${{ vars.AZURE_RTL_SUBSCRIPTION_ID }}
       - name: Add deployment summary
         shell: bash
         run: |
-          fqdn="$(az containerapp show --name "app-${APP_NAME}" --resource-group "${{ vars.AZURE_RESOURCE_GROUP }}" --subscription "${{ vars.AZURE_SHARED_SUBSCRIPTION_ID }}" --query "properties.configuration.ingress.fqdn" -o tsv)"
+          fqdn="$(az containerapp show --name "app-${APP_NAME}" --resource-group "${{ vars.AZURE_RESOURCE_GROUP }}" --subscription "${{ vars.AZURE_RTL_SUBSCRIPTION_ID }}" --query "properties.configuration.ingress.fqdn" -o tsv)"
           {
             echo "### ${APP_NAME} deployment"
             echo
