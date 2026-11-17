@@ -236,6 +236,7 @@ export const getSupplierInCategory = async (req: Request) => {
     deviceTypeId,
     deviceTypePath,
     gmdnTerm,
+    searchQueryString: "",
     supplier: supplierDevices.supplier,
     supplierPath,
   };
@@ -284,27 +285,63 @@ const getSupplierInSearch = async (req: Request) => {
       browsePath &&
       `/category/${String(browsePath.categoryId)}/device-type/${String(deviceTypeId)}`,
     gmdnTerm: term.gmdnTermName,
+    searchQueryString,
     supplier: supplierDevices.supplier,
+    supplierPath: `/device-type/${String(deviceTypeId)}/supplier/${String(supplierId)}`,
   };
 };
 
+type SupplierPage =
+  | Awaited<ReturnType<typeof getSupplierInCategory>>
+  | Awaited<ReturnType<typeof getSupplierInSearch>>;
+
 const renderSupplierPage = async (
   res: Response,
-  supplierPage:
-    | Awaited<ReturnType<typeof getSupplierInCategory>>
-    | Awaited<ReturnType<typeof getSupplierInSearch>>,
+  supplierPage: SupplierPage,
 ) => {
   if (!supplierPage) {
     res.status(404).render("not-found");
     return;
   }
 
+  const { searchQueryString, supplierPath } = supplierPage;
   const trustData = await getDeviceTypeTrustData(
     supplierPage.deviceTypeId,
     supplierPage.supplier.manufacturerId,
   );
 
-  res.render("device-type/supplier", { ...supplierPage, trustData });
+  res.render("device-type/supplier", {
+    ...supplierPage,
+    relatedTrustsHref: `${supplierPath}/related-trusts${searchQueryString}`,
+    trustData,
+    trustsHref: `${supplierPath}/trusts${searchQueryString}`,
+  });
+};
+
+// The trusts pages for the supplier's devices of the type sit beneath its
+// page, wherever that was reached from
+const getSupplierTrustsScope = (
+  supplierPage: SupplierPage,
+): DeviceTypeTrustsScope | undefined => {
+  if (!supplierPage) {
+    return undefined;
+  }
+
+  const { searchQueryString, supplier, supplierPath } = supplierPage;
+  const supplierHref = `${supplierPath}${searchQueryString}`;
+
+  return {
+    breadcrumbs: [
+      ...supplierPage.breadcrumbs,
+      { href: supplierHref, text: supplier.manOrganisationName },
+    ],
+    gmdnCode: supplierPage.deviceTypeId,
+    gmdnTerm: supplierPage.gmdnTerm,
+    manufacturerId: supplier.manufacturerId,
+    parentHref: supplierHref,
+    searchQueryString,
+    supplierName: supplier.manOrganisationName,
+  };
 };
 
 export const renderDeviceTypeSupplier = async (req: Request, res: Response) => {
@@ -316,4 +353,46 @@ export const renderDeviceTypeSupplierFromSearch = async (
   res: Response,
 ) => {
   await renderSupplierPage(res, await getSupplierInSearch(req));
+};
+
+export const renderDeviceTypeSupplierTrusts = async (
+  req: Request,
+  res: Response,
+) => {
+  await renderTrustsPage(
+    res,
+    getSupplierTrustsScope(await getSupplierInCategory(req)),
+  );
+};
+
+export const renderDeviceTypeSupplierTrustsFromSearch = async (
+  req: Request,
+  res: Response,
+) => {
+  await renderTrustsPage(
+    res,
+    getSupplierTrustsScope(await getSupplierInSearch(req)),
+  );
+};
+
+export const renderDeviceTypeSupplierRelatedTrusts = async (
+  req: Request,
+  res: Response,
+) => {
+  await renderRelatedTrustsPage(
+    req,
+    res,
+    getSupplierTrustsScope(await getSupplierInCategory(req)),
+  );
+};
+
+export const renderDeviceTypeSupplierRelatedTrustsFromSearch = async (
+  req: Request,
+  res: Response,
+) => {
+  await renderRelatedTrustsPage(
+    req,
+    res,
+    getSupplierTrustsScope(await getSupplierInSearch(req)),
+  );
 };

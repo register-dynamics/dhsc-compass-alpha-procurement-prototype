@@ -393,14 +393,16 @@ const getEvidenceRows = async (aggregations: SupplierAggregation[]) => {
       "o.organisationName",
     ])
     .distinct()
-    .where((eb) =>
-      eb(
-        eb.refTuple("pe.aggregationName", "pe.manufacturerId"),
-        "in",
-        aggregations.map(({ aggregationName, manufacturerId }) =>
-          eb.tuple(aggregationName, manufacturerId),
-        ),
-      ),
+    // A device type can have thousands of aggregations. As a list of tuples,
+    // they'd be an OR for each one, which runs out of stack in Postgres, so
+    // they're passed as 2 arrays instead.
+    .where(
+      sql<boolean>`(pe.aggregation_name, pe.manufacturer_id) IN (
+        SELECT * FROM unnest(
+          ${aggregations.map((a) => a.aggregationName)}::varchar[],
+          ${aggregations.map((a) => a.manufacturerId)}::integer[]
+        )
+      )`,
     )
     .execute();
 };
