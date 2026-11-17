@@ -17,7 +17,7 @@ identity:
     (@= data.values.managed_identity_resource_id @): {}
 properties:
   managedEnvironmentId: #@ data.values.managed_environment_id
-  workloadProfileName: "dedicated-d4"
+  workloadProfileName: "Consumption"
   configuration:
     activeRevisionsMode: Single
     maxInactiveRevisions: 0
