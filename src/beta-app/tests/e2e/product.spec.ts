@@ -11,9 +11,7 @@ test.beforeEach(async ({ page }) => {
 test("user can search and access product details", async ({ page }) => {
   await page.goto("/search");
 
-  await page
-    .getByLabel("Search by device type")
-    .fill("glucose");
+  await page.getByLabel("Search by device type").fill("glucose");
 
   await page.getByRole("button", { name: "Search" }).click();
 
