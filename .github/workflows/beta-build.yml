@@ -162,7 +162,7 @@ jobs:
         run: |
           set -euo pipefail
           if az containerapp show \
-            --name "${APP_NAME}" \
+            --name "app-${APP_NAME}" \
             --resource-group "${{ vars.AZURE_RESOURCE_GROUP }}" \
             --subscription "${{ vars.AZURE_SHARED_SUBSCRIPTION_ID }}" > /dev/null 2>&1; then
             echo "exists=true" >> "$GITHUB_OUTPUT"
@@ -175,7 +175,7 @@ jobs:
         run: |
           set -euo pipefail
           az containerapp create \
-            --name "${APP_NAME}" \
+            --name "app-${APP_NAME}" \
             --resource-group "${{ vars.AZURE_RESOURCE_GROUP }}" \
             --subscription "${{ vars.AZURE_SHARED_SUBSCRIPTION_ID }}" \
             --environment "${{ steps.rendered_bootstrap.outputs.managed_environment_id }}" \
@@ -188,7 +188,7 @@ jobs:
         run: |
           set -euo pipefail
           az containerapp registry set \
-            --name "${APP_NAME}" \
+            --name "app-${APP_NAME}" \
             --resource-group "${{ vars.AZURE_RESOURCE_GROUP }}" \
             --subscription "${{ vars.AZURE_SHARED_SUBSCRIPTION_ID }}" \
             --server "${{ vars.AZURE_CONTAINER_REGISTRY }}.azurecr.io" \
@@ -197,7 +197,7 @@ jobs:
       - name: Update Container App via dac-shared action
         uses: dhsc-govuk-infrastructure/dac-shared/.github/actions/containerapp-update-from-yaml@main
         with:
-          app_name: ${{ env.APP_NAME }}
+          app_name: app-${{ env.APP_NAME }}
           azure_resource_group: ${{ vars.AZURE_RESOURCE_GROUP }}
           container_app_yaml_path: ${{ env.YAML }}
           image_to_deploy: ${{ env.FULL_IMAGE }}
@@ -207,7 +207,7 @@ jobs:
       - name: Add deployment summary
         shell: bash
         run: |
-          fqdn="$(az containerapp show --name "${APP_NAME}" --resource-group "${{ vars.AZURE_RESOURCE_GROUP }}" --subscription "${{ vars.AZURE_SHARED_SUBSCRIPTION_ID }}" --query "properties.configuration.ingress.fqdn" -o tsv)"
+          fqdn="$(az containerapp show --name "app-${APP_NAME}" --resource-group "${{ vars.AZURE_RESOURCE_GROUP }}" --subscription "${{ vars.AZURE_SHARED_SUBSCRIPTION_ID }}" --query "properties.configuration.ingress.fqdn" -o tsv)"
           {
             echo "### ${APP_NAME} deployment"
             echo
