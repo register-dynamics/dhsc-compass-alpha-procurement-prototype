@@ -38,7 +38,6 @@
   "author": "https://github.com/register-dynamics",
   "type": "module",
   "dependencies": {
-    "@types/nunjucks": "^3.2.6",
     "argon2": "^0.45.1",
     "connect-pg-simple": "^10.0.0",
     "express": "^5.3.0",
@@ -61,6 +60,7 @@
     "@types/express": "^5.0.6",
     "@types/express-session": "^1.19.0",
     "@types/node": "^26.6.5",
+    "@types/nunjucks": "^3.2.6",
     "@types/passport": "^1.0.17",
     "@types/passport-local": "^1.0.38",
     "@types/pg": "^8.23.1",

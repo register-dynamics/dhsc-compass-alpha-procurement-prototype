@@ -247,9 +247,6 @@ export const postMarkUseful = async (req: Request, res: Response) => {
       .insertInto("product_evidence_useful")
       .values({
         aggregationName,
-        // @ts-expect-error: TypeScript may complain about the date format
-        // Should be fixed when we switch from SQLite to Postgres
-        dateMarkedUseful: new Date().toUTCString(),
         evidenceId: evidenceId,
         manufacturerId: supplierId,
         userId,
@@ -259,13 +256,13 @@ export const postMarkUseful = async (req: Request, res: Response) => {
     const countUseful = await db
       .withSchema("app")
       .selectFrom("product_evidence_useful")
-      .select(db.fn.count("evidenceId").as("count"))
+      .select(db.fn.count<string>("evidenceId").as("count"))
       .where("evidenceId", "=", evidenceId)
       .where("aggregationName", "=", aggregationName)
       .where("manufacturerId", "=", supplierId)
       .execute();
 
-    // This gets type "string | number | bigint" for some reason
+    // Postgres returns count() as a bigint, which pg gives as a string
     const count = Number(countUseful[0].count);
 
     res.status(200).send({ count: count });
@@ -308,13 +305,13 @@ export const postUnmarkUseful = async (req: Request, res: Response) => {
     const countUseful = await db
       .withSchema("app")
       .selectFrom("product_evidence_useful")
-      .select(db.fn.count("evidenceId").as("count"))
+      .select(db.fn.count<string>("evidenceId").as("count"))
       .where("aggregationName", "=", aggregationName)
       .where("manufacturerId", "=", supplierId)
       .where("evidenceId", "=", evidenceId)
       .execute();
 
-    // This gets type "string | number | bigint" for some reason
+    // Postgres returns count() as a bigint, which pg gives as a string
     const count = Number(countUseful[0].count);
 
     res.status(200).send({ count: count });

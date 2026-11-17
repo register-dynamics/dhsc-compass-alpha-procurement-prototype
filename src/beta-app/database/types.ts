@@ -127,7 +127,7 @@ export interface ProductEvidenceUsefulTable {
   manufacturerId: number;
   evidenceId: number;
   userId: number;
-  dateMarkedUseful: Date;
+  dateMarkedUseful: Generated<Date>;
 }
 
 export type Search = Selectable<SearchTable>;
