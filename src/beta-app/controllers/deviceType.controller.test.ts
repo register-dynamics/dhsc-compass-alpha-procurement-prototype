@@ -155,12 +155,12 @@ describe("Device type controller", () => {
         ([, heading]) => heading,
       );
 
-    it("GET a device type shows trust data for it and similar types", async () => {
+    it("GET a device type shows trust data for it and related types", async () => {
       const response = await get(deviceTypePath);
 
       expect(cardHeadings(response.text)).toEqual([
         "7 trusts have experience with this type of device",
-        "9 trusts have experience with similar types of devices",
+        "9 trusts have experience with devices in the same or related categories",
       ]);
     });
 
@@ -169,7 +169,7 @@ describe("Device type controller", () => {
 
       expect(cardHeadings(response.text)).toEqual([
         "7 trusts have Aorta Solutions Heart rate monitor experience",
-        "4 trusts have experience with devices in the same or related categories",
+        "4 trusts have experience with Aorta Solutions devices in the same or related categories",
       ]);
     });
 
