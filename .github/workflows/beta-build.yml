@@ -95,7 +95,7 @@ jobs:
             --data-value revision_suffix="${REVISION_SUFFIX}" \
             --data-value environment="${ENV}" \
             --data-value location="${LOCATION}" \
-            --data-value app_name="${APP_NAME}" \
+            --data-value app_name="app-${APP_NAME}" \
             --data-value managed_identity_resource_id="${MANAGED_IDENTITY_RESOURCE_ID}" \
             --data-value managed_environment_id="${MANAGED_ENVIRONMENT_ID}" \
             --data-value database_host="${DATABASE_HOST}" \
