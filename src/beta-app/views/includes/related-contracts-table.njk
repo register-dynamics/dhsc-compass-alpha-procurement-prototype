@@ -1,0 +1,84 @@
+{% from "checkboxes/macro.njk" import checkboxes %}
+{% from "details/macro.njk" import details %}
+{% from "tables/macro.njk" import table %}
+
+{#
+  The contracts on a "Contracts in the same or related categories" page, as
+  a RelatedContractsTable from models/view-models/relatedContractsTable.ts.
+
+  People sift these for the best few leads, so it's a table with 1 row per
+  contract, filtered by category and sorted on the server. The category is
+  the contract's own Atamis category, so people can judge how close it is.
+  There's no hierarchy for those, so they sort A to Z.
+
+  Contract names aren't links yet, as there are no contract pages.
+
+  params:
+    table        The RelatedContractsTable
+    labelledBy   ID of the page heading, to label the table
+    emptyText    What to say when there are no contracts
+#}
+{% macro related_contracts_table(params) %}
+    {% set contractsTable = params.table %}
+
+    {% if contractsTable.totalCount %}
+
+        {% call details({ summaryText: "Filter by category (" ~ contractsTable.selectedCategoryCount ~ " applied)", classes: "nhsuk-expander" }) %}
+            <form method="get" novalidate>
+
+                {{ checkboxes({
+                    name: "category",
+                    idPrefix: "category",
+                    fieldset: { legend: { text: "Category", size: "s" } },
+                    items: contractsTable.categoryItems,
+                    classes: "nhsuk-checkboxes--small",
+                    formGroup: { classes: "nhsuk-u-margin-bottom-3" }
+                }) }}
+
+                {% for input in contractsTable.formInputs %}
+                    <input type="hidden" name="{{ input.name }}" value="{{ input.value }}">
+                {% endfor %}
+
+                <div class="nhsuk-button-group nhsuk-button-group--small nhsuk-u-margin-bottom-0">
+                    <button class="nhsuk-button nhsuk-button--secondary nhsuk-button--small" data-module="nhsuk-button" type="submit">
+                        Update results
+                    </button>
+                    {% if contractsTable.selectedCategoryCount %}
+                        <a class="nhsuk-link" href="{{ contractsTable.clearFiltersHref }}">Clear filters</a>
+                    {% endif %}
+                </div>
+
+            </form>
+        {% endcall %}
+
+        <p class="nhsuk-body">
+            {%- if contractsTable.selectedCategoryCount -%}
+                Showing {{ contractsTable.contracts | length }} of {{ contractsTable.totalCount }} contracts.
+            {%- else -%}
+                Showing {{ contractsTable.totalCount }} {{ "contract" if contractsTable.totalCount == 1 else "contracts" }}.
+            {%- endif %}
+            {{ contractsTable.orderText }}
+        </p>
+
+        {% set rows = [] %}
+        {% for contract in contractsTable.contracts %}
+            {% set rows = (rows.push([
+                { header: "Contract", text: contract.contractName },
+                { header: "Trust", text: contract.trust },
+                { header: "Category", text: contract.primaryCategory },
+                { header: "Start date", text: contract.startMonth }
+            ]), rows) %}
+        {% endfor %}
+
+        {{ table({
+            attributes: { "aria-labelledby": params.labelledBy },
+            responsive: true,
+            firstCellIsHeader: true,
+            head: contractsTable.head,
+            rows: rows
+        }) }}
+
+    {% else %}
+        <p>{{ params.emptyText }}</p>
+    {% endif %}
+{% endmacro %}
