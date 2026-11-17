@@ -61,7 +61,7 @@ jobs:
           echo "::add-mask::$T"
           echo "PGTOKEN=$T" >> "$GITHUB_ENV"
       - name: Create user and database
-        uses: azure/postgresql@v1.2.0
+        uses: azure/postgresql@59401b7890419c83f372819a1c37f5aecf57ac92 # Tag v1.2.0
         with:
           server-name: ${{ vars.AZURE_DATABASE_HOST }}
           connection-string: "host=${{ vars.AZURE_DATABASE_HOST }} port=5432 dbname=postgres user=sp-dhscacp-ghr-cmps-dev password=${{ env.PGTOKEN }} sslmode=require"
@@ -79,7 +79,7 @@ jobs:
           export DATABASE_NAME=$APP_NAME
           export DATABASE_USER=$APP_NAME
           export DATABASE_PASSWORD
-          (cd src/beta-app; npm ci; npm run db:migrate)
+          (cd src/beta-app; npm ci --ignore-scripts; npm run db:migrate)
           # Load fake data
           psql -U $DATABASE_USER -h $DATABASE_HOST -d $DATABASE_NAME < src/beta-app/database/fake-data/external.sql
           psql -U $DATABASE_USER -h $DATABASE_HOST -d $DATABASE_NAME < src/beta-app/database/fake-data/app.sql
