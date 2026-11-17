@@ -59,6 +59,7 @@
       trustData: trustData.exact,
       experience: supplier.manOrganisationName + " " + gmdnTerm + " experience",
       showDocuments: true,
+      href: trustsHref,
       headingLevel: 3,
       headingClasses: "nhsuk-heading-s"
     }) }}
@@ -67,6 +68,7 @@
     {{ trust_data_card({
       trustData: trustData.related,
       experience: "experience with " + supplier.manOrganisationName + " devices in the same or related categories",
+      href: relatedTrustsHref,
       headingLevel: 3,
       headingClasses: "nhsuk-heading-s"
     }) }}
