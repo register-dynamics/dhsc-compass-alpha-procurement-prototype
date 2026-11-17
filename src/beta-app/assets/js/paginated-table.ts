@@ -168,7 +168,7 @@ class PaginatedTable {
       const order = this.describeOrder();
       this.$status.textContent =
         `Showing ${String(rows.length ? start + 1 : 0)} to ${String(end)} of ${String(rows.length)}` +
-        (order ? `, ordered ${order}.` : ".");
+        (order ? `, listed ${order}` : ".");
     }
 
     this.$pagination.hidden = pageCount <= 1;
