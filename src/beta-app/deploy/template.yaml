@@ -21,13 +21,6 @@ properties:
   configuration:
     activeRevisionsMode: Single
     maxInactiveRevisions: 0
-    #@ if/end len(data.values.secrets) > 0:
-    secrets:
-      #@ for secret in data.values.secrets:
-      - name: #@ secret.name
-        keyVaultUrl: #@ secret.keyVaultUrl
-        identity: #@ data.values.managed_identity_resource_id
-      #@ end
     registries:
       - server: #@ data.values.acr_login_server
         identity: #@ data.values.managed_identity_resource_id
