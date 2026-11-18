@@ -1,7 +1,7 @@
 {
   "name": "nhsuk-compass-app",
   "version": "0.0.1",
-  "description": "A digital service for NHS staff to search and evaluate medical technologies",
+  "description": "A digital service for NHS staff to exchange knowledge about medical technologies",
   "scripts": {
     "dev:css": "sass --load-path=node_modules --watch assets/sass:public/css --style=expanded",
     "dev:js": "esbuild assets/js/main.ts --bundle --format=esm --minify --sourcemap --target=es2020 --tsconfig=tsconfig.json --outfile=public/javascripts/main.min.js --watch=forever",

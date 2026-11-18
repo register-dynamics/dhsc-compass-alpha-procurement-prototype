@@ -6,19 +6,19 @@ test("homepage loads and shows the main service heading", async ({ page }) => {
   const headerServiceName = page.locator(".nhsuk-header__service-name").first();
 
   await expect(headerServiceName).toHaveText(
-    "Search and evaluate medical technology",
+    "Exchange medtech knowledge",
   );
   await expect(headerServiceName).toBeVisible();
 
   await expect(
     page.getByRole("heading", {
       level: 1,
-      name: "Search and evaluate medical technology",
+      name: "Exchange medtech knowledge",
     }),
   ).toBeVisible();
 
   await expect(page).toHaveTitle(
-    /Compass|Search and evaluate medical technology/i,
+    /Exchange medtech knowledge/i,
   );
 });
 
