@@ -38,7 +38,13 @@ export const getContractsForTrustAndAggregation = async (
   return await db
     .withSchema("external")
     .selectFrom("atamis_contracts")
-    .select(["contractRef", "contractName", "businessUnit", "owner", "procurementDeliveryLead"])
+    .select([
+      "contractRef",
+      "contractName",
+      "businessUnit",
+      "owner",
+      "procurementDeliveryLead",
+    ])
     .where("contractRef", "in", contractRefs)
     .orderBy("contractName", "asc")
     .execute();
