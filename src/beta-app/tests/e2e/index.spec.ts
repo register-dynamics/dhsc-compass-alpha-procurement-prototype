@@ -5,9 +5,7 @@ test("homepage loads and shows the main service heading", async ({ page }) => {
 
   const headerServiceName = page.locator(".nhsuk-header__service-name").first();
 
-  await expect(headerServiceName).toHaveText(
-    "Exchange medtech knowledge",
-  );
+  await expect(headerServiceName).toHaveText("Exchange medtech knowledge");
   await expect(headerServiceName).toBeVisible();
 
   await expect(
@@ -17,9 +15,7 @@ test("homepage loads and shows the main service heading", async ({ page }) => {
     }),
   ).toBeVisible();
 
-  await expect(page).toHaveTitle(
-    /Exchange medtech knowledge/i,
-  );
+  await expect(page).toHaveTitle(/Exchange medtech knowledge/i);
 });
 
 test("navigating to non-existent page shows the 404 error page", async ({
