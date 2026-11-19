@@ -295,7 +295,9 @@ INSERT INTO "external"."atamis_contracts" ("contract_ref","contract_name","descr
  ('FAKE0020','Cardiac Monitoring Consumables','Heart rate monitors and associated consumables.','Hamfast Gamgee','Active','Ferrus Technology Solutions',NULL,NULL,'United Lamplighter Teaching Hospitals NHS Trust','ULTH Medical Equipment','Patient Monitoring Equipment',NULL,'2024-09-01','2027-08-31',NULL,'Jillane Eydel'),
  ('FAKE0021','Insulin Syringes and Needles','Supply of insulin syringes with fixed needles.','Rosie Cotton','Active','ArcTech (UK) Limited','28638932',NULL,'Great Farthing Hospitals NHS Foundation Trust','GFH Diabetes Service','Medical & Surgical Consumables',NULL,'2025-11-01','2027-10-31',NULL,'Lisabeth Starford'),
  ('FAKE0022','WAH - Cardiology - Ambulatory Blood Pressure Monitors','Ambulatory blood pressure monitors and cuffs for outpatient clinics.','Alethea Charlton','Active','Aorta Solutions Ltd','1360551',NULL,'Whitwell Acute Hospitals NHS Trust','Whitwell NHS Trust - Cardiology','Cardiology Equipment',NULL,'2026-02-02','2029-02-01',NULL,'Syman Neumann'),
- ('FAKE0023','Vital Signs Monitoring - Aorta','Vital signs monitors including blood pressure.','Carol Ann Hartnell','Active - Renewal in Progress','Aorta Solutions UK Ltd',NULL,NULL,'Waymeet Hospitals University National Health Service Trust','WHU - Procurement','Patient Monitoring Equipment','Medical & Surgical Consumables','2023-06-12','2026-06-11',NULL,'Lyndel Beauman');
+ ('FAKE0023','Vital Signs Monitoring - Aorta','Vital signs monitors including blood pressure.','Carol Ann Hartnell','Active - Renewal in Progress','Aorta Solutions UK Ltd',NULL,NULL,'Waymeet Hospitals University National Health Service Trust','WHU - Procurement','Patient Monitoring Equipment','Medical & Surgical Consumables','2023-06-12','2026-06-11',NULL,'Lyndel Beauman'),
+ ('FAKE0024','BTH - Respiratory - Diagnostic Spirometers','Supply of professional diagnostic spirometers for the lung function service.','Peregrin Took','Active','Bywater Respiratory Ltd','09876543',NULL,'Baranduin Teaching Hospitals NHS Foundation Trust','BTHFT - 13 - Specialist Medicine','Respiratory Equipment',NULL,'2025-06-01','2028-05-31',NULL,'Esmeralda Brandybuck'),
+ ('FAKE0025','WAH - Respiratory - Body Plethysmography','Supply and maintenance of a whole-body plethysmograph.','Alethea Charlton','Active','Bywater Respiratory Ltd','09876543',NULL,'Whitwell Acute Hospitals NHS Trust','Whitwell NHS Trust - Respiratory','Respiratory Equipment',NULL,'2026-01-05','2029-01-04',NULL,'Fredegar Bolger');
 
 INSERT INTO "external"."atamis_pipeline" ("ref_no","workplan_name","contracting_authority","business_unit","bu_contact","description","commercial_lead","existing_supplier","expected_start_date","cpv_category","alt_category","delivery_lead") VALUES ('FAKE1001','FHFT - C- Orthopaedics - Orthopaedic and Trauma Procurement','Frogmorton Health NHS Foundation Trust','FHFT - Procurement','Katharine Schofield','FHFT - C- Orthopaedics - Paragon42 Orthopaedic and Trauma Consignments (hip)','Keith Pyott','Otho Solutions Limited',NULL,'Orthopaedic implants','Surgical Implants and Associated Products','Gordon Wales'),
  ('FAKE1002','Orthopaedic Internal & External Fixations','Great Farthing Hospitals NHS Foundation Trust','GFH - Surgery & Planned Care','Walter Randall','Orthopaedic Internal & External Fixations','John Ringham','Otho Solutions Limited',NULL,'Orthopaedic implants','Surgical Implants and Associated Products',NULL),
@@ -323,7 +325,9 @@ INSERT INTO "external"."contracts_to_mhra_manufacturers" ("contract_ref","manufa
  ('FAKE0020',45123),
  ('FAKE0021',95632),
  ('FAKE0022',13455),
- ('FAKE0023',13455);
+ ('FAKE0023',13455),
+ ('FAKE0024',30512),
+ ('FAKE0025',30512);
  
 INSERT INTO "external"."atamis_to_gmdn" ("atamis_ref","gmdn_code") VALUES ('FAKE0007',35839),
  ('FAKE0008',63088),
@@ -369,7 +373,9 @@ INSERT INTO "external"."atamis_to_gmdn" ("atamis_ref","gmdn_code") VALUES ('FAKE
  ('FAKE0020',35198),
  ('FAKE0021',38502),
  ('FAKE0022',63088),
- ('FAKE0023',63088);
+ ('FAKE0023',63088),
+ ('FAKE0024',13680),
+ ('FAKE0025',35242);
 
 REFRESH MATERIALIZED VIEW "external"."search";
 REFRESH MATERIALIZED VIEW "external"."aggregation_search";

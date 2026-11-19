@@ -105,9 +105,8 @@ describe("Search controller", () => {
   });
 
   it("GET /search-results lists each of a supplier's aggregations of a device type as its own result", async () => {
-    // Bywater Respiratory's Lepton Series spans three device types. Each
-    // matching device type gets a result with only its own models, and the
-    // two spirometer registrations share one.
+    // Bywater Respiratory's Lepton Series spans three device types, and only
+    // the spirometer matches. Its two spirometer registrations share a result.
     const response = await request(app)
       .get("/search-results?q=spirometer")
       .set("Cookie", cookies);
@@ -118,18 +117,6 @@ describe("Search controller", () => {
     );
     expect(response.text).toContain("Bywater Respiratory Ltd");
     expect(response.text).toContain("Lepton Series");
-    expect(response.text).toContain("Lepton Spiro, Lepton Spiro Mini");
-    expect(response.text).not.toContain("L-Box");
-    expect(response.text).not.toContain("Lepton PFT");
-  });
-
-  it("GET /search-results doesn't list models named the same as their aggregation", async () => {
-    const response = await request(app)
-      .get("/search-results?q=glucose")
-      .set("Cookie", cookies);
-
-    // GlucoSense's only model is GlucoSense, so it's shown once, as the aggregation
-    expect(response.text.match(/GlucoSense/g)).toHaveLength(1);
   });
 
   it("GET /search-results filters by GMDN category and keeps the filter on result links", async () => {

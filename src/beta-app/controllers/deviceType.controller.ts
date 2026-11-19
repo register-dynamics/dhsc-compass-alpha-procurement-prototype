@@ -246,7 +246,7 @@ export const getSupplierInCategory = async (req: Request) => {
 // The breadcrumbs lead back to the search, and the device type link uses a
 // category picked for it. Returns undefined if the device type or supplier
 // doesn't exist.
-const getSupplierInSearch = async (req: Request) => {
+export const getSupplierInSearch = async (req: Request) => {
   const deviceTypeId = Number(req.params.deviceTypeId);
   const supplierId = Number(req.params.supplierId);
 
@@ -265,6 +265,7 @@ const getSupplierInSearch = async (req: Request) => {
   }
 
   const searchQueryString = getSearchQueryString(req.query);
+  const supplierPath = `/device-type/${String(deviceTypeId)}/supplier/${String(supplierId)}`;
   const breadcrumbs: Breadcrumb[] = [
     { href: "/", text: "Home" },
     searchQueryString
@@ -274,10 +275,10 @@ const getSupplierInSearch = async (req: Request) => {
 
   return {
     breadcrumbs,
-    // Products are linked by their search path, so they lead back to the search
+    // Products are linked beneath this page, so they lead back to the search
     devices: withProductHrefs(
       supplierDevices.devices,
-      `/supplier/${String(supplierId)}`,
+      supplierPath,
       searchQueryString,
     ),
     deviceTypeId,
@@ -287,7 +288,7 @@ const getSupplierInSearch = async (req: Request) => {
     gmdnTerm: term.gmdnTermName,
     searchQueryString,
     supplier: supplierDevices.supplier,
-    supplierPath: `/device-type/${String(deviceTypeId)}/supplier/${String(supplierId)}`,
+    supplierPath,
   };
 };
 

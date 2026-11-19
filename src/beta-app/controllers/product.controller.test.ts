@@ -9,6 +9,7 @@ import {
   renderAddEvidence,
   renderAddEvidenceContactSelf,
   renderProduct,
+  renderProductInCategory,
   renderProductTrustExperience,
 } from "./product.controller.js";
 
@@ -45,20 +46,18 @@ vi.mock("../database/client.js", () => ({
 const {
   getAggregationForProductIdMock,
   getAggregationWithNameMock,
-  getBrowsePathForDeviceMock,
-  getContractsForTrustAndAggregationMock,
-  getGmdnTermForDeviceIdMock,
+  getContractsForTrustAndProductMock,
   getProductTrustDataMock,
-  getSupplierWithIdMock,
+  getSupplierInCategoryMock,
+  getSupplierInSearchMock,
   getTrustExperienceForAggregationMock,
 } = vi.hoisted(() => ({
   getAggregationForProductIdMock: vi.fn(),
   getAggregationWithNameMock: vi.fn(),
-  getBrowsePathForDeviceMock: vi.fn(),
-  getContractsForTrustAndAggregationMock: vi.fn(),
-  getGmdnTermForDeviceIdMock: vi.fn(),
+  getContractsForTrustAndProductMock: vi.fn(),
   getProductTrustDataMock: vi.fn(),
-  getSupplierWithIdMock: vi.fn(),
+  getSupplierInCategoryMock: vi.fn(),
+  getSupplierInSearchMock: vi.fn(),
   getTrustExperienceForAggregationMock: vi.fn(),
 }));
 
@@ -70,21 +69,45 @@ vi.mock("../services/productsService.js", async (importOriginal) => ({
 }));
 
 vi.mock("../services/atamisService.js", () => ({
-  getContractsForTrustAndAggregation: getContractsForTrustAndAggregationMock,
+  getContractsForTrustAndProduct: getContractsForTrustAndProductMock,
 }));
 
 vi.mock("../services/trustDataService.js", () => ({
   getProductTrustData: getProductTrustDataMock,
 }));
 
-vi.mock("../services/gmdnCategoryService.js", () => ({
-  getBrowsePathForDevice: getBrowsePathForDeviceMock,
-  getGmdnTermForDeviceId: getGmdnTermForDeviceIdMock,
+vi.mock("./deviceType.controller.js", () => ({
+  getSupplierInCategory: getSupplierInCategoryMock,
+  getSupplierInSearch: getSupplierInSearchMock,
 }));
 
-vi.mock("../services/supplierService.js", () => ({
-  getSupplierWithId: getSupplierWithIdMock,
-}));
+// The supplier page for device type 40 from supplier 3, reached from search
+const supplierPage = (overrides: Record<string, unknown> = {}) => ({
+  breadcrumbs: [
+    { href: "/", text: "Home" },
+    { href: "/search", text: "Search" },
+  ],
+  devices: [{ aggregationName: "Pump", href: "", trustCount: 0 }],
+  deviceTypeId: 40,
+  deviceTypePath: "/category/7/device-type/40",
+  gmdnTerm: "Infusion pump",
+  searchQueryString: "",
+  supplier: { manOrganisationName: "Acme Medical", manufacturerId: 3 },
+  supplierPath: "/device-type/40/supplier/3",
+  ...overrides,
+});
+
+const productParams = {
+  aggregationName: "Pump",
+  deviceTypeId: "40",
+  supplierId: "3",
+};
+
+const notFound = () => {
+  const render = vi.fn();
+  const status = vi.fn().mockReturnValue({ render });
+  return { render, res: { status } as unknown as Response, status };
+};
 
 describe("Product controller", () => {
   beforeEach(() => {
@@ -96,11 +119,10 @@ describe("Product controller", () => {
     startTransactionMock.mockReset();
     getAggregationWithNameMock.mockReset();
     getProductTrustDataMock.mockReset();
-    getBrowsePathForDeviceMock.mockReset();
-    getGmdnTermForDeviceIdMock.mockReset();
-    getSupplierWithIdMock.mockReset();
+    getSupplierInCategoryMock.mockReset();
+    getSupplierInSearchMock.mockReset();
     getTrustExperienceForAggregationMock.mockReset();
-    getContractsForTrustAndAggregationMock.mockReset();
+    getContractsForTrustAndProductMock.mockReset();
 
     getAggregationForProductIdMock.mockReset();
     getAggregationForProductIdMock.mockResolvedValue({
@@ -116,54 +138,72 @@ describe("Product controller", () => {
     });
   });
 
-  it("GET /supplier/:supplierId/product/:aggregationName returns 404 when aggregation name is missing", async () => {
-    const req = { params: { supplierId: "3" } } as unknown as Request;
-    const render = vi.fn();
-    const status = vi.fn().mockReturnValue({ render });
-    const res = { status } as unknown as Response;
+  it.each([
+    ["the aggregation name is missing", { aggregationName: undefined }],
+    ["the supplier ID is invalid", { supplierId: "abc" }],
+    ["the device type ID is invalid", { deviceTypeId: "abc" }],
+  ])(
+    "GET /device-type/:deviceTypeId/supplier/:supplierId/product/:aggregationName returns 404 when %s",
+    async (_, params) => {
+      const { render, res, status } = notFound();
 
-    await renderProduct(req, res);
+      await renderProduct(
+        {
+          params: { ...productParams, ...params },
+          query: {},
+        } as unknown as Request,
+        res,
+      );
 
-    expect(status).toHaveBeenCalledWith(404);
-    expect(render).toHaveBeenCalledWith("not-found");
-    expect(getAggregationWithNameMock).not.toHaveBeenCalled();
-  });
+      expect(status).toHaveBeenCalledWith(404);
+      expect(render).toHaveBeenCalledWith("not-found");
+      expect(getSupplierInSearchMock).not.toHaveBeenCalled();
+      expect(getAggregationWithNameMock).not.toHaveBeenCalled();
+    },
+  );
 
-  it("GET /supplier/:supplierId/product/:aggregationName returns 404 when the supplier ID is invalid", async () => {
-    const req = {
-      params: { aggregationName: "Pump", supplierId: "abc" },
-    } as unknown as Request;
-    const render = vi.fn();
-    const status = vi.fn().mockReturnValue({ render });
-    const res = { status } as unknown as Response;
+  it.each([
+    ["the supplier page doesn't exist", undefined],
+    [
+      "the aggregation isn't one of the supplier's devices of the type",
+      supplierPage({
+        devices: [{ aggregationName: "Other", href: "", trustCount: 0 }],
+      }),
+    ],
+  ])(
+    "GET /device-type/:deviceTypeId/supplier/:supplierId/product/:aggregationName returns 404 when %s",
+    async (_, page) => {
+      getSupplierInSearchMock.mockResolvedValue(page);
+      const { render, res, status } = notFound();
 
-    await renderProduct(req, res);
+      await renderProduct(
+        { params: productParams, query: {} } as unknown as Request,
+        res,
+      );
 
-    expect(status).toHaveBeenCalledWith(404);
-    expect(render).toHaveBeenCalledWith("not-found");
-    expect(getAggregationWithNameMock).not.toHaveBeenCalled();
-  });
+      expect(status).toHaveBeenCalledWith(404);
+      expect(render).toHaveBeenCalledWith("not-found");
+      expect(getAggregationWithNameMock).not.toHaveBeenCalled();
+    },
+  );
 
-  it("GET /supplier/:supplierId/product/:aggregationName returns 404 when no aggregation is found", async () => {
+  it("GET /device-type/:deviceTypeId/supplier/:supplierId/product/:aggregationName returns 404 when the aggregation has no products of the type", async () => {
+    getSupplierInSearchMock.mockResolvedValue(supplierPage());
     getAggregationWithNameMock.mockResolvedValue([]);
+    const { render, res, status } = notFound();
 
-    const req = {
-      params: { aggregationName: "Unknown", supplierId: "3" },
-      query: {},
-    } as unknown as Request;
-    const render = vi.fn();
-    const status = vi.fn().mockReturnValue({ render });
-    const res = { status } as unknown as Response;
+    await renderProduct(
+      { params: productParams, query: {} } as unknown as Request,
+      res,
+    );
 
-    await renderProduct(req, res);
-
-    expect(getAggregationWithNameMock).toHaveBeenCalledWith("Unknown", 3);
+    expect(getAggregationWithNameMock).toHaveBeenCalledWith("Pump", 3, 40);
     expect(status).toHaveBeenCalledWith(404);
     expect(render).toHaveBeenCalledWith("not-found");
-    expect(getSupplierWithIdMock).not.toHaveBeenCalled();
+    expect(getProductTrustDataMock).not.toHaveBeenCalled();
   });
 
-  it("GET /supplier/:supplierId/product/:aggregationName renders the product page with aggregation details", async () => {
+  it("GET /device-type/:deviceTypeId/supplier/:supplierId/product/:aggregationName renders the product for the device type in the URL", async () => {
     const trustData = {
       contractCount: 2,
       documentCounts: [{ count: 2, documentType: "Business case" }],
@@ -176,13 +216,18 @@ describe("Product controller", () => {
       peopleCount: 3,
       trustCount: 6,
     };
+    getSupplierInSearchMock.mockResolvedValue(
+      supplierPage({
+        breadcrumbs: [
+          { href: "/", text: "Home" },
+          { href: "/search-results?q=pump", text: "Search results" },
+        ],
+        searchQueryString: "?q=pump",
+      }),
+    );
     getAggregationWithNameMock.mockResolvedValue([
       { aggregationName: "Pump", deviceId: 5, manufacturerId: 3 },
     ]);
-    getSupplierWithIdMock.mockResolvedValue({
-      manOrganisationName: "Acme Medical",
-    });
-    getGmdnTermForDeviceIdMock.mockResolvedValue("Infusion pump");
     getProductTrustDataMock.mockResolvedValue({
       exact: trustData,
       related: relatedTrustData,
@@ -190,25 +235,22 @@ describe("Product controller", () => {
 
     const render = vi.fn();
     await renderProduct(
-      {
-        params: { aggregationName: "Pump", supplierId: "3" },
-        query: {},
-      } as unknown as Request,
+      { params: productParams, query: { q: "pump" } } as unknown as Request,
       { render } as unknown as Response,
     );
 
-    expect(getAggregationWithNameMock).toHaveBeenCalledWith("Pump", 3);
     expect(getProductTrustDataMock).toHaveBeenCalledWith({
       aggregationName: "Pump",
+      gmdnCode: 40,
       manufacturerId: 3,
     });
-    expect(getSupplierWithIdMock).toHaveBeenCalledWith(3);
-    expect(getGmdnTermForDeviceIdMock).toHaveBeenCalledWith(5);
     expect(render).toHaveBeenCalledWith("product", {
       breadcrumbs: [
         { href: "/", text: "Home" },
-        { href: "/search", text: "Search" },
+        { href: "/search-results?q=pump", text: "Search results" },
+        { href: "/device-type/40/supplier/3?q=pump", text: "Acme Medical" },
       ],
+      deviceTypeHref: "/category/7/device-type/40",
       productAggregation: {
         aggregationName: "Pump",
         deviceType: "Infusion pump",
@@ -216,53 +258,64 @@ describe("Product controller", () => {
         supplierName: "Acme Medical",
         trustData,
       },
-      relatedTrustsHref: "/supplier/3/product/Pump/related-trusts",
-      trustsHref: "/supplier/3/product/Pump/trusts",
+      relatedTrustsHref:
+        "/device-type/40/supplier/3/product/Pump/related-trusts?q=pump",
+      supplierHref: "/category/7/device-type/40/supplier/3",
+      trustsHref: "/device-type/40/supplier/3/product/Pump/trusts?q=pump",
     });
   });
 
-  it("GET /supplier/:supplierId/product/:aggregationName renders an empty supplier name when the supplier is not found", async () => {
-    getAggregationWithNameMock.mockResolvedValue([
-      { aggregationName: "Pump", deviceId: 5, manufacturerId: 3 },
-    ]);
-    getSupplierWithIdMock.mockResolvedValue(null);
-    getGmdnTermForDeviceIdMock.mockResolvedValue("Infusion pump");
+  it("GET /category/:categoryId/device-type/:deviceTypeId/supplier/:supplierId/product/:aggregationName links within its own path", async () => {
     const emptyTrustData = {
       contractCount: 0,
       documentCounts: [],
       peopleCount: 0,
       trustCount: 0,
     };
+    getSupplierInCategoryMock.mockResolvedValue(
+      supplierPage({ supplierPath: "/category/7/device-type/40/supplier/3" }),
+    );
+    getAggregationWithNameMock.mockResolvedValue([
+      { aggregationName: "Pump", deviceId: 5, manufacturerId: 3 },
+    ]);
     getProductTrustDataMock.mockResolvedValue({
       exact: emptyTrustData,
       related: emptyTrustData,
     });
 
     const render = vi.fn();
-    await renderProduct(
+    await renderProductInCategory(
       {
-        params: { aggregationName: "Pump", supplierId: "3" },
+        params: { ...productParams, categoryId: "7" },
         query: {},
       } as unknown as Request,
       { render } as unknown as Response,
     );
 
-    const payload = render.mock.calls[0]?.[1] as {
-      productAggregation: { supplierName: string };
-    };
-    expect(payload.productAggregation.supplierName).toBe("");
+    expect(getSupplierInSearchMock).not.toHaveBeenCalled();
+    expect(render).toHaveBeenCalledWith(
+      "product",
+      expect.objectContaining({
+        deviceTypeHref: "/category/7/device-type/40",
+        supplierHref: "/category/7/device-type/40/supplier/3",
+        trustsHref: "/category/7/device-type/40/supplier/3/product/Pump/trusts",
+      }),
+    );
   });
 
-  it("GET /supplier/:supplierId/product/:aggregationName/trust/:trustId returns 404 when the trust ID is invalid", async () => {
-    const render = vi.fn();
-    const status = vi.fn().mockReturnValue({ render });
+  it("GET /device-type/:deviceTypeId/supplier/:supplierId/product/:aggregationName/trust/:trustId returns 404 when the trust ID is invalid", async () => {
+    getSupplierInSearchMock.mockResolvedValue(supplierPage());
+    getAggregationWithNameMock.mockResolvedValue([
+      { aggregationName: "Pump", deviceId: 5, manufacturerId: 3 },
+    ]);
+    const { render, res, status } = notFound();
 
     await renderProductTrustExperience(
       {
-        params: { aggregationName: "Pump", supplierId: "3", trustId: "abc" },
+        params: { ...productParams, trustId: "abc" },
         query: {},
       } as unknown as Request,
-      { status } as unknown as Response,
+      res,
     );
 
     expect(status).toHaveBeenCalledWith(404);
@@ -270,21 +323,20 @@ describe("Product controller", () => {
     expect(getTrustExperienceForAggregationMock).not.toHaveBeenCalled();
   });
 
-  it("GET /supplier/:supplierId/product/:aggregationName/trust/:trustId returns 404 when the trust is not found", async () => {
+  it("GET /device-type/:deviceTypeId/supplier/:supplierId/product/:aggregationName/trust/:trustId returns 404 when the trust is not found", async () => {
+    getSupplierInSearchMock.mockResolvedValue(supplierPage());
     getAggregationWithNameMock.mockResolvedValue([
       { aggregationName: "Pump", deviceId: 5, manufacturerId: 3 },
     ]);
     getTrustExperienceForAggregationMock.mockResolvedValue(undefined);
-
-    const render = vi.fn();
-    const status = vi.fn().mockReturnValue({ render });
+    const { render, res, status } = notFound();
 
     await renderProductTrustExperience(
       {
-        params: { aggregationName: "Pump", supplierId: "3", trustId: "99" },
+        params: { ...productParams, trustId: "99" },
         query: {},
       } as unknown as Request,
-      { status } as unknown as Response,
+      res,
     );
 
     expect(getTrustExperienceForAggregationMock).toHaveBeenCalledWith(
@@ -297,7 +349,7 @@ describe("Product controller", () => {
     expect(render).toHaveBeenCalledWith("not-found");
   });
 
-  it("GET /supplier/:supplierId/product/:aggregationName/trust/:trustId renders the trust's experience with breadcrumbs", async () => {
+  it("GET /device-type/:deviceTypeId/supplier/:supplierId/product/:aggregationName/trust/:trustId renders the trust's experience with breadcrumbs", async () => {
     const trustExperience = {
       organisationId: 7,
       organisationName: "Barts Health NHS Trust",
@@ -313,28 +365,25 @@ describe("Product controller", () => {
         procurementDeliveryLead: "Alice Smith",
       },
     ];
+    getSupplierInSearchMock.mockResolvedValue(supplierPage());
     getAggregationWithNameMock.mockResolvedValue([
       { aggregationName: "Pump", deviceId: 5, manufacturerId: 3 },
     ]);
     getTrustExperienceForAggregationMock.mockResolvedValue(trustExperience);
-    getContractsForTrustAndAggregationMock.mockResolvedValue(contracts);
-    getSupplierWithIdMock.mockResolvedValue({
-      manOrganisationName: "Acme Medical",
-    });
+    getContractsForTrustAndProductMock.mockResolvedValue(contracts);
 
     const render = vi.fn();
     await renderProductTrustExperience(
       {
-        params: { aggregationName: "Pump", supplierId: "3", trustId: "7" },
+        params: { ...productParams, trustId: "7" },
         query: {},
         user: { id: 12 },
       } as unknown as Request,
       { render } as unknown as Response,
     );
 
-    expect(getContractsForTrustAndAggregationMock).toHaveBeenCalledWith(
-      "Pump",
-      3,
+    expect(getContractsForTrustAndProductMock).toHaveBeenCalledWith(
+      { aggregationName: "Pump", gmdnCode: 40, manufacturerId: 3 },
       "Barts Health NHS Trust",
     );
     expect(render).toHaveBeenCalledWith("product/trust", {
@@ -342,9 +391,10 @@ describe("Product controller", () => {
       breadcrumbs: [
         { href: "/", text: "Home" },
         { href: "/search", text: "Search" },
-        { href: "/supplier/3/product/Pump", text: "Pump" },
+        { href: "/device-type/40/supplier/3", text: "Acme Medical" },
+        { href: "/device-type/40/supplier/3/product/Pump", text: "Pump" },
         {
-          href: "/supplier/3/product/Pump/trusts",
+          href: "/device-type/40/supplier/3/product/Pump/trusts",
           text: "Trusts sharing experience with this device",
         },
       ],
