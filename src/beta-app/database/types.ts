@@ -280,6 +280,7 @@ export interface AtamisContractTable {
   contractName: string;
   description: string;
   owner: string;
+  procurementDeliveryLead: string;
   status: string;
   supplier: string;
   companyRegestrationNumber: null | string;
