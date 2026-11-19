@@ -25,7 +25,10 @@ INSERT INTO "external"."gmdn"("gmdn_code","gmdn_term_name") VALUES (63088,'Blood
   (14451,'Hydrotherapy tank/bath'),
   (14035,'Continuous electronic patient thermometer'),
   (38502,'Insulin syringe/needle'),
-  (36387,'Ophthalmic refractometer');
+  (36387,'Ophthalmic refractometer'),
+  (13680,'Diagnostic spirometer, professional'),
+  (35242,'Whole-body plethysmograph'),
+  (35282,'Pulmonary function analysis system, adult');
 
 INSERT INTO "external"."gmdn_category" ("node_id","category_code","path","name","definition","parent_id","top_id") VALUES (4,NULL,'/4/','Anatomical Specialty','Devices grouped by the area of the body they target, including cardiovascular and ear, nose and throat devices',NULL,4),
  (937,'CT1006','/4/937/','Orthopaedic devices','Devices fully or substantially dedicated to the evaluation, diagnosis, and/or treatment/management of diseases and disorders of the skeletal system.',4,4),
@@ -103,7 +106,13 @@ INSERT INTO "external"."gmdn_category" ("node_id","category_code","path","name",
  (9553, 'CT1112','/3/9536/9537/9546/9553/','Total hip prosthesis','Device assemblies designed as implantable artificial substitutes to replace an injured or diseased hip joint in total (femoral and acetabular components).',9546,3),
  (1070, 'CT1112','/4/937/29/1481/741/1070/','Total hip prosthesis','Device assemblies designed as implantable artificial substitutes to replace an injured or diseased hip joint in total (femoral and acetabular components).',741,4),
  (9546,'CT837','/3/9536/9537/9546/','Implantable hip prostheses','Devices designed as implantable artificial substitutes to replace an injured or diseased hip joint, or a dysfunctional hip joint prosthesis, in part or total.',937,3),
- (741,'CT837','/4/937/29/1481/741/','Implantable hip prostheses','Devices designed as implantable artificial substitutes to replace an injured or diseased hip joint, or a dysfunctional hip joint prosthesis, in part or total.',1481,4);
+ (741,'CT837','/4/937/29/1481/741/','Implantable hip prostheses','Devices designed as implantable artificial substitutes to replace an injured or diseased hip joint, or a dysfunctional hip joint prosthesis, in part or total.',1481,4),
+ (6490,'CT2722','/4/6490/','Pulmonary devices','Devices fully or substantially dedicated to the diagnosis, monitoring, or treatment of medical conditions of the airways and pulmonary structures/organs of the chest cavity (e.g., lungs, pleura), including devices intended for ventilation and inhalation protection.',4,4),
+ (7241,'CT551','/4/6490/7241/','Pulmonary function test instruments/systems and associated devices','Devices designed to evaluate pulmonary function parameters [e.g., lung volume, compliance, diffusion rate, vital capacity, tidal/residual volume, maximum oxygen (O2) saturation, respiratory quotient (RQ)] during rest and/or exercise; and associated devices.',6490,4),
+ (7242,'CT1636','/4/6490/7241/7242/','Pulmonary function analysers/analysis systems','Instruments/device assemblies designed to measure, and often record and display, parameters of pulmonary function including diagnostic spirometry, lung volumes/diffusion capacity, airway resistance, and/or bronchial challenge testing.',7241,4),
+ (7243,'CT1622','/4/6490/7241/7243/','Spirometers','Devices designed to measure the volume/rate of air that can be inspired and expired by the lungs typically as part of pulmonary function testing, or to be used for therapeutic deep breathing.',7241,4),
+ (10028,'CT1889','/4941/6710/10028/','Plethysmographs','Devices designed to measure and record changes in volume of a body part or whole body, as a function of blood circulation, for diagnostic purposes.',6710,4941),
+ (10029,'CT1636','/4941/6710/10029/','Pulmonary function analysers/analysis systems','Instruments/device assemblies designed to measure, and often record and display, parameters of pulmonary function including diagnostic spirometry, lung volumes/diffusion capacity, airway resistance, and/or bronchial challenge testing.',6710,4941);
  
 INSERT INTO "external"."gmdn_category_term" ("category_code","term_code") VALUES ('CT125',33665),
  ('CT129',63088),
@@ -170,7 +179,20 @@ INSERT INTO "external"."gmdn_category_term" ("category_code","term_code") VALUES
  ('CT2940',36387),
  ('CT3045',38502),
  ('CT1112',33182),
- ('CT837',33182);
+ ('CT837',33182),
+ ('CT551',13680),
+ ('CT551',35242),
+ ('CT551',35282),
+ ('CT1622',13680),
+ ('CT1636',13680),
+ ('CT1636',35282),
+ ('CT1889',35242),
+ ('CT2722',13680),
+ ('CT2722',35242),
+ ('CT2722',35282),
+ ('CT2726',13680),
+ ('CT2726',35242),
+ ('CT2726',35282);
  
 INSERT INTO "external"."manufacturers" ("manufacturer_id","man_organisation_name","man_organisation_type","man_country","company_regestration_number") VALUES
  (13455,'Aorta Solutions','Limited Company','Scotland, United Kingdom','01360551'),
@@ -184,7 +206,8 @@ INSERT INTO "external"."manufacturers" ("manufacturer_id","man_organisation_name
  (73156,'Aquatech Ltd','Limited Company','Wales, United Kingdom','42040210'),
  (78546,'Seinar Systems Ltd','Limited Company','Austria',''),
  (91326,'Praxis & Co','Limited Company','England, United Kingdom','13120722'),
- (95632,'ArcTech Ltd','Limited Company','England, United Kingdom','');
+ (95632,'ArcTech Ltd','Limited Company','England, United Kingdom',''),
+ (30512,'Bywater Respiratory Ltd','Limited Company','England, United Kingdom','09876543');
 
 
 INSERT INTO "external"."device_type" ("device_id","gmdn_code","device_risk_sub_type","device_type_code","device_type_name","manufacturer_id") VALUES (1258,14451,'NULL','AID','Active Implantable Device',44622),
@@ -201,7 +224,11 @@ INSERT INTO "external"."device_type" ("device_id","gmdn_code","device_risk_sub_t
  (6523,35198,'Class IIa','GMD','General Medical Device',13455),
  (6542,35198,'Class IIa','GMD','General Medical Device',13455),
  (7895,36387,'Class I','GMD','General Medical Device',78546),
- (8801,63088,'Class IIa','GMD','General Medical Device',13455);
+ (8801,63088,'Class IIa','GMD','General Medical Device',13455),
+ (2301,13680,'Class IIa','GMD','General Medical Device',30512),
+ (2302,35242,'Class IIa','GMD','General Medical Device',30512),
+ (2303,35282,'Class IIa','GMD','General Medical Device',30512),
+ (2304,13680,'Class I','GMD','General Medical Device',30512);
 
 INSERT INTO "external"."products" ("product_id","udi_number","device_id","is_model","brand_trade_name","model","product_code","manufacturer_id","aggregation_name","aggregation_type") VALUES (12467896,1324657985,4624,0,'HydroHeal Plus','HydroHeal Plus','751649',73156,'HydroHeal Plus','model'),
  (14236541,4563217896,1596,0,'GlucoSense Flex Reader','GlucoSense','CENK93434',55623,'GlucoSense','model'),
@@ -240,7 +267,11 @@ INSERT INTO "external"."products" ("product_id","udi_number","device_id","is_mod
  (84123596,1523455265,4523,0,'Heart Rate Monitor','Heart Rate Monitor','2124-23-66',13455,'Heart Rate Monitor','model'),
  (94621578,2184663215,6324,0,'Insulin Safety Syringe with Fixed Needle','Insulin Kit','7824526',33625,'Insulin Kit','model'),
  (96541235,4561231522,1258,0,'BetaPlex 4000 Static','BetaPlex 4000','RE-190',44622,'BetaPlex 4000','model'),
- (97123458,1523455266,8801,0,'Aorta Blood Pressure Monitor','Aorta BP Monitor','AB-1200',13455,'Aorta BP Monitor','model');
+ (97123458,1523455266,8801,0,'Aorta Blood Pressure Monitor','Aorta BP Monitor','AB-1200',13455,'Aorta BP Monitor','model'),
+ (31570001,8051234001,2301,1,'Lepton Series','Lepton Spiro','LP0901-01',30512,'Lepton Series','brand_trade_name'),
+ (31570002,8051234002,2302,1,'Lepton Series','L-Box','LP0902-01',30512,'Lepton Series','brand_trade_name'),
+ (31570003,8051234003,2303,1,'Lepton Series','Lepton PFT','LP0903-02',30512,'Lepton Series','brand_trade_name'),
+ (31570004,8051234004,2304,1,'Lepton Series','Lepton Spiro Mini','LP0904-01',30512,'Lepton Series','brand_trade_name');
  
 INSERT INTO "external"."atamis_contracts" ("contract_ref","contract_name","description","owner","status","supplier","company_regestration_number","duns","contracting_authority","business_unit","primary_category","secondary_category","start_date","end_date","contract_finder_url","procurement_delivery_lead") VALUES ('FAKE0001','FHFT - C- Orthopaedics - Paragon42 Orthopaedic and Trauma Consignments (foot & a','FHFT - C- Orthopaedics - Paragon42 Orthopaedic and Trauma Consignments (foot & ankle)','William Hill','Active - Renewal in Progress','NHS SUPPLY CHAIN COORDINATION LIMITED (NHSSC - SCCL)','10881732','22334455','Frogmorton Health NHS Foundation Trust','FHFT - Procurement','Clinical and Medical Support Services',NULL,'2024-01-16','2025-01-15','www.fake_cf_url.gov.uk','Gallagher Fazzioli'),
  ('FAKE0002','OthoSolutions - Orthopaedic Internal & External Fixation','Orthopaedic Internal & External Fixation - Screw - Plate Fixation, Compression Screws, Cannulated Screws, Foot & Ankle Plates, Staples, IM Nailing Systems, External Fixation Systems, Miscellaneous / Consumables, DHS','William Ford','Active','Otho Solutions Limited','434123','22334466','Great Farthing Hospitals NHS Foundation Trust','GFH - Surgery & Planned Care','Medical equipments pharmaceuticals and personal care products',NULL,'2023-08-30','2027-08-28',NULL,'Elvis Huggill'),
