@@ -152,6 +152,10 @@ Thumbs.db
 # Alpha prototype build folder
 /src/alpha-prototype/public/
 
+# Beta app compiled CSS and JS, built by npm run build / npm run dev
+/src/beta-app/public/css/
+/src/beta-app/public/javascripts/
+
 # Beta app local postgresql password
 /src/beta-app/postgres-passwd
 
