@@ -7,6 +7,8 @@ import {
   renderProductInCategory,
   renderProductRelatedTrusts,
   renderProductRelatedTrustsInCategory,
+  renderProductTrustExperience,
+  renderProductTrustExperienceInCategory,
   renderProductTrusts,
   renderProductTrustsInCategory,
 } from "../controllers/product.controller.js";
@@ -41,6 +43,11 @@ const routeDefinitions: RouteDefinition[] = [
     path: `${categoryProductPath}/related-trusts`,
   },
   {
+    handler: renderProductTrustExperienceInCategory,
+    method: "get",
+    path: `${categoryProductPath}/trust/:trustId`,
+  },
+  {
     handler: postMarkUseful,
     method: "post",
     path: "/product/mark-useful",
@@ -50,26 +57,6 @@ const routeDefinitions: RouteDefinition[] = [
     method: "post",
     path: "/product/unmark-useful",
   },
-  // {
-  //   handler: renderAddEvidence,
-  //   method: "get",
-  //   path: "/product/:productId/add-evidence",
-  // },
-  // {
-  //   handler: postAddEvidence,
-  //   method: "post",
-  //   path: "/product/:productId/add-evidence",
-  // },
-  // {
-  //   handler: renderAddEvidenceContactSelf,
-  //   method: "get",
-  //   path: "/product/:productId/evidence/add-evidence-contact-self",
-  // },
-  // {
-  //   handler: postAddEvidenceContactSelf,
-  //   method: "post",
-  //   path: "/product/:productId/evidence/add-evidence-contact-self",
-  // },
   {
     handler: renderProductTrusts,
     method: "get",
@@ -79,6 +66,11 @@ const routeDefinitions: RouteDefinition[] = [
     handler: renderProductRelatedTrusts,
     method: "get",
     path: `${searchProductPath}/related-trusts`,
+  },
+  {
+    handler: renderProductTrustExperience,
+    method: "get",
+    path: `${searchProductPath}/trust/:trustId`,
   },
 ];
 

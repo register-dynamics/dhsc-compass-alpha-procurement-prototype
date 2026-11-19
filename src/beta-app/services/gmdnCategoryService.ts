@@ -39,7 +39,7 @@ export const getCategoriesWithParentId = async (parentId: number) => {
     .orderBy("name", "asc")
     .execute();
 };
-// Set return type for clarity
+
 export const getCategoryById = async (categoryId: number) => {
   return await db
     .withSchema("external")

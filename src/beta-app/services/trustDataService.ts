@@ -1,6 +1,12 @@
 import { sql } from "kysely";
 
 import { db } from "../database/client.js";
+import { TrustCard } from "../models/evidenceCard.js";
+import {
+  combineOutcomes,
+  countContractsByTrust,
+  countDocumentsByType,
+} from "../utils/trustEvidence.js";
 
 // "Available trust data" cards summarise the trusts with experience of a set
 // of devices. Each page has 2 cards: devices matching the page exactly, and
@@ -121,13 +127,16 @@ export const getProductRelatedContracts = async (
 ): Promise<RelatedContract[]> => {
   const { contractScope } = await getProductScope(aggregation);
 
-  return (await getContracts(contractScope)).related.map(
-    ({ contractingAuthority, ...contract }) => ({
-      ...contract,
-      trust: contractingAuthority,
-    }),
-  );
+  return (await getContracts(contractScope)).related.map(toRelatedContract);
 };
+
+const toRelatedContract = ({
+  contractingAuthority,
+  ...contract
+}: Contract): RelatedContract => ({
+  ...contract,
+  trust: contractingAuthority,
+});
 
 const getProductScope = async (aggregation: SupplierAggregation) => {
   const gmdnCodes = await getGmdnCodesForAggregation(aggregation);
@@ -174,6 +183,42 @@ export const getDeviceTypeTrustData = async (
   ]);
 
   return { exact, related };
+};
+
+// The trusts counted on the device type page's exact card, 1 card each. Leave
+// out manufacturerId for every supplier of the device type.
+export const getDeviceTypeTrustCards = async (
+  gmdnCode: number,
+  manufacturerId?: number,
+): Promise<TrustCard[]> => {
+  const [aggregations, contracts] = await Promise.all([
+    getAggregationsWithGmdnCodes([gmdnCode], manufacturerId),
+    // A direct match is only ever for the page's own term, so related terms
+    // can be left out
+    getContracts({
+      gmdnCodes: [gmdnCode],
+      manufacturerId,
+      relatedGmdnCodes: [],
+    }),
+  ]);
+
+  return await getTrustCards(aggregations, contracts.exact);
+};
+
+// The contracts counted on the device type page's related card. Leave out
+// manufacturerId for every supplier of the device type.
+export const getDeviceTypeRelatedContracts = async (
+  gmdnCode: number,
+  manufacturerId?: number,
+): Promise<RelatedContract[]> => {
+  const relatedGmdnCodes = await getRelatedGmdnCodes([gmdnCode]);
+  const contracts = await getContracts({
+    gmdnCodes: [gmdnCode],
+    manufacturerId,
+    relatedGmdnCodes,
+  });
+
+  return contracts.related.map(toRelatedContract);
 };
 
 // GMDN terms are related when one's most specific Device Function category
@@ -330,28 +375,125 @@ const getTrustData = async (
   };
 };
 
-const getEvidenceData = async (aggregations: SupplierAggregation[]) => {
+// 1 row per piece of evidence linked to any of the aggregations
+const getEvidenceRows = async (aggregations: SupplierAggregation[]) => {
   if (aggregations.length === 0) {
-    return { documentCounts: [], organisationNames: [], peopleCount: 0 };
+    return [];
   }
 
-  const evidenceRows = await db
+  return await db
     .withSchema("app")
     .selectFrom("product_evidence as pe")
     .innerJoin("evidence as e", "e.evidenceId", "pe.evidenceId")
     .innerJoin("organisations as o", "o.organisationId", "e.organisationId")
-    .select(["e.evidenceId", "o.organisationName"])
+    .select([
+      "e.evidenceId",
+      "e.procured",
+      "o.organisationId",
+      "o.organisationName",
+    ])
     .distinct()
-    .where((eb) =>
-      eb(
-        eb.refTuple("pe.aggregationName", "pe.manufacturerId"),
-        "in",
-        aggregations.map(({ aggregationName, manufacturerId }) =>
-          eb.tuple(aggregationName, manufacturerId),
-        ),
-      ),
+    // A device type can have thousands of aggregations. As a list of tuples,
+    // they'd be an OR for each one, which runs out of stack in Postgres, so
+    // they're passed as 2 arrays instead.
+    .where(
+      sql<boolean>`(pe.aggregation_name, pe.manufacturer_id) IN (
+        SELECT * FROM unnest(
+          ${aggregations.map((a) => a.aggregationName)}::varchar[],
+          ${aggregations.map((a) => a.manufacturerId)}::integer[]
+        )
+      )`,
     )
     .execute();
+};
+
+// 1 card for each trust with evidence linked to any of the aggregations or
+// with any of the contracts, A to Z
+const getTrustCards = async (
+  aggregations: SupplierAggregation[],
+  contracts: Contract[],
+): Promise<TrustCard[]> => {
+  const evidenceRows = await getEvidenceRows(aggregations);
+  const evidenceIds = evidenceRows.map((row) => row.evidenceId);
+
+  const contractCounts = countContractsByTrust(contracts);
+
+  const trustNames = [
+    ...new Set([
+      ...evidenceRows.map((row) => row.organisationName),
+      ...contractCounts.keys(),
+    ]),
+  ];
+
+  if (trustNames.length === 0) {
+    return [];
+  }
+
+  // Queried separately so the joins don't fan out against each other
+  const [contactRows, documentRows, organisations] = await Promise.all([
+    evidenceIds.length === 0
+      ? []
+      : db
+          .withSchema("app")
+          .selectFrom("evidence_contacts")
+          .select(["evidenceId", "contactId"])
+          .where("evidenceId", "in", evidenceIds)
+          .execute(),
+    evidenceIds.length === 0
+      ? []
+      : db
+          .withSchema("app")
+          .selectFrom("documents as d")
+          .innerJoin("document_type as dt", "dt.typeOfDocId", "d.typeOfDocId")
+          .select([
+            "d.evidenceId",
+            "d.documentId",
+            "dt.typeOfDocDesc as documentType",
+          ])
+          .where("d.evidenceId", "in", evidenceIds)
+          .execute(),
+    // For trusts with only a contract, which might not be in the app
+    db
+      .withSchema("app")
+      .selectFrom("organisations")
+      .select(["organisationId", "organisationName"])
+      .where("organisationName", "in", trustNames)
+      .execute(),
+  ]);
+
+  return trustNames
+    .map((organisationName): TrustCard => {
+      const trustEvidence = evidenceRows.filter(
+        (row) => row.organisationName === organisationName,
+      );
+      const isTrustEvidence = ({ evidenceId }: { evidenceId: number }) =>
+        trustEvidence.some((row) => row.evidenceId === evidenceId);
+
+      // A person can be on more than 1 piece of evidence
+      const contactIds = new Set(
+        contactRows.filter(isTrustEvidence).map((row) => row.contactId),
+      );
+
+      return {
+        contactCount: contactIds.size,
+        organisationId:
+          organisations.find((o) => o.organisationName === organisationName)
+            ?.organisationId ?? null,
+        organisationName,
+        procured: combineOutcomes(trustEvidence.map((row) => row.procured)),
+        procurementContractCount: contractCounts.get(organisationName) ?? 0,
+        sharedDocuments: countDocumentsByType(
+          documentRows.filter(isTrustEvidence),
+        ),
+      };
+    })
+    .sort((a, b) =>
+      a.organisationName.localeCompare(b.organisationName, "en-GB"),
+    );
+};
+
+const getEvidenceData = async (aggregations: SupplierAggregation[]) => {
+  const evidenceRows = await getEvidenceRows(aggregations);
 
   if (evidenceRows.length === 0) {
     return { documentCounts: [], organisationNames: [], peopleCount: 0 };

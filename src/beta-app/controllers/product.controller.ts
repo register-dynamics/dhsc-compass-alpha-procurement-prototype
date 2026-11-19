@@ -8,6 +8,7 @@ import { Breadcrumb } from "../models/view-models/breadcrumb.js";
 import { ProductAggregation } from "../models/view-models/productAggregation.js";
 import { ProductTrusts } from "../models/view-models/productTrusts.js";
 import { getRelatedContractsTable } from "../models/view-models/relatedContractsTable.js";
+import { getContractsForTrustAndAggregation } from "../services/atamisService.js";
 import {
   getBrowsePathForDevice,
   getGmdnTermForDeviceId,
@@ -17,6 +18,7 @@ import {
   getAggregationWithName,
   getEvidenceCardsForAggregation,
   getProductWithId,
+  getTrustExperienceForAggregation,
 } from "../services/productsService.js";
 import { getSearchQueryString } from "../services/searchQueryService.js";
 import { getSupplierWithId } from "../services/supplierService.js";
@@ -39,6 +41,8 @@ interface ProductRoute {
   // Taken from the URL when browsing, so the page can't contradict its own path
   deviceType?: string;
   deviceTypeHref?: string;
+  // 1 trust's experience of the product
+  getTrustHref: (organisationId: number) => string;
   productHref: string;
   relatedTrustsHref: string;
   // The search the product was reached from, to keep on every link
@@ -79,6 +83,8 @@ const getSearchProductRoute = (
           }
         : { href: "/search", text: "Search" },
     ],
+    getTrustHref: (organisationId) =>
+      `${productPath}/trust/${String(organisationId)}${searchQueryString}`,
     productHref: `${productPath}${searchQueryString}`,
     relatedTrustsHref: `${productPath}/related-trusts${searchQueryString}`,
     searchQueryString,
@@ -113,6 +119,8 @@ const getCategoryProductRoute = async (
     ],
     deviceType: gmdnTerm,
     deviceTypeHref: deviceTypePath,
+    getTrustHref: (organisationId) =>
+      `${productHref}/trust/${String(organisationId)}`,
     productHref,
     relatedTrustsHref: `${productHref}/related-trusts`,
     searchQueryString: "",
@@ -239,9 +247,6 @@ export const postMarkUseful = async (req: Request, res: Response) => {
       .insertInto("product_evidence_useful")
       .values({
         aggregationName,
-        // @ts-expect-error: TypeScript may complain about the date format
-        // Should be fixed when we switch from SQLite to Postgres
-        dateMarkedUseful: new Date().toUTCString(),
         evidenceId: evidenceId,
         manufacturerId: supplierId,
         userId,
@@ -251,13 +256,13 @@ export const postMarkUseful = async (req: Request, res: Response) => {
     const countUseful = await db
       .withSchema("app")
       .selectFrom("product_evidence_useful")
-      .select(db.fn.count("evidenceId").as("count"))
+      .select(db.fn.count<string>("evidenceId").as("count"))
       .where("evidenceId", "=", evidenceId)
       .where("aggregationName", "=", aggregationName)
       .where("manufacturerId", "=", supplierId)
       .execute();
 
-    // This gets type "string | number | bigint" for some reason
+    // Postgres returns count() as a bigint, which pg gives as a string
     const count = Number(countUseful[0].count);
 
     res.status(200).send({ count: count });
@@ -300,13 +305,13 @@ export const postUnmarkUseful = async (req: Request, res: Response) => {
     const countUseful = await db
       .withSchema("app")
       .selectFrom("product_evidence_useful")
-      .select(db.fn.count("evidenceId").as("count"))
+      .select(db.fn.count<string>("evidenceId").as("count"))
       .where("aggregationName", "=", aggregationName)
       .where("manufacturerId", "=", supplierId)
       .where("evidenceId", "=", evidenceId)
       .execute();
 
-    // This gets type "string | number | bigint" for some reason
+    // Postgres returns count() as a bigint, which pg gives as a string
     const count = Number(countUseful[0].count);
 
     res.status(200).send({ count: count });
@@ -404,52 +409,6 @@ export const postAddEvidence = async (req: Request, res: Response) => {
     res.status(500).send("Failed to add evidence");
   }
 };
-
-// export const renderAddEvidenceContactExperience = async (req: Request, res: Response) => {
-//         const productId = getProductIdFromParams(req);
-
-//         if (!productId) {
-//           // TODO: Send to better error handling page
-//           return res.status(400).send("Valid product ID is required");
-//         }
-
-//   res.render("product/add-evidence-contact-experience", { productId });
-// };
-
-// export const renderAddEvidenceContactAcquisition = async (req: Request, res: Response) => {
-//   const productId = getProductIdFromParams(req);
-
-//   if (!productId) {
-//     // TODO: Send to better error handling page
-//     return res.status(400).send("Valid product ID is required");
-//   }
-
-//   res.render("product/add-evidence-contact-acquisition", { productId });
-// };
-
-// export const renderAddEvidenceContactDocument = async (req: Request, res: Response) => {
-//   const productId = getProductIdFromParams(req);
-
-//   if (!productId) {
-//     // TODO: Send to better error handling page
-//     return res.status(400).send("Valid product ID is required");
-//   }
-
-//   res.render("product/add-evidence-contact-document", { productId });
-// };
-
-// export const postAddEvidenceContactDone = async (req: Request, res: Response) => {
-//   const productId = getProductIdFromParams(req);
-
-//   if (!productId) {
-//     // TODO: Send to better error handling page
-//     return res.status(400).send("Valid product ID is required");
-//   }
-
-//   // TODO: Implement the logic to handle the completion of adding evidence contact
-
-//   res.render("product/add-evidence-contact-success", { productId });
-// };
 
 export const renderAddEvidenceContactSelf = async (
   req: Request,
@@ -611,7 +570,13 @@ const renderProductTrustsPage = async (
 
   const viewModel: ProductTrusts = {
     aggregationName: aggregation[0].aggregationName ?? "",
-    evidenceCards: evidenceCards,
+    evidenceCards: evidenceCards.map((evidenceCard) => ({
+      ...evidenceCard,
+      href:
+        evidenceCard.organisationId === null
+          ? null
+          : route.getTrustHref(evidenceCard.organisationId),
+    })),
     supplierId,
     supplierName,
   };
@@ -676,12 +641,16 @@ const renderProductRelatedTrustsPage = async (
   });
 
   res.render("product/related-trusts", {
-    ...getRelatedContractsTable(contracts, req.query, route.searchQueryString),
     aggregationName,
     breadcrumbs: [
       ...route.breadcrumbs,
       { href: route.productHref, text: aggregationName },
     ],
+    contractsTable: getRelatedContractsTable(
+      contracts,
+      req.query,
+      route.searchQueryString,
+    ),
     productHref: route.productHref,
     supplierName,
   });
@@ -719,6 +688,96 @@ export const renderProductRelatedTrustsInCategory = async (
   }
 
   await renderProductRelatedTrustsPage(req, res, key, route);
+};
+
+const renderProductTrustExperiencePage = async (
+  req: Request,
+  res: Response,
+  { aggregationName, supplierId }: AggregationKey,
+  route: ProductRoute,
+) => {
+  const organisationId = Number(req.params.trustId);
+
+  if (!Number.isInteger(organisationId)) {
+    res.status(404).render("not-found");
+    return;
+  }
+
+  const aggregation = await getAggregationWithName(aggregationName, supplierId);
+  const trustExperience =
+    aggregation &&
+    aggregation.length > 0 &&
+    (await getTrustExperienceForAggregation(
+      aggregationName,
+      supplierId,
+      organisationId,
+      req.user?.id,
+    ));
+
+  if (!aggregation || !trustExperience) {
+    res.status(404).render("not-found");
+    return;
+  }
+
+  const supplierName =
+    route.supplierName ??
+    (await getSupplierWithId(supplierId))?.manOrganisationName ??
+    "";
+  const contracts = await getContractsForTrustAndAggregation(
+    aggregationName,
+    supplierId,
+    trustExperience.organisationName,
+  );
+
+  res.render("product/trust", {
+    aggregationName: aggregation[0].aggregationName ?? "",
+    breadcrumbs: [
+      ...route.breadcrumbs,
+      { href: route.productHref, text: aggregationName },
+      {
+        href: route.trustsHref,
+        text: "Trusts sharing experience with this device",
+      },
+    ],
+    contracts,
+    supplierId,
+    supplierName,
+    trustExperience,
+  });
+};
+
+export const renderProductTrustExperience = async (
+  req: Request,
+  res: Response,
+) => {
+  const key = getAggregationKeyFromParams(req);
+
+  if (!key) {
+    res.status(404).render("not-found");
+    return;
+  }
+
+  await renderProductTrustExperiencePage(
+    req,
+    res,
+    key,
+    getSearchProductRoute(req, key),
+  );
+};
+
+export const renderProductTrustExperienceInCategory = async (
+  req: Request,
+  res: Response,
+) => {
+  const key = getAggregationKeyFromParams(req);
+  const route = key && (await getCategoryProductRoute(req, key));
+
+  if (!key || !route) {
+    res.status(404).render("not-found");
+    return;
+  }
+
+  await renderProductTrustExperiencePage(req, res, key, route);
 };
 
 async function createEvidenceCardForOrganisation(

@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  getDeviceTypeRelatedContracts,
+  getDeviceTypeTrustCards,
   getDeviceTypeTrustData,
   getProductRelatedContracts,
   getProductTrustData,
@@ -157,6 +159,75 @@ describe("Trust data service", () => {
       // FAKE0009, with FAKE0008 for 2 terms and FAKE0020 for a related term
       expect(exact.contractCount).toBe(1);
       expect(related.contractCount).toBe(2);
+    });
+  });
+
+  describe("getDeviceTypeTrustCards", () => {
+    it.each([
+      ["every supplier", undefined],
+      ["a supplier", 13455],
+    ])(
+      "has a card for each trust counted on the exact card, for %s",
+      async (_, manufacturerId) => {
+        const cards = await getDeviceTypeTrustCards(35198, manufacturerId);
+        const { exact } = await getDeviceTypeTrustData(35198, manufacturerId);
+        const names = cards.map((card) => card.organisationName);
+
+        expect(cards).toHaveLength(exact.trustCount);
+        expect(names).toEqual(
+          [...names].sort((a, b) => a.localeCompare(b, "en-GB")),
+        );
+        expect(
+          cards.reduce((sum, card) => sum + card.procurementContractCount, 0),
+        ).toBe(exact.contractCount);
+      },
+    );
+
+    it("sums up the trust's evidence for every device of the type", async () => {
+      const cards = await getDeviceTypeTrustCards(35198);
+
+      expect(
+        cards.find(
+          (card) => card.organisationName === "Barts Health NHS Trust",
+        ),
+      ).toEqual({
+        contactCount: 1,
+        organisationId: expect.any(Number) as number,
+        organisationName: "Barts Health NHS Trust",
+        procured: true,
+        procurementContractCount: 0,
+        sharedDocuments: [{ count: 1, documentType: "Business case" }],
+      });
+    });
+
+    it("returns nothing for a term with no devices or contracts", async () => {
+      expect(await getDeviceTypeTrustCards(999999)).toEqual([]);
+    });
+  });
+
+  describe("getDeviceTypeRelatedContracts", () => {
+    it.each([
+      ["every supplier", undefined],
+      ["a supplier", 13455],
+    ])(
+      "lists the contracts counted on the related card, for %s",
+      async (_, manufacturerId) => {
+        const contracts = await getDeviceTypeRelatedContracts(
+          35198,
+          manufacturerId,
+        );
+        const { related } = await getDeviceTypeTrustData(35198, manufacturerId);
+
+        expect(contracts).toHaveLength(related.contractCount);
+      },
+    );
+
+    it("includes contracts for the term itself that aren't direct matches", async () => {
+      const contracts = await getDeviceTypeRelatedContracts(35198);
+
+      // 45123 has nothing for 35198, so FAKE0020 is related
+      expect(contracts.map((c) => c.contractRef)).toContain("FAKE0020");
+      expect(contracts.map((c) => c.contractRef)).not.toContain("FAKE0006");
     });
   });
 });

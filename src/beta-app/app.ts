@@ -1,4 +1,3 @@
-import bodyParser from "body-parser";
 import pgConnect from "connect-pg-simple";
 import express, { type ErrorRequestHandler } from "express";
 import session from "express-session";
@@ -12,8 +11,7 @@ import {
   initializeAuth,
   requireAuthForProtectedRoutes,
 } from "./middleware/auth.js";
-import { helmetConfig } from "./middleware/helmetConfig.js";
-import { permissionsPolicy } from "./middleware/helmetConfig.js";
+import { helmetConfig, permissionsPolicy } from "./middleware/helmetConfig.js";
 import deviceTypeRoutes, {
   deviceTypeRouteDefinitions,
 } from "./routes/deviceType.routes.js";
@@ -37,10 +35,10 @@ app.use(helmet(helmetConfig));
 app.use(permissionsPolicy);
 
 // Parse URL-encoded bodies (as sent by HTML forms) - used by passport for login form submission
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: false }));
 
 // Parse JSON bodies (as sent by API clients)
-app.use(bodyParser.json());
+app.use(express.json());
 
 // Configure session and authentication middleware
 const sessionStore = new (pgConnect(session))({
@@ -84,8 +82,6 @@ const nunjucksEnv = nunjucks.configure(
 nunjucksEnv.addGlobal("serviceName", config.app.name);
 
 app.set("view engine", "html");
-
-app.use(express.json());
 
 // Serve static files from the public directory
 const publicDir = new URL("./public", import.meta.url).pathname;

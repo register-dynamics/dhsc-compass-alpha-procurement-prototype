@@ -9,6 +9,7 @@ import {
   renderAddEvidence,
   renderAddEvidenceContactSelf,
   renderProduct,
+  renderProductTrustExperience,
 } from "./product.controller.js";
 
 const {
@@ -45,22 +46,31 @@ const {
   getAggregationForProductIdMock,
   getAggregationWithNameMock,
   getBrowsePathForDeviceMock,
+  getContractsForTrustAndAggregationMock,
   getGmdnTermForDeviceIdMock,
   getProductTrustDataMock,
   getSupplierWithIdMock,
+  getTrustExperienceForAggregationMock,
 } = vi.hoisted(() => ({
   getAggregationForProductIdMock: vi.fn(),
   getAggregationWithNameMock: vi.fn(),
   getBrowsePathForDeviceMock: vi.fn(),
+  getContractsForTrustAndAggregationMock: vi.fn(),
   getGmdnTermForDeviceIdMock: vi.fn(),
   getProductTrustDataMock: vi.fn(),
   getSupplierWithIdMock: vi.fn(),
+  getTrustExperienceForAggregationMock: vi.fn(),
 }));
 
 vi.mock("../services/productsService.js", async (importOriginal) => ({
   ...(await importOriginal<typeof import("../services/productsService.js")>()),
   getAggregationForProductId: getAggregationForProductIdMock,
   getAggregationWithName: getAggregationWithNameMock,
+  getTrustExperienceForAggregation: getTrustExperienceForAggregationMock,
+}));
+
+vi.mock("../services/atamisService.js", () => ({
+  getContractsForTrustAndAggregation: getContractsForTrustAndAggregationMock,
 }));
 
 vi.mock("../services/trustDataService.js", () => ({
@@ -89,6 +99,8 @@ describe("Product controller", () => {
     getBrowsePathForDeviceMock.mockReset();
     getGmdnTermForDeviceIdMock.mockReset();
     getSupplierWithIdMock.mockReset();
+    getTrustExperienceForAggregationMock.mockReset();
+    getContractsForTrustAndAggregationMock.mockReset();
 
     getAggregationForProductIdMock.mockReset();
     getAggregationForProductIdMock.mockResolvedValue({
@@ -239,6 +251,107 @@ describe("Product controller", () => {
       productAggregation: { supplierName: string };
     };
     expect(payload.productAggregation.supplierName).toBe("");
+  });
+
+  it("GET /supplier/:supplierId/product/:aggregationName/trust/:trustId returns 404 when the trust ID is invalid", async () => {
+    const render = vi.fn();
+    const status = vi.fn().mockReturnValue({ render });
+
+    await renderProductTrustExperience(
+      {
+        params: { aggregationName: "Pump", supplierId: "3", trustId: "abc" },
+        query: {},
+      } as unknown as Request,
+      { status } as unknown as Response,
+    );
+
+    expect(status).toHaveBeenCalledWith(404);
+    expect(render).toHaveBeenCalledWith("not-found");
+    expect(getTrustExperienceForAggregationMock).not.toHaveBeenCalled();
+  });
+
+  it("GET /supplier/:supplierId/product/:aggregationName/trust/:trustId returns 404 when the trust is not found", async () => {
+    getAggregationWithNameMock.mockResolvedValue([
+      { aggregationName: "Pump", deviceId: 5, manufacturerId: 3 },
+    ]);
+    getTrustExperienceForAggregationMock.mockResolvedValue(undefined);
+
+    const render = vi.fn();
+    const status = vi.fn().mockReturnValue({ render });
+
+    await renderProductTrustExperience(
+      {
+        params: { aggregationName: "Pump", supplierId: "3", trustId: "99" },
+        query: {},
+      } as unknown as Request,
+      { status } as unknown as Response,
+    );
+
+    expect(getTrustExperienceForAggregationMock).toHaveBeenCalledWith(
+      "Pump",
+      3,
+      99,
+      undefined,
+    );
+    expect(status).toHaveBeenCalledWith(404);
+    expect(render).toHaveBeenCalledWith("not-found");
+  });
+
+  it("GET /supplier/:supplierId/product/:aggregationName/trust/:trustId renders the trust's experience with breadcrumbs", async () => {
+    const trustExperience = {
+      organisationId: 7,
+      organisationName: "Barts Health NHS Trust",
+      people: [],
+      procured: true,
+    };
+    const contracts = [
+      {
+        businessUnit: "Diabetes",
+        contractName: "Insulin pumps",
+        contractRef: "C1",
+        owner: "Daniel Okoro",
+      },
+    ];
+    getAggregationWithNameMock.mockResolvedValue([
+      { aggregationName: "Pump", deviceId: 5, manufacturerId: 3 },
+    ]);
+    getTrustExperienceForAggregationMock.mockResolvedValue(trustExperience);
+    getContractsForTrustAndAggregationMock.mockResolvedValue(contracts);
+    getSupplierWithIdMock.mockResolvedValue({
+      manOrganisationName: "Acme Medical",
+    });
+
+    const render = vi.fn();
+    await renderProductTrustExperience(
+      {
+        params: { aggregationName: "Pump", supplierId: "3", trustId: "7" },
+        query: {},
+        user: { id: 12 },
+      } as unknown as Request,
+      { render } as unknown as Response,
+    );
+
+    expect(getContractsForTrustAndAggregationMock).toHaveBeenCalledWith(
+      "Pump",
+      3,
+      "Barts Health NHS Trust",
+    );
+    expect(render).toHaveBeenCalledWith("product/trust", {
+      aggregationName: "Pump",
+      breadcrumbs: [
+        { href: "/", text: "Home" },
+        { href: "/search", text: "Search" },
+        { href: "/supplier/3/product/Pump", text: "Pump" },
+        {
+          href: "/supplier/3/product/Pump/trusts",
+          text: "Trusts sharing experience with this device",
+        },
+      ],
+      contracts,
+      supplierId: 3,
+      supplierName: "Acme Medical",
+      trustExperience,
+    });
   });
 
   it("GET /product/mark-useful should mark evidence as useful", async () => {

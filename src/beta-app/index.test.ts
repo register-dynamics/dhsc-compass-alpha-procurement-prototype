@@ -5,7 +5,7 @@ import config from "./config.js";
 // Basic smoke test to verify config import and test setup
 
 describe("Beta app config", () => {
-  it("should be called Compass", () => {
-    expect(config.app.name).toBe("Search and evaluate medical technology");
+  it("should have the service name", () => {
+    expect(config.app.name).toBe("Exchange medtech knowledge");
   });
 });
