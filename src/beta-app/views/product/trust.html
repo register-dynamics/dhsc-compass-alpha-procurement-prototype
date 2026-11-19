@@ -102,9 +102,9 @@
                 {% if contract.owner %}
                     {% set rows = (rows.push({ key: { text: "Procurement contract owner" }, value: { text: contract.owner } }), rows) %}
                 {% endif %}
-
-                {# TODO: Procurement lead #}
-                {% set rows = (rows.push({ key: { text: "Procurement lead" }, value: { text: "TODO" } }), rows) %}
+                {% if contract.procurementDeliveryLead %}
+                    {% set rows = (rows.push({ key: { text: "Procurement lead" }, value: { text: contract.procurementDeliveryLead } }), rows) %}
+                {% endif %}
 
                 {% call card({
                     heading: contract.contractName,

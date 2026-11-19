@@ -310,6 +310,7 @@ describe("Product controller", () => {
         contractName: "Insulin pumps",
         contractRef: "C1",
         owner: "Daniel Okoro",
+        procurementDeliveryLead: "Alice Smith",
       },
     ];
     getAggregationWithNameMock.mockResolvedValue([
