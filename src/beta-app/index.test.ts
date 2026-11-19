@@ -6,6 +6,6 @@ import config from "./config.js";
 
 describe("Beta app config", () => {
   it("should have the service name", () => {
-    expect(config.app.name).toBe("Search and evaluate medical technology");
+    expect(config.app.name).toBe("Exchange medtech knowledge");
   });
 });
