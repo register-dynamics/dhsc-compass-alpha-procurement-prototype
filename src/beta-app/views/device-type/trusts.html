@@ -1,0 +1,45 @@
+{% extends "layouts/base.html" %}
+
+{#
+  The trusts counted on the device type page's exact card, as on a product's
+  trusts page. Each card sums up the trust's experience with every device of
+  this type, so there's nothing to mark as useful: that's for 1 device.
+#}
+
+{% from "breadcrumb/macro.njk" import breadcrumb %}
+{% from "includes/trust-cards.njk" import trust_cards %}
+
+{% set pageFor = gmdnTerm ~ (" by " ~ supplierName if supplierName else "") %}
+{% set pageName = "Trusts sharing experience with " + pageFor %}
+
+{% set mainClasses = "nhsuk-main-wrapper--s" %}
+
+{% block beforeContent %}
+
+    {{ breadcrumb({
+        items: breadcrumbs
+    }) }}
+
+{% endblock %}
+
+{% block content %}
+
+    <div class="nhsuk-grid-row">
+        <div class="nhsuk-grid-column-two-thirds">
+
+            <h1 class="nhsuk-heading-l nhsuk-u-margin-bottom-4">
+                <span class="nhsuk-caption-l">{{ pageFor }}</span>
+                Trusts with experience with this device
+            </h1>
+
+            {{ trust_cards({
+                cards: trustCards,
+                emptyText: "No trust experience is available for this device yet."
+            }) }}
+
+            <p><a href="{{ parentHref }}">{{ "Return to the supplier" if supplierName else "Return to the device type" }}</a></p>
+
+        </div>
+    </div>
+
+{% endblock %}

@@ -1,6 +1,6 @@
 {% from "nhsuk/macros/icon.njk" import nhsukIcon %}
 
-{% macro mark_useful_button(count, aggregation_name, evidence_id, marked) %}
+{% macro mark_useful_button(count, aggregation_name, supplier_id, evidence_id, marked) %}
 
     <div class="nhsuk-u-margin-bottom-4">        
         <p class="nhsuk-body nhsuk-u-margin-bottom-2 useful-count" data-evidence-id="{{ evidence_id }}">
@@ -11,7 +11,7 @@
             {% endif %}
         </p>
 
-        <button class="nhsuk-button nhsuk-button--icon nhsuk-button--secondary nhsuk-u-margin-bottom-0 mark-useful-button" data-module="nhsuk-button" aria-pressed="{{ "true" if marked else "false" }}" type="button" data-nhsuk-button-init="" data-evidence-id="{{ evidence_id }}" data-aggregation-name="{{ aggregation_name }}" data-marked="{{ "true" if marked else "false" }}">
+        <button class="nhsuk-button nhsuk-button--icon nhsuk-button--secondary nhsuk-u-margin-bottom-0 mark-useful-button" data-module="nhsuk-button" aria-pressed="{{ "true" if marked else "false" }}" type="button" data-nhsuk-button-init="" data-evidence-id="{{ evidence_id }}" data-aggregation-name="{{ aggregation_name }}" data-supplier-id="{{ supplier_id }}" data-marked="{{ "true" if marked else "false" }}">
             {% if marked %}
                 {{ nhsukIcon("tick") }} <span class="nhsuk-button__content">Marked as useful</span>
             {% else %}

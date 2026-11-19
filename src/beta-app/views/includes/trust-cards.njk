@@ -1,0 +1,65 @@
+{% from "card/macro.njk" import card %}
+{% from "summary-list/macro.njk" import summaryList %}
+{% from "includes/mark-useful-button.njk" import mark_useful_button %}
+
+{#
+  The cards on a "Trusts sharing experience" page, 1 for each trust, A to Z.
+
+  params:
+    cards        TrustCards, each with an href to the trust's page or null
+    emptyText    What to say when there are no cards
+    markUseful   Optional { aggregationName, supplierId }. Evidence can only
+                 be marked as useful for an aggregation, so cards are only
+                 markable on a product's page, and only if they have an
+                 evidenceId.
+#}
+{% macro trust_cards(params) %}
+    {% if params.cards | length %}
+        <p class="nhsuk-body-s">A to Z by trust</p>
+    {% else %}
+        <p>{{ params.emptyText }}</p>
+    {% endif %}
+
+    {% for trustCard in params.cards %}
+        {% if trustCard.procured === true %}
+            {% set outcome = "Procured it" %}
+        {% elif trustCard.procured === false %}
+            {% set outcome = "Did not procure it" %}
+        {% else %}
+            {% set outcome = "Not reported" %}
+        {% endif %}
+
+        {% set sharedDocumentsContent %}
+            {% for document in trustCard.sharedDocuments %}
+                {# Lowercase the first letter unless it's an acronym, e.g. "Business case" but not "ODEP assessment" #}
+                {% set documentType = document.documentType %}
+                {% if documentType.slice(0, 2) != documentType.slice(0, 2) | upper %}
+                    {% set documentType = documentType[0] | lower + documentType.slice(1) %}
+                {% endif %}
+                <li>{{ document.count }} {{ documentType }}</li>
+            {% else %}
+                <li>None</li>
+            {% endfor %}
+        {% endset %}
+
+        {% call card({
+            heading: trustCard.organisationName,
+            href: trustCard.href,
+            headingClasses: "nhsuk-heading-m"
+        }) %}
+        {# Trusts with a contract but no evidence have nothing to mark as useful #}
+        {% if params.markUseful and trustCard.evidenceId %}
+            {{ mark_useful_button(trustCard.usefulCount, params.markUseful.aggregationName, params.markUseful.supplierId, trustCard.evidenceId, trustCard.markedUseful) }}
+        {% endif %}
+        {{ summaryList({
+            classes: "nhsuk-u-margin-bottom-0",
+            rows: [
+                { key: { text: "Outcome reported by the trust" }, value: { text: outcome } },
+                { key: { text: "People to contact" }, value: { text: trustCard.contactCount | string } },
+                { key: { text: "Procurement contracts" }, value: { text: trustCard.procurementContractCount | string } },
+                { key: { text: "Shared documents" }, value: { html: '<ul class="nhsuk-list nhsuk-u-margin-bottom-0">' + sharedDocumentsContent + '</ul>' }, classes: "nhsuk-summary-list__row--no-border" }
+            ]
+        }) }}
+        {% endcall %}
+    {% endfor %}
+{% endmacro %}

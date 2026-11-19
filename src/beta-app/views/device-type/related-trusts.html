@@ -1,0 +1,52 @@
+{% extends "layouts/base.html" %}
+
+{#
+  The contracts counted on the device type page's related card: contracts
+  for GMDN terms related to this one, or for this one when it isn't clear the
+  contract is for this type of device. As on a product's related trusts page.
+#}
+
+{% from "breadcrumb/macro.njk" import breadcrumb %}
+{% from "includes/related-contracts-table.njk" import related_contracts_table %}
+
+{% set pageFor = gmdnTerm ~ (" by " ~ supplierName if supplierName else "") %}
+{% set pageName = "Contracts in the same or related categories – " + pageFor %}
+
+{% set mainClasses = "nhsuk-main-wrapper--s" %}
+
+{% block beforeContent %}
+
+    {{ breadcrumb({
+        items: breadcrumbs
+    }) }}
+
+{% endblock %}
+
+{% block content %}
+
+    <div class="nhsuk-grid-row">
+        <div class="nhsuk-grid-column-two-thirds">
+
+            <h1 class="nhsuk-heading-l nhsuk-u-margin-bottom-4" id="contracts-heading">
+                <span class="nhsuk-caption-l">{{ pageFor }}</span>
+                Contracts in the same or related categories
+            </h1>
+
+        </div>
+    </div>
+
+    <div class="nhsuk-grid-row">
+        <div class="nhsuk-grid-column-full">
+
+            {{ related_contracts_table({
+                table: contractsTable,
+                labelledBy: "contracts-heading",
+                emptyText: "There are no contracts" ~ (" with " ~ supplierName if supplierName else "") ~ " in the same or related categories."
+            }) }}
+
+            <p><a href="{{ parentHref }}">{{ "Return to the supplier" if supplierName else "Return to the device type" }}</a></p>
+
+        </div>
+    </div>
+
+{% endblock %}

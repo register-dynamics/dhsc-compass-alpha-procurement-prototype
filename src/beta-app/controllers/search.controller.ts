@@ -1,21 +1,31 @@
 import { Request, Response } from "express";
-import { sql } from "kysely";
+import { type ExpressionBuilder, sql } from "kysely";
+
+import type { Database } from "../database/types.js";
 
 import config from "../config.js";
 import { db } from "../database/client.js";
 import {
   getCategoriesWithParentId,
   getCategoryById,
-  getGmdnTermsForCategoryCode,
+  getDeviceTypeCountsForCategories,
+  getGmdnTermsBeneathCategory,
   getHierarchyForCategory,
-  getSupplierCountsForCategoryCodes,
   getTopLevelCategories,
 } from "../services/gmdnCategoryService.js";
+import {
+  getCategoriesQueryString,
+  getSearchCategories,
+  getSearchQueryString,
+} from "../services/searchQueryService.js";
 
-export const renderSearch = (req: Request, res: Response) => {
-  res.render("search");
+export const renderSearch = async (req: Request, res: Response) => {
+  const categories = await getTopLevelCategories();
+  res.render("search", { categories });
 };
 
+// Searches GMDN term (device type) names, and lists every supplier of each
+// matching device type as its own result
 export const renderSearchResults = async (req: Request, res: Response) => {
   const searchTerm = typeof req.query.q === "string" ? req.query.q : "";
   // Sanitise the search term to prevent SQL injection and ensure proper full-text search behavior
@@ -32,39 +42,60 @@ export const renderSearchResults = async (req: Request, res: Response) => {
   const currentPage = (parseInt(req.query.page as string) || 1) - 1;
   const searchPage = currentPage + 1;
 
-  const queryCategories = [req.query["[category]"] ?? []]
-    .flat()
-    .filter((c): c is string => typeof c === "string" && c !== "_unchecked");
-
-  const categoriesQueryString =
-    queryCategories.length > 0
-      ? `&${queryCategories.map((c) => `[category]=${encodeURIComponent(c)}`).join("&")}`
-      : "";
-
-  const queryParams = {
-    limit: pageSize,
-    offset: pageSize * currentPage,
-  };
-
-  // Each aggregation can span several GMDN categories, so match any
-  // aggregation with at least one of the selected categories. The "No
-  // category" checkbox has an empty value and matches aggregations with no
-  // GMDN categories at all.
-  const selectedGmdnNames = queryCategories.filter((c) => c !== "");
+  // The filter sidebar narrows the results to device types in any of the
+  // selected GMDN categories, which are given by category code. The "No
+  // category" checkbox has an empty value and matches device types that aren't
+  // in any category.
+  const queryCategories = getSearchCategories(req.query);
+  const categoriesQueryString = getCategoriesQueryString(queryCategories);
+  const selectedCategoryCodes = queryCategories.filter((c) => c !== "");
   const noCategorySelected = queryCategories.includes("");
-  const categoryFilter = sql<boolean>`(
-    "gmdn_names" && ${selectedGmdnNames}::varchar[]
-    OR (${noCategorySelected} AND cardinality("gmdn_names") = 0)
-  )`;
 
   const searchResultsQuery = db
     .withSchema("external")
-    .selectFrom("aggregation_search")
+    .selectFrom("device_type_search")
     .where(sanitisedSearchTerm);
+
+  // A device type's categories, via gmdn_category_term. Only categories that
+  // exist in gmdn_category count, so those are the ones the sidebar can list.
+  const categoriesOfDeviceType = (
+    eb: ExpressionBuilder<Database, "device_type_search">,
+  ) =>
+    eb
+      .selectFrom("gmdn_category_term as ct")
+      .whereRef("ct.termCode", "=", "device_type_search.gmdnCode")
+      .where((eb) =>
+        eb.exists(
+          eb
+            .selectFrom("gmdn_category as c")
+            .whereRef("c.categoryCode", "=", "ct.categoryCode"),
+        ),
+      );
 
   const filteredSearchResultsQuery =
     queryCategories.length > 0
-      ? searchResultsQuery.where(categoryFilter)
+      ? searchResultsQuery.where((eb) =>
+          eb.or([
+            ...(selectedCategoryCodes.length > 0
+              ? [
+                  eb.exists(
+                    categoriesOfDeviceType(eb)
+                      .where("ct.categoryCode", "in", selectedCategoryCodes)
+                      .select("ct.categoryCode"),
+                  ),
+                ]
+              : []),
+            ...(noCategorySelected
+              ? [
+                  eb.not(
+                    eb.exists(
+                      categoriesOfDeviceType(eb).select("ct.categoryCode"),
+                    ),
+                  ),
+                ]
+              : []),
+          ]),
+        )
       : searchResultsQuery;
 
   // Get the total count of search results for the given search term
@@ -78,78 +109,73 @@ export const renderSearchResults = async (req: Request, res: Response) => {
     Math.trunc(searchResultsCount / pageSize) +
     Math.min(searchResultsCount % pageSize, 1);
 
-  // Get the categories for the filter sidebar, along with the count of
-  // aggregations in each category. An aggregation is counted once in every
-  // category it belongs to, and aggregations without a category are counted
-  // under null ("No category").
-  const categoriesInSearchResults = await db
-    .selectFrom(
-      searchResultsQuery
-        .select(
-          sql<null | string>`unnest(
-            CASE
-              WHEN cardinality("gmdn_names") = 0 THEN ARRAY[NULL]::varchar[]
-              ELSE "gmdn_names"
-            END
-          )`.as("gmdnName"),
-        )
-        .as("c"),
+  // Get the categories for the filter sidebar, along with the count of results
+  // in each. A result is counted once in every category its device type is in,
+  // and results whose device type has no category are counted under null ("No
+  // category"). A category code can appear at several places in the tree, but
+  // always with the same name, so it's listed once.
+  const categoriesInSearchResults = await searchResultsQuery
+    .leftJoin(
+      (eb) =>
+        eb
+          .selectFrom("gmdn_category_term as ct")
+          .innerJoin("gmdn_category as c", "c.categoryCode", "ct.categoryCode")
+          .select([
+            "ct.termCode",
+            "ct.categoryCode",
+            sql<string>`min(c.name)`.as("name"),
+          ])
+          .groupBy(["ct.termCode", "ct.categoryCode"])
+          .as("category"),
+      (join) =>
+        join.onRef("category.termCode", "=", "device_type_search.gmdnCode"),
     )
-    .select(["c.gmdnName", db.fn.countAll<string>().as("count")])
-    .groupBy("c.gmdnName")
+    .select([
+      "category.categoryCode",
+      sql<null | string>`min(category.name)`.as("name"),
+      db.fn.countAll<string>().as("count"),
+    ])
+    .groupBy("category.categoryCode")
     .orderBy("count", "desc")
+    .orderBy("name")
     .execute()
     .then((results) =>
       results.map((result) => ({
-        checked: queryCategories.includes(result.gmdnName ?? ""),
+        checked: queryCategories.includes(result.categoryCode ?? ""),
+        code: result.categoryCode,
         count: Number(result.count),
-        name: result.gmdnName,
+        name: result.name,
       })),
     );
 
-  // Perform the search query with pagination and render the results page.
-  // Order by name so pages are stable.
+  // Each result is a device type from one supplier. Order by both so pages
+  // are stable.
   const results = await filteredSearchResultsQuery
     .select([
-      "aggregationName",
-      "aggregationType",
-      "productCount",
-      "productNames",
-      "models",
-      "manufacturers",
-      "countries",
-      "gmdnNames",
-      "types",
+      "gmdnCode",
+      "gmdnTermName",
+      "manufacturerId",
+      "manufacturerName",
+      "deviceCount",
     ])
-    .orderBy("aggregationName")
-    .limit(queryParams.limit)
-    .offset(queryParams.offset)
-    .execute()
-    .then((results) =>
-      // Add some dummy data to the results for now, until we have a proper database with these fields
-      results.map((result) => ({
-        ...result,
-        excluded: 1,
-        procured: 1,
-        under_review: 1,
-      })),
-    );
+    .orderBy("gmdnTermName")
+    .orderBy("manufacturerName")
+    .orderBy("manufacturerId")
+    .limit(pageSize)
+    .offset(pageSize * currentPage)
+    .execute();
 
   res.render("search-results.html", {
     categoriesQueryString,
     searchMaxPages,
     searchOffset,
     searchPage,
+    searchQueryString: getSearchQueryString(req.query),
     searchResultCategories: categoriesInSearchResults,
     searchResults: results,
     searchResultsCount,
     searchTerm,
   });
-};
-
-export const renderCategories = async (req: Request, res: Response) => {
-  const categories = await getTopLevelCategories();
-  res.render("categories.html", { categories });
 };
 
 export const renderCategory = async (
@@ -164,43 +190,29 @@ export const renderCategory = async (
 
   const subcategoryRows = await getCategoriesWithParentId(Number(categoryId));
 
-  const supplierCounts = await getSupplierCountsForCategoryCodes(
-    subcategoryRows.flatMap((subcategory) => subcategory.categoryCode ?? []),
+  const deviceTypeCounts = await getDeviceTypeCountsForCategories(
+    subcategoryRows.map((subcategory) => subcategory.nodeId),
   );
 
   const subcategories = subcategoryRows.map((subcategory) => ({
     ...subcategory,
-    supplierCount: subcategory.categoryCode
-      ? (supplierCounts.get(subcategory.categoryCode) ?? 0)
-      : 0,
+    deviceTypeCount: deviceTypeCounts.get(subcategory.nodeId) ?? 0,
   }));
 
   const hierarchyLevel = categoryHierarchy.length;
 
-  const payload: {
-    category: typeof category;
-    categoryHierarchy: typeof categoryHierarchy;
-    deviceTypes: Awaited<ReturnType<typeof getGmdnTermsForCategoryCode>>;
-    hierarchyLevel: number;
-    subcategories: typeof subcategories;
-  } = {
+  // Levels 1 and 2 are for narrowing down, so they only list subcategories.
+  // From level 3 down, list every GMDN term (device type) beneath this category.
+  const deviceTypes =
+    hierarchyLevel >= 3
+      ? await getGmdnTermsBeneathCategory(Number(categoryId))
+      : [];
+
+  res.render("category.html", {
     category,
     categoryHierarchy,
-    deviceTypes: [],
+    deviceTypes,
     hierarchyLevel,
     subcategories,
-  };
-
-  // At the bottom of the hierarchy, list the GMDN terms (device types) in this category
-  if (subcategories.length === 0) {
-    if (!category.categoryCode) {
-      throw new Error(`Category code not found for category ID ${categoryId}`);
-    }
-
-    payload.deviceTypes = await getGmdnTermsForCategoryCode(
-      category.categoryCode,
-    );
-  }
-
-  res.render("category.html", payload);
+  });
 };

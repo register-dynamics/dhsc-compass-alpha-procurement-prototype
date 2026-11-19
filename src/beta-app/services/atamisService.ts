@@ -1,46 +1,45 @@
 import { db } from "../database/client.js";
+import { TrustExperienceContract } from "../models/trustExperience.js";
+import { countContractsByTrust } from "../utils/trustEvidence.js";
+import { getProductContracts } from "./trustDataService.js";
 
-export const getContractCountForAggregation = async (
-  aggregationName: string,
-): Promise<number> => {
-  const result = await db
-    .withSchema("external")
-    .selectFrom("products as p")
-    .innerJoin("device_type as dt", "dt.deviceId", "p.deviceId")
-    .innerJoin("atamis_to_gmdn as atg", "atg.gmdnCode", "dt.gmdnCode")
-    .innerJoin("atamis_contracts as ac", "ac.contractRef", "atg.atamisRef")
-    .select((eb) =>
-      eb.fn.count<string>("ac.contractRef").distinct().as("contractCount"),
-    )
-    .where("p.aggregationName", "=", aggregationName)
-    .executeTakeFirstOrThrow();
-  return Number(result.contractCount);
-};
-
+// The contracts on the product page's exact card, counted for each trust
 export const getContractCountsByContractingAuthorityForAggregation = async (
   aggregationName: string,
-  contractingAuthorities: string[],
+  manufacturerId: number,
 ): Promise<Map<string, number>> => {
-  if (contractingAuthorities.length === 0) {
-    return new Map();
+  const contracts = await getProductContracts({
+    aggregationName,
+    manufacturerId,
+  });
+
+  return countContractsByTrust(contracts);
+};
+
+// The contracts on the product page's exact card with the trust as
+// contracting authority. Atamis relates contracts to trusts by name.
+export const getContractsForTrustAndAggregation = async (
+  aggregationName: string,
+  manufacturerId: number,
+  contractingAuthority: string,
+): Promise<TrustExperienceContract[]> => {
+  const contractRefs = (
+    await getProductContracts({ aggregationName, manufacturerId })
+  )
+    .filter(
+      (contract) => contract.contractingAuthority === contractingAuthority,
+    )
+    .map(({ contractRef }) => contractRef);
+
+  if (contractRefs.length === 0) {
+    return [];
   }
 
-  const rows = await db
+  return await db
     .withSchema("external")
-    .selectFrom("products as p")
-    .innerJoin("device_type as dt", "dt.deviceId", "p.deviceId")
-    .innerJoin("atamis_to_gmdn as atg", "atg.gmdnCode", "dt.gmdnCode")
-    .innerJoin("atamis_contracts as ac", "ac.contractRef", "atg.atamisRef")
-    .select((eb) => [
-      "ac.contractingAuthority",
-      eb.fn.count<string>("ac.contractRef").distinct().as("contractCount"),
-    ])
-    .where("p.aggregationName", "=", aggregationName)
-    .where("ac.contractingAuthority", "in", contractingAuthorities)
-    .groupBy("ac.contractingAuthority")
+    .selectFrom("atamis_contracts")
+    .select(["contractRef", "contractName", "businessUnit", "owner"])
+    .where("contractRef", "in", contractRefs)
+    .orderBy("contractName", "asc")
     .execute();
-
-  return new Map(
-    rows.map((row) => [row.contractingAuthority, Number(row.contractCount)]),
-  );
 };

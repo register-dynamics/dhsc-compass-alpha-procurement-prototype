@@ -1,0 +1,52 @@
+{% from "card/macro.njk" import card %}
+{% from "summary-list/macro.njk" import summaryList %}
+
+{#
+  An "Available trust data" card, for the TrustData from trustDataService.
+
+  params:
+    trustData        TrustData to show
+    experience       What the trusts have, after "N trusts have", e.g.
+                     "experience with this type of device"
+    showDocuments    Whether to list shared documents by type
+    href             Optional "View trusts" link
+    headingLevel     Optional, passed to the card
+    headingClasses   Optional, passed to the card
+#}
+{% macro trust_data_card(params) %}
+    {% set trustCount = params.trustData.trustCount %}
+    {% call card({
+        heading: trustCount ~ (" trust has " if trustCount == 1 else " trusts have ") ~ params.experience,
+        headingLevel: params.headingLevel,
+        headingClasses: params.headingClasses
+    }) %}
+        {% set peopleRow = { key: { text: "People to contact" }, value: { text: params.trustData.peopleCount | string } } %}
+        {% set contractsRow = {
+            key: { text: "Procurement contracts" },
+            value: { text: params.trustData.contractCount | string },
+            classes: "" if params.showDocuments else "nhsuk-summary-list__row--no-border"
+        } %}
+        {% if params.showDocuments %}
+            {% set documentTypesContent %}
+                <ul class="nhsuk-list nhsuk-u-margin-bottom-0">
+                    {% for documentType in params.trustData.documentCounts %}
+                        <li>{{ documentType.count }} {{ documentType.documentType }}</li>
+                    {% endfor %}
+                </ul>
+            {% endset %}
+            {% set rows = [
+                peopleRow,
+                contractsRow,
+                { key: { text: "Other documents" }, value: { html: documentTypesContent }, classes: "nhsuk-summary-list__row--no-border" }
+            ] %}
+        {% else %}
+            {% set rows = [peopleRow, contractsRow] %}
+        {% endif %}
+        {{ summaryList({ rows: rows }) }}
+        {% if params.href %}
+            <p class="nhsuk-u-margin-bottom-0">
+                <a href="{{ params.href }}">View trusts</a>
+            </p>
+        {% endif %}
+    {% endcall %}
+{% endmacro %}

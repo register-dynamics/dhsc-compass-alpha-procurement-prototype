@@ -147,9 +147,9 @@
   <div class="nhsuk-grid-column-two-thirds">
     <h2 class="nhsuk-heading-m nhsuk-u-margin-bottom-2">Subcategories</h2>
     {% if subcategoryGroups %}
-    <p class="nhsuk-body-s">From GMDN, grouped by what the devices do. Numbers show how many device types each one contains.</p>
+    <p class="nhsuk-body-s">From GMDN, grouped by what the devices do. Numbers show how many additional subcategories each category contains.</p>
     {% else %}
-    <p class="nhsuk-body-s">From GMDN, A to Z. Numbers show how many device types each one contains.</p>
+    <p class="nhsuk-body-s">From GMDN, A to Z. Numbers show how many device types each category contains.</p>
     {% endif %}
   </div>
 </div>
@@ -200,7 +200,7 @@
     {% if category.description %}<p>{{ category.description }}</p>{% endif %}
 
     {% if listTools %}
-    <p class="nhsuk-body-s">Showing 1 to {{ shown }} of {{ total }}, ordered A to Z.</p>
+    <p class="nhsuk-body-s">Showing 1 to {{ shown }} of {{ total }}, listed A to Z</p>
 
     <form method="get" novalidate>
       {{ select({
@@ -222,7 +222,7 @@
       </button>
     </form>
     {% else %}
-    <p class="nhsuk-body-s">Ordered A to Z.</p>
+    <p class="nhsuk-body-s">Listed A to Z</p>
     {% endif %}
 
     {% set tableRows = [] %}

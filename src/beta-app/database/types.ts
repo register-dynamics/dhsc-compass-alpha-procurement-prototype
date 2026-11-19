@@ -15,6 +15,7 @@ export interface Database {
   product_evidence_useful: ProductEvidenceUsefulTable;
   search: SearchTable;
   aggregation_search: AggregationSearchTable;
+  device_type_search: DeviceTypeSearchTable;
   users: UserTable;
   organisation_user: OrganisationUserTable;
   organisation_contact: OrganisationContactTable;
@@ -28,6 +29,7 @@ export interface Database {
   products: ProductTable;
   atamis_contracts: AtamisContractTable;
   atamis_to_gmdn: AtamisToGmdnMappingTable;
+  contracts_to_mhra_manufacturers: ContractToManufacturerTable;
   manufacturers: ManufacturerTable;
 }
 
@@ -48,6 +50,7 @@ export type ProductEvidence = Selectable<ProductEvidenceTable>;
 
 export interface ProductEvidenceTable {
   aggregationName: string;
+  manufacturerId: number;
   evidenceId: number;
 }
 
@@ -121,9 +124,10 @@ export type ProductEvidenceUseful = Selectable<ProductEvidenceUsefulTable>;
 
 export interface ProductEvidenceUsefulTable {
   aggregationName: string;
+  manufacturerId: number;
   evidenceId: number;
   userId: number;
-  dateMarkedUseful: Date;
+  dateMarkedUseful: Generated<Date>;
 }
 
 export type Search = Selectable<SearchTable>;
@@ -150,16 +154,28 @@ export type AggregationSearch = Selectable<AggregationSearchTable>;
 
 export interface AggregationSearchTable {
   aggregationName: string;
+  manufacturerId: number;
+  manufacturerName: null | string;
+  manufacturerCountry: null | string;
   aggregationType: null | string;
   productCount: number;
   productNames: string[];
   models: string[];
   productCodes: string[];
-  manufacturers: string[];
-  countries: string[];
   gmdnCodes: number[];
   gmdnNames: string[];
   types: string[];
+  searchDoc: string;
+}
+
+export type DeviceTypeSearch = Selectable<DeviceTypeSearchTable>;
+
+export interface DeviceTypeSearchTable {
+  gmdnCode: number;
+  gmdnTermName: string;
+  manufacturerId: number;
+  manufacturerName: string;
+  deviceCount: number;
   searchDoc: string;
 }
 
@@ -282,6 +298,15 @@ export type AtamisToGmdnMapping = Selectable<AtamisToGmdnMappingTable>;
 export interface AtamisToGmdnMappingTable {
   atamisRef: string;
   gmdnCode: number;
+}
+
+// Which MHRA manufacturer each Atamis contract is with. Atamis records the
+// supplier as free text, so this is matched up when the data is loaded.
+export type ContractToManufacturer = Selectable<ContractToManufacturerTable>;
+
+export interface ContractToManufacturerTable {
+  contractRef: string;
+  manufacturerId: number;
 }
 
 export type Manufacturer = Selectable<ManufacturerTable>;

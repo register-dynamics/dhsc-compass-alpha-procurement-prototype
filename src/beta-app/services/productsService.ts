@@ -1,6 +1,11 @@
 import { db } from "../database/client.js";
 import { Product, Search } from "../database/types.js";
 import { EvidenceCard } from "../models/evidenceCard.js";
+import {
+  TrustExperience,
+  TrustExperiencePerson,
+} from "../models/trustExperience.js";
+import { combineOutcomes } from "../utils/trustEvidence.js";
 import { getContractCountsByContractingAuthorityForAggregation } from "./atamisService.js";
 
 export const getProductsByDeviceId = async (deviceId: number) => {
@@ -24,82 +29,42 @@ export const getProductWithId = async (
   return product ?? null;
 };
 
-export const getAggregationNameForProductId = async (
+export const getAggregationForProductId = async (
   productId: number,
-): Promise<null | string> => {
+): Promise<null | { aggregationName: string; manufacturerId: number }> => {
   const product = await db
     .withSchema("external")
     .selectFrom("products")
-    .select("aggregationName")
+    .select(["aggregationName", "manufacturerId"])
     .where("productId", "=", productId)
     .executeTakeFirst();
-  return product?.aggregationName ?? null;
+  return product?.aggregationName
+    ? {
+        aggregationName: product.aggregationName,
+        manufacturerId: product.manufacturerId,
+      }
+    : null;
 };
 
+// Different suppliers can use the same aggregation name for unrelated
+// products, so an aggregation is identified by its name and supplier.
 export const getAggregationWithName = async (
   aggregationName: string,
+  manufacturerId: number,
 ): Promise<null | Product[]> => {
   const aggregation = await db
     .withSchema("external")
     .selectFrom("products")
     .selectAll()
     .where("aggregationName", "=", aggregationName)
+    .where("manufacturerId", "=", manufacturerId)
     .execute();
   return aggregation;
 };
 
-export const getCountOfOrganisationsWithExperienceWithAggregation = async (
-  aggregationName: string,
-): Promise<number> => {
-  const result = await db
-    .withSchema("app")
-    .selectFrom("product_evidence as pe")
-    .innerJoin("evidence as e", "e.evidenceId", "pe.evidenceId")
-    .select((eb) =>
-      eb.fn.count<string>("e.organisationId").distinct().as("orgCount"),
-    )
-    .where("pe.aggregationName", "=", aggregationName)
-    .executeTakeFirstOrThrow();
-  return Number(result.orgCount);
-};
-
-export const getCountOfContactsWithExperienceWithAggregation = async (
-  aggregationName: string,
-): Promise<number> => {
-  const result = await db
-    .withSchema("app")
-    .selectFrom("product_evidence as pe")
-    .innerJoin("evidence_contacts as ec", "ec.evidenceId", "pe.evidenceId")
-    .select((eb) =>
-      eb.fn.count<string>("ec.contactId").distinct().as("contactCount"),
-    )
-    .where("pe.aggregationName", "=", aggregationName)
-    .executeTakeFirstOrThrow();
-  return Number(result.contactCount);
-};
-
-export const getCountOfDocumentsByTypeForAggregation = async (
-  aggregationName: string,
-): Promise<{ count: number; documentType: string }[]> => {
-  const rows = await db
-    .withSchema("app")
-    .selectFrom("product_evidence as pe")
-    .innerJoin("documents as d", "d.evidenceId", "pe.evidenceId")
-    .innerJoin("document_type as dt", "dt.typeOfDocId", "d.typeOfDocId")
-    .select((eb) => [
-      "dt.typeOfDocDesc as documentType",
-      eb.fn.count<string>("d.documentId").distinct().as("count"),
-    ])
-    .where("pe.aggregationName", "=", aggregationName)
-    .groupBy(["dt.typeOfDocId", "dt.typeOfDocDesc"])
-    .orderBy("count", "desc")
-    .orderBy("documentType", "asc")
-    .execute();
-  return rows.map((row) => ({ ...row, count: Number(row.count) }));
-};
-
 export const getEvidenceCardsForAggregation = async (
   aggregationName: string,
+  manufacturerId: number,
   userId?: number,
 ): Promise<EvidenceCard[]> => {
   // Contacts and documents are counted in separate queries so the joins
@@ -118,14 +83,59 @@ export const getEvidenceCardsForAggregation = async (
       eb.fn.count<string>("ec.contactId").distinct().as("contactCount"),
     ])
     .where("pe.aggregationName", "=", aggregationName)
+    .where("pe.manufacturerId", "=", manufacturerId)
     .groupBy(["e.evidenceId", "o.organisationName"])
-    .orderBy("o.organisationName", "asc")
     .execute();
 
-  if (evidenceRows.length === 0) {
-    return [];
-  }
+  // Atamis contracts are related to trusts by name, as contracting authority
+  const contractCounts =
+    await getContractCountsByContractingAuthorityForAggregation(
+      aggregationName,
+      manufacturerId,
+    );
 
+  const evidenceCards =
+    evidenceRows.length > 0
+      ? await getCardsForEvidence(
+          evidenceRows,
+          contractCounts,
+          aggregationName,
+          manufacturerId,
+          userId,
+        )
+      : [];
+
+  // Trusts with a contract for the device but no evidence also get a card, so
+  // the list has every trust the product page counts
+  const evidenceTrusts = new Set(
+    evidenceRows.map((row) => row.organisationName),
+  );
+  const contractOnlyTrusts = [...contractCounts.keys()].filter(
+    (name) => !evidenceTrusts.has(name),
+  );
+  const contractCards = await getCardsForContractOnlyTrusts(
+    contractOnlyTrusts,
+    contractCounts,
+  );
+
+  return [...evidenceCards, ...contractCards].sort((a, b) =>
+    a.organisationName.localeCompare(b.organisationName, "en-GB"),
+  );
+};
+
+const getCardsForEvidence = async (
+  evidenceRows: {
+    contactCount: string;
+    evidenceId: number;
+    organisationId: number;
+    organisationName: string;
+    procured: boolean | null;
+  }[],
+  contractCounts: Map<string, number>,
+  aggregationName: string,
+  manufacturerId: number,
+  userId?: number,
+): Promise<EvidenceCard[]> => {
   const documentRows = await db
     .withSchema("app")
     .selectFrom("documents as d")
@@ -157,6 +167,7 @@ export const getEvidenceCardsForAggregation = async (
         .as("markedCount"),
     ])
     .where("aggregationName", "=", aggregationName)
+    .where("manufacturerId", "=", manufacturerId)
     .where(
       "evidenceId",
       "in",
@@ -164,13 +175,6 @@ export const getEvidenceCardsForAggregation = async (
     )
     .groupBy("evidenceId")
     .execute();
-
-  // Atamis contracts are related to trusts by name, as contracting authority
-  const contractCounts =
-    await getContractCountsByContractingAuthorityForAggregation(
-      aggregationName,
-      [...new Set(evidenceRows.map((row) => row.organisationName))],
-    );
 
   return evidenceRows.map((row) => {
     const useful = usefulRows.find((u) => u.evidenceId === row.evidenceId);
@@ -191,4 +195,177 @@ export const getEvidenceCardsForAggregation = async (
       usefulCount: Number(useful?.count ?? 0),
     };
   });
+};
+
+// A contracting authority might not be an organisation in the app, in which
+// case the card has no organisation ID and so no trust page to link to
+const getCardsForContractOnlyTrusts = async (
+  trustNames: string[],
+  contractCounts: Map<string, number>,
+): Promise<EvidenceCard[]> => {
+  if (trustNames.length === 0) {
+    return [];
+  }
+
+  const organisations = await db
+    .withSchema("app")
+    .selectFrom("organisations")
+    .select(["organisationId", "organisationName"])
+    .where("organisationName", "in", trustNames)
+    .execute();
+
+  return trustNames.map((organisationName) => ({
+    contactCount: 0,
+    evidenceId: null,
+    markedUseful: false,
+    organisationId:
+      organisations.find((o) => o.organisationName === organisationName)
+        ?.organisationId ?? null,
+    organisationName,
+    procured: null,
+    procurementContractCount: contractCounts.get(organisationName) ?? 0,
+    sharedDocuments: [],
+    usefulCount: 0,
+  }));
+};
+
+// What a person on the evidence is happy to discuss, in the order they're
+// asked in the sharing flow
+const discussTopics = [
+  ["discussImplementation", "Implementation"],
+  ["discussTraining", "Training"],
+  ["discussOutcomes", "Outcomes"],
+  ["discussPharmacyIntegration", "Pharmacy integration"],
+  ["discussBusinessCase", "Business case"],
+  ["discussRealWorldUse", "Real world use"],
+  ["discussEhrIntegration", "EHR integration"],
+] as const;
+
+// Returns undefined if the organisation doesn't exist
+export const getTrustExperienceForAggregation = async (
+  aggregationName: string,
+  manufacturerId: number,
+  organisationId: number,
+  userId?: number,
+): Promise<TrustExperience | undefined> => {
+  const organisation = await db
+    .withSchema("app")
+    .selectFrom("organisations")
+    .select(["organisationId", "organisationName"])
+    .where("organisationId", "=", organisationId)
+    .executeTakeFirst();
+
+  if (!organisation) {
+    return undefined;
+  }
+
+  const evidenceRows = await db
+    .withSchema("app")
+    .selectFrom("product_evidence as pe")
+    .innerJoin("evidence as e", "e.evidenceId", "pe.evidenceId")
+    .select([
+      "e.evidenceId",
+      "e.procured",
+      "e.assessmentDate",
+      "e.wardDepartment",
+    ])
+    .where("pe.aggregationName", "=", aggregationName)
+    .where("pe.manufacturerId", "=", manufacturerId)
+    .where("e.organisationId", "=", organisationId)
+    .orderBy("e.evidenceId", "asc")
+    .execute();
+
+  const evidenceIds = evidenceRows.map((row) => row.evidenceId);
+
+  if (evidenceIds.length === 0) {
+    return { ...organisation, people: [], procured: null };
+  }
+
+  // Queried separately so the joins don't fan out against each other
+  const [contactRows, documentRows, usefulRows] = await Promise.all([
+    db
+      .withSchema("app")
+      .selectFrom("evidence_contacts as ec")
+      .innerJoin("contacts as c", "c.contactId", "ec.contactId")
+      .selectAll("ec")
+      .select([
+        "c.title",
+        "c.givenName",
+        "c.surname",
+        "c.role",
+        "c.email",
+        "c.phoneNo",
+      ])
+      .where("ec.evidenceId", "in", evidenceIds)
+      .orderBy("c.surname", "asc")
+      .orderBy("c.givenName", "asc")
+      .execute(),
+    db
+      .withSchema("app")
+      .selectFrom("documents as d")
+      .innerJoin("document_type as dt", "dt.typeOfDocId", "d.typeOfDocId")
+      .select(["d.evidenceId", "dt.typeOfDocDesc as documentType"])
+      .where("d.evidenceId", "in", evidenceIds)
+      .orderBy("d.uploadDate", "desc")
+      .execute(),
+    db
+      .withSchema("app")
+      .selectFrom("product_evidence_useful")
+      .select((eb) => [
+        "evidenceId",
+        eb.fn.countAll<string>().as("count"),
+        eb.fn
+          .countAll<string>()
+          .filterWhere("userId", "=", userId ?? null)
+          .as("markedCount"),
+      ])
+      .where("aggregationName", "=", aggregationName)
+      .where("manufacturerId", "=", manufacturerId)
+      .where("evidenceId", "in", evidenceIds)
+      .groupBy("evidenceId")
+      .execute(),
+  ]);
+
+  // A person can be on more than 1 piece of the trust's evidence, but gets
+  // 1 card, with the documents and topics from all of it
+  const contactIds = [...new Set(contactRows.map((row) => row.contactId))];
+
+  const people = contactIds.map((contactId): TrustExperiencePerson => {
+    const rows = contactRows.filter((row) => row.contactId === contactId);
+    const contact = rows[0];
+    // Marking as useful needs a single piece of evidence, so it's the latest
+    const evidenceId = Math.max(...rows.map((row) => row.evidenceId));
+    const useful = usefulRows.find((row) => row.evidenceId === evidenceId);
+
+    return {
+      documents: rows.flatMap((row) => {
+        const evidence = evidenceRows.find(
+          (e) => e.evidenceId === row.evidenceId,
+        );
+        return documentRows
+          .filter((doc) => doc.evidenceId === row.evidenceId)
+          .map((doc) => ({
+            assessmentDate: evidence?.assessmentDate ?? null,
+            documentType: doc.documentType,
+            wardDepartment: evidence?.wardDepartment ?? null,
+          }));
+      }),
+      email: contact.email,
+      evidenceId,
+      happyToDiscuss: discussTopics
+        .filter(([key]) => rows.some((row) => row[key]))
+        .map(([, label]) => label),
+      markedUseful: Number(useful?.markedCount ?? 0) > 0,
+      name: [contact.title, contact.givenName, contact.surname]
+        .filter(Boolean)
+        .join(" "),
+      phoneNo: contact.phoneNo,
+      role: contact.role,
+      usefulCount: Number(useful?.count ?? 0),
+    };
+  });
+
+  const procured = combineOutcomes(evidenceRows.map((row) => row.procured));
+
+  return { ...organisation, people, procured };
 };

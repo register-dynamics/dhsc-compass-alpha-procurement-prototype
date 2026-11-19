@@ -1,0 +1,40 @@
+@use "nhsuk-frontend/dist/nhsuk" as *;
+@forward "nhsuk-frontend/dist/nhsuk";
+
+// Side navigation, after the NHS digital service manual's own sidebar
+// (service-manual.nhs.uk). Not a design system component. Used for the
+// subcategories on the category pages.
+
+.app-side-nav__heading {
+  color: $nhsuk-secondary-text-colour;
+}
+
+.app-side-nav__list {
+  margin: 0 0 nhsuk-spacing(4);
+  padding: 0;
+  list-style: none;
+}
+
+.app-side-nav__item {
+  margin-bottom: nhsuk-spacing(2);
+  @include nhsuk-font($size: 16);
+}
+
+.app-side-nav__link {
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.app-side-nav__count {
+  color: $nhsuk-secondary-text-colour;
+}
+
+// Results column for a page with side navigation. Floated right so it can
+// come first in the source (heading, then results) while sitting to the
+// right of the sidebar.
+.app-grid-column-two-thirds-right {
+  @include nhsuk-grid-column(two-thirds, $float: right);
+}

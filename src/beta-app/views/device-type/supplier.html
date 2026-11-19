@@ -1,11 +1,21 @@
 {% extends "layouts/base.html" %}
 
+{% from "breadcrumb/macro.njk" import breadcrumb %}
+{% from "includes/trust-data-card.njk" import trust_data_card %}
 {% from "summary-list/macro.njk" import summaryList %}
 {% from "tables/macro.njk" import table %}
 
 {% set pageName = gmdnTerm + " by " + supplier.manOrganisationName %}
 
 {% set mainClasses = "nhsuk-main-wrapper--s" %}
+
+{% block beforeContent %}
+
+{{ breadcrumb({
+  items: breadcrumbs
+}) }}
+
+{% endblock %}
 
 {% block content %}
 
@@ -18,15 +28,12 @@
     </h1>
 
     {{ summaryList({
-      rows: [
-        { key: { text: "Device type" }, value: { html: '<a href="/device-type/' ~ deviceTypeId ~ '">' ~ (gmdnTerm | escape) ~ '</a>' } }
-      ]
     }) }}
 
     {% set deviceRows = [] %}
     {% for device in devices %}
       {% set deviceRows = deviceRows.concat([[
-        { html: '<a href="/product/' ~ (device.aggregationName | urlencode) ~ '">' ~ (device.aggregationName | escape) ~ '</a>' },
+        { html: '<a href="' ~ (device.href | escape) ~ '">' ~ (device.aggregationName | escape) ~ '</a>' },
         { text: device.trustCount, format: "numeric" }
       ]]) %}
     {% endfor %}
@@ -43,5 +50,29 @@
   </div>
 </div>
 
+
+<h2 class="nhsuk-heading-m nhsuk-u-margin-top-5">Available trust data</h2>
+
+<ul class="nhsuk-grid-row nhsuk-card-group">
+  <li class="nhsuk-grid-column-one-half nhsuk-card-group__item">
+    {{ trust_data_card({
+      trustData: trustData.exact,
+      experience: supplier.manOrganisationName + " " + gmdnTerm + " experience",
+      showDocuments: true,
+      href: trustsHref,
+      headingLevel: 3,
+      headingClasses: "nhsuk-heading-s"
+    }) }}
+  </li>
+  <li class="nhsuk-grid-column-one-half nhsuk-card-group__item">
+    {{ trust_data_card({
+      trustData: trustData.related,
+      experience: "experience with " + supplier.manOrganisationName + " devices in the same or related categories",
+      href: relatedTrustsHref,
+      headingLevel: 3,
+      headingClasses: "nhsuk-heading-s"
+    }) }}
+  </li>
+</ul>
 
 {% endblock %}
