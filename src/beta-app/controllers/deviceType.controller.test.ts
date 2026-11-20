@@ -191,7 +191,7 @@ describe("Device type controller", () => {
     const contractNames = (html: string) =>
       [
         ...html.matchAll(
-          /role="rowheader"[\s\S]*?<\/span>\s*([^<]+?)\s*<\/th>/g,
+          /role="rowheader"[\s\S]*?<a [^>]*>\s*([^<]+?)\s*<\/a>/g,
         ),
       ].map(([, name]) => name);
 
@@ -258,6 +258,72 @@ describe("Device type controller", () => {
       expect(response.text).toContain(
         '<input type="hidden" name="q" value="heart">',
       );
+      expect(response.text).toContain(
+        `href="${searchProductPath}/related-trusts/contract/FAKE0022?q=heart&amp;page=2"`,
+      );
+    });
+
+    it("GET related trusts links each contract to its page", async () => {
+      const response = await get(`${productPath}/related-trusts`);
+
+      for (const contractRef of ["FAKE0019", "FAKE0022", "FAKE0023"]) {
+        expect(response.text).toContain(
+          `href="${productPath}/related-trusts/contract/${contractRef}"`,
+        );
+      }
+    });
+
+    it("GET a related contract shows what Atamis holds for it", async () => {
+      const response = await get(
+        `${productPath}/related-trusts/contract/FAKE0019`,
+      );
+
+      expect(response.status).toBe(200);
+      for (const text of [
+        "Blood Pressure Monitoring Equipment",
+        "Baranduin Teaching Hospitals NHS Foundation Trust",
+        "Patient Monitoring Equipment",
+        "BTH Cardiology",
+        "Aorta Solutions Ltd",
+        "1 April 2025",
+        "31 March 2028",
+        "Imogen Bracegirdle",
+        "Fancy Belshaw",
+      ]) {
+        expect(response.text).toContain(text);
+      }
+      // It has no published notice
+      expect(response.text).not.toContain(
+        "Link to the published contract notice",
+      );
+      expect(response.text).toContain(`href="${productPath}"`);
+      expect(response.text).toContain(`href="${productPath}/related-trusts"`);
+    });
+
+    it("GET a related contract from search leads back to the search", async () => {
+      const response = await get(
+        `${searchProductPath}/related-trusts/contract/FAKE0019?q=heart`,
+      );
+
+      expect(response.status).toBe(200);
+      expect(response.text).toContain('href="/search-results?q=heart"');
+      expect(response.text).toContain(
+        `href="${searchProductPath}/related-trusts?q=heart"`,
+      );
+    });
+
+    it.each([
+      [
+        "a contract it doesn't list",
+        `${productPath}/related-trusts/contract/FAKE0001`,
+      ],
+      ["an unknown contract", `${productPath}/related-trusts/contract/NOTHING`],
+      [
+        "the wrong supplier",
+        "/device-type/35198/supplier/45123/product/Heart%20Rate%20Monitor/related-trusts/contract/FAKE0019",
+      ],
+    ])("GET a related contract with %s returns 404", async (_, path) => {
+      expect((await get(path)).status).toBe(404);
     });
 
     it("GET related trusts for a product with none says so", async () => {
@@ -337,6 +403,35 @@ describe("Device type controller", () => {
       expect(response.text).toContain(
         'href="?category=Patient+Monitoring+Equipment&amp;sort=trust&amp;order=ascending"',
       );
+    });
+
+    it("GET a related contract shows it beneath the device type's related trusts", async () => {
+      const relatedTrusts = await get(`${deviceTypePath}/related-trusts`);
+      const contractPath = `${deviceTypePath}/related-trusts/contract/FAKE0019`;
+
+      expect(relatedTrusts.text).toContain(`href="${contractPath}"`);
+
+      const response = await get(contractPath);
+
+      expect(response.status).toBe(200);
+      expect(response.text).toContain("Blood Pressure Monitoring Equipment");
+      expect(response.text).toContain(`href="${deviceTypePath}"`);
+      expect(response.text).toContain(
+        `href="${deviceTypePath}/related-trusts"`,
+      );
+    });
+
+    it.each([
+      [
+        "a contract it doesn't list",
+        `${deviceTypePath}/related-trusts/contract/FAKE0001`,
+      ],
+      [
+        "a category it isn't in",
+        `/category/10027/device-type/${deviceTypeId}/related-trusts/contract/FAKE0019`,
+      ],
+    ])("GET a related contract with %s returns 404", async (_, path) => {
+      expect((await get(path)).status).toBe(404);
     });
 
     it.each([
@@ -421,6 +516,37 @@ describe("Device type controller", () => {
       expect(response.text).toContain(
         '<input type="hidden" name="q" value="heart">',
       );
+    });
+
+    it("GET a related contract shows it beneath the supplier's related trusts", async () => {
+      const response = await get(
+        `${supplierPath}/related-trusts/contract/FAKE0019`,
+      );
+
+      expect(response.status).toBe(200);
+      expect(response.text).toContain("Blood Pressure Monitoring Equipment");
+      expect(response.text).toContain(`href="${supplierPath}"`);
+      expect(response.text).toContain(`href="${supplierPath}/related-trusts"`);
+    });
+
+    it("GET a related contract from search leads back to the search", async () => {
+      const response = await get(
+        `${searchSupplierPath}/related-trusts/contract/FAKE0019?q=heart`,
+      );
+
+      expect(response.status).toBe(200);
+      expect(response.text).toContain('href="/search-results?q=heart"');
+      expect(response.text).toContain(
+        `href="${searchSupplierPath}/related-trusts?q=heart"`,
+      );
+    });
+
+    it("GET a related contract the supplier's page doesn't list returns 404", async () => {
+      const response = await get(
+        `${supplierPath}/related-trusts/contract/FAKE0001`,
+      );
+
+      expect(response.status).toBe(404);
     });
 
     it.each([
