@@ -2,12 +2,14 @@ import { Request, Response } from "express";
 import { NoResultError } from "kysely";
 
 import { Breadcrumb } from "../models/view-models/breadcrumb.js";
+import { getContractDetails } from "../models/view-models/contractDetails.js";
 import {
   DeviceTypeRelatedTrusts,
   DeviceTypeTrusts,
   DeviceTypeTrustsScope,
 } from "../models/view-models/deviceTypeTrusts.js";
 import { getRelatedContractsTable } from "../models/view-models/relatedContractsTable.js";
+import { getContractWithRef } from "../services/atamisService.js";
 import {
   getBrowsePathForDeviceType,
   getGmdnTermsBeneathCategory,
@@ -116,6 +118,7 @@ const getDeviceTypeTrustsScope = async (
     gmdnCode: deviceTypeId,
     gmdnTerm,
     parentHref: deviceTypePath,
+    relatedTrustsPath: `${deviceTypePath}/related-trusts`,
     searchQueryString: "",
   };
 };
@@ -163,10 +166,43 @@ const renderRelatedTrustsPage = async (
       contracts,
       req.query,
       scope.searchQueryString,
+      scope.relatedTrustsPath,
     ),
   };
 
   res.render("device-type/related-trusts", viewModel);
+};
+
+// 1 of the contracts listed on the related trusts page. Any other contract
+// is a 404, so the page can't be used to look up contracts it doesn't list.
+const renderRelatedContractPage = async (
+  req: Request,
+  res: Response,
+  scope: DeviceTypeTrustsScope | undefined,
+) => {
+  const contractRef = req.params.contractId as string;
+  const isRelated =
+    scope &&
+    (
+      await getDeviceTypeRelatedContracts(scope.gmdnCode, scope.manufacturerId)
+    ).some((contract) => contract.contractRef === contractRef);
+  const contract = isRelated && (await getContractWithRef(contractRef));
+
+  if (!scope || !contract) {
+    res.status(404).render("not-found");
+    return;
+  }
+
+  res.render("contract", {
+    breadcrumbs: [
+      ...scope.breadcrumbs,
+      {
+        href: `${scope.relatedTrustsPath}${scope.searchQueryString}`,
+        text: "Contracts in the same or related categories",
+      },
+    ],
+    contract: getContractDetails(contract),
+  });
 };
 
 export const renderDeviceTypeTrusts = async (req: Request, res: Response) => {
@@ -178,6 +214,17 @@ export const renderDeviceTypeRelatedTrusts = async (
   res: Response,
 ) => {
   await renderRelatedTrustsPage(req, res, await getDeviceTypeTrustsScope(req));
+};
+
+export const renderDeviceTypeRelatedContract = async (
+  req: Request,
+  res: Response,
+) => {
+  await renderRelatedContractPage(
+    req,
+    res,
+    await getDeviceTypeTrustsScope(req),
+  );
 };
 
 // A supplier's devices of one type, wherever the page was reached from.
@@ -340,6 +387,7 @@ const getSupplierTrustsScope = (
     gmdnTerm: supplierPage.gmdnTerm,
     manufacturerId: supplier.manufacturerId,
     parentHref: supplierHref,
+    relatedTrustsPath: `${supplierPath}/related-trusts`,
     searchQueryString,
     supplierName: supplier.manOrganisationName,
   };
@@ -392,6 +440,28 @@ export const renderDeviceTypeSupplierRelatedTrustsFromSearch = async (
   res: Response,
 ) => {
   await renderRelatedTrustsPage(
+    req,
+    res,
+    getSupplierTrustsScope(await getSupplierInSearch(req)),
+  );
+};
+
+export const renderDeviceTypeSupplierRelatedContract = async (
+  req: Request,
+  res: Response,
+) => {
+  await renderRelatedContractPage(
+    req,
+    res,
+    getSupplierTrustsScope(await getSupplierInCategory(req)),
+  );
+};
+
+export const renderDeviceTypeSupplierRelatedContractFromSearch = async (
+  req: Request,
+  res: Response,
+) => {
+  await renderRelatedContractPage(
     req,
     res,
     getSupplierTrustsScope(await getSupplierInSearch(req)),

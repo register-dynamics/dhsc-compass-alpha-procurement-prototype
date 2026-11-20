@@ -5,6 +5,8 @@ import {
   postUnmarkUseful,
   renderProduct,
   renderProductInCategory,
+  renderProductRelatedContract,
+  renderProductRelatedContractInCategory,
   renderProductRelatedTrusts,
   renderProductRelatedTrustsInCategory,
   renderProductTrustExperience,
@@ -45,6 +47,11 @@ const routeDefinitions: RouteDefinition[] = [
     path: `${categoryProductPath}/related-trusts`,
   },
   {
+    handler: renderProductRelatedContractInCategory,
+    method: "get",
+    path: `${categoryProductPath}/related-trusts/contract/:contractId`,
+  },
+  {
     handler: renderProductTrustExperienceInCategory,
     method: "get",
     path: `${categoryProductPath}/trust/:trustId`,
@@ -68,6 +75,11 @@ const routeDefinitions: RouteDefinition[] = [
     handler: renderProductRelatedTrusts,
     method: "get",
     path: `${searchProductPath}/related-trusts`,
+  },
+  {
+    handler: renderProductRelatedContract,
+    method: "get",
+    path: `${searchProductPath}/related-trusts/contract/:contractId`,
   },
   {
     handler: renderProductTrustExperience,

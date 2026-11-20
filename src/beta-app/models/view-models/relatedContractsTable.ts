@@ -49,7 +49,8 @@ const compareBy: Record<
 export interface RelatedContractsTable {
   categoryItems: { checked: boolean; text: string; value: string }[];
   clearFiltersHref: string;
-  contracts: (RelatedContract & { startMonth: string })[];
+  // href is the contract's page
+  contracts: (RelatedContract & { href: string; startMonth: string })[];
   // The state to keep when the filter form is submitted
   formInputs: { name: string; value: string }[];
   head: { href?: string; sort?: string; text: string }[];
@@ -59,11 +60,13 @@ export interface RelatedContractsTable {
 }
 
 // keepQueryString is the rest of the page's state, such as the search the
-// product was reached from, as from getSearchQueryString
+// product was reached from, as from getSearchQueryString. Each contract's
+// page is beneath relatedTrustsPath, the page's path without a query string.
 export const getRelatedContractsTable = (
   allContracts: RelatedContract[],
   query: Request["query"],
   keepQueryString: string,
+  relatedTrustsPath: string,
 ): RelatedContractsTable => {
   const categories = [
     ...new Set(allContracts.map((contract) => contract.primaryCategory)),
@@ -95,6 +98,7 @@ export const getRelatedContractsTable = (
     )
     .map((contract) => ({
       ...contract,
+      href: `${relatedTrustsPath}/contract/${encodeURIComponent(contract.contractRef)}${keepQueryString}`,
       startMonth: contract.startDate.toLocaleDateString("en-GB", {
         month: "long",
         year: "numeric",
