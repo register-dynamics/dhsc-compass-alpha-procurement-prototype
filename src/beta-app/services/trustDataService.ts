@@ -21,14 +21,16 @@ import {
 // | Device type            | Every supplier, for the GMDN term  | Every supplier, for related GMDN terms         |
 //
 // Contracts are matched to devices by GMDN term (atamis_to_gmdn) and to
-// suppliers by contracts_to_mhra_manufacturers. Contracts aren't linked to
-// aggregations, so a contract is only a direct match - on the exact card -
-// when nothing else it could be for is in doubt:
+// suppliers by contracts_to_mhra_manufacturers. A contract is a direct
+// match - on the exact card - when:
 //
 // - it's for exactly one GMDN term, and that's the page's term
 // - one of its suppliers has a supplier + device type page for that term
 //   (on the supplier and product pages, that supplier is the page's)
-// - on the product page, that supplier has no other aggregation for the term
+//
+// Contracts aren't linked to aggregations, so on a product page a direct match
+// is one for the supplier and the page's term, whichever of the supplier's
+// aggregations for that term it was for.
 //
 // Every other contract for the page's term or a related term - with the
 // page's supplier, if it has one - is a possible match, on the related card.
@@ -87,8 +89,6 @@ interface ContractScope {
   // Only contracts with this supplier
   manufacturerId?: number;
   relatedGmdnCodes: number[];
-  // Only a direct match if the supplier has a single aggregation for the term
-  soleAggregation?: boolean;
 }
 
 export const getProductTrustData = async (
@@ -159,7 +159,6 @@ const getProductScope = async ({ gmdnCode, manufacturerId }: ProductScope) => {
       gmdnCodes: [gmdnCode],
       manufacturerId,
       relatedGmdnCodes,
-      soleAggregation: true,
     },
     relatedGmdnCodes,
   };
@@ -534,7 +533,6 @@ const getContracts = async ({
   gmdnCodes,
   manufacturerId,
   relatedGmdnCodes,
-  soleAggregation = false,
 }: ContractScope): Promise<ContractCards> => {
   if (gmdnCodes.length === 0 && relatedGmdnCodes.length === 0) {
     return { exact: [], related: [] };
@@ -543,9 +541,6 @@ const getContracts = async ({
   const codes = sql`${gmdnCodes}::integer[]`;
   const allCodes = sql`${[...gmdnCodes, ...relatedGmdnCodes]}::integer[]`;
   const supplier = sql`${manufacturerId ?? null}::integer`;
-  // The supplier has a supplier + device type page for the term if it has an
-  // aggregation of that type, and the product page needs it to have only one
-  const aggregationCount = soleAggregation ? sql`= 1` : sql`> 0`;
 
   const { rows } = await sql<Contract & { isExact: boolean }>`
     WITH contract_terms AS (
@@ -570,13 +565,16 @@ const getContracts = async ({
           FROM external.contracts_to_mhra_manufacturers cm
           WHERE cm.contract_ref = ac.contract_ref
             AND (${supplier} IS NULL OR cm.manufacturer_id = ${supplier})
-            AND (
-              SELECT count(DISTINCT p.aggregation_name)
+            -- The supplier has a supplier + device type page for the term if
+            -- it has an aggregation of that type
+            AND EXISTS (
+              SELECT 1
               FROM external.device_type dt
               INNER JOIN external.products p ON p.device_id = dt.device_id
               WHERE dt.gmdn_code = ct.gmdn_code
                 AND dt.manufacturer_id = cm.manufacturer_id
-            ) ${aggregationCount}
+                AND p.aggregation_name IS NOT NULL
+            )
         )
       ) AS is_exact
     FROM external.atamis_contracts ac

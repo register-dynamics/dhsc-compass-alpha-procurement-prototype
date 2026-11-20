@@ -81,22 +81,22 @@ describe("Trust data service", () => {
       expect(related.contractCount).toBe(1);
     });
 
-    it("counts a contract as related when the supplier has other aggregations for the term", async () => {
+    it("counts a single-term contract as exact when the supplier has other aggregations for the term", async () => {
       const { exact, related } = await getProductTrustData({
         aggregationName: "Heart Rate Monitor",
         gmdnCode: 35198,
         manufacturerId: 13455,
       });
 
-      // FAKE0006 could be for Heart Pro or Pacemaker instead
+      // FAKE0006, though it could be for Heart Pro or Pacemaker instead
       expect(exact).toMatchObject({
-        contractCount: 0,
+        contractCount: 1,
         peopleCount: 4,
-        trustCount: 2,
+        trustCount: 3,
       });
       // Heart Pro and Pacemaker have the same term, Aorta BP Monitor a related one
       expect(related).toMatchObject({
-        contractCount: 4,
+        contractCount: 3,
         peopleCount: 10,
         trustCount: 9,
       });
@@ -138,7 +138,6 @@ describe("Trust data service", () => {
       const { related } = await getProductTrustData(aggregation);
 
       expect(contracts.map((c) => c.contractRef).sort()).toEqual([
-        "FAKE0006",
         "FAKE0019",
         "FAKE0022",
         "FAKE0023",
