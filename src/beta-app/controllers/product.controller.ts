@@ -5,10 +5,14 @@ import { Contact, Organisations } from "../database/types.js";
 import { postAddEvidenceContactSelfSchema } from "../models/request-schemas/postAddEvidenceContactSelfSchema.js";
 import { postMarkUsefulSchema } from "../models/request-schemas/postMarkUsefulSchema.js";
 import { Breadcrumb } from "../models/view-models/breadcrumb.js";
+import { getContractDetails } from "../models/view-models/contractDetails.js";
 import { ProductAggregation } from "../models/view-models/productAggregation.js";
 import { ProductTrusts } from "../models/view-models/productTrusts.js";
 import { getRelatedContractsTable } from "../models/view-models/relatedContractsTable.js";
-import { getContractsForTrustAndProduct } from "../services/atamisService.js";
+import {
+  getContractsForTrustAndProduct,
+  getContractWithRef,
+} from "../services/atamisService.js";
 import {
   getAggregationForProductId,
   getAggregationWithName,
@@ -45,6 +49,9 @@ interface ProductRoute {
   getTrustHref: (organisationId: number) => string;
   productHref: string;
   relatedTrustsHref: string;
+  // relatedTrustsHref without the search query string. Its contracts' pages
+  // are beneath it.
+  relatedTrustsPath: string;
   // The search the product was reached from, to keep on every link
   searchQueryString: string;
   supplierHref?: string;
@@ -103,6 +110,7 @@ const getProductRoute = (
   const { breadcrumbs, searchQueryString, supplier, supplierPath } =
     supplierPage;
   const productPath = `${supplierPath}/product/${encodeURIComponent(aggregationName)}`;
+  const relatedTrustsPath = `${productPath}/related-trusts`;
 
   return {
     breadcrumbs: [
@@ -117,7 +125,8 @@ const getProductRoute = (
     getTrustHref: (organisationId) =>
       `${productPath}/trust/${String(organisationId)}${searchQueryString}`,
     productHref: `${productPath}${searchQueryString}`,
-    relatedTrustsHref: `${productPath}/related-trusts${searchQueryString}`,
+    relatedTrustsHref: `${relatedTrustsPath}${searchQueryString}`,
+    relatedTrustsPath,
     searchQueryString,
     supplierHref,
     supplierName: supplier.manOrganisationName,
@@ -615,10 +624,79 @@ const renderProductRelatedTrustsPage = async (
       contracts,
       req.query,
       route.searchQueryString,
+      route.relatedTrustsPath,
     ),
     productHref: route.productHref,
     supplierName: route.supplierName,
   });
+};
+
+// 1 of the contracts listed on the related trusts page. Any other contract
+// is a 404, so the page can't be used to look up contracts it doesn't list.
+const renderProductRelatedContractPage = async (
+  req: Request,
+  res: Response,
+  key: ProductKey,
+  route: ProductRoute,
+) => {
+  const contractRef = req.params.contractId as string;
+  const isRelated = (
+    await getProductRelatedContracts(toProductScope(key))
+  ).some((contract) => contract.contractRef === contractRef);
+  const contract = isRelated && (await getContractWithRef(contractRef));
+
+  if (!contract) {
+    res.status(404).render("not-found");
+    return;
+  }
+
+  res.render("contract", {
+    breadcrumbs: [
+      ...route.breadcrumbs,
+      { href: route.productHref, text: key.aggregationName },
+      {
+        href: route.relatedTrustsHref,
+        text: "Contracts in the same or related categories",
+      },
+    ],
+    contract: getContractDetails(contract),
+  });
+};
+
+export const renderProductRelatedContract = async (
+  req: Request,
+  res: Response,
+) => {
+  const product = await getProductFromRequest(req, res, getSearchProductRoute);
+
+  if (product) {
+    await renderProductRelatedContractPage(
+      req,
+      res,
+      product.key,
+      product.route,
+    );
+  }
+};
+
+export const renderProductRelatedContractInCategory = async (
+  req: Request,
+  res: Response,
+) => {
+  const product = await getProductFromRequest(
+    req,
+    res,
+    getCategoryProductRoute,
+  );
+
+  if (product) {
+    await renderProductRelatedContractPage(
+      req,
+      res,
+      product.key,
+      product.route,
+    );
+  }
 };
 
 export const renderProductRelatedTrusts = async (

@@ -11,7 +11,7 @@
   the contract's own Atamis category, so people can judge how close it is.
   There's no hierarchy for those, so they sort A to Z.
 
-  Contract names aren't links yet, as there are no contract pages.
+  Each contract name links to the contract's page (contract.html).
 
   params:
     table        The RelatedContractsTable
@@ -63,7 +63,7 @@
         {% set rows = [] %}
         {% for contract in contractsTable.contracts %}
             {% set rows = (rows.push([
-                { header: "Contract", text: contract.contractName },
+                { header: "Contract", text: contract.contractName, href: contract.href },
                 { header: "Trust", text: contract.trust },
                 { header: "Category", text: contract.primaryCategory },
                 { header: "Start date", text: contract.startMonth }
