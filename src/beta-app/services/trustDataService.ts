@@ -16,7 +16,7 @@ import {
 // | Page                   | Exact card                         | Related card                                   |
 // | ---------------------- | ---------------------------------- | ---------------------------------------------- |
 // | Product                | The aggregation, for its supplier  | The supplier's other aggregations with the     |
-// |                        |                                    | same or a related GMDN term                    |
+// |                        | and GMDN term                      | same or a related GMDN term                    |
 // | Supplier + device type | The supplier, for the GMDN term    | The supplier, for related GMDN terms           |
 // | Device type            | Every supplier, for the GMDN term  | Every supplier, for related GMDN terms         |
 //
@@ -32,6 +32,13 @@ import {
 //
 // Every other contract for the page's term or a related term - with the
 // page's supplier, if it has one - is a possible match, on the related card.
+
+// A product page is for an aggregation under one GMDN term, as an aggregation
+// can span several. Evidence is linked to the whole aggregation, but contracts
+// and related devices are found from the page's term alone.
+export interface ProductScope extends SupplierAggregation {
+  gmdnCode: number;
+}
 
 export interface RelatedContract {
   contractName: string;
@@ -85,22 +92,28 @@ interface ContractScope {
 }
 
 export const getProductTrustData = async (
-  aggregation: SupplierAggregation,
+  product: ProductScope,
 ): Promise<TrustDataCards> => {
-  const { contractScope, gmdnCodes, relatedGmdnCodes } =
-    await getProductScope(aggregation);
+  const { contractScope, relatedGmdnCodes } = await getProductScope(product);
 
   const [supplierAggregations, contracts] = await Promise.all([
     getAggregationsWithGmdnCodes(
-      [...gmdnCodes, ...relatedGmdnCodes],
-      aggregation.manufacturerId,
+      [product.gmdnCode, ...relatedGmdnCodes],
+      product.manufacturerId,
     ),
     getContracts(contractScope),
   ]);
 
+  const aggregation: SupplierAggregation = {
+    aggregationName: product.aggregationName,
+    manufacturerId: product.manufacturerId,
+  };
+
   const [exact, related] = await Promise.all([
     getTrustData([aggregation], contracts.exact),
     getTrustData(
+      // Evidence is for the whole aggregation, so it's all on the exact card,
+      // even where the aggregation is also under a related term
       supplierAggregations.filter(
         ({ aggregationName }) =>
           aggregationName !== aggregation.aggregationName,
@@ -114,18 +127,18 @@ export const getProductTrustData = async (
 
 // The contracts counted on the product page's exact card
 export const getProductContracts = async (
-  aggregation: SupplierAggregation,
+  product: ProductScope,
 ): Promise<Contract[]> => {
-  const { contractScope } = await getProductScope(aggregation);
+  const { contractScope } = await getProductScope(product);
 
   return (await getContracts(contractScope)).exact;
 };
 
 // The contracts counted on the product page's related card
 export const getProductRelatedContracts = async (
-  aggregation: SupplierAggregation,
+  product: ProductScope,
 ): Promise<RelatedContract[]> => {
-  const { contractScope } = await getProductScope(aggregation);
+  const { contractScope } = await getProductScope(product);
 
   return (await getContracts(contractScope)).related.map(toRelatedContract);
 };
@@ -138,18 +151,16 @@ const toRelatedContract = ({
   trust: contractingAuthority,
 });
 
-const getProductScope = async (aggregation: SupplierAggregation) => {
-  const gmdnCodes = await getGmdnCodesForAggregation(aggregation);
-  const relatedGmdnCodes = await getRelatedGmdnCodes(gmdnCodes);
+const getProductScope = async ({ gmdnCode, manufacturerId }: ProductScope) => {
+  const relatedGmdnCodes = await getRelatedGmdnCodes([gmdnCode]);
 
   return {
     contractScope: {
-      gmdnCodes,
-      manufacturerId: aggregation.manufacturerId,
+      gmdnCodes: [gmdnCode],
+      manufacturerId,
       relatedGmdnCodes,
       soleAggregation: true,
     },
-    gmdnCodes,
     relatedGmdnCodes,
   };
 };
@@ -302,24 +313,6 @@ export const getRelatedGmdnCodes = async (
   `.execute(db);
 
   return rows.map((row) => row.gmdnCode);
-};
-
-const getGmdnCodesForAggregation = async ({
-  aggregationName,
-  manufacturerId,
-}: SupplierAggregation): Promise<number[]> => {
-  const rows = await db
-    .withSchema("external")
-    .selectFrom("products as p")
-    .innerJoin("device_type as dt", "dt.deviceId", "p.deviceId")
-    .select("dt.gmdnCode")
-    .distinct()
-    .where("p.aggregationName", "=", aggregationName)
-    .where("p.manufacturerId", "=", manufacturerId)
-    .where("dt.gmdnCode", "is not", null)
-    .execute();
-
-  return rows.flatMap((row) => row.gmdnCode ?? []);
 };
 
 const getAggregationsWithGmdnCodes = async (

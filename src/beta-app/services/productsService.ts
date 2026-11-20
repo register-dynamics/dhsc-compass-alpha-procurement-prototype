@@ -6,7 +6,8 @@ import {
   TrustExperiencePerson,
 } from "../models/trustExperience.js";
 import { combineOutcomes } from "../utils/trustEvidence.js";
-import { getContractCountsByContractingAuthorityForAggregation } from "./atamisService.js";
+import { getContractCountsByContractingAuthorityForProduct } from "./atamisService.js";
+import { ProductScope } from "./trustDataService.js";
 
 export const getProductsByDeviceId = async (deviceId: number) => {
   return await db
@@ -47,26 +48,33 @@ export const getAggregationForProductId = async (
 };
 
 // Different suppliers can use the same aggregation name for unrelated
-// products, so an aggregation is identified by its name and supplier.
+// products, so an aggregation is identified by its name and supplier. An
+// aggregation can span several GMDN terms, so only its products under the
+// given one are returned.
 export const getAggregationWithName = async (
   aggregationName: string,
   manufacturerId: number,
-): Promise<null | Product[]> => {
-  const aggregation = await db
+  gmdnCode: number,
+): Promise<Product[]> => {
+  return await db
     .withSchema("external")
-    .selectFrom("products")
-    .selectAll()
-    .where("aggregationName", "=", aggregationName)
-    .where("manufacturerId", "=", manufacturerId)
+    .selectFrom("products as p")
+    .innerJoin("device_type as dt", "dt.deviceId", "p.deviceId")
+    .selectAll("p")
+    .where("p.aggregationName", "=", aggregationName)
+    .where("p.manufacturerId", "=", manufacturerId)
+    .where("dt.gmdnCode", "=", gmdnCode)
     .execute();
-  return aggregation;
 };
 
-export const getEvidenceCardsForAggregation = async (
-  aggregationName: string,
-  manufacturerId: number,
+// Evidence is linked to the whole aggregation, but contracts only count if
+// they're for the product's GMDN term
+export const getEvidenceCardsForProduct = async (
+  product: ProductScope,
   userId?: number,
 ): Promise<EvidenceCard[]> => {
+  const { aggregationName, manufacturerId } = product;
+
   // Contacts and documents are counted in separate queries so the joins
   // don't fan out against each other.
   const evidenceRows = await db
@@ -89,10 +97,7 @@ export const getEvidenceCardsForAggregation = async (
 
   // Atamis contracts are related to trusts by name, as contracting authority
   const contractCounts =
-    await getContractCountsByContractingAuthorityForAggregation(
-      aggregationName,
-      manufacturerId,
-    );
+    await getContractCountsByContractingAuthorityForProduct(product);
 
   const evidenceCards =
     evidenceRows.length > 0

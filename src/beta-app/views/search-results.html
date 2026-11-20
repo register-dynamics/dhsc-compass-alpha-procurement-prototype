@@ -110,10 +110,24 @@
                                     <span class="nhsuk-u-visually-hidden">by {{ result.manufacturerName }}</span>
                                 </a>
                             </h4>
-                            <p class="nhsuk-body-s nhsuk-u-secondary-text-color nhsuk-u-margin-bottom-0">
-                                {{ result.manufacturerName }}
-                                · {{ result.deviceCount }} {{ "device" if result.deviceCount == 1 else "devices" }}
-                            </p>
+                            <dl class="nhsuk-summary-list">
+                                <div class="nhsuk-summary-list__row">
+                                    <dt class="nhsuk-summary-list__key">
+                                    Supplier
+                                    </dt>
+                                    <dd class="nhsuk-summary-list__value">
+                                    {{ result.manufacturerName }}
+                                    </dd>
+                                </div>
+                                <div class="nhsuk-summary-list__row">
+                                    <dt class="nhsuk-summary-list__key">
+                                    Device
+                                    </dt>
+                                    <dd class="nhsuk-summary-list__value">
+                                    {{ result.aggregationName }}
+                                    </dd>
+                                </div>
+                            </dl>
                         </div>
                     </div>
                 {% endfor %}

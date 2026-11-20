@@ -24,8 +24,8 @@ export const renderSearch = async (req: Request, res: Response) => {
   res.render("search", { categories });
 };
 
-// Searches GMDN term (device type) names, and lists every supplier of each
-// matching device type as its own result
+// Searches GMDN term (device type) names and product details, and lists each
+// supplier's aggregations of each matching device type as their own results
 export const renderSearchResults = async (req: Request, res: Response) => {
   const searchTerm = typeof req.query.q === "string" ? req.query.q : "";
   // Sanitise the search term to prevent SQL injection and ensure proper full-text search behavior
@@ -148,19 +148,23 @@ export const renderSearchResults = async (req: Request, res: Response) => {
       })),
     );
 
-  // Each result is a device type from one supplier. Order by both so pages
-  // are stable.
+  // Each result is one supplier's aggregation of a device type. Order by all
+  // three so pages are stable.
   const results = await filteredSearchResultsQuery
     .select([
       "gmdnCode",
       "gmdnTermName",
       "manufacturerId",
       "manufacturerName",
-      "deviceCount",
+      "aggregationName",
+      "brandTradeNames",
+      "models",
+      "productCount",
     ])
     .orderBy("gmdnTermName")
     .orderBy("manufacturerName")
     .orderBy("manufacturerId")
+    .orderBy("aggregationName")
     .limit(pageSize)
     .offset(pageSize * currentPage)
     .execute();
