@@ -206,13 +206,24 @@ jobs:
           azure_client_id: ${{ vars.AZURE_CLIENT_ID }}
           azure_tenant_id: ${{ vars.AZURE_TENANT_ID }}
           azure_subscription_id: ${{ vars.AZURE_RTL_SUBSCRIPTION_ID }}
+      - name: Add/update private DNS
+        shell: bash
+        run: |
+          read -r DOMAIN IP <<<"$(az containerapp env show -n "${MANAGED_ENVIRONMENT_ID}" -g "${{ vars.AZURE_RESOURCE_GROUP }}" --subscription "${{ vars.AZURE_RTL_SUBSCRIPTION_ID }}" --query "[properties.defaultDomain,properties.staticIp]" -o tsv | paste -s)"
+          az network private-dns record-set a add-record \
+            -g "${{ vars.AZURE_RESOURCE_GROUP }}" \
+            --subscription "${{ vars.AZURE_RTL_SUBSCRIPTION_ID }}" \
+            -z "$DOMAIN" \
+            -n "app-${APP_NAME}" \
+            -a "$IP" \
+            --output none
+          echo "APP_URL=https://app-${APP_NAME}.${DOMAIN}" >> "$GITHUB_ENV"
       - name: Add deployment summary
         shell: bash
         run: |
-          fqdn="$(az containerapp show --name "app-${APP_NAME}" --resource-group "${{ vars.AZURE_RESOURCE_GROUP }}" --subscription "${{ vars.AZURE_RTL_SUBSCRIPTION_ID }}" --query "properties.configuration.ingress.fqdn" -o tsv)"
           {
             echo "### ${APP_NAME} deployment"
             echo
             echo "- image: ${FULL_IMAGE}"
-            echo "- url: https://${fqdn}"
+            echo "- url: ${APP_URL}"
           } >> "$GITHUB_STEP_SUMMARY"
