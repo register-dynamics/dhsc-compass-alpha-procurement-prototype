@@ -11,6 +11,7 @@ permissions:
   artifact-metadata: write
 jobs:
   deploy:
+    if: ${{ github.repository == 'dhsc-govuk-infrastructure/compass-app' }}
     runs-on: cmps-selfhosted-runner
     environment: dev
     steps:
