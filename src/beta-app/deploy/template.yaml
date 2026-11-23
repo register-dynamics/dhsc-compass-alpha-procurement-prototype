@@ -35,16 +35,16 @@ properties:
       - name: #@ data.values.app_name
         image: #@ data.values.image
         env:
-         - name: DATABASE_NAME
-           value: #@ data.values.database_name
-         - name: DATABASE_HOST
-           value: #@ data.values.database_host
-         - name: DATABASE_USER
-           value: #@ data.values.database_user
-         - name: DATABASE_PASSWORD
-           value: #@ data.values.database_password
-         - name: PGSSLMODE
-           value: require
+          - name: DATABASE_NAME
+            value: #@ data.values.database_name
+          - name: DATABASE_HOST
+            value: #@ data.values.database_host
+          - name: DATABASE_USER
+            value: #@ data.values.database_user
+          - name: DATABASE_PASSWORD
+            value: #@ data.values.database_password
+          - name: PGSSLMODE
+            value: require
         resources:
           cpu: 0.5
           memory: "1Gi"
