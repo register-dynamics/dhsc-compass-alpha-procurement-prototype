@@ -58,14 +58,36 @@ describe("Search controller", () => {
     }
   });
 
-  it("GET /search-results matches device type names, not product or supplier names", async () => {
-    // Saccharine & Sons and GlucoSense are a supplier and product, not device types
-    for (const q of ["Saccharine", "GlucoSense"]) {
+  it("GET /search-results doesn't match supplier names", async () => {
+    // Saccharine & Sons is a supplier, and no device type or product
+    const response = await request(app)
+      .get("/search-results?q=Saccharine")
+      .set("Cookie", cookies);
+
+    expect(response.text).toContain("of <strong>0</strong> results");
+  });
+
+  it("GET /search-results matches aggregation names, brand/trade names and models", async () => {
+    // Lepton Series is the aggregation and brand/trade name, so it matches
+    // every device type it covers. L-Box and Lepton PFT are models, so they
+    // only match the device type they're under.
+    for (const [q, gmdnCodes] of [
+      ["Lepton", ["13680", "35242", "35282"]],
+      ["L-Box", ["35242"]],
+      ["PFT", ["35282"]],
+    ] as const) {
       const response = await request(app)
-        .get(`/search-results?q=${q}`)
+        .get(`/search-results?q=${encodeURIComponent(q)}`)
         .set("Cookie", cookies);
 
-      expect(response.text).toContain("of <strong>0</strong> results");
+      expect(response.text).toContain(
+        `of <strong>${String(gmdnCodes.length)}</strong> results`,
+      );
+      for (const gmdnCode of gmdnCodes) {
+        expect(response.text).toContain(
+          `href="/device-type/${gmdnCode}/supplier/30512?`,
+        );
+      }
     }
   });
 
@@ -82,14 +104,30 @@ describe("Search controller", () => {
     expect(response.text).not.toContain("No category");
   });
 
+  it("GET /search-results lists each of a supplier's aggregations of a device type as its own result", async () => {
+    // Bywater Respiratory's Lepton Series spans three device types, and only
+    // the spirometer matches. Its two spirometer registrations share a result.
+    const response = await request(app)
+      .get("/search-results?q=spirometer")
+      .set("Cookie", cookies);
+
+    expect(response.text).toContain("of <strong>1</strong> results");
+    expect(response.text).toContain(
+      'href="/device-type/13680/supplier/30512?q=spirometer"',
+    );
+    expect(response.text).toContain("Bywater Respiratory Ltd");
+    expect(response.text).toContain("Lepton Series");
+  });
+
   it("GET /search-results filters by GMDN category and keeps the filter on result links", async () => {
     // Heart rate monitor and Blood glucose/blood pressure monitoring system
-    // both match "monitor", but only Heart rate monitor is in Electrodes/Leads
+    // both match "monitor", but only Heart rate monitor is in Electrodes/Leads.
+    // Aorta Solutions has 3 aggregations of it, so it's 3 results.
     const response = await request(app)
       .get("/search-results?q=monitor&[category]=CT141")
       .set("Cookie", cookies);
 
-    expect(response.text).toContain("of <strong>1</strong> results");
+    expect(response.text).toContain("of <strong>3</strong> results");
     expect(response.text).toContain(
       'href="/device-type/35198/supplier/13455?q=monitor&amp;[category]=CT141"',
     );
@@ -101,7 +139,9 @@ describe("Search controller", () => {
       .get("/search-results?q=monitor&[category]=CT141&[category]=CT1010")
       .set("Cookie", cookies);
 
-    expect(response.text).toContain("of <strong>4</strong> results");
+    // 3 Heart rate monitor aggregations from Aorta Solutions, and 1 Blood
+    // glucose/blood pressure monitoring system aggregation from each of 3 suppliers
+    expect(response.text).toContain("of <strong>6</strong> results");
   });
 
   it("GET /search-results with only No category selected excludes device types in a category", async () => {

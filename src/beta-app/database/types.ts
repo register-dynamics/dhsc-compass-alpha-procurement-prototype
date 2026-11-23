@@ -175,7 +175,13 @@ export interface DeviceTypeSearchTable {
   gmdnTermName: string;
   manufacturerId: number;
   manufacturerName: string;
-  deviceCount: number;
+  aggregationName: string;
+  aggregationType: null | string;
+  productCount: number;
+  deviceIds: number[];
+  brandTradeNames: string[];
+  models: string[];
+  productCodes: string[];
   searchDoc: string;
 }
 
@@ -280,6 +286,7 @@ export interface AtamisContractTable {
   contractName: string;
   description: string;
   owner: string;
+  procurementDeliveryLead: string;
   status: string;
   supplier: string;
   companyRegestrationNumber: null | string;

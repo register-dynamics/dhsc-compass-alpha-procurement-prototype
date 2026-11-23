@@ -34,7 +34,7 @@ test("user can search and access product details", async ({ page }) => {
   await page.getByRole("link", { exact: true, name: "GlucoSense" }).click();
 
   await expect(page).toHaveURL(
-    /\/supplier\/55623\/product\/GlucoSense\?q=glucose$/,
+    /\/device-type\/63088\/supplier\/55623\/product\/GlucoSense\?q=glucose$/,
   );
 
   const heading = page.getByRole("heading", { level: 1 });
@@ -52,11 +52,11 @@ test("user can search and access product details", async ({ page }) => {
   const viewTrustsLinks = page.getByRole("link", { name: "View trusts" });
   await expect(viewTrustsLinks.first()).toHaveAttribute(
     "href",
-    "/supplier/55623/product/GlucoSense/trusts?q=glucose",
+    "/device-type/63088/supplier/55623/product/GlucoSense/trusts?q=glucose",
   );
   await expect(viewTrustsLinks.last()).toHaveAttribute(
     "href",
-    "/supplier/55623/product/GlucoSense/related-trusts?q=glucose",
+    "/device-type/63088/supplier/55623/product/GlucoSense/related-trusts?q=glucose",
   );
 
   // TODO: Check more content here once it's not hardcoded

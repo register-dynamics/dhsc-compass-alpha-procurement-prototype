@@ -25,7 +25,10 @@ INSERT INTO "external"."gmdn"("gmdn_code","gmdn_term_name") VALUES (63088,'Blood
   (14451,'Hydrotherapy tank/bath'),
   (14035,'Continuous electronic patient thermometer'),
   (38502,'Insulin syringe/needle'),
-  (36387,'Ophthalmic refractometer');
+  (36387,'Ophthalmic refractometer'),
+  (13680,'Diagnostic spirometer, professional'),
+  (35242,'Whole-body plethysmograph'),
+  (35282,'Pulmonary function analysis system, adult');
 
 INSERT INTO "external"."gmdn_category" ("node_id","category_code","path","name","definition","parent_id","top_id") VALUES (4,NULL,'/4/','Anatomical Specialty','Devices grouped by the area of the body they target, including cardiovascular and ear, nose and throat devices',NULL,4),
  (937,'CT1006','/4/937/','Orthopaedic devices','Devices fully or substantially dedicated to the evaluation, diagnosis, and/or treatment/management of diseases and disorders of the skeletal system.',4,4),
@@ -103,7 +106,13 @@ INSERT INTO "external"."gmdn_category" ("node_id","category_code","path","name",
  (9553, 'CT1112','/3/9536/9537/9546/9553/','Total hip prosthesis','Device assemblies designed as implantable artificial substitutes to replace an injured or diseased hip joint in total (femoral and acetabular components).',9546,3),
  (1070, 'CT1112','/4/937/29/1481/741/1070/','Total hip prosthesis','Device assemblies designed as implantable artificial substitutes to replace an injured or diseased hip joint in total (femoral and acetabular components).',741,4),
  (9546,'CT837','/3/9536/9537/9546/','Implantable hip prostheses','Devices designed as implantable artificial substitutes to replace an injured or diseased hip joint, or a dysfunctional hip joint prosthesis, in part or total.',937,3),
- (741,'CT837','/4/937/29/1481/741/','Implantable hip prostheses','Devices designed as implantable artificial substitutes to replace an injured or diseased hip joint, or a dysfunctional hip joint prosthesis, in part or total.',1481,4);
+ (741,'CT837','/4/937/29/1481/741/','Implantable hip prostheses','Devices designed as implantable artificial substitutes to replace an injured or diseased hip joint, or a dysfunctional hip joint prosthesis, in part or total.',1481,4),
+ (6490,'CT2722','/4/6490/','Pulmonary devices','Devices fully or substantially dedicated to the diagnosis, monitoring, or treatment of medical conditions of the airways and pulmonary structures/organs of the chest cavity (e.g., lungs, pleura), including devices intended for ventilation and inhalation protection.',4,4),
+ (7241,'CT551','/4/6490/7241/','Pulmonary function test instruments/systems and associated devices','Devices designed to evaluate pulmonary function parameters [e.g., lung volume, compliance, diffusion rate, vital capacity, tidal/residual volume, maximum oxygen (O2) saturation, respiratory quotient (RQ)] during rest and/or exercise; and associated devices.',6490,4),
+ (7242,'CT1636','/4/6490/7241/7242/','Pulmonary function analysers/analysis systems','Instruments/device assemblies designed to measure, and often record and display, parameters of pulmonary function including diagnostic spirometry, lung volumes/diffusion capacity, airway resistance, and/or bronchial challenge testing.',7241,4),
+ (7243,'CT1622','/4/6490/7241/7243/','Spirometers','Devices designed to measure the volume/rate of air that can be inspired and expired by the lungs typically as part of pulmonary function testing, or to be used for therapeutic deep breathing.',7241,4),
+ (10028,'CT1889','/4941/6710/10028/','Plethysmographs','Devices designed to measure and record changes in volume of a body part or whole body, as a function of blood circulation, for diagnostic purposes.',6710,4941),
+ (10029,'CT1636','/4941/6710/10029/','Pulmonary function analysers/analysis systems','Instruments/device assemblies designed to measure, and often record and display, parameters of pulmonary function including diagnostic spirometry, lung volumes/diffusion capacity, airway resistance, and/or bronchial challenge testing.',6710,4941);
  
 INSERT INTO "external"."gmdn_category_term" ("category_code","term_code") VALUES ('CT125',33665),
  ('CT129',63088),
@@ -170,7 +179,20 @@ INSERT INTO "external"."gmdn_category_term" ("category_code","term_code") VALUES
  ('CT2940',36387),
  ('CT3045',38502),
  ('CT1112',33182),
- ('CT837',33182);
+ ('CT837',33182),
+ ('CT551',13680),
+ ('CT551',35242),
+ ('CT551',35282),
+ ('CT1622',13680),
+ ('CT1636',13680),
+ ('CT1636',35282),
+ ('CT1889',35242),
+ ('CT2722',13680),
+ ('CT2722',35242),
+ ('CT2722',35282),
+ ('CT2726',13680),
+ ('CT2726',35242),
+ ('CT2726',35282);
  
 INSERT INTO "external"."manufacturers" ("manufacturer_id","man_organisation_name","man_organisation_type","man_country","company_regestration_number") VALUES
  (13455,'Aorta Solutions','Limited Company','Scotland, United Kingdom','01360551'),
@@ -184,7 +206,8 @@ INSERT INTO "external"."manufacturers" ("manufacturer_id","man_organisation_name
  (73156,'Aquatech Ltd','Limited Company','Wales, United Kingdom','42040210'),
  (78546,'Seinar Systems Ltd','Limited Company','Austria',''),
  (91326,'Praxis & Co','Limited Company','England, United Kingdom','13120722'),
- (95632,'ArcTech Ltd','Limited Company','England, United Kingdom','');
+ (95632,'ArcTech Ltd','Limited Company','England, United Kingdom',''),
+ (30512,'Bywater Respiratory Ltd','Limited Company','England, United Kingdom','09876543');
 
 
 INSERT INTO "external"."device_type" ("device_id","gmdn_code","device_risk_sub_type","device_type_code","device_type_name","manufacturer_id") VALUES (1258,14451,'NULL','AID','Active Implantable Device',44622),
@@ -201,7 +224,11 @@ INSERT INTO "external"."device_type" ("device_id","gmdn_code","device_risk_sub_t
  (6523,35198,'Class IIa','GMD','General Medical Device',13455),
  (6542,35198,'Class IIa','GMD','General Medical Device',13455),
  (7895,36387,'Class I','GMD','General Medical Device',78546),
- (8801,63088,'Class IIa','GMD','General Medical Device',13455);
+ (8801,63088,'Class IIa','GMD','General Medical Device',13455),
+ (2301,13680,'Class IIa','GMD','General Medical Device',30512),
+ (2302,35242,'Class IIa','GMD','General Medical Device',30512),
+ (2303,35282,'Class IIa','GMD','General Medical Device',30512),
+ (2304,13680,'Class I','GMD','General Medical Device',30512);
 
 INSERT INTO "external"."products" ("product_id","udi_number","device_id","is_model","brand_trade_name","model","product_code","manufacturer_id","aggregation_name","aggregation_type") VALUES (12467896,1324657985,4624,0,'HydroHeal Plus','HydroHeal Plus','751649',73156,'HydroHeal Plus','model'),
  (14236541,4563217896,1596,0,'GlucoSense Flex Reader','GlucoSense','CENK93434',55623,'GlucoSense','model'),
@@ -240,31 +267,37 @@ INSERT INTO "external"."products" ("product_id","udi_number","device_id","is_mod
  (84123596,1523455265,4523,0,'Heart Rate Monitor','Heart Rate Monitor','2124-23-66',13455,'Heart Rate Monitor','model'),
  (94621578,2184663215,6324,0,'Insulin Safety Syringe with Fixed Needle','Insulin Kit','7824526',33625,'Insulin Kit','model'),
  (96541235,4561231522,1258,0,'BetaPlex 4000 Static','BetaPlex 4000','RE-190',44622,'BetaPlex 4000','model'),
- (97123458,1523455266,8801,0,'Aorta Blood Pressure Monitor','Aorta BP Monitor','AB-1200',13455,'Aorta BP Monitor','model');
+ (97123458,1523455266,8801,0,'Aorta Blood Pressure Monitor','Aorta BP Monitor','AB-1200',13455,'Aorta BP Monitor','model'),
+ (31570001,8051234001,2301,1,'Lepton Series','Lepton Spiro','LP0901-01',30512,'Lepton Series','brand_trade_name'),
+ (31570002,8051234002,2302,1,'Lepton Series','L-Box','LP0902-01',30512,'Lepton Series','brand_trade_name'),
+ (31570003,8051234003,2303,1,'Lepton Series','Lepton PFT','LP0903-02',30512,'Lepton Series','brand_trade_name'),
+ (31570004,8051234004,2304,1,'Lepton Series','Lepton Spiro Mini','LP0904-01',30512,'Lepton Series','brand_trade_name');
  
-INSERT INTO "external"."atamis_contracts" ("contract_ref","contract_name","description","owner","status","supplier","company_regestration_number","duns","contracting_authority","business_unit","primary_category","secondary_category","start_date","end_date","contract_finder_url") VALUES ('FAKE0001','FHFT - C- Orthopaedics - Paragon42 Orthopaedic and Trauma Consignments (foot & a','FHFT - C- Orthopaedics - Paragon42 Orthopaedic and Trauma Consignments (foot & ankle)','William Hill','Active - Renewal in Progress','NHS SUPPLY CHAIN COORDINATION LIMITED (NHSSC - SCCL)','10881732','22334455','Frogmorton Health NHS Foundation Trust','FHFT - Procurement','Clinical and Medical Support Services',NULL,'2024-01-16','2025-01-15','www.fake_cf_url.gov.uk'),
- ('FAKE0002','OthoSolutions - Orthopaedic Internal & External Fixation','Orthopaedic Internal & External Fixation - Screw - Plate Fixation, Compression Screws, Cannulated Screws, Foot & Ankle Plates, Staples, IM Nailing Systems, External Fixation Systems, Miscellaneous / Consumables, DHS','William Ford','Active','Otho Solutions Limited','434123','22334466','Great Farthing Hospitals NHS Foundation Trust','GFH - Surgery & Planned Care','Medical equipments pharmaceuticals and personal care products',NULL,'2023-08-30','2027-08-28',NULL),
- ('FAKE0003','PHU - UNIT - Trauma & Orthopedics (1.3c Hip)','UNIT Lot 1.3c Hip - TOS3','Carol Ann Hartnell','Active','Upper Norfolk Implant Technologies UK Limited','14275623','22334477','Waymeet Hospitals University National Health Service Trust','WHU404 - Surgery, Anaesthetics and Critical Care DIV','Medical equipments pharmaceuticals and personal care products',NULL,'2025-09-01','2028-01-31',NULL),
- ('FAKE0004','TOS3 UNIT Hip Trauma','4 year commitment contract with Medartis via TOS3 framework','Jacqueline Russell','Active','Upper Norfolk Implant Technologies Ltd',NULL,'22334488','Southern Service Ltd','SSL - Orthopaedics','Orthopaedic implants','Medical & Surgical Consumables','2024-05-01','2028-04-30',NULL),
- ('FAKE0005','Internal & External fixation - UNIT','Internal & External Fixation - UNIT Hips','Derek Newark','Active','Upper Norfolk Implant Technologies International','14275623','22334499','University Hospitals of Longcleeve NHS Trust','UHL ITAPS CMG','Orthopaedic prostheses','Medical & Surgical Consumables','2026-03-30','2030-03-29','www.fake_cf_url.gov.uk'),
- ('FAKE0006','T&O - Aorta Implants (Consignment)','Communications and documents attached.','Alethea Charlton','Active','Aorta Solutions Ltd','1360551','22334510','Whitwell Acute Hospitals NHS Trust','Whitwell NHS Trust - Surgery DMT','Cardiovascular Implants',NULL,'2023-10-16','2028-01-31',NULL),
- ('FAKE0007','FH - C - Insulin Pumps and Monitoring Systems','FH - C - Insulin Pumps and Monitoring Systems','Eileen Way','Active','ArcTech (UK) Limited','28638932','22334521','Barts Health NHS Trust','FHFT - Procurement','Clinical and Medical Support Services',NULL,'2023-07-01','2028-06-30',NULL),
- ('FAKE0008','FH/WH - C - Blood Pressure Consignment Stock Agreement','FPH/WXH - C - BiPAP / NIV Consigment Stock Agreement','Eileen Way','Active - Renewal in Progress','Ferrus Technology Solutions',NULL,NULL,'Frogmorton Health NHS Foundation Trust','FHFT - Procurement','Clinical and Medical Support Services',NULL,'2019-11-25','2025-09-30',NULL),
- ('FAKE0009','BTH25-286 [573] Maintenance of 3 No. TCM5 FLEX','Maintenance of 3 x TCM5 FLEX Framework: PO: 34525309 500R1297N027 - Childrens Non-invasive Ventilation 500R1214N003 - Sleep Centre 500R1217N003 - Respiratory Department','Jeremy Young','Active','Ferrus Technology Solutions','23157015','22334543','Baranduin Teaching Hospitals NHS Foundation Trust','BTHFT - 13 - Specialist Medicine','Medical Equipment Installation Repair and Maintenance',NULL,'2025-11-17','2026-11-16','www.fake_cf_url.gov.uk'),
- ('FAKE0010','Maintenance; Servo I ventilators (x13)','FYY Medical & Surgical Equipment Maintenance; Ventilators and continuous positive airway pressure (cpap) devices','Howard Lang','Active','NHS SUPPLY CHAIN COORDINATION LIMITED (NHSSC - SCCL)','10881715','22334554','University Hospitals of Longcleeve NHS Trust','UHL W&C CMG','Medical Equipment Installation Repair and Maintenance','Medical Equipment','2024-05-01','2027-04-30',NULL),
- ('FAKE0011','Provision of Sleep Study (Diagnostics) for the Sleep Apnoea Service','To coordinate equipment delivery and return (for the sleep study), providing patient support throughout the study, analysing study results, conducting remote compliance monitoring, and supplying comprehensive reporting.','Peter Hawkins','Active','Preston Electronics UK Limited','4234434','22334565','United Lamplighter Teaching Hospitals NHS Trust','ULTH - Alliance Care Group','Medical Consumables','Medical Consumables','2026-01-01','2028-03-31',NULL),
- ('FAKE0012','Opthalmic refractometers consignment stock agreement','Opthalmic refractometers consignment stock agreement','David Graham','Active','Sienar Systems UK Ltd',NULL,NULL,'Waymeet Hospitals University National Health Service Trust','WHU408 - Eyecare','Phaco emulsification',NULL,'2026-03-01','2028-03-31',NULL),
- ('FAKE0013','Maintenance Opthalmic Equipment','Maintenance Opthalmic Equipment','Robert Jewell','Active - Renewal in Progress','Sienar Systems Ltd',NULL,NULL,'Great Farthing Hospitals NHS Foundation Trust','GFH - Eye Department','Medical Equipment Installation Repair and Maintenance',NULL,'2023-09-30','2026-10-01',NULL),
- ('FAKE0014','Lot 1 Combined Needles and Syringes','Contract for the supply of combined needles and syringes','Virginia Wetherell','Active','Cholmondeley  Technologies Ltd','SC13280','22334598','Whitwell Acute Hospitals NHS Trust','Whitwell NHS Trust - Surgery DMT','Medical Consumables',NULL,'2024-10-16','2029-01-31',NULL),
- ('FAKE0015','Lot 2 Combined Needles and Syringes','Contract for the supply of combined needles and syringes','Alan Wheatley','Active','Needles & Syringe Unlimited UK Ltd','317383',NULL,'Baranduin Teaching Hospitals NHS Foundation Trust','BTHFT - 13 - Specialist Medicine','Medical Consumables',NULL,'2026-03-30','2028-01-31',NULL),
- ('FAKE0016','DGFT - Thermometry - Thermometers and Probe Covers','DGFT - Thermometry - Thermometers and Probe Covers','Alethea Charlton','Active - Renewal in Progress','OmegaAM Solutions','3364789','22334918','Whitwell Acute Hospitals NHS Trust','WAH - Procurement','Tympanic Thermometer Consumables','Thermometers - Patient','2025-11-28','2027-05-29','www.fake_cf_url.gov.uk'),
- ('FAKE0017','Omega Thermometers - RJAH','FOC thermometers using commitment spend of probe covers WHU040','Carol Ann Hartnell','Active','OmegaAM Solutions','3364789','22335078','Waymeet Hospitals University National Health Service Trust','WHU - Procurement','Tympanic Thermometer Consumables','Thermometers - Patient','2024-06-01','2027-05-31',NULL),
- ('FAKE0018','Thermometers & Probe Covers','Supply of Thermometers & Probe Covers.','Howard Lang','Active','Helion Technologies International',NULL,NULL,'University Hospitals of Longcleeve NHS Trust','UHL GBC CBC','Tympanic Thermometer Consumables','Thermometers - Patient','2026-03-30','2030-03-29',NULL),
- ('FAKE0019','Blood Pressure Monitoring Equipment','Supply of blood pressure monitors and cuffs.','Imogen Bracegirdle','Active','Aorta Solutions Ltd','1360551',NULL,'Baranduin Teaching Hospitals NHS Foundation Trust','BTH Cardiology','Patient Monitoring Equipment',NULL,'2025-04-01','2028-03-31',NULL),
- ('FAKE0020','Cardiac Monitoring Consumables','Heart rate monitors and associated consumables.','Hamfast Gamgee','Active','Ferrus Technology Solutions',NULL,NULL,'United Lamplighter Teaching Hospitals NHS Trust','ULTH Medical Equipment','Patient Monitoring Equipment',NULL,'2024-09-01','2027-08-31',NULL),
- ('FAKE0021','Insulin Syringes and Needles','Supply of insulin syringes with fixed needles.','Rosie Cotton','Active','ArcTech (UK) Limited','28638932',NULL,'Great Farthing Hospitals NHS Foundation Trust','GFH Diabetes Service','Medical & Surgical Consumables',NULL,'2025-11-01','2027-10-31',NULL),
- ('FAKE0022','WAH - Cardiology - Ambulatory Blood Pressure Monitors','Ambulatory blood pressure monitors and cuffs for outpatient clinics.','Alethea Charlton','Active','Aorta Solutions Ltd','1360551',NULL,'Whitwell Acute Hospitals NHS Trust','Whitwell NHS Trust - Cardiology','Cardiology Equipment',NULL,'2026-02-02','2029-02-01',NULL),
- ('FAKE0023','Vital Signs Monitoring - Aorta','Vital signs monitors including blood pressure.','Carol Ann Hartnell','Active - Renewal in Progress','Aorta Solutions UK Ltd',NULL,NULL,'Waymeet Hospitals University National Health Service Trust','WHU - Procurement','Patient Monitoring Equipment','Medical & Surgical Consumables','2023-06-12','2026-06-11',NULL);
+INSERT INTO "external"."atamis_contracts" ("contract_ref","contract_name","description","owner","status","supplier","company_regestration_number","duns","contracting_authority","business_unit","primary_category","secondary_category","start_date","end_date","contract_finder_url","procurement_delivery_lead") VALUES ('FAKE0001','FHFT - C- Orthopaedics - Paragon42 Orthopaedic and Trauma Consignments (foot & a','FHFT - C- Orthopaedics - Paragon42 Orthopaedic and Trauma Consignments (foot & ankle)','William Hill','Active - Renewal in Progress','NHS SUPPLY CHAIN COORDINATION LIMITED (NHSSC - SCCL)','10881732','22334455','Frogmorton Health NHS Foundation Trust','FHFT - Procurement','Clinical and Medical Support Services',NULL,'2024-01-16','2025-01-15','www.fake_cf_url.gov.uk','Gallagher Fazzioli'),
+ ('FAKE0002','OthoSolutions - Orthopaedic Internal & External Fixation','Orthopaedic Internal & External Fixation - Screw - Plate Fixation, Compression Screws, Cannulated Screws, Foot & Ankle Plates, Staples, IM Nailing Systems, External Fixation Systems, Miscellaneous / Consumables, DHS','William Ford','Active','Otho Solutions Limited','434123','22334466','Great Farthing Hospitals NHS Foundation Trust','GFH - Surgery & Planned Care','Medical equipments pharmaceuticals and personal care products',NULL,'2023-08-30','2027-08-28',NULL,'Elvis Huggill'),
+ ('FAKE0003','PHU - UNIT - Trauma & Orthopedics (1.3c Hip)','UNIT Lot 1.3c Hip - TOS3','Carol Ann Hartnell','Active','Upper Norfolk Implant Technologies UK Limited','14275623','22334477','Waymeet Hospitals University National Health Service Trust','WHU404 - Surgery, Anaesthetics and Critical Care DIV','Medical equipments pharmaceuticals and personal care products',NULL,'2025-09-01','2028-01-31',NULL,'Lief Saur'),
+ ('FAKE0004','TOS3 UNIT Hip Trauma','4 year commitment contract with Medartis via TOS3 framework','Jacqueline Russell','Active','Upper Norfolk Implant Technologies Ltd',NULL,'22334488','Southern Service Ltd','SSL - Orthopaedics','Orthopaedic implants','Medical & Surgical Consumables','2024-05-01','2028-04-30',NULL,'Zerk Luety'),
+ ('FAKE0005','Internal & External fixation - UNIT','Internal & External Fixation - UNIT Hips','Derek Newark','Active','Upper Norfolk Implant Technologies International','14275623','22334499','University Hospitals of Longcleeve NHS Trust','UHL ITAPS CMG','Orthopaedic prostheses','Medical & Surgical Consumables','2026-03-30','2030-03-29','www.fake_cf_url.gov.uk','Rycca Still'),
+ ('FAKE0006','T&O - Aorta Implants (Consignment)','Communications and documents attached.','Alethea Charlton','Active','Aorta Solutions Ltd','1360551','22334510','Whitwell Acute Hospitals NHS Trust','Whitwell NHS Trust - Surgery DMT','Cardiovascular Implants',NULL,'2023-10-16','2028-01-31',NULL,'Bev Job'),
+ ('FAKE0007','FH - C - Insulin Pumps and Monitoring Systems','FH - C - Insulin Pumps and Monitoring Systems','Eileen Way','Active','ArcTech (UK) Limited','28638932','22334521','Barts Health NHS Trust','FHFT - Procurement','Clinical and Medical Support Services',NULL,'2023-07-01','2028-06-30',NULL,'Mimi Milmoe'),
+ ('FAKE0008','FH/WH - C - Blood Pressure Consignment Stock Agreement','FPH/WXH - C - BiPAP / NIV Consigment Stock Agreement','Eileen Way','Active - Renewal in Progress','Ferrus Technology Solutions',NULL,NULL,'Frogmorton Health NHS Foundation Trust','FHFT - Procurement','Clinical and Medical Support Services',NULL,'2019-11-25','2025-09-30',NULL,'Carol MacNeilley'),
+ ('FAKE0009','BTH25-286 [573] Maintenance of 3 No. TCM5 FLEX','Maintenance of 3 x TCM5 FLEX Framework: PO: 34525309 500R1297N027 - Childrens Non-invasive Ventilation 500R1214N003 - Sleep Centre 500R1217N003 - Respiratory Department','Jeremy Young','Active','Ferrus Technology Solutions','23157015','22334543','Baranduin Teaching Hospitals NHS Foundation Trust','BTHFT - 13 - Specialist Medicine','Medical Equipment Installation Repair and Maintenance',NULL,'2025-11-17','2026-11-16','www.fake_cf_url.gov.uk','Doria Reaveley'),
+ ('FAKE0010','Maintenance; Servo I ventilators (x13)','FYY Medical & Surgical Equipment Maintenance; Ventilators and continuous positive airway pressure (cpap) devices','Howard Lang','Active','NHS SUPPLY CHAIN COORDINATION LIMITED (NHSSC - SCCL)','10881715','22334554','University Hospitals of Longcleeve NHS Trust','UHL W&C CMG','Medical Equipment Installation Repair and Maintenance','Medical Equipment','2024-05-01','2027-04-30',NULL,'Charleen Sidebotton'),
+ ('FAKE0011','Provision of Sleep Study (Diagnostics) for the Sleep Apnoea Service','To coordinate equipment delivery and return (for the sleep study), providing patient support throughout the study, analysing study results, conducting remote compliance monitoring, and supplying comprehensive reporting.','Peter Hawkins','Active','Preston Electronics UK Limited','4234434','22334565','United Lamplighter Teaching Hospitals NHS Trust','ULTH - Alliance Care Group','Medical Consumables','Medical Consumables','2026-01-01','2028-03-31',NULL,'Wyn Van Rembrandt'),
+ ('FAKE0012','Opthalmic refractometers consignment stock agreement','Opthalmic refractometers consignment stock agreement','David Graham','Active','Sienar Systems UK Ltd',NULL,NULL,'Waymeet Hospitals University National Health Service Trust','WHU408 - Eyecare','Phaco emulsification',NULL,'2026-03-01','2028-03-31',NULL,'Jorge Holdforth'),
+ ('FAKE0013','Maintenance Opthalmic Equipment','Maintenance Opthalmic Equipment','Robert Jewell','Active - Renewal in Progress','Sienar Systems Ltd',NULL,NULL,'Great Farthing Hospitals NHS Foundation Trust','GFH - Eye Department','Medical Equipment Installation Repair and Maintenance',NULL,'2023-09-30','2026-10-01',NULL,'Averil Grooby'),
+ ('FAKE0014','Lot 1 Combined Needles and Syringes','Contract for the supply of combined needles and syringes','Virginia Wetherell','Active','Cholmondeley  Technologies Ltd','SC13280','22334598','Whitwell Acute Hospitals NHS Trust','Whitwell NHS Trust - Surgery DMT','Medical Consumables',NULL,'2024-10-16','2029-01-31',NULL,'Celina Loakes'),
+ ('FAKE0015','Lot 2 Combined Needles and Syringes','Contract for the supply of combined needles and syringes','Alan Wheatley','Active','Needles & Syringe Unlimited UK Ltd','317383',NULL,'Baranduin Teaching Hospitals NHS Foundation Trust','BTHFT - 13 - Specialist Medicine','Medical Consumables',NULL,'2026-03-30','2028-01-31',NULL,'Marylynne Murthwaite'),
+ ('FAKE0016','DGFT - Thermometry - Thermometers and Probe Covers','DGFT - Thermometry - Thermometers and Probe Covers','Alethea Charlton','Active - Renewal in Progress','OmegaAM Solutions','3364789','22334918','Whitwell Acute Hospitals NHS Trust','WAH - Procurement','Tympanic Thermometer Consumables','Thermometers - Patient','2025-11-28','2027-05-29','www.fake_cf_url.gov.uk','Alix Silcox'),
+ ('FAKE0017','Omega Thermometers - RJAH','FOC thermometers using commitment spend of probe covers WHU040','Carol Ann Hartnell','Active','OmegaAM Solutions','3364789','22335078','Waymeet Hospitals University National Health Service Trust','WHU - Procurement','Tympanic Thermometer Consumables','Thermometers - Patient','2024-06-01','2027-05-31',NULL,'Tomaso Seligson'),
+ ('FAKE0018','Thermometers & Probe Covers','Supply of Thermometers & Probe Covers.','Howard Lang','Active','Helion Technologies International',NULL,NULL,'University Hospitals of Longcleeve NHS Trust','UHL GBC CBC','Tympanic Thermometer Consumables','Thermometers - Patient','2026-03-30','2030-03-29',NULL,'Alfy Ballefant'),
+ ('FAKE0019','Blood Pressure Monitoring Equipment','Supply of blood pressure monitors and cuffs.','Imogen Bracegirdle','Active','Aorta Solutions Ltd','1360551',NULL,'Baranduin Teaching Hospitals NHS Foundation Trust','BTH Cardiology','Patient Monitoring Equipment',NULL,'2025-04-01','2028-03-31',NULL,'Fancy Belshaw'),
+ ('FAKE0020','Cardiac Monitoring Consumables','Heart rate monitors and associated consumables.','Hamfast Gamgee','Active','Ferrus Technology Solutions',NULL,NULL,'United Lamplighter Teaching Hospitals NHS Trust','ULTH Medical Equipment','Patient Monitoring Equipment',NULL,'2024-09-01','2027-08-31',NULL,'Jillane Eydel'),
+ ('FAKE0021','Insulin Syringes and Needles','Supply of insulin syringes with fixed needles.','Rosie Cotton','Active','ArcTech (UK) Limited','28638932',NULL,'Great Farthing Hospitals NHS Foundation Trust','GFH Diabetes Service','Medical & Surgical Consumables',NULL,'2025-11-01','2027-10-31',NULL,'Lisabeth Starford'),
+ ('FAKE0022','WAH - Cardiology - Ambulatory Blood Pressure Monitors','Ambulatory blood pressure monitors and cuffs for outpatient clinics.','Alethea Charlton','Active','Aorta Solutions Ltd','1360551',NULL,'Whitwell Acute Hospitals NHS Trust','Whitwell NHS Trust - Cardiology','Cardiology Equipment',NULL,'2026-02-02','2029-02-01',NULL,'Syman Neumann'),
+ ('FAKE0023','Vital Signs Monitoring - Aorta','Vital signs monitors including blood pressure.','Carol Ann Hartnell','Active - Renewal in Progress','Aorta Solutions UK Ltd',NULL,NULL,'Waymeet Hospitals University National Health Service Trust','WHU - Procurement','Patient Monitoring Equipment','Medical & Surgical Consumables','2023-06-12','2026-06-11',NULL,'Lyndel Beauman'),
+ ('FAKE0024','BTH - Respiratory - Diagnostic Spirometers','Supply of professional diagnostic spirometers for the lung function service.','Peregrin Took','Active','Bywater Respiratory Ltd','09876543',NULL,'Baranduin Teaching Hospitals NHS Foundation Trust','BTHFT - 13 - Specialist Medicine','Respiratory Equipment',NULL,'2025-06-01','2028-05-31',NULL,'Esmeralda Brandybuck'),
+ ('FAKE0025','WAH - Respiratory - Body Plethysmography','Supply and maintenance of a whole-body plethysmograph.','Alethea Charlton','Active','Bywater Respiratory Ltd','09876543',NULL,'Whitwell Acute Hospitals NHS Trust','Whitwell NHS Trust - Respiratory','Respiratory Equipment',NULL,'2026-01-05','2029-01-04',NULL,'Fredegar Bolger');
 
 INSERT INTO "external"."atamis_pipeline" ("ref_no","workplan_name","contracting_authority","business_unit","bu_contact","description","commercial_lead","existing_supplier","expected_start_date","cpv_category","alt_category","delivery_lead") VALUES ('FAKE1001','FHFT - C- Orthopaedics - Orthopaedic and Trauma Procurement','Frogmorton Health NHS Foundation Trust','FHFT - Procurement','Katharine Schofield','FHFT - C- Orthopaedics - Paragon42 Orthopaedic and Trauma Consignments (hip)','Keith Pyott','Otho Solutions Limited',NULL,'Orthopaedic implants','Surgical Implants and Associated Products','Gordon Wales'),
  ('FAKE1002','Orthopaedic Internal & External Fixations','Great Farthing Hospitals NHS Foundation Trust','GFH - Surgery & Planned Care','Walter Randall','Orthopaedic Internal & External Fixations','John Ringham','Otho Solutions Limited',NULL,'Orthopaedic implants','Surgical Implants and Associated Products',NULL),
@@ -292,7 +325,9 @@ INSERT INTO "external"."contracts_to_mhra_manufacturers" ("contract_ref","manufa
  ('FAKE0020',45123),
  ('FAKE0021',95632),
  ('FAKE0022',13455),
- ('FAKE0023',13455);
+ ('FAKE0023',13455),
+ ('FAKE0024',30512),
+ ('FAKE0025',30512);
  
 INSERT INTO "external"."atamis_to_gmdn" ("atamis_ref","gmdn_code") VALUES ('FAKE0007',35839),
  ('FAKE0008',63088),
@@ -338,7 +373,9 @@ INSERT INTO "external"."atamis_to_gmdn" ("atamis_ref","gmdn_code") VALUES ('FAKE
  ('FAKE0020',35198),
  ('FAKE0021',38502),
  ('FAKE0022',63088),
- ('FAKE0023',63088);
+ ('FAKE0023',63088),
+ ('FAKE0024',13680),
+ ('FAKE0025',35242);
 
 REFRESH MATERIALIZED VIEW "external"."search";
 REFRESH MATERIALIZED VIEW "external"."aggregation_search";

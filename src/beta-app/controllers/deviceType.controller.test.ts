@@ -111,7 +111,7 @@ describe("Device type controller", () => {
       const response = await get(`${searchSupplierPath}?q=heart`);
 
       expect(response.text).toContain(
-        'href="/supplier/13455/product/Heart%20Rate%20Monitor?q=heart"',
+        'href="/device-type/35198/supplier/13455/product/Heart%20Rate%20Monitor?q=heart"',
       );
     });
 
@@ -171,7 +171,7 @@ describe("Device type controller", () => {
       );
 
       expect(cardHeadings(response.text)).toEqual([
-        "2 trusts have experience with Heart Rate Monitor",
+        "3 trusts have experience with Heart Rate Monitor",
         "9 trusts have experience with Aorta Solutions devices in the same or related categories",
       ]);
     });
@@ -186,7 +186,7 @@ describe("Device type controller", () => {
 
   describe("related trusts pages", () => {
     const productPath = `${deviceTypePath}/supplier/13455/product/Heart%20Rate%20Monitor`;
-    const searchProductPath = "/supplier/13455/product/Heart%20Rate%20Monitor";
+    const searchProductPath = `/device-type/${deviceTypeId}/supplier/13455/product/Heart%20Rate%20Monitor`;
 
     const contractNames = (html: string) =>
       [
@@ -199,14 +199,13 @@ describe("Device type controller", () => {
       const response = await get(`${productPath}/related-trusts`);
 
       expect(response.status).toBe(200);
-      expect(response.text).toContain("Showing 4 contracts.");
+      expect(response.text).toContain("Showing 3 contracts.");
       expect(response.text).toContain(
         "Most recent contracts are listed first.",
       );
       expect(contractNames(response.text)).toEqual([
         "WAH - Cardiology - Ambulatory Blood Pressure Monitors",
         "Blood Pressure Monitoring Equipment",
-        "T&amp;O - Aorta Implants (Consignment)",
         "Vital Signs Monitoring - Aorta",
       ]);
       expect(response.text).toContain("February 2026");
@@ -219,7 +218,7 @@ describe("Device type controller", () => {
       );
 
       expect(response.text).toContain("Filter by category (1 applied)");
-      expect(response.text).toContain("Showing 2 of 4 contracts.");
+      expect(response.text).toContain("Showing 2 of 3 contracts.");
       expect(contractNames(response.text)).toEqual([
         "Blood Pressure Monitoring Equipment",
         "Vital Signs Monitoring - Aorta",
@@ -238,7 +237,6 @@ describe("Device type controller", () => {
       // Whitwell, Waymeet, then Baranduin
       expect(contractNames(response.text)).toEqual([
         "WAH - Cardiology - Ambulatory Blood Pressure Monitors",
-        "T&amp;O - Aorta Implants (Consignment)",
         "Vital Signs Monitoring - Aorta",
         "Blood Pressure Monitoring Equipment",
       ]);
@@ -264,7 +262,7 @@ describe("Device type controller", () => {
 
     it("GET related trusts for a product with none says so", async () => {
       const response = await get(
-        "/supplier/45273/product/Eye%20Shield/related-trusts",
+        "/device-type/63492/supplier/45273/product/Eye%20Shield/related-trusts",
       );
 
       expect(response.status).toBe(200);
@@ -276,9 +274,12 @@ describe("Device type controller", () => {
     it.each([
       [
         "the wrong supplier",
-        "/supplier/45123/product/Heart%20Rate%20Monitor/related-trusts",
+        "/device-type/35198/supplier/45123/product/Heart%20Rate%20Monitor/related-trusts",
       ],
-      ["an unknown product", "/supplier/13455/product/Nothing/related-trusts"],
+      [
+        "an unknown product",
+        "/device-type/35198/supplier/13455/product/Nothing/related-trusts",
+      ],
       [
         "a category it isn't in",
         "/category/10027/device-type/35198/supplier/13455/product/Heart%20Rate%20Monitor/related-trusts",
@@ -511,9 +512,9 @@ describe("Device type controller", () => {
       expect((await get(`${path}/trusts`)).status).toBe(404);
     });
 
-    it("GET /supplier/:supplierId/product/:aggregationName from search links back to those results", async () => {
+    it("GET /device-type/:deviceTypeId/supplier/:supplierId/product/:aggregationName from search links back to those results", async () => {
       const response = await get(
-        "/supplier/45123/product/Blood%20Pressure%20Kit?q=blood%20kit&page=2&evil=1",
+        "/device-type/63088/supplier/45123/product/Blood%20Pressure%20Kit?q=blood%20kit&page=2&evil=1",
       );
 
       expect(response.status).toBe(200);
@@ -522,14 +523,14 @@ describe("Device type controller", () => {
         "/search-results?q=blood%20kit&amp;page=2",
       );
       expect(response.text).toContain(
-        "/supplier/45123/product/Blood%20Pressure%20Kit/trusts?q=blood%20kit&amp;page=2",
+        "/device-type/63088/supplier/45123/product/Blood%20Pressure%20Kit/trusts?q=blood%20kit&amp;page=2",
       );
       expect(response.text).not.toContain("evil");
     });
 
-    it("GET /supplier/:supplierId/product/:aggregationName without a search falls back to search", async () => {
+    it("GET /device-type/:deviceTypeId/supplier/:supplierId/product/:aggregationName without a search falls back to search", async () => {
       const response = await get(
-        "/supplier/45123/product/Blood%20Pressure%20Kit",
+        "/device-type/63088/supplier/45123/product/Blood%20Pressure%20Kit",
       );
 
       expect(response.status).toBe(200);
@@ -549,7 +550,7 @@ describe("Device type controller", () => {
 
     it("GET a product from search links to its device type and supplier", async () => {
       const response = await get(
-        "/supplier/45123/product/Blood%20Pressure%20Kit?q=kit",
+        "/device-type/63088/supplier/45123/product/Blood%20Pressure%20Kit?q=kit",
       );
       const hrefs = /nhsuk-summary-list[\s\S]*?<\/dl>/
         .exec(response.text)?.[0]
@@ -569,7 +570,7 @@ describe("Device type controller", () => {
 
     it("GET a product only in the Anatomical Specialty tree still links to its device type", async () => {
       const response = await get(
-        "/supplier/91326/product/Praxis%20Total%20Knee",
+        "/device-type/33665/supplier/91326/product/Praxis%20Total%20Knee",
       );
 
       expect(response.text).toMatch(
@@ -585,11 +586,66 @@ describe("Device type controller", () => {
       );
     });
 
-    it("GET a product from search with the wrong supplier returns 404", async () => {
-      const path = "/supplier/13455/product/Blood%20Pressure%20Kit";
-
+    it.each([
+      [
+        "the wrong supplier",
+        "/device-type/63088/supplier/13455/product/Blood%20Pressure%20Kit",
+      ],
+      [
+        "the wrong device type",
+        "/device-type/35198/supplier/45123/product/Blood%20Pressure%20Kit",
+      ],
+      [
+        "a device type the aggregation isn't under",
+        "/device-type/63088/supplier/30512/product/Lepton%20Series",
+      ],
+    ])("GET a product from search with %s returns 404", async (_, path) => {
       expect((await get(path)).status).toBe(404);
       expect((await get(`${path}/trusts`)).status).toBe(404);
+      expect((await get(`${path}/related-trusts`)).status).toBe(404);
     });
+
+    it("no longer serves the old search product URL", async () => {
+      const response = await get(
+        "/supplier/45123/product/Blood%20Pressure%20Kit",
+      );
+
+      expect(response.status).toBe(404);
+    });
+
+    it("GET a product from search leads back through its supplier page", async () => {
+      const supplierPath = "/device-type/63088/supplier/45123";
+      const response = await get(
+        `${supplierPath}/product/Blood%20Pressure%20Kit?q=kit`,
+      );
+
+      expect(response.text).toContain(`href="${supplierPath}?q=kit"`);
+    });
+
+    // Lepton Series spans 3 device types, so its page is for the one in the URL
+    it.each([
+      ["13680", "Diagnostic spirometer, professional"],
+      ["35242", "Whole-body plethysmograph"],
+    ])(
+      "GET a product spanning several device types from search shows device type %s",
+      async (gmdnCode, gmdnTerm) => {
+        const response = await get(
+          `/device-type/${gmdnCode}/supplier/30512/product/Lepton%20Series?q=lepton`,
+        );
+        const summary = /nhsuk-summary-list[\s\S]*?<\/dl>/.exec(
+          response.text,
+        )?.[0];
+
+        expect(response.status).toBe(200);
+        expect(summary).toContain(gmdnTerm);
+        expect(summary).toMatch(
+          new RegExp(`href="/category/\\d+/device-type/${gmdnCode}"`),
+        );
+        // FAKE0024 or FAKE0025, but not both
+        expect(response.text).toContain(
+          "1 trust has experience with Lepton Series",
+        );
+      },
+    );
   });
 });

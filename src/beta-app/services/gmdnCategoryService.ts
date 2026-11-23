@@ -181,18 +181,6 @@ export const getDeviceTypeById = async (deviceTypeId: number) => {
     .executeTakeFirstOrThrow();
 };
 
-export const getGmdnTermForDeviceId = async (deviceTypeId: number) => {
-  const result = await db
-    .withSchema("external")
-    .selectFrom("gmdn as g")
-    .innerJoin("device_type as d", "d.gmdnCode", "g.gmdnCode")
-    .where("d.deviceId", "=", deviceTypeId)
-    .select("g.gmdnTermName")
-    .executeTakeFirstOrThrow();
-
-  return result.gmdnTermName;
-};
-
 export const getGmdnTermWithCode = async (gmdnCode: number) => {
   return await db
     .withSchema("external")
@@ -231,20 +219,4 @@ export const getBrowsePathForDeviceType = async (gmdnCode: number) => {
     categories.at(0);
 
   return category && { categoryId: category.nodeId, gmdnCode };
-};
-
-// As getBrowsePathForDeviceType, for the GMDN term of a device
-export const getBrowsePathForDevice = async (deviceId: number) => {
-  const device = await db
-    .withSchema("external")
-    .selectFrom("device_type")
-    .where("deviceId", "=", deviceId)
-    .select("gmdnCode")
-    .executeTakeFirst();
-
-  if (device?.gmdnCode == null) {
-    return undefined;
-  }
-
-  return await getBrowsePathForDeviceType(device.gmdnCode);
 };

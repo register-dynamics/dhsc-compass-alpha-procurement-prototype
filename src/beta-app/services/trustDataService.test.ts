@@ -49,13 +49,17 @@ describe("Trust data service", () => {
   // | FAKE0021 | 38502        | 95632    |
   // | FAKE0022 | 63088        | 13455    |
   // | FAKE0023 | 63088        | 13455    |
+  // | FAKE0024 | 13680        | 30512    |
+  // | FAKE0025 | 35242        | 30512    |
   //
   // 13455 has 3 aggregations for 35198 and 1 (Aorta BP Monitor) for 63088.
-  // 45123 has 1 for 63088 and none for 35198. 95632 has 1 for 35839.
+  // 45123 has 1 for 63088 and none for 35198. 95632 has 1 for 35839. 30512 has
+  // 1, Lepton Series, for each of 13680, 35242 and 35282.
   describe("getProductTrustData", () => {
     it("counts the supplier's contracts for related terms only on the related card", async () => {
       const { exact, related } = await getProductTrustData({
         aggregationName: "InsuFlow Pro",
+        gmdnCode: 35839,
         manufacturerId: 95632,
       });
 
@@ -68,6 +72,7 @@ describe("Trust data service", () => {
     it("counts a single-term contract as exact when it's the supplier's only aggregation for the term", async () => {
       const { exact, related } = await getProductTrustData({
         aggregationName: "Aorta BP Monitor",
+        gmdnCode: 63088,
         manufacturerId: 13455,
       });
 
@@ -76,24 +81,49 @@ describe("Trust data service", () => {
       expect(related.contractCount).toBe(1);
     });
 
-    it("counts a contract as related when the supplier has other aggregations for the term", async () => {
+    it("counts a single-term contract as exact when the supplier has other aggregations for the term", async () => {
       const { exact, related } = await getProductTrustData({
         aggregationName: "Heart Rate Monitor",
+        gmdnCode: 35198,
         manufacturerId: 13455,
       });
 
-      // FAKE0006 could be for Heart Pro or Pacemaker instead
+      // FAKE0006, though it could be for Heart Pro or Pacemaker instead
       expect(exact).toMatchObject({
-        contractCount: 0,
+        contractCount: 1,
         peopleCount: 4,
-        trustCount: 2,
+        trustCount: 3,
       });
       // Heart Pro and Pacemaker have the same term, Aorta BP Monitor a related one
       expect(related).toMatchObject({
-        contractCount: 4,
+        contractCount: 3,
         peopleCount: 10,
         trustCount: 9,
       });
+    });
+
+    it("only counts contracts for the product's own device type when its aggregation spans several", async () => {
+      const lepton = {
+        aggregationName: "Lepton Series",
+        manufacturerId: 30512,
+      };
+
+      // FAKE0024 is for the spirometer and FAKE0025 for the plethysmograph,
+      // which isn't a related term
+      const spirometer = await getProductTrustData({
+        ...lepton,
+        gmdnCode: 13680,
+      });
+      expect(spirometer.exact.contractCount).toBe(1);
+      expect(spirometer.exact.trustCount).toBe(1);
+      expect(spirometer.related.contractCount).toBe(0);
+
+      const plethysmograph = await getProductTrustData({
+        ...lepton,
+        gmdnCode: 35242,
+      });
+      expect(plethysmograph.exact.contractCount).toBe(1);
+      expect(plethysmograph.related.contractCount).toBe(0);
     });
   });
 
@@ -101,13 +131,13 @@ describe("Trust data service", () => {
     it("lists the contracts counted on the related card", async () => {
       const aggregation = {
         aggregationName: "Heart Rate Monitor",
+        gmdnCode: 35198,
         manufacturerId: 13455,
       };
       const contracts = await getProductRelatedContracts(aggregation);
       const { related } = await getProductTrustData(aggregation);
 
       expect(contracts.map((c) => c.contractRef).sort()).toEqual([
-        "FAKE0006",
         "FAKE0019",
         "FAKE0022",
         "FAKE0023",
