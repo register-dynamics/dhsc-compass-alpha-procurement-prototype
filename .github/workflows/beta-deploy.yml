@@ -53,6 +53,7 @@ jobs:
           echo "DATABASE_PASSWORD=$DATABASE_PASSWORD" >> "$GITHUB_ENV"
           # Prepare database setup SQL
           cat src/beta-app/deploy/db_setup.sql | sed s/_NAME_/$APP_NAME/g | sed s/_PASSWORD_/$DATABASE_PASSWORD/g > db_setup.sql
+          cat src/beta-app/deploy/db_grant.sql | sed s/_NAME_/$APP_NAME/g > db_grant.sql
       - name: Get Postgres admin token
         shell: bash
         run: |
@@ -67,6 +68,12 @@ jobs:
           connection-string: "host=${{ vars.AZURE_DATABASE_HOST }} port=5432 dbname=postgres user=sp-dhscacp-ghr-cmps-dev password=${{ env.PGTOKEN }} sslmode=require"
           plsql-file: "db_setup.sql"
         continue-on-error: true # NOTICEs psql emits - such as "NOTICE:  database "18-merge" does not exist, skipping" - are interpreted as errors by the action, so we need to skip errors - see https://github.com/Azure/postgresql/issues/33
+      - name: Grant access to public schema
+        uses: azure/postgresql@59401b7890419c83f372819a1c37f5aecf57ac92 # Tag v1.2.0
+        with:
+          server-name: ${{ vars.AZURE_DATABASE_HOST }}
+          connection-string: "host=${{ vars.AZURE_DATABASE_HOST }} port=5432 dbname=${{ env.APP_NAME }} user=sp-dhscacp-ghr-cmps-dev password=${{ env.PGTOKEN }} sslmode=require"
+          plsql-file: "db_grant.sql"
       - name: Complete database setup
         shell: bash
         env:
