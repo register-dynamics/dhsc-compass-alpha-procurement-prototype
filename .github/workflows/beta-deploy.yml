@@ -217,6 +217,13 @@ jobs:
         shell: bash
         run: |
           read -r DOMAIN IP <<<"$(az containerapp env show -n "${MANAGED_ENVIRONMENT_ID}" -g "${{ vars.AZURE_RESOURCE_GROUP }}" --subscription "${{ vars.AZURE_RTL_SUBSCRIPTION_ID }}" --query "[properties.defaultDomain,properties.staticIp]" -o tsv | paste -s)"
+          az network private-dns record-set a remove-record \
+            -g "${{ vars.AZURE_RESOURCE_GROUP }}" \
+            --subscription "${{ vars.AZURE_RTL_SUBSCRIPTION_ID }}" \
+            -z "$DOMAIN" \
+            -n "app-${APP_NAME}" \
+            -a "$IP" \
+            --output none || true
           az network private-dns record-set a add-record \
             -g "${{ vars.AZURE_RESOURCE_GROUP }}" \
             --subscription "${{ vars.AZURE_RTL_SUBSCRIPTION_ID }}" \
