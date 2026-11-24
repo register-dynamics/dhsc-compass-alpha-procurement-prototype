@@ -1,0 +1,82 @@
+{% extends "layouts/base.html" %}
+
+{#
+  1 Atamis contract, reached from its name on a "Contracts in the same or
+  related categories" page. Based on the alpha prototype's
+  branded-device/_contract.html.
+
+  2 summary lists: the contract, then the people named on it, so contact
+  details aren't mixed in with contract facts. Category is shown as these
+  contracts are matched by category, and it's how people judge how close the
+  match is.
+
+  Rows with no value are left out. Atamis doesn't give us how a contract was
+  procured, its award value or the training provided, so the prototype's
+  rows for those aren't here yet.
+#}
+
+{% from "breadcrumb/macro.njk" import breadcrumb %}
+{% from "summary-list/macro.njk" import summaryList %}
+
+{% set pageName = contract.contractName + " – " + contract.trust %}
+{% set mainClasses = "nhsuk-main-wrapper--s" %}
+
+{% set contractRows = [
+    { key: { text: "Category" }, value: { text: contract.category } },
+    { key: { text: "NHS organisation responsible" }, value: { text: contract.trust } }
+] %}
+{% if contract.businessUnit %}
+    {% set contractRows = (contractRows.push({ key: { text: "Business unit" }, value: { text: contract.businessUnit } }), contractRows) %}
+{% endif %}
+{% set contractRows = (contractRows.push(
+    { key: { text: "Supplier named on the contract" }, value: { text: contract.supplier } },
+    { key: { text: "Status" }, value: { text: contract.status } },
+    { key: { text: "Start date" }, value: { text: contract.startDate } },
+    { key: { text: "End date" }, value: { text: contract.endDate } }
+), contractRows) %}
+{% if contract.noticeUrl %}
+    {% set noticeHtml %}<a href="{{ contract.noticeUrl }}">View the contract notice on Contracts Finder</a>{% endset %}
+    {% set contractRows = (contractRows.push({ key: { text: "Link to the published contract notice" }, value: { html: noticeHtml } }), contractRows) %}
+{% endif %}
+
+{% set peopleRows = [] %}
+{% if contract.owner %}
+    {% set peopleRows = (peopleRows.push({ key: { text: "Contract owner" }, value: { text: contract.owner } }), peopleRows) %}
+{% endif %}
+{% if contract.procurementLead %}
+    {% set peopleRows = (peopleRows.push({ key: { text: "Procurement lead" }, value: { text: contract.procurementLead } }), peopleRows) %}
+{% endif %}
+
+{% block beforeContent %}
+
+    {{ breadcrumb({
+        items: breadcrumbs
+    }) }}
+
+{% endblock %}
+
+{% block content %}
+
+    <div class="nhsuk-grid-row">
+        <div class="nhsuk-grid-column-two-thirds">
+
+            <h1 class="nhsuk-heading-l nhsuk-u-margin-bottom-2">
+                <span class="nhsuk-caption-l">{{ contract.trust }}</span>
+                {{ contract.contractName }}
+            </h1>
+            <p class="nhsuk-body-s">From Atamis contract records</p>
+
+            <h2 class="nhsuk-heading-m nhsuk-u-margin-top-4">Contract</h2>
+
+            {{ summaryList({ rows: contractRows }) }}
+
+            {% if peopleRows | length %}
+                <h2 class="nhsuk-heading-m nhsuk-u-margin-top-4">People named on this contract</h2>
+
+                {{ summaryList({ rows: peopleRows }) }}
+            {% endif %}
+
+        </div>
+    </div>
+
+{% endblock %}

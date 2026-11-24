@@ -1,7 +1,19 @@
 import { db } from "../database/client.js";
+import { AtamisContract } from "../database/types.js";
 import { TrustExperienceContract } from "../models/trustExperience.js";
 import { countContractsByTrust } from "../utils/trustEvidence.js";
 import { getProductContracts, ProductScope } from "./trustDataService.js";
+
+// Everything Atamis holds for 1 contract, for its contract page
+export const getContractWithRef = async (
+  contractRef: string,
+): Promise<AtamisContract | undefined> =>
+  await db
+    .withSchema("external")
+    .selectFrom("atamis_contracts")
+    .selectAll()
+    .where("contractRef", "=", contractRef)
+    .executeTakeFirst();
 
 // The contracts on the product page's exact card, counted for each trust
 export const getContractCountsByContractingAuthorityForProduct = async (
