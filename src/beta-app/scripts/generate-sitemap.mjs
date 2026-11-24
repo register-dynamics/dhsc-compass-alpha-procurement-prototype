@@ -154,7 +154,7 @@ const urls = routes
   .filter((route) => !deferredRoutes.includes(route))
   .flatMap(populateRouteVariants)
   .map((url) => `${BASE_URL}${url}`)
-  .sort();
+  .sort(); // NOSONAR
 
 // Add the initial login URL to the start of the list of URLs
 // Needed to authenticate the user before accessing other routes
