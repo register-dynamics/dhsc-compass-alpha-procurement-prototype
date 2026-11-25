@@ -1,7 +1,7 @@
 import { promises as fs } from "fs";
 import { readFileSync } from "fs";
 import { CamelCasePlugin, Kysely, PostgresDialect } from "kysely";
-import { FileMigrationProvider, Migrator } from "kysely/migration";
+import { FileMigrationProvider, Migration, MigrationProvider, Migrator } from "kysely/migration";
 import * as path from "path";
 import { Pool } from "pg";
 import { fileURLToPath } from "url";
@@ -54,28 +54,52 @@ export const db = new Kysely<Database>({
   plugins: [new CamelCasePlugin({ upperCase: false })],
 });
 
-export async function applyAllMigrations() {
-  // We do external first, as app may reference things from the external schema.
-  await pgPool.query("CREATE SCHEMA IF NOT EXISTS external");
-  await applyMigrations("external", "external-schema");
+class MergedMigrationProvider implements MigrationProvider {
+  readonly #providers: MigrationProvider[]
 
+  constructor(providers: MigrationProvider[]) {
+    this.#providers = providers
+  }
+  async getMigrations(): Promise<Record<string, Migration>> {
+    const combined : Record<string, Migration> = {};
+    let idx = 0;
+    for (const mp of this.#providers) {
+      const migrations = await mp.getMigrations();
+      for(const key in migrations) {
+        // Rewrite key so migrations with the same date prefix are sub-sorted in order of
+        // their position in the providers array, to ensure they are performed in the corresponding
+        // order. Let's hope we don't get a hundred migration paths as I use a two-digit number.
+        const mappedKey = key.replace(/^([0-9]{8})/,"$1-" + idx.toString().padStart(2, '0'));
+        combined[mappedKey] = migrations[key];
+      }
+      idx += 1;
+    }
+    return combined;
+  }
+}
+
+export async function applyAllMigrations() {
+  await pgPool.query("CREATE SCHEMA IF NOT EXISTS external");
   await pgPool.query("CREATE SCHEMA IF NOT EXISTS app");
-  await applyMigrations("app", "app-schema");
+
+  await applyMigrations(["external-schema","app-schema"]);
 
   console.log(`✅ database schema is up to date`);
 }
 
-async function applyMigrations(schema: string, migrationsPath: string) {
-  console.log("Checking for migrations in " + migrationsPath + ":");
+async function applyMigrations(migrationPaths: string[]) {
+  console.log("Checking for migrations:");
+
+  const providers = migrationPaths.map((mp) => new FileMigrationProvider({
+    fs,
+    migrationFolder: path.join(__dirname, mp),
+    path,
+  }));
+  const provider = new MergedMigrationProvider(providers);
 
   const migrator = new Migrator({
     db,
-    migrationTableSchema: schema,
-    provider: new FileMigrationProvider({
-      fs,
-      migrationFolder: path.join(__dirname, migrationsPath),
-      path,
-    }),
+    provider,
   });
 
   const { error, results } = await migrator.migrateToLatest();
