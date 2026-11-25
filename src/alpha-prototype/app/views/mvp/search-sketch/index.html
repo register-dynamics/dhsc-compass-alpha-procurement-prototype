@@ -1,0 +1,50 @@
+{% extends "mvp/branded-device/_layout.html" %}
+
+{% set pageName = "Search sketch: supplier name with device type" %}
+{% set mainClasses = "nhsuk-main-wrapper--s" %}
+
+{# Mock results for "pump": 1 per supplier per device type, ordered by device type, then supplier #}
+{% set results = [
+  { deviceType: "Ambulatory insulin infusion pump tank", supplier: "ArcTech Ltd", device: "InsuFlow Pro" },
+  { deviceType: "Ambulatory insulin infusion pump tank", supplier: "Beta Healthcare Solutions", device: "GlucaDose Reservoir" },
+  { deviceType: "Ambulatory insulin infusion pump tank", supplier: "OmegaAM Solutions", device: "OmegaPump Cartridge" },
+  { deviceType: "Ambulatory insulin infusion pump, programmable", supplier: "ArcTech Ltd", device: "InsuFlow Pro X" },
+  { deviceType: "Ambulatory insulin infusion pump, programmable", supplier: "Seinar Systems Ltd", device: "Seinar Patch Pump" },
+  { deviceType: "Enteral feeding pump", supplier: "Ferrus Technology Solutions", device: "FerroFeed 300" },
+  { deviceType: "Enteral feeding pump", supplier: "Upper Norfolk Implant Technologies", device: "NorFeed Compact" },
+  { deviceType: "General-purpose infusion pump", supplier: "Beta Healthcare Solutions", device: "BetaInfuse Volumetric" },
+  { deviceType: "General-purpose infusion pump", supplier: "Ferrus Technology Solutions", device: "FerroLine VP" },
+  { deviceType: "Patient-controlled analgesia infusion pump", supplier: "OmegaAM Solutions", device: "OmegaPCA" }
+] %}
+
+{% block content %}
+
+<div class="nhsuk-grid-row">
+  <div class="nhsuk-grid-column-two-thirds">
+
+    <h1 class="nhsuk-heading-l">Search results</h1>
+
+    <p class="nhsuk-caption-m">
+      Showing <strong>1</strong> to <strong>{{ results | length }}</strong> of <strong>{{ results | length }}</strong> results
+    </p>
+
+    {% for result in results %}
+      <div class="nhsuk-card nhsuk-card--clickable app-card--compact">
+        <div class="nhsuk-card__content">
+          <h2 class="nhsuk-card__heading nhsuk-heading-s">
+            <a class="nhsuk-card__link" href="#">{{ result.supplier }} – {{ result.deviceType }}</a>
+          </h2>
+          <dl class="nhsuk-summary-list">
+            <div class="nhsuk-summary-list__row">
+              <dt class="nhsuk-summary-list__key">Device</dt>
+              <dd class="nhsuk-summary-list__value">{{ result.device }}</dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+    {% endfor %}
+
+  </div>
+</div>
+
+{% endblock %}

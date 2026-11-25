@@ -118,6 +118,7 @@ router.use('/branded-device', require('./views/branded-device/routes'))
 router.use('/mvp/branded-device', require('./views/mvp/branded-device/routes'))
 router.use('/mvp/supplier-device-type', require('./views/mvp/supplier-device-type/routes'))
 router.use('/mvp/device-type', require('./views/mvp/device-type/routes'))
+router.use('/mvp/search-sketch', require('./views/mvp/search-sketch/routes'))
 
 
 
