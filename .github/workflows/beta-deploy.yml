@@ -13,7 +13,9 @@ jobs:
   deploy:
     if: ${{ github.repository == 'dhsc-govuk-infrastructure/compass-app' }}
     runs-on: cmps-selfhosted-runner
-    environment: dev
+    environment:
+      name: dev
+      url: ${{ steps.summarize.outputs.url }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
@@ -234,11 +236,18 @@ jobs:
             --output none
           echo "APP_URL=https://app-${APP_NAME}.${DOMAIN}" >> "$GITHUB_ENV"
       - name: Add deployment summary
+        id: summarize
         shell: bash
         run: |
           {
             echo "### ${APP_NAME} deployment"
             echo
+            echo "- database: ${APP_NAME}"
             echo "- image: ${FULL_IMAGE}"
             echo "- url: ${APP_URL}"
           } >> "$GITHUB_STEP_SUMMARY"
+          {
+            echo "name=${APP_NAME}"
+            echo "image=${FULL_IMAGE}"
+            echo "url=${APP_URL}"
+          } >> "$GITHUB_OUTPUT"
