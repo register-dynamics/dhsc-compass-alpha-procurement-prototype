@@ -18,6 +18,9 @@ export interface DeviceTypeTrustsScope {
   gmdnTerm: string;
   manufacturerId?: number;
   parentHref: string;
+  // The related trusts page, without the search query string. Its
+  // contracts' pages are beneath it.
+  relatedTrustsPath: string;
   searchQueryString: string;
   supplierName?: string;
 }

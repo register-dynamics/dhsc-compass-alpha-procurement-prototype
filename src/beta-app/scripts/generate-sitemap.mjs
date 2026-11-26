@@ -16,6 +16,9 @@ const paramValues = {
   aggregationName: "Thermometer tympanic device",
   // University Hospitals Birmingham, which has evidence for the product
   trustId: "6",
+  // Thermometers & Probe Covers, in the same or related categories as the
+  // device type
+  contractId: "FAKE0018",
 };
 
 // Extra values to test a route with as well, keyed by param name, for pages
@@ -30,6 +33,17 @@ const extraParamValues = {
 const routeOverrides = {
   "/search-results": "/search-results?q=glucose",
   "/category/:categoryId": "/category/4941",
+  // The thermometer's supplier has no contracts in the same or related
+  // categories, so its contract pages use Aorta Solutions' heart rate
+  // monitor instead, with Blood Pressure Monitoring Equipment
+  "/category/:categoryId/device-type/:deviceTypeId/supplier/:supplierId/related-trusts/contract/:contractId":
+    "/category/9990/device-type/35198/supplier/13455/related-trusts/contract/FAKE0019",
+  "/device-type/:deviceTypeId/supplier/:supplierId/related-trusts/contract/:contractId":
+    "/device-type/35198/supplier/13455/related-trusts/contract/FAKE0019",
+  "/category/:categoryId/device-type/:deviceTypeId/supplier/:supplierId/product/:aggregationName/related-trusts/contract/:contractId":
+    "/category/9990/device-type/35198/supplier/13455/product/Heart%20Rate%20Monitor/related-trusts/contract/FAKE0019",
+  "/device-type/:deviceTypeId/supplier/:supplierId/product/:aggregationName/related-trusts/contract/:contractId":
+    "/device-type/35198/supplier/13455/product/Heart%20Rate%20Monitor/related-trusts/contract/FAKE0019",
 };
 
 // Routes that shouldn't be tested in the main run (sign-out ends the session,

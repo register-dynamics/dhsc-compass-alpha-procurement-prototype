@@ -2,9 +2,12 @@ import { Router } from "express";
 
 import {
   renderDeviceType,
+  renderDeviceTypeRelatedContract,
   renderDeviceTypeRelatedTrusts,
   renderDeviceTypeSupplier,
   renderDeviceTypeSupplierFromSearch,
+  renderDeviceTypeSupplierRelatedContract,
+  renderDeviceTypeSupplierRelatedContractFromSearch,
   renderDeviceTypeSupplierRelatedTrusts,
   renderDeviceTypeSupplierRelatedTrustsFromSearch,
   renderDeviceTypeSupplierTrusts,
@@ -36,6 +39,11 @@ const routeDefinitions: RouteDefinition[] = [
     path: "/category/:categoryId/device-type/:deviceTypeId/related-trusts",
   },
   {
+    handler: renderDeviceTypeRelatedContract,
+    method: "get",
+    path: "/category/:categoryId/device-type/:deviceTypeId/related-trusts/contract/:contractId",
+  },
+  {
     // Device type x supplier from GMDN category browse
     handler: renderDeviceTypeSupplier,
     method: "get",
@@ -52,6 +60,11 @@ const routeDefinitions: RouteDefinition[] = [
     path: `${categorySupplierPath}/related-trusts`,
   },
   {
+    handler: renderDeviceTypeSupplierRelatedContract,
+    method: "get",
+    path: `${categorySupplierPath}/related-trusts/contract/:contractId`,
+  },
+  {
     // Device type x supplier from search
     handler: renderDeviceTypeSupplierFromSearch,
     method: "get",
@@ -66,6 +79,11 @@ const routeDefinitions: RouteDefinition[] = [
     handler: renderDeviceTypeSupplierRelatedTrustsFromSearch,
     method: "get",
     path: `${searchSupplierPath}/related-trusts`,
+  },
+  {
+    handler: renderDeviceTypeSupplierRelatedContractFromSearch,
+    method: "get",
+    path: `${searchSupplierPath}/related-trusts/contract/:contractId`,
   },
 ];
 
