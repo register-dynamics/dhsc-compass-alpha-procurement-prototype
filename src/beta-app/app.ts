@@ -42,7 +42,7 @@ app.use(express.json());
 
 // Configure session and authentication middleware
 const sessionStore = new (pgConnect(session))({
-  createTableIfMissing: true,
+  createTableIfMissing: false,
   pool: pgPool,
   tableName: "user_sessions",
 }) as session.Store;
